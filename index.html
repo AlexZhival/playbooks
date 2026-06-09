@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-Players · База знаний плейбуков</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#f5a800">
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2330; --line:#293040;
+  --text:#e6edf3; --muted:#8b97a7; --accent:#ffb000; --accent2:#3b82f6;
+  --doc:#4285f4; --sheet:#0f9d58; --slides:#f4b400; --form:#673ab7;
+  --notion:#9aa0a6; --gpt:#10a37f; --miro:#ffd02f; --dash:#7c3aed; --link:#64748b;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.5}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+header{position:sticky;top:0;z-index:20;background:rgba(13,17,23,.92);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);padding:18px 0 14px}
+.hbar{max-width:1180px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand .logo{height:40px;width:auto;display:block;border-radius:6px}
+.brand h1{font-size:22px;margin:0;letter-spacing:-.3px}
+.brand .sub{color:var(--muted);font-size:14px}
+.brand .pill{background:var(--accent);color:#0d1117;font-weight:700;font-size:12px;padding:3px 9px;border-radius:99px}
+.search{display:flex;gap:10px;align-items:center}
+.search input{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+  padding:11px 14px;color:var(--text);font-size:15px;outline:none}
+.search input:focus{border-color:var(--accent2)}
+.nav{display:flex;gap:8px;flex-wrap:wrap}
+.navchip{background:var(--panel2);border:1px solid var(--line);border-radius:99px;padding:6px 12px;
+  font-size:13px;color:var(--muted);transition:.15s}
+.navchip:hover{color:var(--text);border-color:var(--accent2)}
+.block{margin-top:38px}
+.block-head h2{margin:0;font-size:20px}
+.block-head p{margin:4px 0 0;color:var(--muted);font-size:14px}
+.cat{margin-top:24px}
+.cat h3{font-size:16px;margin:0 0 12px;display:flex;align-items:center;gap:9px;
+  padding-bottom:8px;border-bottom:1px solid var(--line)}
+.cat h3 .cnt{font-size:12px;color:var(--muted);background:var(--panel2);border-radius:99px;padding:1px 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px;
+  display:flex;flex-direction:column;gap:8px;transition:.15s;position:relative;min-height:96px}
+.card:hover{border-color:var(--accent2);transform:translateY(-2px);background:var(--panel2);
+  box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.tag{align-self:flex-start;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  padding:2px 8px;border-radius:6px;color:#fff}
+.tag-doc{background:var(--doc)} .tag-sheet{background:var(--sheet)} .tag-slides{background:var(--slides);color:#3a2e00}
+.tag-form{background:var(--form)} .tag-notion{background:var(--notion);color:#1c2330} .tag-gpt{background:var(--gpt)}
+.tag-miro{background:var(--miro);color:#3a2e00} .tag-dash{background:var(--dash)} .tag-link{background:var(--link)}
+.card .title{font-size:14.5px;font-weight:600;line-height:1.35;flex:1}
+.card .go{font-size:12px;color:var(--accent2);opacity:0;transition:.15s}
+.card:hover .go{opacity:1}
+.empty{display:none;text-align:center;color:var(--muted);padding:60px 0;font-size:16px}
+footer{margin-top:60px;color:var(--muted);font-size:12.5px;text-align:center;border-top:1px solid var(--line);padding-top:24px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.legend span{font-size:11px;color:var(--muted)}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.brand h1{font-size:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbar">
+    <div class="brand">
+      <img src="logo.png" alt="A-Players" class="logo">
+      <h1>База знаний плейбуков</h1>
+      <span class="sub">A-Players · Продукт</span>
+      <span class="pill">123 материалов</span>
+    </div>
+    <div class="search">
+      <input id="q" type="search" placeholder="🔍 Поиск по названию… (например: SLA, RFM, найм, оффер, AARRR)" autocomplete="off">
+    </div>
+    <div class="nav"><a href="#sec-96364" class="navchip">📚 Плейбуки</a>
+<a href="#sec-7488" class="navchip">⚡ Усилители продукта</a></div>
+  </div>
+</header>
+<div class="wrap">
+<section class="block" id="sec-96364">
+<div class="block-head"><h2>📚 Плейбуки</h2><p>Все рабочие плейбуки, шаблоны и фреймворки A-Players · <b>88</b></p></div>
+<div class="cat"><h3>🎯 Стратегия и управление компанией <span class="cnt">17</span></h3><div class="grid">
+<a class="card" href="https://docs.google.com/document/d/1D89Ok_ltyJgDjNoPQ0AFcofGe1I3p3ns66XClIcXe7E/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук по управлению okr и проектами"><span class="tag tag-doc">Док</span><span class="title">Плейбук по управлению OKR и проектами</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/166-kURn7HehC2hz5cERZYpacblOLQUXA4Jr2_IZkowk/edit?gid=135463352#gid=135463352" target="_blank" rel="noopener" data-search="okr (делаем копию)"><span class="tag tag-sheet">Таблица</span><span class="title">OKR (делаем копию)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1Hw_MakKQhr5P6s8vrA07wE_4UqgLVIQA5XmGFxIKzN8/edit?gid=471049965#gid=471049965" target="_blank" rel="noopener" data-search="ogsm · okr · product retro workbook"><span class="tag tag-sheet">Таблица</span><span class="title">OGSM · OKR · Product Retro Workbook</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1UF_ysdQ3L3bI_OYVvMBiwvlOyJhD02pOodaWoEmY5EM/edit?tab=t.0#heading=h.3nntsmvx5qmk" target="_blank" rel="noopener" data-search="плейбук ceo weekly"><span class="tag tag-doc">Док</span><span class="title">Плейбук CEO Weekly</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/18N_QmjeGXGQysabwj16esGRy_imxJWswKDviDxaroEk/edit?gid=1591407360#gid=1591407360" target="_blank" rel="noopener" data-search="ceo dashboard senior"><span class="tag tag-sheet">Таблица</span><span class="title">CEO Dashboard Senior</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1eAI0g9qU6Btw6QRjlR8VSsdujSNnzi8u2uplYFtLL9g/edit?gid=1445957841#gid=1445957841" target="_blank" rel="noopener" data-search="универсальный шаблон страт-сессии"><span class="tag tag-sheet">Таблица</span><span class="title">Универсальный шаблон страт-сессии</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1uZWSVFXULa02m2Q9U-_P27H-uHvamjv1_qSrdtfptdY/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук координации с помощью моделей"><span class="tag tag-doc">Док</span><span class="title">Плейбук Координации с помощью моделей</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1TUu7EuB0vjfsnDOGYJ3UoZCpX07JvSOKstT7pmNKip0/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук каскады: продуктовый и финансовый"><span class="tag tag-doc">Док</span><span class="title">Плейбук Каскады: продуктовый и финансовый</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1ju--qVZb60OBfUsiFCQyRSd6Thhq70EmXYEM3Q5t3wg/edit?gid=365507916#gid=365507916" target="_blank" rel="noopener" data-search="a-players: рабочая тетрадь «драйверы роста»"><span class="tag tag-sheet">Таблица</span><span class="title">A-Players: Рабочая тетрадь «Драйверы роста»</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1xdo_-0T5e0kxu96HHbkH41Iz0Ds72Q950OlV4AjIKd0/edit?tab=t.0" target="_blank" rel="noopener" data-search="создание мотивирующего видения и миссии компании"><span class="tag tag-doc">Док</span><span class="title">Создание мотивирующего видения и миссии компании</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1ab4jLNb_o7q1HRFrgFy9ph3MFujl8QKHcDrenJiCnd0/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук «видение и миссия компании»"><span class="tag tag-doc">Док</span><span class="title">Плейбук «Видение и Миссия компании»</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1S-HOay6wPHnx8fCfqvoOM-aP4ynsfsx9Dj6niCrYKqk/edit?tab=t.0#heading=h.jgy767x6b3h5" target="_blank" rel="noopener" data-search="создание идеальной картинки мира для лидеров и экспертов"><span class="tag tag-doc">Док</span><span class="title">Создание идеальной картинки мира для лидеров и экспертов</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1DWqPXbsm7hbit3XpGgnUSnIGixVjC02u5ZSL9JIBlAo/edit?tab=t.0" target="_blank" rel="noopener" data-search="🛠 плейбук: дебаг процессов и результатов"><span class="tag tag-doc">Док</span><span class="title">🛠 Плейбук: Дебаг процессов и результатов</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/10XK8wMjEbj82tNYq1lH7wRkILwxUbYC-x_lTcefzfRE/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук дебаг"><span class="tag tag-doc">Док</span><span class="title">Плейбук Дебаг</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/14GMGPJ-VY9UTsptMghhZbiijftoknXjMZj0CWwTqY94/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук модератора"><span class="tag tag-doc">Док</span><span class="title">Плейбук модератора</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1OE809A2IOPrNMvrJ0ea72uiSUPlyf0jPqWw9s-aJGLA/edit?gid=126593981#gid=126593981" target="_blank" rel="noopener" data-search="task tracker"><span class="tag tag-sheet">Таблица</span><span class="title">Task Tracker</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/16sCVD0stxslvEsFzXusiY7fu_Lv2RX6U8hApGj9pcH0/edit?gid=2010905111#gid=2010905111" target="_blank" rel="noopener" data-search="пример глоссария"><span class="tag tag-sheet">Таблица</span><span class="title">Пример глоссария</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>💰 Продажи и управление отделом продаж <span class="cnt">24</span></h3><div class="grid">
+<a class="card" href="https://docs.google.com/document/d/1whtUAApwPYBBpLPLcrlA6L5YPIoIz0Y-Xgks7yJXAIk/edit?tab=t.0#heading=h.7gbep58pgti8" target="_blank" rel="noopener" data-search="плейбук: рост продаж через метрики tlt, sla 1 и sla 2"><span class="tag tag-doc">Док</span><span class="title">Плейбук: рост продаж через метрики TLT, SLA 1 и SLA 2</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/17K4M98viUhRSEsDarMWroju_CWb8r0LFIXR4nZ_XnCk/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук sla, tlt"><span class="tag tag-doc">Док</span><span class="title">Плейбук SLA, TLT</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1NgAhtkslNSbXZFKGo0vcCXYkzhSneAYHlXoBwmhJIUQ/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук 4 метрики джея абрахама"><span class="tag tag-doc">Док</span><span class="title">Плейбук 4 метрики Джея Абрахама</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1jrmh7hRPt2KMw8lRz9aCcyVlQvYy6T8pxF4iF9l7V9M/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук: воронка дожима / эвейка"><span class="tag tag-doc">Док</span><span class="title">Плейбук: Воронка дожима / эвейка</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1sl9H0nzmpzJpfG00rb2dUXZhY2EO2xJmKihv5HNqPLM/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук воронка дожима"><span class="tag tag-doc">Док</span><span class="title">Плейбук Воронка дожима</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1Lmg2BP5yVXAmE5_IUrZLOUzW74YczoUawstfZqHm_FQ/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук маршрутизация лидов"><span class="tag tag-doc">Док</span><span class="title">Плейбук Маршрутизация лидов</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/16W8Eiwp8D-wmhaK9kglLLJIqgw_jcxWl8S__RKXbnVA/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук commercial sync с когортным разбором"><span class="tag tag-doc">Док</span><span class="title">Плейбук Commercial Sync с когортным разбором</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1rTGGvBMl4_AzjjYLcEPcSdzlO45AZjfMBgvk6LF9KXY/edit?tab=t.0" target="_blank" rel="noopener" data-search="инструкции по построению предиктивных моделей для оп"><span class="tag tag-doc">Док</span><span class="title">Инструкции по построению предиктивных моделей для ОП</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1U2GpGyRg5DoLYZ9EUOtD1ntS-psltYi1ouNVg7bO1AY/edit?tab=t.0#heading=h.begu93ahmb1r" target="_blank" rel="noopener" data-search="плейбук чек-лист стратегической предиктивной модели"><span class="tag tag-doc">Док</span><span class="title">Плейбук чек-лист стратегической предиктивной модели</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1XZry12GPFLAf_qV_XQ_WJUt-a2z-4VB08bYCwN9Lr9A/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук чек-лист предиктивной модели отдела продаж"><span class="tag tag-doc">Док</span><span class="title">Плейбук Чек-лист предиктивной модели отдела продаж</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1WSFzYqeDRRMTdU9Fsc0Z2fqFSDKxdx6Y7vlw-kvPb6E/edit?gid=1476745970#gid=1476745970" target="_blank" rel="noopener" data-search="предиктивная модель (пример)"><span class="tag tag-sheet">Таблица</span><span class="title">Предиктивная модель (пример)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/11erjURYPn5XHEeOHu8ZpuaxXKzxiYfxcV5NCB694JCk/edit?gid=0#gid=0" target="_blank" rel="noopener" data-search="пример модели оп"><span class="tag tag-sheet">Таблица</span><span class="title">Пример модели ОП</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1LLNodglItlDdK24jQCn0JhQa3AxqQlsSsIBabye042I/edit?gid=921640362#gid=921640362" target="_blank" rel="noopener" data-search="шаблон для плана продаж a-players"><span class="tag tag-sheet">Таблица</span><span class="title">Шаблон для плана продаж A-Players</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1y37cyQzg2CZaQfZTICwayb6-jiDUFIvmmlb_xxFfRa8/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук ежедневного отчёта по менеджерам"><span class="tag tag-doc">Док</span><span class="title">Плейбук ежедневного отчёта по менеджерам</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1-aPZVA4iyRyVpChHr0DM8UqQhcNfAdcc1l2nPwtbIAE/edit?gid=525276726#gid=525276726" target="_blank" rel="noopener" data-search="шаблон ежедневного отчёта для менеджеров оп"><span class="tag tag-sheet">Таблица</span><span class="title">Шаблон ежедневного отчёта для менеджеров ОП</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1Fn1Q0vmSXbD_MP_Wm_KE_p5ExyZbpYJLMDDf0Hj8u7g/edit?gid=46153811#gid=46153811" target="_blank" rel="noopener" data-search="uma · мотивация менеджера по продажам b2b"><span class="tag tag-sheet">Таблица</span><span class="title">UMA · Мотивация менеджера по продажам B2B</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1VOjnISmObBxFvsWM1O8sd28ikMG6bWX3ZAjLJnktgYQ/edit?gid=1812428843#gid=1812428843" target="_blank" rel="noopener" data-search="работа со скриптами"><span class="tag tag-sheet">Таблица</span><span class="title">Работа со скриптами</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1S07Fq7TnGRVSjq62pH5XU-DH3nGjwpEGb3rgQcDpREs/edit?tab=t.0" target="_blank" rel="noopener" data-search="рост ar"><span class="tag tag-doc">Док</span><span class="title">Рост AR</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/15KFhn5XL0YzZqe9oFVXRMG_6cDvit6oG/edit?gid=1487967248#gid=1487967248" target="_blank" rel="noopener" data-search="пример воронки операционного директора"><span class="tag tag-sheet">Таблица</span><span class="title">Пример воронки Операционного директора</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/forms/d/e/1FAIpQLSfIj2L7thvLmM8EzsHEebK1GpzEzdCLaKe0knTFehYgHggs9A/viewform" target="_blank" rel="noopener" data-search="анкета: внедрение ip-телефонии"><span class="tag tag-form">Форма</span><span class="title">Анкета: Внедрение IP-телефонии</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/19vT81lCS9bQssspHxAfC3WvZajfgjb_H1ueHekgWi6U/edit?resourcekey=&amp;gid=1863757822#gid=1863757822" target="_blank" rel="noopener" data-search="ответы на анкету «внедрение ip-телефонии»"><span class="tag tag-sheet">Таблица</span><span class="title">Ответы на анкету «Внедрение IP-телефонии»</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1Dkr-xzVi2ZU94TRHyFhuURJYvG33nvyi3rQ0QZuyT3I/edit?gid=237338777#gid=237338777" target="_blank" rel="noopener" data-search="пример тз для воронки в битрикс (ума эксперт)"><span class="tag tag-sheet">Таблица</span><span class="title">Пример ТЗ для воронки в Битрикс (УМА Эксперт)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/presentation/d/1N6xjHS_uHD3uEeJ9i4zomDnepKwgkJnISj0enj2lAWc/edit#slide=id.p" target="_blank" rel="noopener" data-search="пример оффера (презентация)"><span class="tag tag-slides">Слайды</span><span class="title">Пример оффера (презентация)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1Kp06SBLgX1hq_Sl9iTOaABmEKRwtYinYYXRRBFbsWRI/edit?gid=665204209#gid=665204209" target="_blank" rel="noopener" data-search="питчдок"><span class="tag tag-sheet">Таблица</span><span class="title">Питчдок</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>📈 Маркетинг и привлечение <span class="cnt">12</span></h3><div class="grid">
+<a class="card" href="https://docs.google.com/document/d/1mt5v-0kFQsogDXKNchuoC9dOxqx-rn4awiKqKXUJ7ts/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук: маркетинговая стратегия по методологии aarrr"><span class="tag tag-doc">Док</span><span class="title">Плейбук: Маркетинговая стратегия по методологии AARRR</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1MS8N1SzT4fyklvWmxF68NXDgQnM8FJJhxHNpa99V4Fk/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук aaarrr"><span class="tag tag-doc">Док</span><span class="title">Плейбук AAARRR</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1bJ0prJxfdiVTFI8tGt1KbgJNL8Bgb4rNKA_Z0JQ4NlY/edit?tab=t.0" target="_blank" rel="noopener" data-search="aarrr · этап 1: awareness (узнаваемость)"><span class="tag tag-doc">Док</span><span class="title">AARRR · Этап 1: Awareness (Узнаваемость)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/16jZFGSe9jZGIZFPm5L2vFzzSzuwTKtjg3t8FFSnVc_8/edit?tab=t.0" target="_blank" rel="noopener" data-search="aarrr · этап 2: acquisition (привлечение)"><span class="tag tag-doc">Док</span><span class="title">AARRR · Этап 2: Acquisition (Привлечение)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1YYaQtedjvbmbCyNy710elYhg5xBCSyMM-_aiLVejaWw/edit?tab=t.0" target="_blank" rel="noopener" data-search="aarrr · этап 3: activation (активация)"><span class="tag tag-doc">Док</span><span class="title">AARRR · Этап 3: Activation (Активация)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1DK7zaz3d1nODccDwPnG17qxErZ-OdQ6GIp-qh5GycDg/edit?tab=t.0" target="_blank" rel="noopener" data-search="aarrr · этап 4: retention (удержание)"><span class="tag tag-doc">Док</span><span class="title">AARRR · Этап 4: Retention (Удержание)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1406qMOxSQjE_RS-yxTpaP5vhWEL54FopHFjED8rMMQI/edit?tab=t.0" target="_blank" rel="noopener" data-search="aarrr · этап 5: revenue (монетизация)"><span class="tag tag-doc">Док</span><span class="title">AARRR · Этап 5: Revenue (Монетизация)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/10CXzHiphs_Ot0DchxLb9XwPXekyfOBUHVp1SKf8d94Q/edit?tab=t.0" target="_blank" rel="noopener" data-search="aarrr · этап 6: referral (реферальная программа)"><span class="tag tag-doc">Док</span><span class="title">AARRR · Этап 6: Referral (Реферальная программа)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1YTCDLZ-V6YA5UqWgbfunzMdAFKhzCLYSEkkXbI1miJs/edit?gid=59131884#gid=59131884" target="_blank" rel="noopener" data-search="jtbd · отстройка · медийный образ"><span class="tag tag-sheet">Таблица</span><span class="title">JTBD · Отстройка · Медийный образ</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/181XqLUtKN0OwBJIotpg1z7SpcWfhuABp8NT2REPgFhY/edit?gid=770699372#gid=770699372" target="_blank" rel="noopener" data-search="бриф · отстройка · jtbd · tov · видение · позиционирование"><span class="tag tag-sheet">Таблица</span><span class="title">Бриф · Отстройка · JTBD · ToV · Видение · Позиционирование</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/19TqRNkPNC8djuPSDd0NwexMQ5jX9xqVbku5Axrn0WlM/edit?gid=375933403#gid=375933403" target="_blank" rel="noopener" data-search="ltv framework a-players"><span class="tag tag-sheet">Таблица</span><span class="title">LTV Framework A-Players</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1-0RUuuAB-_-wX9Pf7QrDn5zxJ2vIsA1kHs7PCdeEyic/edit?gid=0#gid=0" target="_blank" rel="noopener" data-search="см директора по маркетингу b2b"><span class="tag tag-sheet">Таблица</span><span class="title">СМ директора по маркетингу B2B</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>📊 Аналитика и сегментация <span class="cnt">8</span></h3><div class="grid">
+<a class="card" href="https://docs.google.com/document/d/1ORyd41McePs-CrEGKSejkR-QgAkW-ocPTP49VzXmoJY/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук rfm-анализ"><span class="tag tag-doc">Док</span><span class="title">Плейбук RFM-анализ</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1roAV_YIqCVVtJxY4tFVskfTNOyHqvQdVHP8fsRFrDVs/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук факторный анализ: маркетинг &amp; продажи"><span class="tag tag-doc">Док</span><span class="title">Плейбук Факторный анализ: Маркетинг &amp; Продажи</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1qxjoqQnhkfBHkKLNwf8DYZAbBEYqk2VO0iSyr1rjv90/edit#gid=1719943890" target="_blank" rel="noopener" data-search="факторный анализ маркетинг &amp; продажи (таблица)"><span class="tag tag-sheet">Таблица</span><span class="title">Факторный анализ Маркетинг &amp; Продажи (таблица)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1_n1grt4zkgtzAgNRJWaRORuvCe4VlvxC1LuveTpBBe4/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук сегментация abcde"><span class="tag tag-doc">Док</span><span class="title">Плейбук Сегментация ABCDE</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/13PuDj0fgT6a9wgrLT8XqpgJHCpRU8e8PtnuGPKGF15I/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук сегментация abcde (2026)"><span class="tag tag-doc">Док</span><span class="title">Плейбук Сегментация ABCDE (2026)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1USgGxPNwUbqszd-pJCAuLU05hd4AKNSJBcv34Tj7ISM/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук сегментация aabbcc"><span class="tag tag-doc">Док</span><span class="title">Плейбук Сегментация AABBCC</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1Tj2VNc9bNJ1Hsbh-Wk40Iqlf-M1SDcnZowidmIl5IHU/edit?tab=t.0" target="_blank" rel="noopener" data-search="плейбук disc-сегментация"><span class="tag tag-doc">Док</span><span class="title">Плейбук DISC-сегментация</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1EWjHQIytMT0YUM-D_3HvwsjMhRXvuJylJCM92wNiLDM/edit#gid=2000879382" target="_blank" rel="noopener" data-search="product_matrix_private_college"><span class="tag tag-sheet">Таблица</span><span class="title">product_matrix_private_college</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>👥 Команда, найм и HR <span class="cnt">14</span></h3><div class="grid">
+<a class="card" href="https://docs.google.com/document/d/1rbHzHYvTEKYN-mQUT0U4S8yk2liJcRXHxWpJvusAbi8/edit?tab=t.0#heading=h.svilaqecjomm" target="_blank" rel="noopener" data-search="плейбук: персональный план развития управленца (pdp)"><span class="tag tag-doc">Док</span><span class="title">Плейбук: Персональный план развития управленца (PDP)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1sROWbgTLY5zHsiSAAxoAUKC-SKKxp7bgI6PSxcdCabw/edit?tab=t.0" target="_blank" rel="noopener" data-search="персональный план развития (pdp)"><span class="tag tag-doc">Док</span><span class="title">Персональный план развития (PDP)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1Ps1clZxDUCYEqg46-jiNQWHDswY-aIGSUuWLJRjaK0w/edit?tab=t.0" target="_blank" rel="noopener" data-search="рабочая тетрадь: воронка найма a-players"><span class="tag tag-doc">Док</span><span class="title">Рабочая тетрадь: Воронка найма A-Players</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1qnKXx0rGL7PHtjF1VluIfCMqLO3GADcpMeDFh3Co_5w/edit?gid=89823458#gid=89823458" target="_blank" rel="noopener" data-search="бриф на новую вакансию"><span class="tag tag-sheet">Таблица</span><span class="title">Бриф на новую вакансию</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1Mdsth6M_vUiDgu3_IUe6z74CeWMKgv_PuU8WN1meK_k/edit?tab=t.0" target="_blank" rel="noopener" data-search="финальное решение по кандидату"><span class="tag tag-doc">Док</span><span class="title">Финальное решение по кандидату</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1xNzMGjdsz4Y-nWwFkW3XIIer-QAuhkIJFAkk1IzpjRo/edit?gid=0#gid=0" target="_blank" rel="noopener" data-search="навыки &amp; грейды"><span class="tag tag-sheet">Таблица</span><span class="title">Навыки &amp; Грейды</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1IBZjtEX1Znfi8vfRzOK4CJ1sjtOj1czelP8gxT1B5H8/edit?gid=1862426059#gid=1862426059" target="_blank" rel="noopener" data-search="performance review, 270°, 9-box (шаблон)"><span class="tag tag-sheet">Таблица</span><span class="title">Performance Review, 270°, 9-box (шаблон)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1rDgVwvtiaISunoqh-8SpP7IkM8z1h0OXo6byBhhSJ-o/edit?tab=t.0#heading=h.635tggf5pupi" target="_blank" rel="noopener" data-search="создание идеального оффера для новых сотрудников"><span class="tag tag-doc">Док</span><span class="title">Создание идеального оффера для новых сотрудников</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1PiOKZsvxYKQbaE4XMvB0o1ypGbqyv4B5P7Acsw8ijJM/edit?tab=t.0" target="_blank" rel="noopener" data-search="принципы работы в компании: руководство для новичков"><span class="tag tag-doc">Док</span><span class="title">Принципы работы в компании: руководство для новичков</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1onNb3f3mKLqnR9WpeVhAHgycqcucwJoDPmEbwrFt4SQ/edit?gid=1131610232#gid=1131610232" target="_blank" rel="noopener" data-search="удержание a-players, рост enps"><span class="tag tag-sheet">Таблица</span><span class="title">Удержание A-Players, рост eNPS</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/18UE8lRkEXSd3lGyKZR8IZIGsnOaCqaMx39RAKSr0B7w/edit?gid=2125018323#gid=2125018323" target="_blank" rel="noopener" data-search="матрица удержания a-players"><span class="tag tag-sheet">Таблица</span><span class="title">Матрица удержания A-Players</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/13bPBhBp6ql5eM9ZHd13bxTcF8nX-KeBh8Pb2jxr2yos/edit?gid=1655831922#gid=1655831922" target="_blank" rel="noopener" data-search="трекинг наставников, аттестация, испытательный срок"><span class="tag tag-sheet">Таблица</span><span class="title">Трекинг наставников, аттестация, испытательный срок</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/presentation/d/1xqTRnjVY9iYd9btm1UEorJzgjy6---HWWo8IxOfWll8/edit#slide=id.p" target="_blank" rel="noopener" data-search="экологичное увольнение: пошаговое руководство"><span class="tag tag-slides">Слайды</span><span class="title">Экологичное увольнение: пошаговое руководство</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1-LqayF6_jKdlibpzmsujw6xYOEy1d7LzEI7vBX3UNJs/edit?tab=t.0" target="_blank" rel="noopener" data-search="мастер-промпт: продающая вакансия hh"><span class="tag tag-doc">Док</span><span class="title">Мастер-промпт: Продающая вакансия HH</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>🤖 AI, промпты и автоматизация <span class="cnt">11</span></h3><div class="grid">
+<a class="card" href="https://chatgpt.com/g/g-6836e8e0a2c08191b1dfb2f78897b730-a-players-playbook-builder" target="_blank" rel="noopener" data-search="a-players playbook builder (gpt)"><span class="tag tag-gpt">GPT</span><span class="title">A-PLAYERS Playbook Builder (GPT)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://aisprint.notion.site/Ai-887eea73d07e4d78833cdde60971de31" target="_blank" rel="noopener" data-search="инструкция ai роп"><span class="tag tag-notion">Notion</span><span class="title">Инструкция Ai РОП</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1lkWtQKNzu7kMULSZvWjFeB9jS5AFNt77eXO2AR2RYxw/edit?tab=t.0" target="_blank" rel="noopener" data-search="инструкция по созданию ии-ропа для отдела продаж"><span class="tag tag-doc">Док</span><span class="title">Инструкция по созданию ИИ-РОПа для отдела продаж</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1zOQ4wc7Ig3oRdLrCsnGFZoR2s1NFpVVbxT9ZxJRloaY/edit?tab=t.0" target="_blank" rel="noopener" data-search="📌 готовые промпты-шаблоны для материалов ии-ропа"><span class="tag tag-doc">Док</span><span class="title">📌 Готовые промпты-шаблоны для материалов ИИ-РОПа</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1QHnrd4jPBORgI3mEkrEa32k4SsR6T2UlbNA67kMppT8/edit?tab=t.0" target="_blank" rel="noopener" data-search="руководство по созданию ии-аватара"><span class="tag tag-doc">Док</span><span class="title">Руководство по созданию ИИ-аватара</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/12660yHwZPgxVQY3lp41SzDN0rRIcQHiaifnuGrD19mw/edit?tab=t.0" target="_blank" rel="noopener" data-search="гайд: как собрать ai-ментора в gpt за 30 минут"><span class="tag tag-doc">Док</span><span class="title">Гайд: как собрать AI-ментора в GPT за 30 минут</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://bhag-ai.notion.site/BHAG-AI-Discovery-Tool-238587b25605804fb510c859fc2eb2a5" target="_blank" rel="noopener" data-search="jtbd ai discovery tool"><span class="tag tag-notion">Notion</span><span class="title">JTBD AI Discovery Tool</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1DnS5sp68FysT8FttYmX1487WXFDUjNKLASnvG8ekWZk/edit#gid=0" target="_blank" rel="noopener" data-search="промпты: внутренние документы"><span class="tag tag-sheet">Таблица</span><span class="title">Промпты: внутренние документы</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/17WFEcYrZyfCUZWlCPt4LHkcZWL6sJHyz-MQ8R4_Bffk/edit#gid=0" target="_blank" rel="noopener" data-search="промпты с примерами для внутренних документов"><span class="tag tag-sheet">Таблица</span><span class="title">Промпты с примерами для внутренних документов</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1_iggNxmj70Qn5eG1Rl0gBm9--odVEUt_akIR42YyQZY/edit#gid=1870898679" target="_blank" rel="noopener" data-search="создать «агента смм»"><span class="tag tag-sheet">Таблица</span><span class="title">Создать «Агента СММ»</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/document/d/1hzs14fLpT8DZUi3fbqHSxRIGMCYV-Og7CU3w1qYQ_OA/edit?tab=t.0" target="_blank" rel="noopener" data-search="мастер-промпт: оффер-презентация"><span class="tag tag-doc">Док</span><span class="title">Мастер-промпт: Оффер-презентация</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>🌐 Внешние референсы <span class="cnt">2</span></h3><div class="grid">
+<a class="card" href="https://quantumlightcapital.com/playbooks-home" target="_blank" rel="noopener" data-search="quantumlight — playbooks home"><span class="tag tag-link">Сайт</span><span class="title">Quantumlight — Playbooks Home</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://absorbing-sailboat-d75.notion.site/SternMeister-1bac0ec0be7880c3bdd6d9f73df7c6ff" target="_blank" rel="noopener" data-search="база знаний sternmeister"><span class="tag tag-notion">Notion</span><span class="title">База знаний SternMeister</span><span class="go">Открыть →</span></a>
+</div></div>
+</section>
+<section class="block" id="sec-7488">
+<div class="block-head"><h2>⚡ Усилители продукта</h2><p>Сервисы, инструменты, дашборды и полезные материалы вокруг продукта · <b>35</b></p></div>
+<div class="cat"><h3>🛠 Сервисы и инструменты <span class="cnt">14</span></h3><div class="grid">
+<a class="card" href="https://hrvisor.online/" target="_blank" rel="noopener" data-search="hrvisor — онлайн-оценка персонала и виртуальные собеседования"><span class="tag tag-link">Сайт</span><span class="title">HRvisor — онлайн-оценка персонала и виртуальные собеседования</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://proaction.pro/" target="_blank" rel="noopener" data-search="proaction.pro — оценка персонала онлайн"><span class="tag tag-link">Сайт</span><span class="title">Proaction.pro — оценка персонала онлайн</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://imot.io/webinar-b2c" target="_blank" rel="noopener" data-search="imotio — вебинары b2c"><span class="tag tag-link">Сайт</span><span class="title">iMotio — вебинары B2C</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://app.imot.io/ru/668e538090a41811698dd29b/calls?searchHash=f98f562aad8e5f923cea37b15f91e3ca" target="_blank" rel="noopener" data-search="imot.io — кабинет (demo-medicine / 93xrpyn4)"><span class="tag tag-link">Сайт</span><span class="title">IMOT.io — кабинет (demo-medicine / 93xrpYn4)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://simsales.ru/activp" target="_blank" rel="noopener" data-search="simplesales — панель активности"><span class="tag tag-link">Сайт</span><span class="title">SimpleSales — панель активности</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://www.amocrm.ru/support/operday/operday" target="_blank" rel="noopener" data-search="amocrm — оперативный день"><span class="tag tag-link">Сайт</span><span class="title">amoCRM — Оперативный день</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://cmdf5.ru/widjety-amocrm/voice-ai" target="_blank" rel="noopener" data-search="voice ai — расшифровка звонков и речевая аналитика в amocrm"><span class="tag tag-link">Сайт</span><span class="title">Voice AI — расшифровка звонков и речевая аналитика в amoCRM</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://unitalk.cloud/ru/uslugi/rechevaya-analitika/" target="_blank" rel="noopener" data-search="unitalk — речевая аналитика"><span class="tag tag-link">Сайт</span><span class="title">UniTalk — речевая аналитика</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://bhag.ai/ru/" target="_blank" rel="noopener" data-search="bhag ai — jtbd"><span class="tag tag-link">Сайт</span><span class="title">BHAG AI — JTBD</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://nodul.app/" target="_blank" rel="noopener" data-search="nodul — ии-агенты и автоматизация бизнеса"><span class="tag tag-link">Сайт</span><span class="title">Nodul — ИИ-агенты и автоматизация бизнеса</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://monday.com/lp/agile/" target="_blank" rel="noopener" data-search="monday.com — work os"><span class="tag tag-link">Сайт</span><span class="title">monday.com — work OS</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://job.skyeng.ru/" target="_blank" rel="noopener" data-search="skyeng — вакансии (удалёнка)"><span class="tag tag-link">Сайт</span><span class="title">Skyeng — вакансии (удалёнка)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://referral-programs.skyeng.ru/" target="_blank" rel="noopener" data-search="skyeng — реферальная программа"><span class="tag tag-link">Сайт</span><span class="title">Skyeng — реферальная программа</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://intmarksol.com/" target="_blank" rel="noopener" data-search="ml — пиксель на сайт (даша и герман)"><span class="tag tag-link">Сайт</span><span class="title">ML — пиксель на сайт (Даша и Герман)</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>📊 Внутренние таблицы и дашборды <span class="cnt">13</span></h3><div class="grid">
+<a class="card" href="https://docs.google.com/spreadsheets/d/1ktJghY4JNdgjpbanWS6UqtSh9WPjrnwwBKKfWLN0Ihw/edit?gid=0#gid=0" target="_blank" rel="noopener" data-search="ключевые драйверы роста (180 млн / мес)"><span class="tag tag-sheet">Таблица</span><span class="title">Ключевые драйверы роста (180 млн / мес)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://datalens.yandex/lkg0w5i4sht08?tab=y3&amp;state=4319b266315" target="_blank" rel="noopener" data-search="дашборд tlt (datalens)"><span class="tag tag-dash">Дашборд</span><span class="title">Дашборд TLT (DataLens)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1OE809A2IOPrNMvrJ0ea72uiSUPlyf0jPqWw9s-aJGLA/edit?gid=126593981#gid=126593981" target="_blank" rel="noopener" data-search="task tracker"><span class="tag tag-sheet">Таблица</span><span class="title">Task Tracker</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1pjcusIAilSDtOt29qdvEwuopJVJErHRxLvFdxkgOKfQ/edit?gid=337738793#gid=337738793" target="_blank" rel="noopener" data-search="воронка найма ропа"><span class="tag tag-sheet">Таблица</span><span class="title">Воронка найма РОПа</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1P70zQ2jC68tZdX2qejOwDamiSP9r-5e8Pd4v3EEOVK4/edit?gid=1114100982#gid=1114100982" target="_blank" rel="noopener" data-search="вовлечённость, удержание, enps"><span class="tag tag-sheet">Таблица</span><span class="title">Вовлечённость, удержание, eNPS</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1wB69H3a3nQtYp1ZrKrduZSkwxQN0j1w5j9QsmwySZYY/edit?gid=0#gid=0" target="_blank" rel="noopener" data-search="лучшие практики на вебинарах"><span class="tag tag-sheet">Таблица</span><span class="title">Лучшие практики на вебинарах</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/11erjURYPn5XHEeOHu8ZpuaxXKzxiYfxcV5NCB694JCk/edit?gid=0#gid=0" target="_blank" rel="noopener" data-search="пример модели оп (clever)"><span class="tag tag-sheet">Таблица</span><span class="title">Пример модели ОП (Clever)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1K_hAoJ6ilC0gWmfdtM1O7hmrxhSPvwAqmzMRUhpvkYA/edit?gid=1500066418#gid=1500066418" target="_blank" rel="noopener" data-search="окк"><span class="tag tag-sheet">Таблица</span><span class="title">ОКК</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1h5raEt-NmkObQsWPb6khz5Z0wmal-EFX/edit?gid=1088679426#gid=1088679426" target="_blank" rel="noopener" data-search="структура окк (дима коробовцев)"><span class="tag tag-sheet">Таблица</span><span class="title">Структура ОКК (Дима Коробовцев)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1hE2IzyEXekwYYxAZ_ofpP_KzfbKgxaVf4yYLVxjgmSY/edit#gid=1468613118" target="_blank" rel="noopener" data-search="база экспертов"><span class="tag tag-sheet">Таблица</span><span class="title">База экспертов</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1Upldkb54LHfT6sMihCesDAsMmi6qbxuUuVWcDw8MUH4/edit?gid=233271507#gid=233271507" target="_blank" rel="noopener" data-search="quantumlight — performance review scorecard"><span class="tag tag-sheet">Таблица</span><span class="title">QuantumLight — Performance Review Scorecard</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://docs.google.com/spreadsheets/d/1HUkng6GG3V9SBQpLkVsBguuS0d722wRcMFasMh0LXfo/edit#gid=0" target="_blank" rel="noopener" data-search="виды тестирований и сертификации сотрудников"><span class="tag tag-sheet">Таблица</span><span class="title">Виды тестирований и сертификации сотрудников</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://miro.com/app/board/uXjVK7jzmoM=/" target="_blank" rel="noopener" data-search="пример структуры продукта (miro)"><span class="tag tag-miro">Miro</span><span class="title">Пример структуры продукта (Miro)</span><span class="go">Открыть →</span></a>
+</div></div>
+<div class="cat"><h3>📚 Полезные материалы и референсы <span class="cnt">8</span></h3><div class="grid">
+<a class="card" href="https://www.okradvisory.com/okr-certification" target="_blank" rel="noopener" data-search="okr certification — okradvisory"><span class="tag tag-link">Сайт</span><span class="title">OKR Certification — OKRAdvisory</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://clickup.com/blog/okr-dashboard/" target="_blank" rel="noopener" data-search="how to create an okr dashboard — clickup"><span class="tag tag-link">Сайт</span><span class="title">How to Create an OKR Dashboard — ClickUp</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://priceva.ru/blog/article/rfm-analiz-dlya-effektivnoj-segmentatsii-klientov" target="_blank" rel="noopener" data-search="rfm-анализ — метод сегментации клиентов (priceva)"><span class="tag tag-link">Сайт</span><span class="title">RFM-анализ — метод сегментации клиентов (Priceva)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://readymag.website/profiru/dao/" target="_blank" rel="noopener" data-search="как проводить 1-on-1 (profi.ru / dao)"><span class="tag tag-link">Сайт</span><span class="title">Как проводить 1-on-1 (Profi.ru / DAO)</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://www.revolut.com/people/performance/" target="_blank" rel="noopener" data-search="revolut people — performance"><span class="tag tag-link">Сайт</span><span class="title">Revolut People — Performance</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://arppu.ru/avokado?projectId=4ZGZWtC5MWmvVYgmiFA0sedov" target="_blank" rel="noopener" data-search="механики активации базы — arppu"><span class="tag tag-link">Сайт</span><span class="title">Механики активации базы — ARPPU</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://arppu.ru/avokado?projectId=4ZGZWtC5MWmvVYgmiFA0sedov" target="_blank" rel="noopener" data-search="управление проектами — arppu"><span class="tag tag-link">Сайт</span><span class="title">Управление проектами — ARPPU</span><span class="go">Открыть →</span></a>
+<a class="card" href="https://snivanova.notion.site/A-Players-72880810eb4b407dbb758ccf329e9bdf" target="_blank" rel="noopener" data-search="светлана-продуктолог: комментарии по продукту a-players"><span class="tag tag-notion">Notion</span><span class="title">Светлана-продуктолог: комментарии по продукту A-Players</span><span class="go">Открыть →</span></a>
+</div></div>
+</section>
+  <div class="empty" id="empty">Ничего не найдено — попробуйте другой запрос.</div>
+  <footer>
+    Сгенерировано из закладок Chrome · A-Players › Продукт › Плейбуки + Усилители<br>
+    <div class="legend">
+      <span>🔵 Док</span><span>🟢 Таблица</span><span>🟡 Слайды</span><span>🟣 Форма</span>
+      <span>⚪ Notion</span><span>🟩 GPT</span><span>🟪 Дашборд</span><span>⚫ Сайт</span>
+    </div>
+  </footer>
+</div>
+<script>
+const q=document.getElementById('q'),cards=[...document.querySelectorAll('.card')],
+  cats=[...document.querySelectorAll('.cat')],blocks=[...document.querySelectorAll('.block')],
+  empty=document.getElementById('empty');
+q.addEventListener('input',()=>{
+  const v=q.value.trim().toLowerCase();let any=false;
+  cards.forEach(c=>{const m=!v||c.dataset.search.includes(v);c.style.display=m?'':'none';if(m)any=true;});
+  cats.forEach(cat=>{const vis=[...cat.querySelectorAll('.card')].some(c=>c.style.display!=='none');cat.style.display=vis?'':'none';});
+  blocks.forEach(b=>{const vis=[...b.querySelectorAll('.card')].some(c=>c.style.display!=='none');b.style.display=vis?'':'none';});
+  empty.style.display=any?'none':'block';
+});
+</script>
+</body>
+</html>
