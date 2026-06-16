@@ -1,4 +1,4 @@
-<!doctype html><html lang=ru><head><meta name="robots" content="noindex,nofollow"><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>00 · Как пользоваться конвейером</title><style>
+<!doctype html><html lang=ru><head><meta charset=utf-8><meta name="robots" content="noindex,nofollow"><meta name=viewport content='width=device-width,initial-scale=1'><title>00 · Как пользоваться конвейером</title><style>
 :root{--em:#12372A;--em2:#0F2A20;--gold:#B0822E;--bg:#FBF8F1;--card:#fff;--ink:#22302B;--line:#E7E0D2;--muted:#6B756F}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 -apple-system,Segoe UI,Roboto,sans-serif}
 .wrap{max-width:820px;margin:0 auto;padding:46px 26px 90px}.brandbar{height:5px;background:linear-gradient(90deg,var(--em),var(--gold));border-radius:6px;margin-bottom:30px}
@@ -10,6 +10,48 @@ table{border-collapse:collapse;width:100%;margin:1.1em 0;font-size:15px;backgrou
 hr{border:none;border-top:1px solid var(--line);margin:1.8em 0}ul,ol{padding-left:24px}li{margin:.25em 0}.foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
 </style></head><body><div class=wrap><div class=brandbar></div><h1>A-PLAYERS · Pro Vibe Coding</h1>
 <h2>Раздел 00 · Как пользоваться бриф-конвейером</h2>
+<hr />
+<h2>📖 Глоссарий — термины, которые встретятся</h2>
+<p>Если видишь незнакомое слово — загляни сюда, не разбирайся «на лету».</p>
+<p><strong>Смысл и стратегия:</strong><br />
+- <strong>Вайбкодинг</strong> — получаешь рабочий результат, управляя ИИ словами, а не кодом.<br />
+- <strong>Обёртка компании</strong> — полный смысловой слой о бизнесе (бриф, JTBD, позиционирование…), который грузишь во все задачи.<br />
+- <strong>Артефакт</strong> — один готовый документ обёртки (бриф, JTBD-карта и т.д.).<br />
+- <strong>Промпт</strong> — текстовая команда/запрос к ИИ.<br />
+- <strong>Системный промпт</strong> — первый промпт в чате; задаёт ИИ роль и правила.<br />
+- <strong>Контекст</strong> — все материалы, которые ИИ «видит» и на которые опирается.<br />
+- <strong>🔴 пробел</strong> — место, где данных не хватило; ИИ метит красным, ты закрываешь своими данными.<br />
+- <strong>[ГИПОТЕЗА]</strong> — вывод ИИ не из факта, а логикой; требует твоего подтверждения.<br />
+- <strong>Финал-аудит</strong> — проверка артефакта на противоречия и «факты vs догадки».<br />
+- <strong>JTBD</strong> (Jobs To Be Done) — «работа», ради которой клиент нанимает продукт.<br />
+- <strong>Core-сегмент</strong> — ядровая группа клиентов (связка задач + триггер), под кого строим.<br />
+- <strong>ToV</strong> (Tone of Voice) — голос бренда: как компания говорит, лексика и запреты.<br />
+- <strong>Позиционирование</strong> — одна фраза: кто ты и почему именно ты.</p>
+<p><strong>Инструменты и техника:</strong><br />
+- <strong>VS Code</strong> — бесплатный редактор от Microsoft; «рабочий стол», где открываешь папку проекта.<br />
+- <strong>Claude Code</strong> — Claude, живущий в терминале/VS Code; работает с твоими файлами и папками.<br />
+- <strong>Claude Desktop</strong> — приложение Claude (чат + файлы в одном окне).<br />
+- <strong>Терминал</strong> — окно, куда вводишь команды текстом.<br />
+- <strong>MD / .md</strong> (Markdown) — простой текстовый формат с разметкой; в нём лежат эти инструкции и артефакты.<br />
+- <strong>CLAUDE.md</strong> — особый файл-инструкция: Claude Code читает его автоматически при старте в папке.<br />
+- <strong>Папка проекта</strong> — обычная папка на диске, где живут материалы и артефакты проекта.<br />
+- <strong>Репозиторий (repo)</strong> — папка проекта под управлением Git (с историей версий).<br />
+- <strong>Git</strong> — система версий: хранит историю изменений, позволяет команде работать вместе.<br />
+- <strong>GitHub</strong> — облачный сервис для Git-репозиториев (туда «пушишь» проект).<br />
+- <strong>MCP</strong> (Model Context Protocol) — стандарт, через который ИИ подключается к внешним сервисам (Telegram, Google и т.п.).<br />
+- <strong>API / API-ключ</strong> — способ программам общаться между собой; ключ = пароль доступа, его не светят.<br />
+- <strong>Токен</strong> — то же, что ключ-пароль (например, токен Telegram-бота); хранить в секрете.<br />
+- <strong>.env / .gitignore</strong> — файлы для секретов и для того, что НЕ выкладывать в Git.<br />
+- <strong>Прод (продакшн)</strong> — «боевая» версия (живой сайт, реальные данные). Противоположность — <strong>локально</strong> (у тебя на ноуте).<br />
+- <strong>Бот / Telegram-бот</strong> — «телефон» для Claude: пишешь в мессенджере — он отвечает.<br />
+- <strong>noindex / unlisted</strong> — страница доступна по ссылке, но скрыта от поиска Google.</p>
+<hr />
+<h2>👥 Где хранить обёртку и как работать командой</h2>
+<p>Обёртка — это просто папка с файлами. <strong>Выделенный сервер не нужен.</strong><br />
+- <strong>Один человек:</strong> локальная папка на ноуте — Claude Code работает с ней сразу.<br />
+- <strong>Бэкап + свои устройства:</strong> поставь <strong>десктоп-приложение</strong> Google Drive или Яндекс.Диск (не веб-версию!) — появится синкаемая локальная папка, VS Code её видит.<br />
+- <strong>Команда над одним контекстом:</strong> заведите <strong>приватный репозиторий на GitHub</strong> (Git). Каждый клонирует его, перед работой делает <code>git pull</code> (берёт свежее), после — <code>git push</code> (отдаёт изменения). Все тянут актуальный контекст, версии сохраняются — это правильнее любого «сервера».</p>
+<p>Подробно — в памятке <code>Где хранить папку проекта</code>.</p>
 <hr />
 <h2>1. Что такое «обёртка» компании и зачем она нужна</h2>
 <p>«Обёртка» — это полный стратегический слой смыслов о компании, который вы один раз собираете, а потом переиспользуете во всех задачах: тексты сайта, рекламные офферы, скрипты продаж, посты, презентации, онбординг сотрудников. Без обёртки каждый новый текст вы пишете «с нуля» и каждый раз получаете разный, рассогласованный результат. С обёрткой вы кормите ИИ один проверенный документ — и на выходе всё звучит как одна компания.</p>
@@ -241,4 +283,4 @@ hr{border:none;border-top:1px solid var(--line);margin:1.8em 0}ul,ol{padding-lef
 </code></pre>
 <p><strong>Результат / как проверить:</strong> ИИ выдаёт короткое резюме (что за компания + на каком шаге конвейера) и ждёт команду. Проверьте: резюме совпадает с реальностью и ИИ не начал самовольно генерировать следующий артефакт. Если резюме мимо — контекст приложен недостаточный, добавьте артефакты.</p>
 <hr />
-<p><em>A-Players · Pro Vibe Coding · материал для участников 8 потока</em></p><div class=foot>A-PLAYERS · Pro Vibe Coding</div></div></body></html>
+<p><em>A-Players · Pro Vibe Coding · материал для участников 8 потока</em></p></div></body></html>
