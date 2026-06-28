@@ -154,7 +154,32 @@ code,.kbd{font-family:var(--mono);font-size:13px;background:#EDE7D7;border:1px s
 
 .foot{padding:26px 0 60px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);text-align:center}
 
+/* ANATOMY / WHEN */
+.whenbox{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.wb{border-radius:16px;padding:20px 22px}
+.wb.yes{background:rgba(44,122,75,.08);border:1px solid rgba(44,122,75,.3)}
+.wb.no{background:var(--bg-2);border:1px solid var(--line)}
+.wb h3{font-family:var(--slab);font-size:16.5px;font-weight:800;display:flex;align-items:center;gap:9px}
+.wb.yes h3{color:var(--green)}
+.wb.no h3{color:var(--muted)}
+.wb p{font-size:14px;color:#2A332C;margin-top:9px}
+.wb p b{color:var(--em)}
+.layers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.layer{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px 20px}
+.layer .lt{font-family:var(--slab);font-weight:700;font-size:16px;display:flex;align-items:center;gap:9px}
+.layer .lt .e{font-size:18px}
+.layer code{font-size:12px}
+.layer p{font-size:13.5px;color:#2A332C;margin-top:6px}
+.repo{display:flex;gap:18px;align-items:flex-start;background:var(--em);color:var(--em-ink);border-radius:18px;padding:24px 26px;margin-top:24px;text-decoration:none}
+.repo .ri{flex:none;width:46px;height:46px;border-radius:12px;background:rgba(199,154,69,.16);display:grid;place-items:center;font-size:24px}
+.repo .rt{font-family:var(--slab);font-weight:800;font-size:19px;color:#fff}
+.repo .rd{font-size:14px;color:#D7E0D8;margin-top:6px;line-height:1.5}
+.repo .ru{font-family:var(--mono);font-size:12px;color:var(--gold-2);margin-top:8px;word-break:break-all}
+.repo .credit{font-size:12px;color:var(--em-muted);margin-top:10px}
+.repo:hover .rt{color:var(--gold-2)}
+
 @media (max-width:760px){
+  .whenbox,.layers{grid-template-columns:1fr}
   .hero h1{font-size:34px}
   h2{font-size:25px}
   .tldr{grid-template-columns:1fr 1fr}
@@ -344,10 +369,54 @@ code,.kbd{font-family:var(--mono);font-size:13px;background:#EDE7D7;border:1px s
   </div>
 </section>
 
-<!-- 4 · АЛГОРИТМ -->
+<!-- 4 · АНАТОМИЯ ПРОЕКТА -->
 <section>
   <div class="wrap">
-    <div class="sec-h"><span class="no">04</span><h2>Алгоритм сборки · 7 шагов</h2></div>
+    <div class="sec-h"><span class="no">04</span><h2>Анатомия полноценного проекта</h2></div>
+    <p class="sec-sub">Это <b>углублённый, тяжеловесный путь</b> — и он нужен <b>не всегда</b>. Сначала честно ответь себе: что ты собираешь?</p>
+
+    <div class="whenbox">
+      <div class="wb no">
+        <h3>🪶 Не усложняй, если это внутренний мультипликатор</h3>
+        <p>Дашборд, модель, скрипт, калькулятор, аналитика, бот «для себя» — всё из разделов выше. Тут <b>не нужна</b> большая архитектура: достаточно папки с опорниками и алгоритма 7 шагов. Не загоняй маленькую задачу в процесс на 2 часа подготовки — соберёшь за вечер и пойдёшь пользоваться. <b>Для ДЗ — это твой путь.</b></p>
+      </div>
+      <div class="wb yes">
+        <h3>🏗️ Разворачивай анатомию, если делаешь отдельный продукт</h3>
+        <p>Сервис или продукт, который пойдёт <b>на рынок</b>: его надо продвигать, продавать, держать безопасность, базу данных, юзабилити, масштаб. Вот здесь решают <b>вкус и архитектура</b> — и здесь окупается потратить первые 1–2 часа не на код, а на то, как проект устроен «под капотом».</p>
+      </div>
+    </div>
+
+    <p class="sec-sub" style="margin-top:26px">Если ты во второй колонке — вот из чего состоит «мозг» и скелет такого проекта. Это не папка с файлами «как попало», а продуманные <b>слои</b>, по которым Claude ведёт сборку сам:</p>
+
+    <div class="layers">
+      <div class="layer"><div class="lt"><span class="e">🧠</span> CLAUDE.md — мозг проекта</div><p>Инструкция, которую Claude читает при старте: правила, стек, как себя вести, по каким шагам вести тебя. Один файл задаёт весь характер проекта.</p></div>
+      <div class="layer"><div class="lt"><span class="e">📚</span> Бизнес-контекст</div><p>Отдельная папка с твоими опорниками: компания, продукт, аудитория, цели, экономика, маркетинг, активы. Вся ценность — из твоих ответов, шаблон даёт только структуру.</p></div>
+      <div class="layer"><div class="lt"><span class="e">🗺️</span> Планы и ретроспективы</div><p>Где фиксируется, что и зачем делаем, и что получилось по факту. Проект не «плывёт», а движется по понятным шагам с разбором результата.</p></div>
+      <div class="layer"><div class="lt"><span class="e">🧩</span> Библиотека промптов</div><p>Готовые промпты под этапы: настройка, запуск, методология. Не изобретаешь формулировки каждый раз — берёшь нужный и идёшь дальше.</p></div>
+      <div class="layer"><div class="lt"><span class="e">🛡️</span> Слой безопасности</div><p>Правила и скрипты аудита: что нельзя коммитить, как обращаться с ключами и базой. Безопасность заложена в проект с первого дня, а не «потом».</p></div>
+      <div class="layer"><div class="lt"><span class="e">🏛️</span> Архитектура и база данных</div><p>Как устроены данные и слои продукта. Claude сначала челленджит идею (а точно нужно? кто уже решает? каков рынок?), потом проектирует структуру.</p></div>
+    </div>
+
+    <p class="sec-sub" style="margin-top:26px"><b>Как это работает на практике:</b> ты скачиваешь готовый репозиторий-шаблон такой анатомии в свою папку, открываешь в VS Code и активируешь Claude Code одной фразой — а он дальше ведёт тебя по сборке: задаёт вопросы, челленджит идею, запускает ресерч (рынок, SWOT, JTBD, VPC) и раскладывает всё по слоям выше. Первые ~60–100 минут — это не код, а правильно собранная архитектура.</p>
+
+    <div class="cmd">Привет. Прочти инструкции в репозитории и начни вести меня по сборке проекта с самого первого шага.</div>
+
+    <a class="repo" href="https://github.com/artemiimillier/claude-code-starter" target="_blank" rel="noopener">
+      <div class="ri">📦</div>
+      <div>
+        <div class="rt">Готовый шаблон анатомии проекта — claude-code-starter</div>
+        <div class="rd">Открытый репозиторий-стартер под Claude Code: бизнес-контекст, CLAUDE.md, планы/ретроспективы, библиотека из 16 промптов и скрипты безопасности. Клонируй в свою папку → открой в VS Code → активируй одной фразой → за 90–120 минут получишь настроенную среду с архитектурой проекта.</div>
+        <div class="ru">github.com/artemiimillier/claude-code-starter</div>
+        <div class="credit">Открытый источник под лицензией MIT. Автор методологии и шаблона — Artemii Miller / Школа Смысло-кодинга. Используем как готовый инструмент, спасибо авторам.</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- 5 · АЛГОРИТМ -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">05</span><h2>Алгоритм сборки · 7 шагов</h2></div>
     <p class="sec-sub">По этому маршруту собирается любой мультипликатор. Тот же путь, что в живой сборке на эфире — повтори его на своей компании.</p>
     <div class="algo">
       <div class="a"><div class="an"><span>1</span> Контекст</div><div class="at">Загрузи опорники в папку</div><p>Бриф, JTBD, ToV, VPC, цифры, плейбуки, шаблоны, транскрипты разборов. Чем плотнее вход — тем сильнее результат.</p></div>
@@ -365,10 +434,10 @@ code,.kbd{font-family:var(--mono);font-size:13px;background:#EDE7D7;border:1px s
   </div>
 </section>
 
-<!-- 5 · ИДЕИ -->
+<!-- 6 · ИДЕИ -->
 <section>
   <div class="wrap">
-    <div class="sec-h"><span class="no">05</span><h2>Идеи: выбери своё направление</h2></div>
+    <div class="sec-h"><span class="no">06</span><h2>Идеи: выбери своё направление</h2></div>
     <p class="sec-sub">Меню под разные роли и горлышки. Возьми <b>одно</b>, что бьёт в твою главную метрику. Можно скомбинировать со своими опорниками — это и есть «снайперский выстрел».</p>
     <div class="ideas">
 
@@ -446,10 +515,10 @@ code,.kbd{font-family:var(--mono);font-size:13px;background:#EDE7D7;border:1px s
   </div>
 </section>
 
-<!-- 6 · БЕЗОПАСНОСТЬ -->
+<!-- 7 · БЕЗОПАСНОСТЬ -->
 <section>
   <div class="wrap">
-    <div class="sec-h"><span class="no">06</span><h2>Безопасность: зелёная и красная зона</h2></div>
+    <div class="sec-h"><span class="no">07</span><h2>Безопасность: зелёная и красная зона</h2></div>
     <p class="sec-sub">Главный риск — не хакер, а ты сам в 3 ночи. Есть реальные истории: одному агент задублировал все контакты в CRM, другому — удалил всю базу. Финальное слово всегда за тобой.</p>
     <div class="zones">
       <div class="zone green">
@@ -477,10 +546,10 @@ code,.kbd{font-family:var(--mono);font-size:13px;background:#EDE7D7;border:1px s
   </div>
 </section>
 
-<!-- 7 · ИНСТРУМЕНТЫ -->
+<!-- 8 · ИНСТРУМЕНТЫ -->
 <section>
   <div class="wrap">
-    <div class="sec-h"><span class="no">07</span><h2>Инструменты и ссылки</h2></div>
+    <div class="sec-h"><span class="no">08</span><h2>Инструменты и ссылки</h2></div>
     <p class="sec-sub">Всё, что понадобится. Внешние сервисы — кликабельны. Наши материалы — в стартовом наборе (ссылки добавим при публикации).</p>
     <div class="tools">
       <a class="tool" href="https://code.visualstudio.com" target="_blank" rel="noopener"><div class="ti">🧰</div><div><div class="tt">VS Code</div><div class="td">редактор, в котором живёт вайб-кодинг</div><div class="tu">code.visualstudio.com</div></div></a>
@@ -505,10 +574,10 @@ code,.kbd{font-family:var(--mono);font-size:13px;background:#EDE7D7;border:1px s
   </div>
 </section>
 
-<!-- 8 · СДАЧА -->
+<!-- 9 · СДАЧА -->
 <section style="border-bottom:0">
   <div class="wrap">
-    <div class="sec-h"><span class="no">08</span><h2>Как сдать</h2></div>
+    <div class="sec-h"><span class="no">09</span><h2>Как сдать</h2></div>
     <div class="done">
       <h3>Definition of Done твоего ДЗ</h3>
       <div class="grid">
