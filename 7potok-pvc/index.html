@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#143A2D">
+<title>A-Players · Pro Vibe Coding — Домашнее задание (7 поток)</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@500;600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --card:#FCFAF4;
+  --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --em-ink:#EFE9DA; --em-muted:#A9B8AE;
+  --gold:#B0822E; --gold-2:#C79A45; --gold-soft:#E9D9B4;
+  --red:#C0563E; --green:#2C7A4B;
+  --slab:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,sans-serif;
+  --mono:ui-monospace,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+a{color:inherit}
+.kick{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:9px}
+.kick::before{content:"";width:14px;height:14px;border-radius:4px;background:var(--gold);display:inline-block}
+.dark .kick{color:var(--gold-2)}
+.dark .kick::before{background:var(--gold)}
+
+/* HERO */
+.hero{background:var(--em);color:var(--em-ink);padding:54px 0 60px}
+.hero .logo{height:30px;width:auto;margin-bottom:34px;opacity:.97}
+.hero h1{font-family:var(--slab);font-weight:800;font-size:46px;line-height:1.04;letter-spacing:-.01em;margin-top:16px;max-width:850px}
+.hero h1 .hl{background:linear-gradient(180deg,transparent 58%,rgba(199,154,69,.42) 58%)}
+.hero .lead{font-size:18px;color:var(--em-muted);margin-top:20px;max-width:720px;line-height:1.55}
+.hero .lead b{color:#fff;font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:8px 15px;border-radius:999px;font-size:13.5px;font-weight:600;border:1px solid rgba(199,154,69,.4);color:var(--em-ink)}
+.pill .ic{font-family:var(--mono);color:var(--gold-2)}
+
+/* SECTION */
+section{padding:46px 0;border-bottom:1px solid var(--line)}
+.sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.sec-h .no{font-family:var(--slab);font-weight:900;font-size:18px;color:var(--gold);letter-spacing:.04em}
+h2{font-family:var(--slab);font-weight:800;font-size:31px;line-height:1.08;letter-spacing:-.01em}
+.sec-sub{font-size:15.5px;color:var(--muted);margin-top:10px;max-width:760px}
+.sec-sub b{color:var(--ink)}
+
+/* TL;DR strip */
+.tldr{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px 6px;margin-top:22px;display:grid;grid-template-columns:repeat(4,1fr)}
+.tldr .c{padding:16px 18px;border-right:1px solid var(--line-soft)}
+.tldr .c:last-child{border-right:0}
+.tldr .t{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.tldr .d{font-size:14.5px;margin-top:7px;color:#2A332C;font-weight:500;line-height:1.4}
+
+/* STEPS */
+.step{display:flex;gap:18px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line-soft)}
+.step:last-child{border-bottom:0}
+.step .n{flex:none;width:42px;height:42px;border-radius:50%;background:var(--em);color:var(--gold-2);font-family:var(--slab);font-weight:800;font-size:19px;display:grid;place-items:center}
+.step .b{flex:1}
+.step .st{font-family:var(--slab);font-weight:700;font-size:19px;line-height:1.2}
+.step p{font-size:15px;color:#2A332C;margin-top:6px}
+.step ol,.step ul{margin:8px 0 0 2px;padding-left:18px}
+.step li{font-size:15px;line-height:1.5;margin-bottom:5px;color:#2A332C}
+.step .ok{margin-top:10px;font-size:13.5px;color:var(--green);background:rgba(44,122,75,.1);border:1px solid rgba(44,122,75,.28);border-radius:8px;padding:7px 12px;display:inline-block}
+.step .ok b{color:var(--green)}
+code,.kbd{font-family:var(--mono);font-size:13px;background:#EDE7D7;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:var(--em);white-space:nowrap}
+.cmd{font-family:var(--mono);color:var(--gold-2);background:#11271E;border:1px solid var(--em-2);border-radius:10px;padding:13px 16px;margin-top:10px;font-size:13.5px;line-height:1.5}
+
+/* SETTINGS / DARK CARD */
+.darkcard{background:var(--em);color:#EFE9DA;border-radius:18px;padding:26px 28px;margin-top:26px}
+.darkcard h3{font-family:var(--slab);font-size:21px;font-weight:800;color:#fff;margin-bottom:4px}
+.darkcard .s-sub{font-size:13.5px;color:var(--em-muted);margin-bottom:16px}
+.darkcard .row{display:flex;gap:13px;align-items:flex-start;padding:11px 0;border-top:1px solid rgba(233,217,180,.15)}
+.darkcard .row:first-of-type{border-top:0}
+.darkcard .tag{flex:none;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.05em;background:var(--gold);color:var(--em);padding:4px 9px;border-radius:6px;margin-top:1px;min-width:84px;text-align:center}
+.darkcard .rt{font-size:14.5px;line-height:1.45}
+.darkcard .rt b{color:#fff}
+.darkcard .warn{color:#F3B0A0}
+.darkcard .kbd{background:rgba(255,255,255,.1);color:#EFE9DA;border-color:rgba(233,217,180,.2)}
+
+/* TWO TRACKS */
+.tracks{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px}
+.track{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 22px;position:relative}
+.track .badge{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:var(--gold);background:var(--gold-soft);display:inline-block;padding:4px 10px;border-radius:6px}
+.track h3{font-family:var(--slab);font-size:21px;font-weight:800;margin-top:12px}
+.track .tone{font-size:13px;color:var(--muted);margin-top:3px;font-weight:600}
+.track p{font-size:14.5px;color:#2A332C;margin-top:10px}
+.track ul{margin:10px 0 0;padding-left:18px}
+.track li{font-size:14px;margin-bottom:5px;color:#2A332C}
+.track.b{background:var(--em);color:var(--em-ink)}
+.track.b h3{color:#fff}
+.track.b .badge{color:var(--em);background:var(--gold-2)}
+.track.b .tone{color:var(--em-muted)}
+.track.b p,.track.b li{color:#D7E0D8}
+
+/* ALGO grid */
+.algo{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.algo .a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.algo .a .an{font-family:var(--slab);font-weight:900;font-size:15px;color:var(--gold);display:flex;align-items:center;gap:8px}
+.algo .a .an span{width:24px;height:24px;border-radius:50%;background:var(--em);color:var(--gold-2);display:grid;place-items:center;font-size:13px}
+.algo .a .at{font-family:var(--slab);font-weight:700;font-size:16.5px;margin-top:10px}
+.algo .a p{font-size:14px;color:#2A332C;margin-top:6px}
+.algo .a code{font-size:12px;white-space:normal}
+
+/* IDEAS */
+.ideas{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px}
+.idea{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px;display:flex;flex-direction:column}
+.idea .ih{display:flex;align-items:center;gap:11px}
+.idea .em{font-size:22px;line-height:1}
+.idea h3{font-family:var(--slab);font-size:18px;font-weight:800;line-height:1.15}
+.idea .who{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-top:11px}
+.idea p{font-size:14px;color:#2A332C;margin-top:5px}
+.idea .dod{margin-top:auto;padding-top:12px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line-soft);margin-top:13px}
+.idea .dod b{color:var(--em)}
+
+/* SECURITY */
+.zones{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.zone{border-radius:16px;padding:20px 22px}
+.zone.green{background:rgba(44,122,75,.08);border:1px solid rgba(44,122,75,.3)}
+.zone.red{background:rgba(192,86,62,.07);border:1px solid rgba(192,86,62,.32)}
+.zone h3{font-family:var(--slab);font-size:17px;font-weight:800;display:flex;align-items:center;gap:9px}
+.zone.green h3{color:var(--green)}
+.zone.red h3{color:var(--red)}
+.zone ul{margin:12px 0 0;padding-left:18px}
+.zone li{font-size:14px;margin-bottom:7px;color:#2A332C}
+.note{background:#EDE7D7;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:8px;padding:13px 16px;margin-top:18px;font-size:14px;color:#2A332C}
+.note b{color:var(--em)}
+
+/* TOOLS */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.tool{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:15px 17px;text-decoration:none;transition:border-color .15s,transform .15s}
+.tool:hover{border-color:var(--gold);transform:translateY(-1px)}
+.tool .ti{flex:none;width:36px;height:36px;border-radius:9px;background:var(--em);color:var(--gold-2);display:grid;place-items:center;font-size:18px}
+.tool .tt{font-family:var(--slab);font-weight:700;font-size:15.5px}
+.tool .td{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tool .tu{font-family:var(--mono);font-size:11.5px;color:var(--gold);margin-top:4px;word-break:break-all}
+.materials{margin-top:14px;background:var(--bg-2);border:1px dashed var(--line);border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--muted)}
+.materials b{color:var(--em)}
+.materials ul{margin:8px 0 0;padding-left:18px}
+.materials li{margin-bottom:4px}
+
+/* DONE */
+.done{background:var(--em);color:var(--em-ink);border-radius:18px;padding:28px 30px;margin-top:24px}
+.done h3{font-family:var(--slab);font-size:22px;color:#fff;font-weight:800}
+.done .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.done .dc{background:rgba(255,255,255,.04);border:1px solid rgba(233,217,180,.16);border-radius:12px;padding:16px 18px}
+.done .dc .dl{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-2);font-weight:700}
+.done .dc p{font-size:14.5px;color:#D7E0D8;margin-top:7px}
+.done .dc p b{color:#fff}
+
+.foot{padding:26px 0 60px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--muted);text-align:center}
+
+@media (max-width:760px){
+  .hero h1{font-size:34px}
+  h2{font-size:25px}
+  .tldr{grid-template-columns:1fr 1fr}
+  .tldr .c:nth-child(2){border-right:0}
+  .tracks,.algo,.ideas,.zones,.tools,.done .grid{grid-template-columns:1fr}
+  .tldr .c{border-bottom:1px solid var(--line-soft)}
+}
+@media print{body{background:#fff}.tool:hover{transform:none}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero dark">
+  <div class="wrap">
+    <img class="logo" src="logo.png" alt="A-PLAYERS">
+    <div class="kick">Pro Vibe Coding · 7 поток · Домашнее задание</div>
+    <h1>Собери свой <span class="hl">первый рабочий инструмент</span> — из своих же опорников</h1>
+    <p class="lead">Вы уже собрали смыслы: <b>бриф, JTBD, Tone of Voice, позиционирование, предиктивные модели</b>. Вы видели живую сборку модели SoftSnow за 30 минут. Теперь — то же самое, но руками. Берёшь <b>одно бутылочное горлышко</b> своего отдела и за один вечер превращаешь его в инструмент, который реально работает.</p>
+    <div class="pills">
+      <span class="pill"><span class="ic">01</span> 5 раз подумай — 1 раз сделай</span>
+      <span class="pill"><span class="ic">02</span> shit in → shit out: контекст решает всё</span>
+      <span class="pill"><span class="ic">03</span> первую версию никогда не принимаем</span>
+    </div>
+  </div>
+</header>
+
+<!-- 0 · TL;DR -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">00</span><h2>Что ты делаешь в этом ДЗ</h2></div>
+    <p class="sec-sub">Не распыляйся. Не делай 33 агента сразу. Один фокус — самое больное измеримое горлышко, которое сильнее всего блокирует следующий уровень. Починка именно его даёт максимальный импакт.</p>
+    <div class="tldr">
+      <div class="c"><div class="t">Шаг 1</div><div class="d">Выбери <b>одно</b> бутылочное горлышко (метрика, за которую отвечаешь)</div></div>
+      <div class="c"><div class="t">Шаг 2</div><div class="d">Поставь окружение: VS&nbsp;Code + Claude Code + голос</div></div>
+      <div class="c"><div class="t">Шаг 3</div><div class="d">Собери инструмент по алгоритму 7&nbsp;шагов из своих опорников</div></div>
+      <div class="c"><div class="t">Шаг 4</div><div class="d">Оживи его: дашборд / отчёт / алерт в Telegram</div></div>
+    </div>
+    <div class="note"><b>Критерий сдачи (Definition of Done):</b> инструмент открывается в браузере / приходит в чат и реально работает на твоих цифрах. Не «красивая табличка», а штука, которой ты пользуешься в понедельник.</div>
+  </div>
+</section>
+
+<!-- 1 · РАБОЧЕЕ МЕСТО -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">01</span><h2>Рабочее место за 6 шагов</h2></div>
+    <p class="sec-sub">Терминал не нужен. Ставим <b>VS&nbsp;Code</b>, внутрь — расширение <b>Claude Code</b>, входим по подписке, добавляем голос. Делай сверху вниз. Если ты в России — читай примечание про авторизацию в конце раздела.</p>
+
+    <div class="step"><div class="n">1</div><div class="b">
+      <div class="st">Поставить VS Code</div>
+      <ol>
+        <li>Открой <code>code.visualstudio.com</code> → <b>Download</b> (macOS или Windows).</li>
+        <li>Перетащи приложение в «Программы» (Mac) или установи (Windows) и запусти.</li>
+      </ol>
+      <div class="ok"><b>Готово, когда:</b> VS Code открылся.</div>
+    </div></div>
+
+    <div class="step"><div class="n">2</div><div class="b">
+      <div class="st">Поставить расширение Claude Code</div>
+      <ol>
+        <li>Слева — иконка <b>Extensions</b> (кубики) или <span class="kbd">Cmd ⇧ X</span> / <span class="kbd">Ctrl ⇧ X</span>.</li>
+        <li>В поиске набери <code>Claude Code</code> → выбери расширение <b>от Anthropic</b> → <b>Install</b>.</li>
+        <li>Если попросит — перезапусти окно: <span class="kbd">Cmd ⇧ P</span> → <code>Reload Window</code>.</li>
+      </ol>
+      <div class="ok"><b>Готово, когда:</b> у Claude Code появилась кнопка Uninstall / Disable.</div>
+    </div></div>
+
+    <div class="step"><div class="n">3</div><div class="b">
+      <div class="st">Войти по подписке (Pro / Max)</div>
+      <ol>
+        <li>Открой панель Claude Code (значок ✱ справа вверху) → <b>Sign in</b>.</li>
+        <li>Войди в аккаунт Claude, где активна <b>Pro или Max</b>. Это <b>не</b> API-ключ — просто подписка.</li>
+      </ol>
+      <div class="ok"><b>Готово, когда:</b> в панели появилось поле для ввода команды.</div>
+    </div></div>
+
+    <div class="step"><div class="n">4</div><div class="b">
+      <div class="st">Выставить настройки (один раз)</div>
+      <p>Меню режимов: <span class="kbd">Shift Tab</span> или из панели. Подробности — в блоке ниже.</p>
+      <div class="ok"><b>Коротко:</b> модель <b>Opus</b>, уровень размышлений <b>повыше середины</b>, режим <b>Edit automatically</b> (не Bypass).</div>
+    </div></div>
+
+    <div class="step"><div class="n">5</div><div class="b">
+      <div class="st">Подключить голосовой ввод 🎙️</div>
+      <p>Александр диктует <b>почти всё</b> — клавиатура лежит без дела. Это не понты, а скорость: думать вслух быстрее, чем печатать, а контекст получается богаче. Поставь приложение голосового ввода, которое печатает текст в любое поле (в т.ч. в панель Claude Code).</p>
+      <ul>
+        <li><b>Wispr Flow</b> — кроссплатформенно (Mac / Windows), диктовка в любое окно. <code>wisprflow.ai</code></li>
+        <li><b>superwhisper</b> — для Mac, на базе Whisper, работает офлайн. <code>superwhisper.com</code></li>
+      </ul>
+      <div class="ok"><b>Готово, когда:</b> зажал хоткей, сказал — текст появился в панели Claude Code.</div>
+    </div></div>
+
+    <div class="step"><div class="n">6</div><div class="b">
+      <div class="st">Поставить лимит бюджета (безопасность)</div>
+      <p>Это первое, что делаем по безопасности. Чтобы оставленный «думать на ночь» агент не списал лишнего и чтобы видеть аномалию (вдруг хакнули).</p>
+      <ol>
+        <li>Зайди в <b>Anthropic Console → Settings → Limits / Billing</b>: <code>console.anthropic.com</code></li>
+        <li>Поставь дневной/месячный лимит (ориентир Александра — ~100–150&nbsp;$/день как «сигнальный потолок»).</li>
+      </ol>
+      <div class="ok"><b>Реальность:</b> на Max за месяц редко выходит дороже ~200&nbsp;$. Но потолок ставим сразу.</div>
+    </div></div>
+
+    <div class="darkcard">
+      <h3>⚙️ Рекомендуемые настройки</h3>
+      <div class="s-sub">Для тех, кто собирает в первый раз. Меняется в один клик в панели Claude Code.</div>
+      <div class="row"><span class="tag">МОДЕЛЬ</span><div class="rt"><b>Opus</b> — самая гибкая, тянет глубокие задачи. Переключение: <span class="kbd">/model</span></div></div>
+      <div class="row"><span class="tag">РАЗМЫШЛЕНИЯ</span><div class="rt">Ползунок «effort»: чем выше — тем глубже думает и больше тратит токенов. Для большинства задач — <b>чуть выше середины</b>; для важной аналитики — <b>предпоследний</b>.</div></div>
+      <div class="row"><span class="tag">РЕЖИМ</span><div class="rt"><b>Edit automatically</b> — сам сохраняет файлы в папку, опасное всё равно спросит. <span class="warn">«Bypass permissions» — НЕ включать,</span> особенно если рядом боевая база.</div></div>
+      <div class="row"><span class="tag">КОНТЕКСТ</span><div class="rt">Окно забилось — попроси «дай промпт для нового окна, чтобы продолжить с того же места», открой новое и вставь. Память подтянется из папки. Так работаешь <b>безлимитно</b>.</div></div>
+    </div>
+
+    <div class="note"><b>🇷🇺 Если ты в России:</b> не прыгай постоянно между странами через дешёвые VPN и не дёргай авторизацию — Anthropic считывает это как подозрительное поведение и может заблокировать аккаунт. Перед регистрацией почитай актуальную инструкцию по безопасной авторизации. Прецеденты блокировок уже есть.</div>
+  </div>
+</section>
+
+<!-- 2 · ПАПКА И РЕПОЗИТОРИЙ -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">02</span><h2>Папка проекта и репозиторий</h2></div>
+    <p class="sec-sub">Вся суть вайб-кодинга — <b>одна папка проекта</b>, в которую ты складываешь контекст. Внутри разворачивается целая инфраструктура: модель, дашборд, бот, ресерч — всё в одном месте, можно вести несколько агентов параллельно.</p>
+
+    <div class="step"><div class="n">1</div><div class="b">
+      <div class="st">Создай папку проекта</div>
+      <p>В VS Code: <b>File → Open Folder…</b> → создай новую папку (например, на рабочем столе) и назови по сути задачи: <code>predict-model</code>, <code>commerce-dashboard</code>, <code>rfm-base</code>. Открой её — слева появится дерево файлов. Всё, что Claude будет делать, ляжет сюда.</p>
+    </div></div>
+
+    <div class="step"><div class="n">2</div><div class="b">
+      <div class="st">Положи опорники в папку</div>
+      <p>Создай внутри подпапку <code>материалы-компании/</code> и закинь туда свой контекст из прошлых домашек: бриф, JTBD, Tone of Voice, VPC, позиционирование, УТП, оффер, продукты + <b>цифры</b> (план/факт, текущая воронка, отчётность). Рядом — <code>инструкции/</code>: плейбуки, шаблоны, чек-листы, транскрипты разборов.</p>
+      <div class="ok"><b>Правило:</b> «контекст, который нельзя не учесть». Слабый вход → слабый результат.</div>
+    </div></div>
+
+    <div class="step"><div class="n">3</div><div class="b">
+      <div class="st">(Опционально) Репозиторий и GitHub</div>
+      <p>Если хочешь историю версий и страховку от поломок — заведи репозиторий. <b>Репозиторий</b> = папка проекта под управлением Git с историей всех изменений; <b>GitHub</b> = облако для репозиториев. Просто скажи Claude:</p>
+      <div class="cmd">Инициализируй git-репозиторий в этой папке, сделай первый коммит и помоги выложить на мой GitHub. Объясни шаги простыми словами.</div>
+      <p style="margin-top:10px">Зачем: любую ошибку можно откатить к рабочей версии. Аккаунт — на <code>github.com</code>.</p>
+    </div></div>
+
+    <div class="step"><div class="n">4</div><div class="b">
+      <div class="st">Подключи скиллы и MCP (по необходимости)</div>
+      <ul>
+        <li><b>Скиллы</b> — «надстройки» под роль (маркетолог, аналитик, дизайнер, глубокий ресерч). Делают ответы целевыми. Попроси: <span class="kbd">найди и подключи скиллы под эту задачу</span>. Готовые — на GitHub.</li>
+        <li><b>MCP</b> — стандарт подключения внешних сервисов: Telegram, Google, CRM (AmoCRM и др.). Подключается через токен/ключ, который ты генеришь в самом сервисе и скармливаешь Claude.</li>
+      </ul>
+    </div></div>
+
+    <div class="step"><div class="n">5</div><div class="b">
+      <div class="st">Первая команда</div>
+      <div class="cmd">У тебя в папке лежат опорные материалы компании и инструкции. Провались в каждую папку, внимательно изучи, разберись, что это за компания и какие у неё цифры. Дальше с опорой на это мы будем работать.</div>
+      <div class="ok" style="margin-top:11px"><b>Готово, когда:</b> Claude пересказал твою компанию и её узкие места своими словами.</div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 3 · ДВЕ ВЕТКИ -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">03</span><h2>Две ветки: мультипликатор или продукт</h2></div>
+    <p class="sec-sub">Перед сборкой определись, что именно ты делаешь. Для этого ДЗ почти всем подойдёт <b>ветка А</b>. Ветка Б — если ты решил уйти вглубь и собрать настоящий продукт.</p>
+    <div class="tracks">
+      <div class="track a">
+        <span class="badge">Ветка А · для ДЗ</span>
+        <h3>Внутренний мультипликатор</h3>
+        <div class="tone">быстро · усиливает текущий менеджмент</div>
+        <p>Инструмент, который не идёт на рынок, а ускоряет тебя: модель, дашборд, скрипт, калькулятор, аналитика, бот. Разворачивается за вечер. Это <b>основной формат твоего ДЗ.</b></p>
+        <ul>
+          <li>Опорники + плейбуки → в папку</li>
+          <li>Задача + Definition of Done</li>
+          <li>Ресерч → скиллы → план → сборка</li>
+          <li>Челлендж первой версии → координации</li>
+        </ul>
+      </div>
+      <div class="track b">
+        <span class="badge">Ветка Б · по желанию</span>
+        <h3>Полноценный продукт</h3>
+        <div class="tone">вкус + архитектура · идёт на рынок</div>
+        <p>Если хочешь собрать сервис/продукт на продажу. Здесь решают <b>вкус</b> (глубина + подача) и <b>архитектура</b>. Стартуй с CLAUDE.md-репозитория, который сначала челленджит твою идею.</p>
+        <ul>
+          <li>Челлендж идеи: а точно нужно? кто уже решает?</li>
+          <li>Ресерч рынка: объём, SWOT, PESTEL, Five Forces</li>
+          <li>JTBD + VPC, слой безопасности и базы данных</li>
+          <li>Первые ~60–100 мин — не код, а архитектура</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · АЛГОРИТМ -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">04</span><h2>Алгоритм сборки · 7 шагов</h2></div>
+    <p class="sec-sub">По этому маршруту собирается любой мультипликатор. Тот же путь, что в живой сборке на эфире — повтори его на своей компании.</p>
+    <div class="algo">
+      <div class="a"><div class="an"><span>1</span> Контекст</div><div class="at">Загрузи опорники в папку</div><p>Бриф, JTBD, ToV, VPC, цифры, плейбуки, шаблоны, транскрипты разборов. Чем плотнее вход — тем сильнее результат.</p></div>
+      <div class="a"><div class="an"><span>2</span> Цель + DoD</div><div class="at">Опиши образ результата</div><p>Definition of Done: <b>количество</b> + <b>качество</b> + <b>ресурсы</b>. «Дашборд воронки, обновляется 2×/сутки, со светофором план/факт».</p></div>
+      <div class="a"><div class="an"><span>3</span> Ресерч</div><div class="at">Запусти глубокий research</div><p>Бенчмарки по твоим каналам и воронкам, рынок, ЦА. Чтобы увидеть, в каких метриках ты отклоняешься от нормы.</p></div>
+      <div class="a"><div class="an"><span>4</span> Скиллы</div><div class="at">Подгрузи целевые скиллы</div><p>Под маркетинг, воронки, анализ рынка, позиционирование. Попроси Claude самому найти, чего ему не хватает.</p></div>
+      <div class="a"><div class="an"><span>5</span> План</div><div class="at">Пошаговый план + промпт</div><p>Попроси действовать как промпт-инженер, задать уточняющие вопросы и самому на них ответить. Роль указывать уже не обязательно — формат ответа всё ещё важен.</p></div>
+      <div class="a"><div class="an"><span>6</span> Сборка</div><div class="at">Собери и почелленджь</div><p><b>Первую версию не принимаем.</b> Открой результат, проверь перемножения цифр, дай 1–2 итерации правок.</p></div>
+      <div class="a"><div class="an"><span>7</span> Жизнь</div><div class="at">Оживи координацией</div><p>Дашборд + бот в Telegram: ежедневная сводка в одно и то же время, алерты по просадкам. Без этого инструмент мёртв.</p></div>
+      <div class="a" style="background:var(--em);color:var(--em-ink);display:flex;flex-direction:column;justify-content:center">
+        <div class="at" style="color:#fff;margin:0">🎯 Главное</div>
+        <p style="color:#D7E0D8">Ценность не в табличке, а в <b style="color:#fff">действиях за ней</b>. Назначь ответственного напротив каждой метрики и настрой координации — система должна «капать» напоминанием в одно и то же время.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · ИДЕИ -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">05</span><h2>Идеи: выбери своё направление</h2></div>
+    <p class="sec-sub">Меню под разные роли и горлышки. Возьми <b>одно</b>, что бьёт в твою главную метрику. Можно скомбинировать со своими опорниками — это и есть «снайперский выстрел».</p>
+    <div class="ideas">
+
+      <div class="idea">
+        <div class="ih"><span class="em">📈</span><h3>Предиктивная модель продаж</h3></div>
+        <div class="who">для коммерческого директора / РОПа</div>
+        <p>План/факт по воронке с опережающими и запаздывающими метриками, светофор зон, переключатель «Факт ↔ Норматив» — видно, какой рычаг двигает выручку.</p>
+        <div class="dod"><b>DoD:</b> модель открывается, цифры пересчитываются вживую, подсвечены 2 главных горлышка.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">📊</span><h3>Коммерческий дашборд</h3></div>
+        <div class="who">для собственника / коммерции</div>
+        <p>Выручка, маржа, воронка, каналы и UTM в одном экране. Обновление 2–3 раза в сутки, привязка к CRM/аналитике через токен.</p>
+        <div class="dod"><b>DoD:</b> дашборд показывает актуальные цифры по каналам и конверсиям между этапами.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">🧮</span><h3>RFM / LTV-анализ базы</h3></div>
+        <div class="who">для маркетинга / CRM-маркетолога</div>
+        <p>Сегментация базы по давности, частоте, деньгам + матрица «что не используют». На выходе — точки cross-sell / up-sell и сценарии реактивации под VPC сегментов.</p>
+        <div class="dod"><b>DoD:</b> база разбита на сегменты, есть список горящих аккаунтов и заходов под их боли.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">🔔</span><h3>Система алертов по касаниям</h3></div>
+        <div class="who">для РОПа / контроля качества</div>
+        <p>Регламент касаний → система ловит, если по лиду не выполнен норматив, и шлёт алерт в чат: «по этой сделке менеджер молчит». Логи звонков и сообщений из CRM.</p>
+        <div class="dod"><b>DoD:</b> при нарушении регламента в чат прилетает уведомление с лидом.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">💰</span><h3>Калькулятор мотивации + оффер</h3></div>
+        <div class="who">для HR / руководителя отдела</div>
+        <p>Система мотивации нового человека с учётом юнит-экономики продукта и доли дохода. Оффер, разбитый на испытательный срок и после, с подсветкой рисков.</p>
+        <div class="dod"><b>DoD:</b> калькулятор считает оффер по вводным, сходится юнит-экономика.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">🎯</span><h3>Боевой скрипт + онбординг sales</h3></div>
+        <div class="who">для отдела продаж</div>
+        <p>Интерактивный скрипт по новой воронке с учётом пресейла и привязкой к продукту. Плюс пошаговый онбординг: что должен знать sales, когда идёт продавать.</p>
+        <div class="dod"><b>DoD:</b> по скрипту реально проходит менеджер, онбординг закрывает первый день новичка.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">🏭</span><h3>Контент-завод</h3></div>
+        <div class="who">для маркетинга / личного бренда</div>
+        <p>Из одной папки — стратегия и генерация контента под LinkedIn, Instagram, Telegram, SEO-блог. Ресерч самых охватных тем + черновики постов под стиль каждой площадки, 3×/неделю.</p>
+        <div class="dod"><b>DoD:</b> приходит сводка тем + готовые черновики под площадки.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">🧠</span><h3>«Второй мозг»</h3></div>
+        <div class="who">для собственника / операционки</div>
+        <p>Подтягивает источники (Infinity / Notion / календарь / Ганты / рабочий Telegram) и отвечает на голос: статус проекта, где горлышко, какой фокус на неделю. Сам ставит задачи и слоты.</p>
+        <div class="dod"><b>DoD:</b> по голосовому запросу даёт сводку и заносит задачу в трекер.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">🧭</span><h3>VPC + коммерческая стратегия</h3></div>
+        <div class="who">для маркетинга / стратегии</div>
+        <p>JTBD и Value Proposition Canvas по core-сегментам → коммерческая стратегия как набор конкретных проектов с DoD на квартал (acquisition + активация).</p>
+        <div class="dod"><b>DoD:</b> по каждому core-сегменту есть VPC и 3–5 проектов с измеримым результатом.</div>
+      </div>
+
+      <div class="idea">
+        <div class="ih"><span class="em">🤖</span><h3>Бот-модератор по Гантам</h3></div>
+        <div class="who">для операционного директора</div>
+        <p>Ежедневно в одно и то же время сканирует проекты/Ганты и пишет сводку: кто что сделал, кто буксует, где нужна помощь. Рука на пульсе вместо ручной модерации.</p>
+        <div class="dod"><b>DoD:</b> в чат приходит ежедневный отчёт по статусам и просрочкам.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 6 · БЕЗОПАСНОСТЬ -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">06</span><h2>Безопасность: зелёная и красная зона</h2></div>
+    <p class="sec-sub">Главный риск — не хакер, а ты сам в 3 ночи. Есть реальные истории: одному агент задублировал все контакты в CRM, другому — удалил всю базу. Финальное слово всегда за тобой.</p>
+    <div class="zones">
+      <div class="zone green">
+        <h3>✅ Зелёная зона — можно смело</h3>
+        <ul>
+          <li>Лимит бюджета в Anthropic Console выставлен заранее.</li>
+          <li>Режим <b>Edit automatically</b> — опасное Claude спрашивает.</li>
+          <li>Работа с файлами, моделями, дашбордами, текстами в папке проекта.</li>
+          <li>Перед записью в боевые системы — <b>бэкап</b> и тест на копии.</li>
+          <li>Доступы к сервисам — через токены/ключи, которые легко отозвать.</li>
+        </ul>
+      </div>
+      <div class="zone red">
+        <h3>⛔ Красная зона — стоп</h3>
+        <ul>
+          <li><b>Bypass permissions</b> рядом с боевой базой — не включать.</li>
+          <li>Полный доступ к CRM/БД новичку — нет. Сначала тренируйся на копии.</li>
+          <li>Постоянная смена стран через VPN при логине — риск блокировки.</li>
+          <li>Пароли, ключи, токены — не коммитить в репозиторий.</li>
+          <li>Первую версию выкатывать в прод без проверки — никогда.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note"><b>Лайфхак из практики:</b> если пускаешь Claude в CRM — прямо в промпте проговори: «убедись, что ничего не удалишь и не задублируешь, перед любой записью покажи мне, что собираешься сделать». Отдельный плейбук по безопасности можно загружать в папку вместе с опорниками — тогда он учитывает риски по умолчанию.</div>
+  </div>
+</section>
+
+<!-- 7 · ИНСТРУМЕНТЫ -->
+<section>
+  <div class="wrap">
+    <div class="sec-h"><span class="no">07</span><h2>Инструменты и ссылки</h2></div>
+    <p class="sec-sub">Всё, что понадобится. Внешние сервисы — кликабельны. Наши материалы — в стартовом наборе (ссылки добавим при публикации).</p>
+    <div class="tools">
+      <a class="tool" href="https://code.visualstudio.com" target="_blank" rel="noopener"><div class="ti">🧰</div><div><div class="tt">VS Code</div><div class="td">редактор, в котором живёт вайб-кодинг</div><div class="tu">code.visualstudio.com</div></div></a>
+      <a class="tool" href="https://docs.claude.com/en/docs/claude-code/overview" target="_blank" rel="noopener"><div class="ti">✱</div><div><div class="tt">Claude Code</div><div class="td">расширение Anthropic — твой исполнитель</div><div class="tu">docs.claude.com/claude-code</div></div></a>
+      <a class="tool" href="https://wisprflow.ai" target="_blank" rel="noopener"><div class="ti">🎙️</div><div><div class="tt">Wispr Flow</div><div class="td">голосовой ввод в любое окно (Mac/Win)</div><div class="tu">wisprflow.ai</div></div></a>
+      <a class="tool" href="https://superwhisper.com" target="_blank" rel="noopener"><div class="ti">🗣️</div><div><div class="tt">superwhisper</div><div class="td">диктовка на Whisper, офлайн (Mac)</div><div class="tu">superwhisper.com</div></div></a>
+      <a class="tool" href="https://console.anthropic.com" target="_blank" rel="noopener"><div class="ti">💳</div><div><div class="tt">Anthropic Console</div><div class="td">лимиты бюджета и токенов</div><div class="tu">console.anthropic.com</div></div></a>
+      <a class="tool" href="https://github.com" target="_blank" rel="noopener"><div class="ti">🐙</div><div><div class="tt">GitHub</div><div class="td">облако для репозиториев и версий</div><div class="tu">github.com</div></div></a>
+      <a class="tool" href="https://github.com/anthropics/skills" target="_blank" rel="noopener"><div class="ti">🧩</div><div><div class="tt">Claude Skills</div><div class="td">готовые скиллы под роли</div><div class="tu">github.com/anthropics/skills</div></div></a>
+      <a class="tool" href="https://modelcontextprotocol.io" target="_blank" rel="noopener"><div class="ti">🔌</div><div><div class="tt">MCP</div><div class="td">подключение Telegram, Google, CRM</div><div class="tu">modelcontextprotocol.io</div></div></a>
+    </div>
+    <div class="materials">
+      <b>📦 Наши материалы (из стартового набора 7 потока):</b>
+      <ul>
+        <li>Хендаут «Установка VS Code + Claude Code» — пошагово для новичка</li>
+        <li>Хендаут «Глоссарий» — репо, Git, MD, JSON, CLAUDE.md, MCP, токен</li>
+        <li>Стартовый набор «обёртка» — опорники + конвейер 00–08</li>
+        <li>Шаблон предиктивной модели + чек-лист самопроверки</li>
+        <li>Плейбук безопасного вайб-кодинга</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · СДАЧА -->
+<section style="border-bottom:0">
+  <div class="wrap">
+    <div class="sec-h"><span class="no">08</span><h2>Как сдать</h2></div>
+    <div class="done">
+      <h3>Definition of Done твоего ДЗ</h3>
+      <div class="grid">
+        <div class="dc"><div class="dl">Что прислать</div><p><b>1.</b> Скрин/ссылку на работающий инструмент. <b>2.</b> 2–3 предложения: какое горлышко чинил, что собрал, какой был DoD.</p></div>
+        <div class="dc"><div class="dl">Критерий «зачёт»</div><p>Инструмент <b>открывается и работает на твоих цифрах</b> — им можно пользоваться в понедельник, а не просто «получилось собрать».</p></div>
+        <div class="dc"><div class="dl">Бонус (+вкус)</div><p>Оживил координацией: дашборд обновляется сам / бот шлёт ежедневную сводку или алерт в Telegram.</p></div>
+        <div class="dc"><div class="dl">Дедлайн</div><p><b>[впишем дату]</b> · вопросы и затыки — в чат потока, помогаем разобраться.</p></div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:22px"><b>Финальная мысль.</b> Сегодня навык вайб-кодинга — это как умение читать. Мы ограничены только стилем мышления и execution’ом. Возьми одно горлышко, собери инструмент, оживи его координацией — и пусть он работает на тебя каждый день.</div>
+  </div>
+</section>
+
+<div class="foot">A-PLAYERS · PRO VIBE CODING · 7 ПОТОК · ДОМАШНЕЕ ЗАДАНИЕ</div>
+
+</body>
+</html>
