@@ -28,7 +28,7 @@ ol.big>li::before{counter-increment:s;content:counter(s);position:absolute;left:
 .dl{display:inline-block;background:#12372A;color:#fff !important;border-radius:8px;padding:7px 15px;font-size:14px;font-weight:700;text-decoration:none;margin:3px 6px 3px 0;border:none}
 .dl:hover{background:#0F2A20}
 .dlrow{margin:.6em 0}
-</style><script src="gate.js"></script></head><body><div class=wrap><div class=brandbar></div>
+</style><script src="gate.js"></script><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"></head><body><div class=wrap><div class=brandbar></div>
 
 <h1>A-PLAYERS · Pro Vibe Coding</h1>
 <p style="font-size:20px;color:var(--em);font-weight:700;margin:.2em 0 .6em">Домашнее задание — Обёртка компании + опорные материалы</p>
@@ -178,15 +178,8 @@ ol.big>li::before{counter-increment:s;content:counter(s);position:absolute;left:
 
 <h2>7 · Второй мозг в Telegram — по желанию / отдельный трек</h2>
 <p>Когда обёртка собрана — на её основе поднимается «второй мозг»: бот в Telegram, который держит весь контекст, читает данные (только на чтение), приносит алерты и разборы. Это <strong>не отдельное приложение</strong>, а папка-проект, которую открывает Claude&nbsp;Code, плюс Telegram как интерфейс.</p>
-<p><a class="dl" href="vtoroy-mozg-starter.zip" download>⬇️ Стартовый набор «Второй мозг»</a></p>
-<p>Коротко как собрать:</p>
-<ol class="big">
-<li><strong>Предпосылки:</strong> VS&nbsp;Code + Claude&nbsp;Code · <strong>отдельный</strong> доп. Telegram-аккаунт под бота (не личный) с 2FA · токен бота от <code>@BotFather</code> (<code>/newbot</code>).</li>
-<li><strong>Наполните мозг контекстом:</strong> откройте стартовый набор, вставьте мастер-промт — Claude&nbsp;Code создаст папку <code>context/</code> (компания, аудитория/JTBD, позиционирование, tone of voice, продукты и цены, клиенты, конкуренты) и поможет заполнить <code>CLAUDE.md</code>. Берёте из уже собранной обёртки.</li>
-<li><strong>Подключите Telegram-плагин:</strong> <code>/plugin install telegram@claude-plugins-official</code> → <code>/telegram:configure &lt;токен&gt;</code> (токен в чат не вставляем) → напишите боту → <code>/telegram:access pair &lt;код&gt;</code> → <strong>замок:</strong> <code>/telegram:access policy allowlist</code> (бот отвечает только вам).</li>
-<li><strong>Данные — только на чтение:</strong> коннекторы Drive/Calendar/Notion и read-only скрипты (CRM, модель). Никаких прав на запись.</li>
-</ol>
-<blockquote>⚠️ Отдельный аккаунт под бота · 2FA · только Bot API (никаких userbot/QR) · токен и ключи — не в чат и не в git · всё на чтение. <strong>Технический деплой для команды</strong> (мульти-доступ, админ-панель, отключение при уходе сотрудника) делаем <strong>отдельным созвоном</strong>.</blockquote>
+<p><a class="dl" href="vtoroy-mozg.html">🧠 Как развернуть второй мозг — подробно →</a><a class="dl" href="vtoroy-mozg-starter.zip" download>⬇️ Стартовый набор</a></p>
+<blockquote>Полная пошаговая инструкция — на отдельной странице «<a href="vtoroy-mozg.html">Как развернуть второй мозг</a>»: предпосылки → мастер-промт → архитектура контекста (<code>context/</code>) → подключение Telegram-плагина → безопасность → живая предиктивная модель → команда и офбординг.<br><br>⚠️ Коротко: отдельный аккаунт под бота с 2FA · токен через <code>/telegram:configure</code>, в чат не вставляется · <code>allowlist</code> (бот отвечает только вам) · все интеграции только на чтение. <strong>Технический деплой для команды</strong> (мульти-доступ, админ-панель, отключение при уходе сотрудника) — <strong>отдельным созвоном</strong>.</blockquote>
 
 <div class=foot>A-PLAYERS · Pro Vibe Coding. Критерий «сделано»: 6 артефактов обёртки лежат в папке · цифры важнее слов · все 🔴/🟡 закрыты · по каждому пройден финал-аудит.</div>
 </div></body></html>

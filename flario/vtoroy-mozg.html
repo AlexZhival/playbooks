@@ -1,0 +1,136 @@
+<!doctype html><html lang=ru><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>Второй мозг — как развернуть</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--em:#12372A;--em2:#0F2A20;--gold:#B0822E;--bg:#FBF8F1;--card:#fff;--ink:#22302B;--line:#E7E0D2;--muted:#6B756F}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 -apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:880px;margin:0 auto;padding:46px 26px 90px}.brandbar{height:5px;background:linear-gradient(90deg,var(--em),var(--gold));border-radius:6px;margin-bottom:28px}
+h1{font-size:30px;line-height:1.2;color:var(--em2);margin:.2em 0 .3em;font-weight:800}
+h2{font-size:21px;color:var(--em);margin:1.7em 0 .5em;font-weight:800;border-bottom:2px solid var(--line);padding-bottom:6px}
+h3{font-size:17px;color:var(--em);margin:1.2em 0 .35em;font-weight:700}
+a{color:var(--gold);font-weight:600}strong{color:var(--em2)}
+blockquote{border-left:4px solid var(--gold);background:#FFF9EE;margin:1em 0;padding:12px 18px;border-radius:0 10px 10px 0;color:#5a4a28}
+code{background:#EFEBE0;padding:2px 6px;border-radius:5px;font:14px/1.5 ui-monospace,Menlo,monospace}
+pre{background:var(--em2);color:#EDE7D6;padding:16px 18px;border-radius:12px;overflow-x:auto;font:13.5px/1.6 ui-monospace,Menlo,monospace}
+table{border-collapse:collapse;width:100%;margin:1.1em 0;font-size:15px;background:var(--card);border-radius:10px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+th{background:var(--em);color:#fff;text-align:left;padding:10px 12px}td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}tr:nth-child(even) td{background:#FAF6EC}
+ul,ol{padding-left:24px}li{margin:.34em 0}hr{border:none;border-top:1px solid var(--line);margin:1.6em 0}
+.dl{display:inline-block;background:#12372A;color:#fff !important;border-radius:8px;padding:9px 17px;font-size:15px;font-weight:700;text-decoration:none;margin:4px 8px 4px 0}.dl:hover{background:#0F2A20}
+.chk{list-style:none;padding-left:0}.chk li{padding-left:30px;position:relative}.chk li::before{content:"☐";position:absolute;left:0;top:-1px;color:var(--gold);font-size:17px}
+ol.big{counter-reset:s;list-style:none;padding-left:0}ol.big>li{position:relative;padding-left:42px;margin:.9em 0}
+ol.big>li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-2px;width:29px;height:29px;border-radius:50%;background:var(--em);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style><script src="gate.js"></script></head><body><div class=wrap><div class=brandbar></div>
+
+<h1>🧠 Второй мозг — как развернуть</h1>
+<p>Второй мозг — <strong>не отдельное приложение и не самописный бот</strong>, а <strong>папка</strong>, которую открывает Claude&nbsp;Code, плюс <strong>Telegram</strong> как интерфейс и коннекторы к вашим данным <strong>только на чтение</strong>. Всё работает на вашей машине, наружу ничего не выгружается. Отдельный API-ключ Anthropic не нужен — работает на вашей подписке Claude.</p>
+<p><a class="dl" href="vtoroy-mozg-starter.zip" download>⬇️ Стартовый набор «Второй мозг»</a></p>
+<blockquote>Порядок: откройте папку набора в <strong>VS&nbsp;Code</strong> → запустите <strong>Claude&nbsp;Code</strong> → вставьте мастер-промт (раздел 2) — Claude&nbsp;Code проведёт вас за руку. Делайте <strong>после</strong> собранной обёртки: ум мозга = качество контекста, который вы в него положили.</blockquote>
+
+<h2>0 · Как это устроено (30 секунд)</h2>
+<table>
+<tr><th>Часть</th><th>Что это</th></tr>
+<tr><td>🧠 <strong>Мозг</strong></td><td>папка + <code>CLAUDE.md</code> (главная инструкция) + <code>context/</code> (ваши опорные материалы из обёртки)</td></tr>
+<tr><td>💬 <strong>Интерфейс</strong></td><td>Telegram через <strong>официальный плагин Claude&nbsp;Code</strong> — пишете/наговариваете, отвечает Claude&nbsp;Code на вашем компьютере</td></tr>
+<tr><td>🔌 <strong>Данные</strong></td><td>read-only коннекторы Claude (Drive / Calendar / Notion) + read-only скрипты (модель, CRM)</td></tr>
+<tr><td>🔒 <strong>Безопасность</strong></td><td><code>.claude/settings.json</code> (что можно / что запрещено) + правила в <code>CLAUDE.md</code></td></tr>
+</table>
+
+<h2>1 · Предпосылки</h2>
+<ul class="chk">
+<li><strong>VS&nbsp;Code + Claude&nbsp;Code</strong> (вход выполнен, активная подписка Claude)</li>
+<li><strong>Отдельный дополнительный Telegram-аккаунт</strong> под бота (не основной рабочий и не личный) с <strong>2FA</strong></li>
+<li><strong>Токен бота</strong> от <code>@BotFather</code> (<code>/newbot</code> → имя + username на <code>bot</code> → токен)</li>
+</ul>
+
+<h2>2 · Мастер-промт (вставьте в Claude&nbsp;Code)</h2>
+<pre>Прочитай файл START-HERE.md целиком и веди меня по настройке второго мозга
+строго по шагам и строго по разделу «Безопасность».
+Правила:
+— Не выполняй ни одного шага без моего подтверждения.
+— Токен бота я настрою сам через /telegram:configure, в чат его не вставляю.
+— Собираем ядро: агент отвечает на вопросы по материалам этой папки,
+  доступ в Telegram — только моему аккаунту (allowlist).
+— Ничего не удаляй, наружу ничего не пиши. Все интеграции — только на чтение.
+Порядок:
+1) проверь предпосылки и .claude/settings.json;
+2) помоги собрать архитектуру контекста — создай папку context/ со структурой
+   (компания, аудитория/JTBD, позиционирование, tone of voice, продукты и цены,
+   клиенты, конкуренты), задай мне вопросы и помоги заполнить CLAUDE.md,
+   я вставлю свои опорные материалы;
+3) настрой Telegram-плагин.</pre>
+
+<h2>3 · Соберите архитектуру контекста (это и есть «мозг»)</h2>
+<p><strong><code>CLAUDE.md</code></strong> — главная инструкция: кто вы, что за компания, целевая аудитория (ICP/JTBD), продукты, цены, tone of voice, как отвечать. В наборе есть шаблон — Claude&nbsp;Code задаст вопросы и поможет заполнить.</p>
+<p>Папка <strong><code>context/</code></strong> — опорные материалы по файлам (скелет создаст агент, вы наполните из уже собранной обёртки):</p>
+<pre>context/
+├── компания.md          # о компании, видение, миссия
+├── аудитория-jtbd.md    # ICP, сегменты, Jobs To Be Done
+├── позиционирование.md  # отстройка от конкурентов
+├── tone-of-voice.md
+├── продукты-и-цены.md
+├── клиенты.md
+└── конкуренты.md</pre>
+<p><strong>Викилинки <code>[[имя]]</code></strong> (по желанию): внутри файлов ссылайтесь друг на друга — <code>[[продукты-и-цены]]</code>. В <code>CLAUDE.md</code> задано правило открывать такие ссылки. Полезно, когда база растёт.</p>
+
+<h2>4 · Подключение Telegram (официальный плагин)</h2>
+<ol class="big">
+<li><code>/plugin install telegram@claude-plugins-official</code></li>
+<li><code>/reload-plugins</code></li>
+<li><code>/telegram:configure &lt;ваш_токен&gt;</code> — токен уходит в защищённый файл плагина, <strong>не в проект и не в git</strong></li>
+<li>Закройте текущую сессию Claude&nbsp;Code, откройте терминал <strong>в папке проекта</strong> и запустите:<br><code>claude --channels plugin:telegram@claude-plugins-official</code><br><strong>Держите терминал открытым — пока он жив, бот работает.</strong></li>
+<li>Напишите боту в личку → 6-значный код → <code>/telegram:access pair &lt;код&gt;</code></li>
+<li>Замок: <code>/telegram:access policy allowlist</code></li>
+</ol>
+<blockquote>🔒 <strong>Allowlist не пропускайте.</strong> Без него любой, кто узнает username бота, сможет командовать вашим проектом и читать файлы.<br>💡 <strong>Как поднять заново:</strong> зашли в папку проекта → <code>claude --channels plugin:telegram@claude-plugins-official</code> → бот на связи.</blockquote>
+
+<h2>5 · 🔒 Безопасность (обязательно)</h2>
+<ul>
+<li><strong>2FA Telegram:</strong> Settings → Privacy and Security → Two-Step Verification. Завершите лишние Active Sessions.</li>
+<li><strong>Только Bot API @BotFather.</strong> Никогда: userbot (вход по номеру), QR-подключение личного Telegram в сторонние сервисы. 🚩 Просят «войти по номеру / QR / полный доступ» — СТОП.</li>
+<li><strong>Замок <code>.claude/settings.json</code></strong> (уже в наборе): <code>deny</code> — <code>rm -rf</code>, <code>sudo rm</code>, <code>curl … | bash</code>, чтение секретов (<code>.env</code>, <code>*.key</code>, <code>*.token</code>); <code>allow</code> — только Read/Grep/Glob, WebSearch/WebFetch, читающие методы коннекторов и ваши скрипты по имени.</li>
+<li>Отдельный доп. аккаунт · токен через плагин, не в чат · allowlist только ваш ID · всё только на чтение · секреты — в отдельные файлы вне git.</li>
+<li><strong>Kill switch:</strong> <code>@BotFather /revoke</code> → <code>/telegram:access policy disabled</code> → при желании <code>/deletebot</code>.</li>
+</ul>
+
+<h2>6 · Коннекторы данных (Фаза 2, по желанию, только чтение)</h2>
+<p><code>claude.ai → + → Connectors</code> → Google Drive, Google Calendar, Notion. Разрешены только читающие методы. Годятся для простых доков и разовых вопросов.</p>
+
+<h2>7 · Живая предиктивная модель через бота</h2>
+<p>Ваша модель — Google&nbsp;Sheets с несколькими вкладками. Коннектор Drive читает обычно только первый лист и не работает по расписанию. Два варианта — от простого к надёжному:</p>
+<h3>Вариант A · просто (5 минут)</h3>
+<p>Сделайте в таблице <strong>первую вкладку «Сводка»</strong> и вынесите на неё ключевые цифры формулами с других вкладок (прогноз, план-факт, run-rate, светофор). Коннектор Drive читает первый лист — бот отвечает по этой сводке по ссылке. Минус: только то, что на «Сводке»; по расписанию не шлёт.</p>
+<h3>Вариант B · надёжно (Google Sheets API, read-only)</h3>
+<ol class="big">
+<li>В Google Cloud Console создайте <strong>сервисный аккаунт</strong>, включите <strong>Google Sheets API</strong>, скачайте JSON-ключ (в файл вне git).</li>
+<li>Расшарьте таблицу на <strong>email сервисного аккаунта</strong> с правами <strong>Viewer</strong>.</li>
+<li>Claude&nbsp;Code напишет скрипт: <code>spreadsheets.values.get(spreadsheetId, 'Вкладка!A1:Z100')</code>, scope <code>spreadsheets.readonly</code>.</li>
+<li>Скрипт — в белый список; бот вызывает его по запросу «дай статус по модели» и по расписанию.</li>
+</ol>
+<p><code>readonly</code> — изменить/удалить в таблице невозможно. Начните с A; нужна автоматика и любые вкладки — переходите на B.</p>
+
+<h2>8 · Проверка</h2>
+<p>Сначала — быстрый тест связи: «<em>Прочитай CLAUDE.md и расскажи, какие правила там описаны</em>». Ответил по сути файла — связь есть. Дальше по данным: «<em>Какой прогноз выручки на месяц и где красная зона?</em>» → мозг прочитает контекст/модель и ответит. ✅ Готово — покажите на разборе. Готовые промты — в <code>ПРОМТЫ.md</code> набора.</p>
+
+<h2>9 · CRM (продвинутое, по желанию, строго read-only)</h2>
+<p>Отдельный интеграционный пользователь / API-ключ с ролью «только просмотр» · токен вне git, чтение агенту запрещено · один GET-скрипт в белом списке · сначала на копии. Без прав на запись — удалить/задублировать невозможно. CRM без read-only роли — не подключаем, экспортируем копией.</p>
+
+<h2>10 · Команда и хостинг</h2>
+<ul>
+<li><strong>Доступ = allowlist Telegram.</strong> Новый — добавили ID; уволили — убрали ID.</li>
+<li><strong>С любого устройства</strong> — бот доступен каждому из белого списка.</li>
+<li><strong>24/7 и всем</strong> — вынесите мозг на всегда-включённую машину (Mac mini / сервер).</li>
+<li><strong>Знания — общий Google Drive</strong>; коннекторы, сервисный аккаунт и CRM — на <strong>служебном аккаунте компании</strong>.</li>
+<li><strong>Офбординг</strong> ключевого человека: убрать из allowlist и доступов Drive, <strong>перевыпустить</strong> токен бота, ключ сервисного аккаунта и CRM-ключ.</li>
+</ul>
+
+<hr>
+<h3>Чего НЕ делаем</h3>
+<ul>
+<li>❌ userbot и QR-подключения личного Telegram</li>
+<li>❌ права на запись/удаление в CRM, модели, боевых системах</li>
+<li>❌ вставлять токены и ключи в чат</li>
+</ul>
+
+<p style="margin-top:22px"><a class="dl" href="dz-obyortka.html">← К домашнему заданию</a><a class="dl" href="vtoroy-mozg-starter.zip" download>⬇️ Стартовый набор «Второй мозг»</a></p>
+<div class=foot>A-PLAYERS · Pro Vibe Coding · второй мозг. Технический деплой для команды (мульти-доступ, админ-панель) — отдельным созвоном.</div>
+</div></body></html>
