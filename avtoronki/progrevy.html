@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · Как выстраивать прогревы и запуски</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F1EA;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;--line-soft:#E6DECE;--em:#143A2D;--em-2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold-2:#C79A45;--gold-h:#977019;--green:#3E8E5E;--serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0c0f0d;overflow:hidden;font-family:var(--sans)}
+#stage{position:absolute;top:50%;left:50%;width:1280px;height:720px;transform:translate(-50%,-50%);transform-origin:center center;background:var(--bg);box-shadow:0 30px 90px -20px rgba(0,0,0,.7)}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;padding:48px 70px 40px;color:var(--ink);flex-direction:column}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{font-family:var(--mono);font-size:13.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+h1{font-family:var(--serif);font-weight:900;font-size:56px;line-height:1.03;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:36px;line-height:1.06;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:21px;line-height:1.15}
+.lead{font-size:20px;line-height:1.45;color:var(--muted);font-weight:500}
+p{font-size:17.5px;line-height:1.5}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 2px}
+.gold{color:var(--gold-h)} b,strong{font-weight:800}
+.spacer{flex:1}
+.foot{margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.foot .brand{display:flex;align-items:center;gap:9px;font-weight:600}
+.foot .brand img{height:16px;opacity:.92}
+.slide--dark{background:var(--em);color:var(--dark-ink)}
+.slide--dark h1,.slide--dark h2,.slide--dark h3{color:#fff}
+.slide--dark .lead{color:rgba(239,233,218,.82)}.slide--dark .kicker{color:var(--gold-2)}
+.slide--dark .foot{color:rgba(239,233,218,.6)}.slide--dark .foot .brand img{filter:brightness(0) invert(1);opacity:.85}
+.slide>*{position:relative;z-index:1}
+.bfield{position:absolute;inset:0;z-index:0;width:1280px;height:720px;pointer-events:none}
+.slide--title{justify-content:center;overflow:hidden}
+.slide--title .heroimg{position:absolute;right:-40px;top:50%;transform:translateY(-50%);height:760px;opacity:.9;z-index:0;pointer-events:none}
+.tpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#F4F1EA;font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 16px;border-radius:30px;font-weight:600}
+.tpill.gold{background:transparent;border:1.5px solid var(--gold);color:var(--gold-h)}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:19px}
+.slide--dark .card{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.card h3{margin-bottom:6px}.card p{font-size:15px;color:var(--muted);line-height:1.4}
+.slide--dark .card p{color:rgba(239,233,218,.72)}
+.num{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:18px;margin-bottom:10px;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.icon{font-size:25px;margin-bottom:7px;display:block}
+.value{margin-top:13px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 18px;font-size:15.5px;line-height:1.4}
+.value b{color:var(--em)}
+.value::before{content:"СУТЬ";font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:2px}
+.slide--dark .value{background:rgba(199,154,69,.15);color:rgba(239,233,218,.9)}.slide--dark .value b{color:#fff}
+.bl{list-style:none;display:flex;flex-direction:column;gap:11px}
+.bl li{position:relative;padding-left:24px;font-size:17.5px;line-height:1.4}
+.bl li::before{content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:50%;background:var(--gold)}
+.slide--dark .bl li{color:rgba(239,233,218,.9)}
+.bl.check li::before{content:"✓";top:0;left:0;width:auto;height:auto;background:none;color:var(--green);font-weight:800;font-size:17px;border-radius:0}
+.quote{font-family:var(--serif);font-weight:700;font-size:40px;line-height:1.18;letter-spacing:-.4px;max-width:1000px}
+.quote .gold{color:var(--gold-2)}
+.flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:9px 16px;font-weight:700;font-size:15px}
+.slide--dark .chip{background:rgba(255,255,255,.07);border-color:rgba(199,154,69,.3);color:#fff}
+.arr{color:var(--gold);font-weight:800;font-size:19px}
+.tag{display:inline-block;background:rgba(176,130,46,.13);color:var(--gold-h);border:1px solid rgba(176,130,46,.35);border-radius:20px;padding:4px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.agenda{display:flex;flex-direction:column;gap:8px}
+.agitem{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 18px}
+.agitem .t{font-family:var(--mono);font-size:12.5px;color:var(--gold-h);font-weight:700;width:30px;flex:0 0 30px}
+.agitem h3{font-size:17px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:32px;flex:1;align-items:center}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;min-height:0}
+.minih{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700;margin-bottom:8px}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#BE8E34,#C79A45);z-index:50;transition:width .3s}
+#count{position:absolute;right:18px;bottom:13px;z-index:50;font-family:var(--mono);font-size:12px;color:#8a8d86;letter-spacing:.1em}
+.hint{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:#555;letter-spacing:.1em;z-index:60;opacity:.5}
+.fmap{display:flex;align-items:stretch;gap:0;margin-top:8px;overflow:auto}
+.fnode{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold-2);border-radius:12px;padding:12px;text-align:center;position:relative}
+.fnode + .fnode{margin-left:26px}
+.fnode + .fnode::before{content:"→";position:absolute;left:-22px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:800;font-size:18px}
+.fnode .fi{font-size:22px}.fnode .ft{font-family:var(--serif);font-weight:700;font-size:14.5px;margin-top:4px;color:var(--em)}
+.fnode .fd{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.3}
+.slide--dark .fnode{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}.slide--dark .fnode .ft{color:#fff}.slide--dark .fnode .fd{color:rgba(239,233,218,.7)}
+.vsl{display:flex;flex-direction:column;gap:7px}
+.vstep{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 14px}
+.vstep .vn{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--gold-h)}
+.vstep .vt{font-size:14.5px}.vstep .vt b{color:var(--em)}
+.stairs{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.stair{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 10px 10px 0;padding:11px 16px;font-size:16px}
+.stair b{color:var(--em)}
+.stair:nth-child(1){margin-right:280px}.stair:nth-child(2){margin-right:190px}.stair:nth-child(3){margin-right:95px}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="p-va" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(20,58,45,.42)">A</text><text x="47" y="64" font-size="34" fill="rgba(20,58,45,.42)">A</text></g></pattern>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text><text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text></g></pattern>
+</defs></svg>
+<div id="stage">
+
+<!-- 1 · TITLE -->
+<section class="slide slide--title active">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va)"/></svg>
+  <img class="heroimg" src="assets/hero-bg.png" alt="">
+  <div style="display:flex;gap:10px;margin-bottom:22px">
+    <span class="tpill">● Практикум A-Players</span>
+    <span class="tpill gold">Опорный материал</span>
+  </div>
+  <h1>Как выстраивать<br><span class="hl">прогревы и запуски</span></h1>
+  <p class="lead" style="margin-top:20px;max-width:760px">Методология прогрева: от вызова желания получить точку Б — до конвертора и вечного догрева. Готовые сценарии на 1 день, 5 дней и 2-недельное реалити.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Прогревы и запуски</span></div>
+</section>
+
+<!-- 2 · AGENDA -->
+<section class="slide">
+  <span class="kicker">Сегодня разберём</span>
+  <h2 style="margin:12px 0 16px">7 блоков про прогревы</h2>
+  <div class="agenda">
+    <div class="agitem"><span class="t">1</span><h3>Что такое прогревы и запуски</h3></div>
+    <div class="agitem"><span class="t">2</span><h3>В чём смысл запуска</h3></div>
+    <div class="agitem"><span class="t">3</span><h3>Как делать лучшие прогревы</h3></div>
+    <div class="agitem"><span class="t">4</span><h3>3 сценария прогрева: 1 день · 5 дней · 2 недели реалити</h3></div>
+    <div class="agitem"><span class="t">5</span><h3>Как вести соцсети и делать контент</h3></div>
+    <div class="agitem"><span class="t">6</span><h3>Чем заканчивать прогрев — конверторы</h3></div>
+    <div class="agitem"><span class="t">7</span><h3>Как сделать бесконечный прогрев</h3></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Программа</span></div>
+</section>
+
+<!-- 3 · BIG IDEA -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Главная мысль</span>
+  <div class="spacer"></div>
+  <p class="quote">Прогрев — это вызов <span class="gold">жгучего желания</span> получить точку Б, к которой ведёт ваш продукт.</p>
+  <p class="lead" style="margin-top:24px;max-width:900px">Ещё <b style="color:#fff">до презентации продукта</b> вызвать потребность в нём и заранее отработать возражения. К моменту продающего вебинара человек уже хочет продукт.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Смысл прогрева</span></div>
+</section>
+
+<!-- 4 · ИЗ ЧЕГО СОСТОИТ ЗАПУСК -->
+<section class="slide">
+  <span class="kicker">Анатомия запуска</span>
+  <h2 style="margin:12px 0 14px">Из чего состоит запуск</h2>
+  <div class="fmap" style="margin-bottom:6px">
+    <div class="fnode"><div class="fi">🔥</div><div class="ft">Прогрев</div><div class="fd">вызываем желание точки Б</div></div>
+    <div class="fnode"><div class="fi">🎯</div><div class="ft">Конвертор</div><div class="fd">продающий веб / диагностика / посты</div></div>
+    <div class="fnode"><div class="fi">♻️</div><div class="ft">Догрев</div><div class="fd">кто не оплатил</div></div>
+    <div class="fnode"><div class="fi">🎤</div><div class="ft">Дозакрывающий</div><div class="fd">веб / разборы / диагностики</div></div>
+    <div class="fnode"><div class="fi">∞</div><div class="ft">Вечный догрев</div><div class="fd">кейсы, что нового</div></div>
+  </div>
+  <div class="grid g4" style="margin-top:16px">
+    <div class="card" style="padding:15px"><h3 style="font-size:16px">Один рычаг</h3><p>Одним действием — сразу большой результат.</p></div>
+    <div class="card" style="padding:15px"><h3 style="font-size:16px">Доверие</h3><p>За время прогрева вызываете доверие и отрабатываете возражения.</p></div>
+    <div class="card" style="padding:15px"><h3 style="font-size:16px">Продавать не продавая</h3><p>К вебинару люди уже хотят продукт.</p></div>
+    <div class="card" style="padding:15px"><h3 style="font-size:16px">Улучшить продукт</h3><p>Обратная связь аудитории по ходу.</p></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Анатомия запуска</span></div>
+</section>
+
+<!-- 5 · ТОЧКА Б -->
+<section class="slide">
+  <span class="kicker">Ядро прогрева</span>
+  <h2 style="margin:12px 0 10px">Точка Б — не цифра, а <span class="hl">образ жизни</span></h2>
+  <p class="lead" style="font-size:17px;margin-bottom:14px">Ваша задача — постоянно транслировать точку Б клиентов. Не можете сами — транслируйте через кейсы. Разложите её по сферам:</p>
+  <div class="flow">
+    <span class="chip">💼 Дело</span><span class="chip">💪 Тело</span><span class="chip">👨‍👩‍👧 Семья</span><span class="chip">🤝 Окружение</span><span class="chip">🏠 Материальное</span><span class="chip">✈️ Путешествия</span>
+  </div>
+  <div class="value"><span>Точка Б — это не только сумма заработка, а <b>образ жизни на этом уровне</b>. Чем конкретнее вы её показываете, тем сильнее желание.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Точка Б</span></div>
+</section>
+
+<!-- 6 · ЛЕСТНИЦА ВОПРОСОВ -->
+<section class="slide">
+  <span class="kicker">Что снимаем в прогреве</span>
+  <h2 style="margin:12px 0 14px">Лестница из 4 сомнений аудитории</h2>
+  <div class="stairs">
+    <div class="stair"><b>1 · Результат возможен</b></div>
+    <div class="stair"><b>2 · Результат возможен для меня</b></div>
+    <div class="stair"><b>3 · Результат возможен по твоей методике</b></div>
+    <div class="stair"><b>4 · Результат возможен с тобой, как с наставником</b></div>
+  </div>
+  <div class="value"><span>Каждый день/этап прогрева закрывает <b>одну ступень</b>. Пройдя все четыре — человек готов к конвертору.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Лестница вопросов</span></div>
+</section>
+
+<!-- 7 · ФИШКИ -->
+<section class="slide">
+  <span class="kicker">Как делать лучшие прогревы</span>
+  <h2 style="margin:12px 0 14px">3 фишки + базовые правила</h2>
+  <div class="grid g3">
+    <div class="card"><span class="icon">🔥</span><h3 style="font-size:18px">Ажиотаж</h3><p>Мы хотим то, чего хотят другие. Показывайте, как участники ждут вебинар и делают результаты.</p></div>
+    <div class="card"><span class="icon">💥</span><h3 style="font-size:18px">Эмоциональное трение</h3><p>Участники должны получать эмоции при каждой коммуникации с вами.</p></div>
+    <div class="card"><span class="icon">🧨</span><h3 style="font-size:18px">Разрушить мифы</h3><p>Снимайте ложные убеждения ниши, мешающие купить.</p></div>
+  </div>
+  <div class="grid g2" style="margin-top:14px;gap:16px">
+    <div class="card" style="padding:14px 18px"><p style="font-size:15px"><b>Каждая коммуникация продаёт идею</b> — в т.ч. что участник сделал правильный выбор. Подсвечивайте: что прошли, какие результаты, сколько впереди.</p></div>
+    <div class="card" style="padding:14px 18px"><p style="font-size:15px"><b>Тех-правила:</b> во время продающих вебинаров — посты каждые <b>10–20 минут</b>. Не больше <b>3 картинок</b> в посте, иначе коллаж.</p></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Фишки прогрева</span></div>
+</section>
+
+<!-- 8 · КОНТЕНТ В КАНАЛЕ -->
+<section class="slide">
+  <span class="kicker">Как вести соцсети</span>
+  <h2 style="margin:12px 0 12px">Из чего состоит контент в канале</h2>
+  <div class="fmap" style="margin-bottom:14px">
+    <div class="fnode"><div class="fi">🗂</div><div class="ft">Рубрики</div><div class="fd">#Реалити · #Мышление · #Кейсы · #Общение · #Прогрев</div></div>
+    <div class="fnode"><div class="fi">🎭</div><div class="ft">Виды</div><div class="fd">экспертный · новостной · развлекательный · вовлекающий · продающий</div></div>
+    <div class="fnode"><div class="fi">📐</div><div class="ft">Форматы</div><div class="fd">кружочки · текст · фото · видео · опросы · аудио</div></div>
+  </div>
+  <div class="split" style="align-items:start">
+    <div>
+      <div class="minih">Советы по текстам</div>
+      <ul class="bl" style="gap:8px;font-size:16px">
+        <li>Пишем <b>как лучшему другу</b> — живым языком</li>
+        <li>Никаких вопросов <b>ради вопроса</b></li>
+      </ul>
+    </div>
+    <div>
+      <div class="minih">Помните</div>
+      <p style="font-size:15.5px;color:var(--muted)">Ваши посты — это <b style="color:var(--em)">~1% усилий, но 100%</b> того, что видят о вас клиенты. Каждый раз берём планку выше.</p>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Контент в канале</span></div>
+</section>
+
+<!-- 9 · КЕЙСЫ -->
+<section class="slide">
+  <span class="kicker">Топливо прогрева</span>
+  <h2 style="margin:12px 0 12px">Кейсы — как собирать и показывать</h2>
+  <div class="split" style="align-items:start">
+    <div>
+      <div class="minih">Требования к видео-кейсам</div>
+      <ul class="bl" style="gap:7px;font-size:15.5px">
+        <li>Приятные люди, эмоции на видео</li>
+        <li>Есть результат (в деньгах или ином изменении)</li>
+        <li>На фоне рабочей атмосферы, не «продают себя»</li>
+        <li>Проверяем и подтверждаем · текстовое сопровождение</li>
+      </ul>
+    </div>
+    <div>
+      <div class="minih">Правила сбора</div>
+      <ul class="bl" style="gap:7px;font-size:15.5px">
+        <li>Кейс — <b>любое изменение в жизни</b>, не только деньги</li>
+        <li>Лучше <b>1 подробный</b>, чем много поверхностных</li>
+        <li>Много сразу → видео с картинками (1 мин ≈ 100 кейсов)</li>
+        <li>Сбор — <b>постоянный процесс</b>, разные архетипы и города</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Кейсы</span></div>
+</section>
+
+<!-- 10 · DIVIDER 3 СЦЕНАРИЯ -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,transparent 45%);mask-image:linear-gradient(90deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Блок 4 · Готовые сценарии</span>
+  <div class="spacer"></div>
+  <h1 style="font-size:60px">3 сценария прогрева</h1>
+  <p class="lead" style="margin-top:16px;max-width:820px">На 1 день, на 5 дней и на 2-недельное реалити. Выбираете под ресурс и глубину запуска.</p>
+  <div class="flow" style="margin-top:22px"><span class="chip">⚡ 1 день · 6–12 сторис</span><span class="chip">📅 5 дней</span><span class="chip">🎬 2 недели · реалити</span></div>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>3 сценария</span></div>
+</section>
+
+<!-- 11 · СЦЕНАРИЙ 1-5 ДНЕЙ -->
+<section class="slide">
+  <span class="kicker">Сценарий · 1–5 дней</span>
+  <h2 style="margin:8px 0 4px">Пошагово по дням <span style="font-size:15px;font-weight:500;color:var(--muted)">(концепция «смотри и повторяй»)</span></h2>
+  <p class="lead" style="font-size:15px;margin-bottom:8px">Умещается и в 1 день сторис (6–12 штук), и растягивается на 5 дней. Задача — вызвать потребность учиться.</p>
+  <div class="vsl">
+    <div class="vstep"><div class="vn">День 1</div><div class="vt">Чем занимаетесь? Каких принципов придерживаетесь? <b>За что топите в нише?</b></div></div>
+    <div class="vstep"><div class="vn">День 2</div><div class="vt">1–3 заблуждения + <b>развейте мифы</b>. Что бесит слышать от клиентов. Покажите экспертизу через разбор.</div></div>
+    <div class="vstep"><div class="vn">День 3</div><div class="vt">Про продукт: <b>как проходит обучение, как решит проблемы, какой результат</b>.</div></div>
+    <div class="vstep"><div class="vn">День 4</div><div class="vt">Ваши результаты и <b>результаты клиентов</b>. Дайте ограничение по местам / стоимости.</div></div>
+    <div class="vstep"><div class="vn">День 5</div><div class="vt">Скрины тех, кто <b>уже хочет купить</b>. Закройте 2–3 самых частых возражения.</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сценарий 1–5 дней</span></div>
+</section>
+
+<!-- 12 · СЦЕНАРИЙ 2 НЕДЕЛИ РЕАЛИТИ -->
+<section class="slide">
+  <span class="kicker">Сценарий · 2 недели реалити</span>
+  <h2 style="margin:8px 0 10px">4 этапа реалити-прогрева (шоу + большая идея)</h2>
+  <div class="grid g2" style="gap:12px">
+    <div class="card"><span class="num">1</span><h3 style="font-size:18px">Доверие</h3><p>Ввести в курс дела, вовлечь. <b>Не прогреваем к продукту.</b> Суть/сроки/цель, преимущества ниши, о герое, ответы на комментарии, посты по мышлению.</p></div>
+    <div class="card"><span class="num">2</span><h3 style="font-size:18px">Этапы ниши</h3><p>Подсветить этапы развития в нише. Разбор ошибок: <b>ошибка → решение → результат</b>. Показать, что всё оцифровывается.</p></div>
+    <div class="card"><span class="num">3</span><h3 style="font-size:18px">Бесплатник</h3><p>Прогрев к 3-дневному вебинару с разбором запуска героя. <b>Эффект топового мероприятия.</b> Определить триггер доходимости и удержания.</p></div>
+    <div class="card"><span class="num">4</span><h3 style="font-size:18px">Дожим</h3><p>Дожимная цепочка для неоплативших. <b>Отсчёт времени до закрытия</b> продаж, дефицит.</p></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Реалити · 4 этапа</span></div>
+</section>
+
+<!-- 13 · КОНВЕРТОРЫ -->
+<section class="slide">
+  <span class="kicker">Чем заканчивать прогрев</span>
+  <h2 style="margin:12px 0 14px">Конверторы после прогрева</h2>
+  <div class="flow">
+    <span class="chip">📋 Анкета</span><span class="chip">🎥 Продающий вебинар</span><span class="chip">📚 3-дневник</span><span class="chip">👥 Фокус-группа</span><span class="chip">🔍 Групповые разборы</span><span class="chip">🩺 Диагностики</span><span class="chip">✍️ Продажа с постов / сториз</span>
+  </div>
+  <div class="split" style="margin-top:18px;align-items:start">
+    <div class="card"><h3 style="font-size:18px">Дозакрывающий вебинар</h3><p style="font-size:15px">Цель — отработать возражения. Зовём: «<b style="color:var(--em)">Даже если вы не зайдёте на мой продукт — помогу сделать стратегию для самостоятельного движения</b>».</p></div>
+    <div>
+      <div class="minih">Выбор конвертора</div>
+      <p style="font-size:15.5px;color:var(--muted)">Чем выше чек и сложнее продукт — тем ближе к личному контакту (диагностика / разбор). Массовый продукт — вебинар / посты.</p>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Конверторы</span></div>
+</section>
+
+<!-- 14 · ВЕЧНЫЙ ДОГРЕВ + ПРИНЦИПЫ -->
+<section class="slide">
+  <span class="kicker">Как сделать бесконечный прогрев</span>
+  <h2 style="margin:12px 0 12px">Вечный догрев</h2>
+  <div class="split" style="align-items:start">
+    <div>
+      <ul class="bl" style="gap:9px">
+        <li>Весь контент — это <b>бесконечный прогрев</b></li>
+        <li>После конверторов и продаж <b>продолжаем догрев</b>: кейсы, что нового, результаты</li>
+        <li>Люди продолжают прогреваться. <b>Не сейчас — купят позже</b></li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="minih">Принципы контента</div>
+      <ul class="bl" style="gap:7px;font-size:15.5px">
+        <li>Ведём к желанию получить точку Б</li>
+        <li>Показываем желаемую точку Б</li>
+        <li>Никаких сложных инструментов</li>
+        <li>Показываем «ЧТО», а не «КАК»</li>
+      </ul>
+    </div>
+  </div>
+  <div class="value"><span>Запуск не заканчивается продажей. <b>Догрев работает на следующую волну</b> — база греется постоянно.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Вечный догрев</span></div>
+</section>
+
+<!-- 15 · FINAL -->
+<section class="slide slide--dark slide--title">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.6;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <img class="heroimg" src="assets/hero-bg.png" alt="" style="filter:saturate(.9)">
+  <span class="kicker">Итог</span>
+  <h1 style="font-size:52px;margin-top:14px">Прогрев — это <span class="gold">система</span>,<br>а не разовый пост</h1>
+  <p class="lead" style="margin-top:18px;max-width:720px">Выберите сценарий (1 день / 5 дней / реалити), ведите по лестнице сомнений к точке Б, завершайте конвертором и никогда не выключайте вечный догрев. Детали — в плейбуке.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Прогревы и запуски</span></div>
+</section>
+
+</div>
+<div id="bar"></div><div id="count"></div>
+<div class="hint">← →  ·  Space  ·  F — полный экран</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+const bar=document.getElementById('bar'),count=document.getElementById('count');
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));bar.style.width=((i+1)/slides.length*100)+'%';count.textContent=(i+1)+' / '+slides.length}
+function next(){show(i+1)}function prev(){show(i-1)}
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}else if(e.key==='Home'){show(0)}else if(e.key==='End'){show(slides.length-1)}else if(e.key==='f'||e.key==='F'){document.documentElement.requestFullscreen?.()}});
+document.getElementById('stage').addEventListener('click',e=>{const r=document.getElementById('stage').getBoundingClientRect();(e.clientX-r.left)/r.width>0.5?next():prev()});
+function fit(){const s=Math.min(window.innerWidth/1280,window.innerHeight/720);document.getElementById('stage').style.transform=`translate(-50%,-50%) scale(${s})`}
+window.addEventListener('resize',fit);const sa=parseInt(location.hash.replace('#',''),10);fit();show(Number.isFinite(sa)&&sa>0?sa-1:0);
+</script>
+</body>
+</html>

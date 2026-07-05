@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · Автоворонки и парники: web/email/чат-боты + AI</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --dark-ink:#EFE9DA; --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0c0f0d;overflow:hidden;font-family:var(--sans)}
+#stage{position:absolute;top:50%;left:50%;width:1280px;height:720px;transform:translate(-50%,-50%);transform-origin:center center;background:var(--bg);box-shadow:0 30px 90px -20px rgba(0,0,0,.7)}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;padding:48px 70px 40px;color:var(--ink);flex-direction:column}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{font-family:var(--mono);font-size:13.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+h1{font-family:var(--serif);font-weight:900;font-size:56px;line-height:1.03;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:36px;line-height:1.06;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:21px;line-height:1.15}
+.lead{font-size:20px;line-height:1.45;color:var(--muted);font-weight:500}
+p{font-size:17.5px;line-height:1.5}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 2px}
+.gold{color:var(--gold-h)} b,strong{font-weight:800}
+.spacer{flex:1}
+.foot{margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.foot .brand{display:flex;align-items:center;gap:9px;font-weight:600}
+.foot .brand img{height:16px;opacity:.92}
+.slide--dark{background:var(--em);color:var(--dark-ink)}
+.slide--dark h1,.slide--dark h2,.slide--dark h3{color:#fff}
+.slide--dark .lead{color:rgba(239,233,218,.82)}
+.slide--dark .kicker{color:var(--gold-2)}
+.slide--dark .foot{color:rgba(239,233,218,.6)}
+.slide--dark .foot .brand img{filter:brightness(0) invert(1);opacity:.85}
+.slide>*{position:relative;z-index:1}
+.bfield{position:absolute;inset:0;z-index:0;width:1280px;height:720px;pointer-events:none}
+.slide--title{justify-content:center;overflow:hidden}
+.slide--title .heroimg{position:absolute;right:-40px;top:50%;transform:translateY(-50%);height:760px;opacity:.9;z-index:0;pointer-events:none}
+.slide--title h1{font-size:58px;max-width:940px}
+.tpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#F4F1EA;font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 16px;border-radius:30px;font-weight:600}
+.tpill.gold{background:transparent;border:1.5px solid var(--gold);color:var(--gold-h)}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:19px}
+.slide--dark .card{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.card h3{margin-bottom:6px}.card p{font-size:15px;color:var(--muted);line-height:1.4}
+.slide--dark .card p{color:rgba(239,233,218,.72)}
+.num{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:18px;margin-bottom:10px;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.icon{font-size:25px;margin-bottom:7px;display:block}
+.value{margin-top:13px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 18px;font-size:15.5px;line-height:1.4}
+.value b{color:var(--em)}
+.value::before{content:"ЦЕННОСТЬ";font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:2px}
+.slide--dark .value{background:rgba(199,154,69,.15);color:rgba(239,233,218,.9)}.slide--dark .value b{color:#fff}
+.bl{list-style:none;display:flex;flex-direction:column;gap:11px}
+.bl li{position:relative;padding-left:24px;font-size:17.5px;line-height:1.4}
+.bl li::before{content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:50%;background:var(--gold)}
+.slide--dark .bl li{color:rgba(239,233,218,.9)}
+.bl.check li::before{content:"✓";top:0;left:0;width:auto;height:auto;background:none;color:var(--green);font-weight:800;font-size:17px;border-radius:0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--gold-h);text-align:left;padding:8px 11px;border-bottom:2px solid var(--line)}
+td{padding:7px 11px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.3;color:var(--ink)}
+tr:nth-child(even) td{background:rgba(255,255,255,.45)}td b{color:var(--em)}
+.quote{font-family:var(--serif);font-weight:700;font-size:40px;line-height:1.18;letter-spacing:-.4px;max-width:1000px}
+.quote .gold{color:var(--gold-2)}
+.flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:9px 16px;font-weight:700;font-size:15px}
+.slide--dark .chip{background:rgba(255,255,255,.07);border-color:rgba(199,154,69,.3);color:#fff}
+.arr{color:var(--gold);font-weight:800;font-size:19px}
+.tag{display:inline-block;background:rgba(176,130,46,.13);color:var(--gold-h);border:1px solid rgba(176,130,46,.35);border-radius:20px;padding:4px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.agenda{display:flex;flex-direction:column;gap:8px}
+.agitem{display:flex;align-items:center;gap:16px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 18px}
+.agitem .t{font-family:var(--mono);font-size:12.5px;color:var(--gold-h);font-weight:700;width:74px;flex:0 0 74px}
+.agitem h3{font-size:17px}.agitem .d{margin-left:auto;font-size:13.5px;color:var(--muted);text-align:right;max-width:360px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:32px;flex:1;align-items:center}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#BE8E34,#C79A45);z-index:50;transition:width .3s}
+#count{position:absolute;right:18px;bottom:13px;z-index:50;font-family:var(--mono);font-size:12px;color:#8a8d86;letter-spacing:.1em}
+.hint{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:#555;letter-spacing:.1em;z-index:60;opacity:.5}
+/* prompt block */
+.prompt{background:#10231b;border:1px solid #21453a;border-left:4px solid var(--gold);border-radius:12px;padding:12px 15px;margin-top:12px;font-family:var(--mono);font-size:12.5px;line-height:1.5;color:#d7e6de;overflow:auto;position:relative;white-space:pre-wrap}
+.prompt .pl{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-2);font-weight:700;margin-bottom:7px;display:block}
+.prompt .c{color:#7fa394}
+.prompt b{color:#fff;font-weight:700}
+/* parallel agents */
+.agents{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:6px}
+.term{background:#10231b;border:1px solid #2c5647;border-radius:12px;overflow:hidden}
+.term .th{background:#17332a;padding:7px 11px;display:flex;align-items:center;gap:6px;border-bottom:1px solid #2c5647}
+.term .th i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.term .th b{margin-left:6px;color:#cfe3d9;font-family:var(--mono);font-size:11px;font-weight:700}
+.term .tb{padding:11px 12px}
+.term .tb .k{font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;margin-bottom:4px}
+.term .tb .d{font-size:12px;color:#9db8ac;line-height:1.35}
+.term .run{margin-top:8px;font-family:var(--mono);font-size:10.5px;color:#5fbf84;display:flex;align-items:center;gap:6px}
+.term .run::before{content:"●";animation:blink 1.1s steps(2) infinite}
+@keyframes blink{50%{opacity:.2}}
+/* funnel map */
+.fmap{display:flex;align-items:stretch;gap:0;margin-top:8px;overflow:auto}
+.fnode{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold-2);border-radius:12px;padding:12px 12px;text-align:center;position:relative}
+.fnode + .fnode{margin-left:26px}
+.fnode + .fnode::before{content:"→";position:absolute;left:-22px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:800;font-size:18px}
+.fnode .fi{font-size:22px}.fnode .ft{font-family:var(--serif);font-weight:700;font-size:14.5px;margin-top:4px;color:var(--em)}
+.fnode .fd{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.3}
+.slide--dark .fnode{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}.slide--dark .fnode .ft{color:#fff}.slide--dark .fnode .fd{color:rgba(239,233,218,.7)}
+/* vsl steps */
+.vsl{display:flex;flex-direction:column;gap:7px}
+.vstep{display:grid;grid-template-columns:30px 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 14px}
+.vstep .vn{width:26px;height:26px;border-radius:7px;background:var(--em);color:#fff;font-family:var(--serif);font-weight:800;font-size:13px;display:grid;place-items:center}
+.vstep .vt{font-size:14.5px}.vstep .vt b{color:var(--em)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:26px;flex:1;min-height:0}
+.minih{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700;margin-bottom:8px}
+/* VPC canvas */
+.vpccanvas{display:flex;align-items:center;justify-content:center;gap:14px}
+.vpcwrap{text-align:center}
+.vpclab{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-h);font-weight:700;margin-bottom:7px}
+.vpc-sq,.vpc-ci{width:196px;height:196px;overflow:hidden;display:flex;flex-direction:column;background:var(--card)}
+.vpc-sq{border:2px solid var(--em);border-radius:14px}
+.vpc-ci{border:2px solid var(--gold-2);border-radius:50%}
+.vpc-cell{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3px 18px}
+.vpc-sq .vpc-cell+.vpc-cell{border-top:1px solid var(--line)}
+.vpc-ci .vpc-cell+.vpc-cell{border-top:1px solid var(--line-soft)}
+.vpc-cell b{font-size:13px;color:var(--em);line-height:1.1}
+.vpc-cell span{font-size:10px;color:var(--muted);line-height:1.15;margin-top:1px}
+.vpcfit{font-family:var(--serif);font-weight:800;color:var(--gold-h);font-size:20px}
+/* кнопки-ссылки на материалы + красный плейсхолдер */
+.btnlink{display:inline-flex;align-items:center;gap:7px;background:var(--em);color:#fff;border-radius:9px;padding:7px 13px;font-size:13px;font-weight:700;text-decoration:none;font-family:var(--sans);border:none;white-space:nowrap}
+.btnlink.gold{background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A}
+.slide--dark .btnlink{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(199,154,69,.4)}
+.ph-red{font-family:var(--mono);font-size:11px;font-weight:700;color:#b23b2e;background:rgba(178,59,46,.08);border:1.5px dashed #b23b2e;border-radius:6px;padding:2px 8px;white-space:nowrap}
+.matbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 0 6px}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="p-va" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(20,58,45,.42)">A</text><text x="47" y="64" font-size="34" fill="rgba(20,58,45,.42)">A</text></g></pattern>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text><text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text></g></pattern>
+</defs></svg>
+<div id="stage">
+
+<!-- 1 · TITLE -->
+<section class="slide slide--title active">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va)"/></svg>
+  <img class="heroimg" src="assets/hero-bg.png" alt="">
+  <div style="display:flex;gap:10px;margin-bottom:22px">
+    <span class="tpill">● Практикум A-Players · 7 поток</span>
+    <span class="tpill gold">Финальная встреча</span>
+  </div>
+  <h1>Автоворонки и парники:<br>web · email · чат-боты <span class="hl">+ AI</span></h1>
+  <p class="lead" style="margin-top:20px;max-width:760px">Живая рабочая сессия: сегментируем базу, находим CORE-сегменты и <b style="color:var(--em)">собираем автоворонку под ядро продукта прямо на встрече</b> — параллельно несколькими AI-агентами.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Автоворонки + AI</span></div>
+</section>
+
+<!-- 2 · ОБРАЗ РЕЗУЛЬТАТА -->
+<section class="slide">
+  <span class="kicker">Образ результата</span>
+  <h2 style="margin:12px 0 16px">Что унесём за встречу</h2>
+  <div class="grid g4">
+    <div class="card"><span class="icon">🎯</span><h3 style="font-size:18px">CORE-сегменты</h3><p>Просегментировали базу (RFM + потенциал) и вытащили ядро, под которое строим воронку.</p></div>
+    <div class="card"><span class="icon">🗺</span><h3 style="font-size:18px">Карта автоворонки</h3><p>Цепочка вокруг ядра продукта: лид-магнит → прогрев → вебинар/VSL → оплата → база.</p></div>
+    <div class="card"><span class="icon">🎬</span><h3 style="font-size:18px">Вебинарная + VSL</h3><p>Продающая страница под CORE-сегмент и VSL-воронка для экспертного продукта.</p></div>
+    <div class="card"><span class="icon">🧠</span><h3 style="font-size:18px">Второй мозг</h3><p>Сам ресёрчит нишу, генерит контент и картинки в вашем фирменном стиле.</p></div>
+  </div>
+  <div class="value"><span>Всё собираем <b>живьём и параллельно</b>: пока 4 агента генерят — разбираем теорию (VPC, парниковые сценарии, AI-копирайтинг). Никакого «сидим и ждём».</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Результат</span></div>
+</section>
+
+<!-- 3 · ГЛАВНЫЙ ПРИНЦИП (dark) -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Главный принцип</span>
+  <div class="spacer"></div>
+  <p class="quote">Не 33 агента «поиграться»,<br>а <span class="gold">одно бутылочное горлышко</span>.</p>
+  <p class="lead" style="margin-top:24px;max-width:900px">Сегодня это <b style="color:#fff">работа с базой → реактивация → автоворонка вокруг ядра продукта</b>. Один твёрдый актив, который двигает выручку, а не десять недоделанных.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Фокус</span></div>
+</section>
+
+<!-- 4 · ПАРАЛЛЕЛЬНЫЕ АГЕНТЫ (механика) -->
+<section class="slide">
+  <span class="kicker">Механика встречи · ключевое</span>
+  <h2 style="margin:10px 0 6px">Запускаем <span class="hl">несколько агентов параллельно</span></h2>
+  <p class="lead" style="font-size:16.5px;margin-bottom:12px">Одна папка проекта, несколько окон терминала — в каждом свой <code style="font-family:var(--mono);background:#EAE3D3;padding:1px 5px;border-radius:4px">claude</code> со своим мастер-промтом. Пока агенты генерят — мы разбираем теорию.</p>
+  <div class="agents">
+    <div class="term"><div class="th"><i style="background:#e0765f"></i><i style="background:#dbb04e"></i><i style="background:#5fbf84"></i><b>terminal · agent 1</b></div><div class="tb"><div class="k">Сегментация → CORE</div><div class="d">RFM + потенциал, вытащить ядро под воронку</div><div class="run">генерит…</div></div></div>
+    <div class="term"><div class="th"><i style="background:#e0765f"></i><i style="background:#dbb04e"></i><i style="background:#5fbf84"></i><b>terminal · agent 2</b></div><div class="tb"><div class="k">Deep research</div><div class="d">лучшие воронки под нишу и ЦА</div><div class="run">генерит…</div></div></div>
+    <div class="term"><div class="th"><i style="background:#e0765f"></i><i style="background:#dbb04e"></i><i style="background:#5fbf84"></i><b>terminal · agent 3</b></div><div class="tb"><div class="k">Вебинарная воронка</div><div class="d">оффер + прогрев под CORE-сегмент</div><div class="run">генерит…</div></div></div>
+    <div class="term"><div class="th"><i style="background:#e0765f"></i><i style="background:#dbb04e"></i><i style="background:#5fbf84"></i><b>terminal · agent 4</b></div><div class="tb"><div class="k">VSL-лендинг</div><div class="d">экспертный продукт, страница + картинки</div><div class="run">генерит…</div></div></div>
+  </div>
+  <div class="value"><span><b>Как запустить:</b> в VS&nbsp;Code открой <b>несколько терминалов</b> (Terminal → Split / New) в одной папке → в каждом <code style="font-family:var(--mono);background:rgba(20,58,45,.12);padding:1px 5px;border-radius:4px;color:var(--em)">claude</code> → свой промт. Правят файлы параллельно — используй <b>git worktree</b> на агента, чтобы не мешали друг другу.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Параллельные агенты</span></div>
+</section>
+
+<!-- 5 · ОПОРНЫЕ МАТЕРИАЛЫ -->
+<section class="slide">
+  <span class="kicker">Подготовка · папка контекста</span>
+  <h2 style="margin:10px 0 12px">Опорные материалы для сильной воронки</h2>
+  <div class="split" style="align-items:start">
+    <div>
+      <div class="minih">Смыслы и копирайт (из обёртки)</div>
+      <ul class="bl check" style="gap:8px">
+        <li><b>Сегментация базы</b> (RFM + потенциал) — из прошлого модуля</li>
+        <li><b>JTBD</b> · <b>VPC</b> (value proposition canvas)</li>
+        <li><b>ToV</b> · бриф о компании · отстройка от конкурентов</li>
+        <li><b>Оффер</b>, продукты и цены, коммерческие показатели</li>
+      </ul>
+    </div>
+    <div>
+      <div class="minih">Внешние опоры (лучшие практики)</div>
+      <ul class="bl" style="gap:9px">
+        <li><b>arppu.ru/project</b> — банк практик по реактивации базы</li>
+        <li><b>Плейбук вебинара</b> + <b>VSL-плейбук</b> — лежат в папке модуля, обязательно прикладываем к промптам</li>
+        <li>Инструменты: Senler · SendPulse · Tilda · Notion</li>
+      </ul>
+      <div class="value" style="margin-top:14px"><span>Без папки контекста AI <b>фантазирует</b>, а не проектирует под ваш бизнес. Сначала контекст — потом воронка.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Опорные материалы</span></div>
+</section>
+
+<!-- 6 · RUN-OF-SHOW -->
+<section class="slide">
+  <span class="kicker">Как пройдёт встреча</span>
+  <h2 style="margin:10px 0 12px">Run-of-show · параллельные треки + теория между ними</h2>
+  <table>
+    <thead><tr><th>Блок</th><th>Что запускаем (агент)</th><th>Пока генерит — разбираем</th></tr></thead>
+    <tbody>
+      <tr><td><b>0 · Setup</b></td><td>Папка контекста, несколько терминалов, скиллы</td><td>Принцип «одно горлышко» + параллельность</td></tr>
+      <tr><td><b>1 · База</b></td><td>Агент 1 — сегментация → CORE</td><td><b>Теория VPC</b> (value proposition canvas)</td></tr>
+      <tr><td><b>2 · Ресёрч</b></td><td>Агент 2 — deep research воронок под нишу</td><td>Роли автоворонок в продажах и квалификации</td></tr>
+      <tr><td><b>3 · Вебинар</b></td><td>Агент 3 — вебинарная воронка под CORE</td><td>Цепочка прогрева B2B/B2C · парниковые сценарии</td></tr>
+      <tr><td><b>4 · VSL</b></td><td>Агент 4 — VSL-лендинг + картинки</td><td>Основы AI-копирайтинга и триггеров</td></tr>
+      <tr><td><b>5 · Второй мозг</b></td><td>Крон-ресёрч ниши + контент-генерация</td><td>Скиллы: что ставим и как</td></tr>
+    </tbody>
+  </table>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Run-of-show</span></div>
+</section>
+
+<!-- 7 · DIVIDER ШАГ 1 -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,transparent 45%);mask-image:linear-gradient(90deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Шаг 1 · Агент 1 (запускаем первым)</span>
+  <div class="spacer"></div>
+  <h1 style="font-size:62px">База → CORE-сегменты</h1>
+  <p class="lead" style="margin-top:16px;max-width:820px">Из всей базы вытаскиваем ядро — сегменты, под которые строим воронку и вебинар. Запускаем агента и идём объяснять VPC.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 1</span></div>
+</section>
+
+<!-- 8 · СЕГМЕНТАЦИЯ → CORE + ПРОМПТ -->
+<section class="slide">
+  <span class="kicker">Шаг 1 · Сегментация</span>
+  <h2 style="margin:8px 0 8px">RFM + потенциал → вытаскиваем CORE-сегменты</h2>
+  <div class="fmap" style="margin-bottom:4px">
+    <div class="fnode"><div class="fi">🗄</div><div class="ft">Вся база</div><div class="fd">выгрузка из CRM</div></div>
+    <div class="fnode"><div class="fi">🔠</div><div class="ft">RFM + потенциал</div><div class="fd">7 сегментов + AA/AC/CC</div></div>
+    <div class="fnode"><div class="fi">⭐</div><div class="ft">CORE-сегменты</div><div class="fd">кого реально звать</div></div>
+    <div class="fnode"><div class="fi">📣</div><div class="ft">Воронка под них</div><div class="fd">вебинар / VSL / бот</div></div>
+  </div>
+  <div class="prompt"><span class="pl">Промпт · agent 1 · segmentaciya-core.md</span><span class="c"># дай агенту доступ к выгрузке базы (read-only) + папку контекста</span>
+Проанализируй мою базу клиентов и опорные материалы (JTBD, VPC, ToV).
+1) Построй <b>RFM</b> и <b>потенциал×факт (AA/AC/CC)</b>, распредели базу по сегментам.
+2) Выдели <b>2–3 CORE-сегмента</b>, которые сейчас выгоднее всего вести на вебинар/в воронку
+   (высокий потенциал реактивации × размер × маржинальность). Обоснуй цифрами.
+3) По каждому CORE-сегменту: боли, JTBD, на какой оффер откликнется, какой формат воронки.
+4) Собери <b>списки контактов</b> по CORE-сегментам и черновик персонального приглашения.
+<span class="c"># безопасность: только чтение, ничего не менять и не удалять в CRM</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сегментация → CORE</span></div>
+</section>
+
+<!-- 9 · VPC СХЕМА + ПРАВИЛА (пока агент работает) -->
+<section class="slide">
+  <span class="kicker">Пока агент 1 генерит · теория</span>
+  <h2 style="margin:8px 0 8px">VPC — Value Proposition Canvas</h2>
+  <div class="two" style="align-items:center">
+    <div>
+      <div class="vpccanvas">
+        <div class="vpcwrap">
+          <div class="vpclab">Карта ценности</div>
+          <div class="vpc-sq">
+            <div class="vpc-cell"><b>Создатели выгод</b><span>как даём результат</span></div>
+            <div class="vpc-cell"><b>Продукты и услуги</b><span>что предлагаем</span></div>
+            <div class="vpc-cell"><b>Обезболивающие</b><span>как снимаем боли</span></div>
+          </div>
+        </div>
+        <div class="vpcfit">⟷<div style="font-size:9px;font-family:var(--mono);color:var(--muted);letter-spacing:.05em">FIT</div></div>
+        <div class="vpcwrap">
+          <div class="vpclab">Профиль клиента</div>
+          <div class="vpc-ci">
+            <div class="vpc-cell"><b>Выгоды</b><span>какой результат хочет</span></div>
+            <div class="vpc-cell"><b>Задачи (Jobs)</b><span>что пытается сделать</span></div>
+            <div class="vpc-cell"><b>Боли</b><span>что мешает / страшит</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="minih">Правила заполнения</div>
+      <ul class="bl" style="gap:7px;font-size:15px">
+        <li><b>Сначала правая сторона</b> (профиль клиента), потом левая — не наоборот</li>
+        <li><b>Дословный язык клиента</b> — из звонков, отзывов, переписок, не свои формулировки</li>
+        <li><b>Ранжируй по важности</b> — топ-боли и топ-выгоды сверху</li>
+        <li><b>FIT</b> = каждое «обезболивающее» бьёт в конкретную боль, каждый «создатель выгод» — в конкретную выгоду</li>
+      </ul>
+      <div class="value" style="margin-top:12px"><span><b>Оффер = точное совпадение</b> сторон. Промпт сборки: <span style="font-family:var(--mono);color:var(--gold-h)">Промпты/0-vpc.md</span></span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>VPC</span></div>
+</section>
+
+<!-- 10 · DIVIDER ШАГ 2 -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,transparent 45%);mask-image:linear-gradient(90deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Шаг 2 · Агент 2 (параллельно с 1)</span>
+  <div class="spacer"></div>
+  <h1 style="font-size:58px">Deep research воронок<br>под нишу и ЦА</h1>
+  <p class="lead" style="margin-top:16px;max-width:840px">Пока агент 1 сегментирует — второй агент ищет, какие авто/воронки реально работают именно в этой нише.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 2</span></div>
+</section>
+
+<!-- 11 · DEEP RESEARCH ПРОМПТ -->
+<section class="slide">
+  <span class="kicker">Шаг 2 · Deep research</span>
+  <h2 style="margin:8px 0 8px">Находим самые эффективные воронки под нишу</h2>
+  <p class="lead" style="font-size:16px;margin-bottom:8px">Скилл <b>deep-research</b>: агент веером ищет источники, проверяет и собирает отчёт. Запускаем в отдельном терминале.</p>
+  <div class="prompt"><span class="pl">Промпт · agent 2 · deep-research-voronki.md</span><span class="c"># включи скилл deep-research</span>
+Проведи глубокий ресёрч по нише «<b>[ниша клиента]</b>» и ЦА «<b>[описание ЦА / CORE-сегмент]</b>».
+Задача: найти <b>рабочие авто/воронки</b>, которые дают заявки и продажи именно здесь.
+Собери и разложи:
+1) <b>3–5 архетипов воронок</b> для этой ниши (вебинар, VSL, квиз, лид-магнит+email, чат-бот, tripwire),
+   с примерами и типичными конверсиями по этапам.
+2) <b>Крючки и офферы</b>, которые заходят этой ЦА; заголовки и триггеры.
+3) <b>Каналы трафика</b> под каждую воронку и ориентир по CPL.
+4) <b>Рекомендация №1</b>: какую воронку собрать первой под наш CORE-сегмент и почему.
+Формат: краткий отчёт с источниками + чек-лист «что собрать».</div>
+  <div class="value"><span>На выходе — не «мнение», а <b>карта проверенных воронок под конкретную нишу</b>, из которой сразу берём архетип в работу.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Deep research</span></div>
+</section>
+
+<!-- 12 · DIVIDER ШАГ 3 -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,transparent 45%);mask-image:linear-gradient(90deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Шаг 3 · Агент 3</span>
+  <div class="spacer"></div>
+  <h1 style="font-size:60px">Вебинарная воронка<br>под CORE-сегмент</h1>
+  <p class="lead" style="margin-top:16px;max-width:820px">Собираем продающую цепочку под ядро: оффер → регистрация → прогрев → эфир → дожим.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 3</span></div>
+</section>
+
+<!-- 13 · ВЕБИНАРНАЯ ВОРОНКА + ПРОМПТ -->
+<section class="slide">
+  <span class="kicker">Шаг 3 · Вебинар</span>
+  <h2 style="margin:8px 0 4px">Карта вебинарной воронки</h2>
+  <div class="matbar"><a class="btnlink gold" href="https://docs.google.com/document/d/15HhBU3s4K1kRoVcTUzQThBTL8k4rvApCYKjnTYPu108/edit" target="_blank">📄 Плейбук продающего вебинара</a></div>
+  <div class="fmap" style="margin-bottom:4px">
+    <div class="fnode"><div class="fi">🎯</div><div class="ft">Оффер</div><div class="fd">под CORE-сегмент</div></div>
+    <div class="fnode"><div class="fi">📝</div><div class="ft">Регистрация</div><div class="fd">лендинг + форма</div></div>
+    <div class="fnode"><div class="fi">🔥</div><div class="ft">Прогрев</div><div class="fd">email/бот 3-2-1 день</div></div>
+    <div class="fnode"><div class="fi">🎥</div><div class="ft">Эфир</div><div class="fd">контент + оффер</div></div>
+    <div class="fnode"><div class="fi">💰</div><div class="ft">Дожим</div><div class="fd">TLT + воронка дожима</div></div>
+  </div>
+  <div class="prompt"><span class="pl">Промпт · agent 3 · webinar-voronka.md</span><span class="c"># ОБЯЗАТЕЛЬНО приложи: «Плейбук — продающий вебинар (A-Players).docx» + CORE-сегмент, VPC, ToV
+# строй строго по плейбуку (поминутный сценарий, бенчмарки, механики CTA)</span>
+Собери вебинарную воронку под CORE-сегмент «<b>[сегмент]</b>» и продукт «<b>[продукт]</b>»,
+<b>опираясь на приложенный плейбук продающего вебинара</b>.
+1) <b>Оффер вебинара</b> (заголовок + подзаголовок) на стыке боли и выгоды из VPC.
+2) <b>Сценарий эфира</b> по плейбуку: поминутная структура → переход к офферу → закрытие.
+3) <b>Цепочка прогрева</b> (email + бот): напоминания T-24ч / T-1ч / T-10мин + бонус за ранний вход.
+4) Свяжи с <b>дожимом</b> (TLT/воронка дожима из модуля аналитики).
+Выдай сценарий эфира + тексты писем/бота. Лендинг регистрации — отдельным агентом (см. далее).</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Вебинарная воронка</span></div>
+</section>
+
+<!-- 13b · ЛЕНДИНГ РЕГИСТРАЦИИ → TELEGRAM-БОТ -->
+<section class="slide">
+  <span class="kicker">Шаг 3 · Регистрация → прогрев в боте</span>
+  <h2 style="margin:8px 0 8px">Одноэкранный лендинг → Telegram-бот</h2>
+  <div class="fmap" style="margin-bottom:4px">
+    <div class="fnode"><div class="fi">🧲</div><div class="ft">1 экран + подарок</div><div class="fd">оффер · CTA · лид-магнит</div></div>
+    <div class="fnode"><div class="fi">📝</div><div class="ft">Регистрация</div><div class="fd">минимум полей</div></div>
+    <div class="fnode"><div class="fi">🤖</div><div class="ft">Авто-подписка в бот</div><div class="fd">не «спасибо», а Telegram</div></div>
+    <div class="fnode"><div class="fi">🔥</div><div class="ft">Прогрев в боте</div><div class="fd">T-24ч · T-1ч · T-10мин + бонус</div></div>
+    <div class="fnode"><div class="fi">🎥</div><div class="ft">Эфир</div><div class="fd">ссылка из бота</div></div>
+  </div>
+  <div class="two" style="align-items:start">
+    <div>
+      <div class="minih">Лучшие практики страницы</div>
+      <ul class="bl" style="gap:6px;font-size:14.5px">
+        <li>1 экран без скролла, <b>мощный CTA</b>, дата + таймер</li>
+        <li><b>Подарок за регистрацию</b> (чек-лист / шаблон / разбор)</li>
+        <li>Форма — <b>минимум полей</b> + соц.доказательство (спикер)</li>
+        <li>После заявки — <b>сразу в Telegram-бот</b>, где продолжается прогрев</li>
+      </ul>
+    </div>
+    <div class="prompt" style="margin-top:0"><span class="pl">Промпт · agent 3b · lending-registracii-bot.md</span><span class="c"># опора: оффер вебинара (agent 3), ToV, брендбук</span>
+Собери <b>одноэкранный лендинг регистрации</b> на вебинар «<b>[тема]</b>» под CORE-сегмент:
+заголовок-оффер + <b>подарок</b> за регистрацию + мощный CTA + форма (мин. полей) +
+дата/таймер + спикер. После заявки — <b>кнопка «Продолжить в Telegram»</b>: бот
+подтверждает запись, выдаёт подарок и греет — <b>T-24ч / T-1ч / T-10мин</b> + бонус за
+ранний вход + ссылка на эфир. Отдай HTML (web-conversion-design, картинки nano-banana)
++ сценарий бота по таймингам.</div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Лендинг → бот</span></div>
+</section>
+
+<!-- 14 · DIVIDER ШАГ 4 -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,transparent 45%);mask-image:linear-gradient(90deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Шаг 4 · Агент 4</span>
+  <div class="spacer"></div>
+  <h1 style="font-size:62px">VSL-воронка<br>для экспертных продуктов</h1>
+  <p class="lead" style="margin-top:16px;max-width:820px">Video Sales Letter: экспертное видео/лонгрид ведёт от боли к заявке. Разбор на реальном примере.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 4</span></div>
+</section>
+
+<!-- 15 · VSL СТРУКТУРА + ПРОМПТ -->
+<section class="slide">
+  <span class="kicker">Шаг 4 · VSL</span>
+  <h2 style="margin:8px 0 4px">Структура VSL-лендинга <span style="font-size:15px;font-weight:500;color:var(--muted)">(разбор примера)</span></h2>
+  <div class="matbar"><a class="btnlink gold" href="https://docs.google.com/document/d/1vU2WRkqyF6LEeYfH9PmYx-ej9uKJcOfTk5cHSH1gE30/edit" target="_blank">📄 VSL Playbook (мировые практики)</a></div>
+  <div class="two">
+    <div>
+      <div class="vsl">
+        <div class="vstep"><div class="vn">1</div><div class="vt"><b>Оффер-заголовок</b> — проблема + обещание (10-мин видео)</div></div>
+        <div class="vstep"><div class="vn">2</div><div class="vt"><b>Видео / лонгрид</b> + CTA «смотреть» (повтор 3–4×)</div></div>
+        <div class="vstep"><div class="vn">3</div><div class="vt"><b>Якорь боли</b> — чек-лист симптомов «узнали себя?»</div></div>
+        <div class="vstep"><div class="vn">4</div><div class="vt"><b>Программа</b> — 4 блока выгод</div></div>
+        <div class="vstep"><div class="vn">5</div><div class="vt"><b>Спикер-авторитет</b> — фото + регалии + подход</div></div>
+        <div class="vstep"><div class="vn">6</div><div class="vt"><b>Соц.доказательство</b> — 5 отзывов с эмоцией+результатом</div></div>
+        <div class="vstep"><div class="vn">7</div><div class="vt"><b>Финальный CTA</b> + заявка</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="minih" style="color:var(--red)">Что добавляем сверх примера</div>
+      <ul class="bl" style="gap:7px">
+        <li><b>Дедлайн / лимит мест</b> — дефицит</li>
+        <li><b>Форма заявки</b>, не только кнопки</li>
+        <li><b>FAQ</b> — снятие возражений</li>
+        <li><b>Гарантия</b> — снятие риска</li>
+      </ul>
+      <div class="prompt" style="margin-top:12px"><span class="pl">Промпт · agent 4 · vsl-lending.md</span><span class="c"># ОБЯЗАТЕЛЬНО приложи «VSL Playbook.docx» — строй строго по нему</span>
+Собери <b>VSL-воронку</b> (чек $5K+) под «<b>[продукт]</b>» и CORE-сегмент.
+Фундамент: аватар, <b>Big Promise (8 слов)</b>, уникальный механизм, оффер
+(закон: оффер = 80% успеха). Архитектура: [опт-ин] → VSL 8–25 мин →
+<b>анкета</b> → бронь звонка → дожим → звонок. Страница: оффер → видео →
+якорь боли → программа → спикер → отзывы → дедлайн → форма → FAQ →
+гарантия (честная рамка). HTML (web-conversion-design), картинки nano-banana.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>VSL-структура</span></div>
+</section>
+
+<!-- 16 · ПАРНИКОВЫЕ СЦЕНАРИИ + КАНАЛЫ -->
+<section class="slide">
+  <span class="kicker">Парники · каналы · AI-копирайтинг</span>
+  <h2 style="margin:10px 0 12px">Парниковые сценарии и где их собирать</h2>
+  <div class="grid g3">
+    <div class="card"><span class="icon">🧪</span><h3 style="font-size:18px">Тесты / квизы</h3><p>Вовлечение + самосегментация лида. Ветвление оффера по ответам.</p></div>
+    <div class="card"><span class="icon">📬</span><h3 style="font-size:18px">Подписки</h3><p>Лид-магнит → серия писем/бота, микро-прогрев к целевому действию.</p></div>
+    <div class="card"><span class="icon">🔥</span><h3 style="font-size:18px">Прогревы</h3><p>Контент-цепочка (B2B длиннее, B2C короче) → квалификация → заявка.</p></div>
+  </div>
+  <div class="split" style="margin-top:16px;align-items:start">
+    <div>
+      <div class="minih">Инструменты сборки</div>
+      <div class="flow"><span class="chip">Senler</span><span class="chip">SendPulse</span><span class="chip">Tilda</span><span class="chip">Notion</span></div>
+    </div>
+    <div>
+      <div class="minih">AI-копирайтинг</div>
+      <p style="font-size:15px;color:var(--muted)">GPT/Claude генерит письма и бот-цепочки под триггеры (боль → интрига → выгода → CTA). Роль воронки — не только продать, но <b style="color:var(--em)">квалифицировать</b> лида к продажам.</p>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Парники · каналы</span></div>
+</section>
+
+<!-- 16b · ПРОГРЕВ · СТРУКТУРА И ВРЕМЯ -->
+<section class="slide">
+  <span class="kicker">Прогрев · структура и время</span>
+  <h2 style="margin:8px 0 4px">Запуск = прогрев → конвертор → догрев → вечный догрев</h2>
+  <div class="matbar">
+    <a class="btnlink gold" href="progrevy.html" target="_blank">📊 Презентация: как выстраивать прогревы</a>
+    <a class="btnlink" href="https://docs.google.com/document/d/1adImAK4tl1MCsrgO_-eThOtVACOsDkoWLMj2U1YXXFU/edit" target="_blank">📄 Плейбук прогревов</a>
+  </div>
+  <div class="fmap" style="margin-bottom:8px">
+    <div class="fnode"><div class="fi">🔥</div><div class="ft">Прогрев</div><div class="fd">желание точки Б</div></div>
+    <div class="fnode"><div class="fi">🎯</div><div class="ft">Конвертор</div><div class="fd">веб / диагностика / посты</div></div>
+    <div class="fnode"><div class="fi">♻️</div><div class="ft">Догрев</div><div class="fd">неоплатившие</div></div>
+    <div class="fnode"><div class="fi">🎤</div><div class="ft">Дозакрывающий</div><div class="fd">отработка возражений</div></div>
+    <div class="fnode"><div class="fi">∞</div><div class="ft">Вечный догрев</div><div class="fd">кейсы · «не сейчас — потом»</div></div>
+  </div>
+  <div class="grid g3">
+    <div class="card"><span class="icon">⚡</span><h3 style="font-size:17px">1-дневный</h3><p>6–12 сторис. Концепция «смотри и повторяй». Быстрый прогрев к конвертору.</p></div>
+    <div class="card"><span class="icon">📅</span><h3 style="font-size:17px">5-дневный</h3><p>По дню на ступень: доверие → мифы → продукт → результаты → дефицит. Можно сжать до 1–2–3 дней.</p></div>
+    <div class="card"><span class="icon">🎬</span><h3 style="font-size:17px">2-недельный реалити</h3><p>4 этапа: доверие → этапы ниши → бесплатник → дожим. Шоу + большая идея.</p></div>
+  </div>
+  <div class="value"><span>Прогрев — это <b>вызов жгучего желания</b> получить точку Б, к которой ведёт продукт. Полная структура, тайминги по дням и плейбук — по кнопкам выше.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Прогревы</span></div>
+</section>
+
+<!-- 17 · ВТОРОЙ МОЗГ: РЕСЁРЧ + КОНТЕНТ + КАРТИНКИ -->
+<section class="slide">
+  <span class="kicker">Шаг 5 · Второй мозг на автопилоте</span>
+  <h2 style="margin:8px 0 8px">Сам ресёрчит нишу, генерит контент и картинки</h2>
+  <div class="fmap" style="margin-bottom:4px">
+    <div class="fnode"><div class="fi">🔁</div><div class="ft">Крон-ресёрч</div><div class="fd">вт/чт: темы ниши</div></div>
+    <div class="fnode"><div class="fi">💡</div><div class="ft">3–4 темы</div><div class="fd">на выбор</div></div>
+    <div class="fnode"><div class="fi">✍️</div><div class="ft">Контент</div><div class="fd">пост в ToV</div></div>
+    <div class="fnode"><div class="fi">🎨</div><div class="ft">Картинка</div><div class="fd">фирменный стиль</div></div>
+    <div class="fnode"><div class="fi">📨</div><div class="ft">В рабочую группу</div><div class="fd">на согласование</div></div>
+  </div>
+  <div class="prompt"><span class="pl">Промпт · agent 5 · vtoroy-mozg-kontent.md</span><span class="c"># опора: бриф, ToV, отстройка, брендбук (цвета/лого) в папке контекста</span>
+Каждые <b>вторник и четверг в 10:30</b> делай ресёрч свежих тем в нише «<b>[ниша]</b>»:
+инфоповоды, тренды, что зашло у аудитории. Предложи мне <b>3–4 темы</b> для контента.
+По выбранной теме: собери <b>пост</b> в нашем ToV (крючок → мысль → выгода → CTA) и
+сгенерируй <b>картинку в фирменном стиле</b> (палитра и лого из брендбука) — скилл nano-banana.
+Пришли всё в рабочую группу на согласование. Ничего не публикуй без подтверждения.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Второй мозг · контент</span></div>
+</section>
+
+<!-- 17b · ГЕНЕРАЦИЯ ПОСТОВ -->
+<section class="slide">
+  <span class="kicker">Контент · генерация постов</span>
+  <h2 style="margin:8px 0 4px">Посты человеческим языком — из JTBD + ToV + рубрикатора</h2>
+  <div class="matbar"><a class="btnlink gold" href="tov.html" target="_blank">📄 Справочник: форматы текстов + ToV</a></div>
+  <div class="fmap" style="margin-bottom:4px">
+    <div class="fnode"><div class="fi">🧩</div><div class="ft">JTBD + ToV</div><div class="fd">боли/выгоды + голос бренда</div></div>
+    <div class="fnode"><div class="fi">🗂</div><div class="ft">Рубрикатор</div><div class="fd">рубрика · тип · формат</div></div>
+    <div class="fnode"><div class="fi">📐</div><div class="ft">Модель текста</div><div class="fd">AIDA · PAS · BAB…</div></div>
+    <div class="fnode"><div class="fi">✍️</div><div class="ft">Пост</div><div class="fd">живой язык</div></div>
+    <div class="fnode"><div class="fi">🎨</div><div class="ft">Картинка</div><div class="fd">по дизайн-коду</div></div>
+  </div>
+  <div class="two" style="align-items:start">
+    <div>
+      <div class="minih">Правила текста</div>
+      <ul class="bl" style="gap:6px;font-size:14.5px">
+        <li>Пишем <b>как лучшему другу</b>, живым языком — без «воды»</li>
+        <li>Никаких вопросов <b>ради вопроса</b> — только искренний интерес</li>
+        <li>Формула: крючок → польза → выгода (точка Б) → CTA</li>
+        <li>Картинки — <b>по дизайн-коду</b> (палитра, шрифты, лого из брендбука)</li>
+      </ul>
+    </div>
+    <div class="prompt" style="margin-top:0"><span class="pl">Промпт · agent 6 · post + картинка</span><span class="c"># опора: JTBD, ToV-матрица, рубрикатор, справочник моделей, брендбук</span>
+Напиши пост по рубрике «<b>[рубрика]</b>» для «<b>[сегмент]</b>» по модели <b>[AIDA / PAS / BAB]</b>.
+Пиши как лучшему другу, живым языком. Формула: крючок → польза → выгода → CTA.
+Затем сгенерируй <b>картинку в фирменном стиле</b> по нашему дизайн-коду (палитра,
+шрифты, логотип из брендбука). Скиллы для качества картинок: <b>nano-banana</b> +
+<b>taste-imagegen-frontend-web</b> + <b>enhance-prompt</b>.</div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Генерация постов</span></div>
+</section>
+
+<!-- 18 · СКИЛЛЫ -->
+<section class="slide">
+  <span class="kicker">Скиллы VS Code + Claude Code</span>
+  <h2 style="margin:10px 0 10px">Что поставить под эту встречу и как</h2>
+  <div class="split" style="align-items:start">
+    <div>
+      <div class="minih">Нужные скиллы</div>
+      <ul class="bl" style="gap:7px;font-size:16px">
+        <li><b>deep-research</b> — ресёрч воронок и ниши</li>
+        <li><b>marketing-aplayers</b> — офферы, воронки, копирайт</li>
+        <li><b>web-conversion-design</b> — лендинги на конверсию</li>
+        <li><b>nano-banana</b> — картинки в фирменном стиле</li>
+        <li><b>taste-imagegen-frontend-web</b> · <b>enhance-prompt</b></li>
+      </ul>
+    </div>
+    <div>
+      <div class="minih">Как ставить</div>
+      <div class="prompt" style="margin-top:0"><span class="pl">Установка скиллов</span><span class="c"># вариант 1 · через маркетплейс плагинов</span>
+/plugin marketplace add anthropics/claude-plugins-official
+/plugin install <b>&lt;skill&gt;</b>
+<span class="c"># вариант 2 · вручную: положить папку скилла в</span>
+~/.claude/skills/<b>&lt;skill&gt;</b>/
+<span class="c"># проверить</span>
+/plugin   (список установленного)</div>
+      <div class="value" style="margin-top:12px"><span>Полная <b>библиотека Everything Claude Code</b> (Affaan Mustafa, ~120 скиллов/субагентов): <a href="https://github.com/affaan-m/everything-claude-code" target="_blank" style="font-family:var(--mono);color:var(--gold-h);font-size:13px">github.com/affaan-m/everything-claude-code</a></span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Скиллы</span></div>
+</section>
+
+<!-- 18b · ЧЕМУ НАУЧИТЕСЬ -->
+<section class="slide">
+  <span class="kicker">Итог · что вы точно сможете</span>
+  <h2 style="margin:10px 0 16px">Чему научитесь за встречу</h2>
+  <div class="grid g2" style="gap:10px 34px">
+    <ul class="bl check" style="gap:11px">
+      <li>Создавать <b>продающий вебинар</b> по плейбуку</li>
+      <li>Выстраивать <b>полную автоворонку</b> под выбранные CORE-сегменты</li>
+      <li>Собирать <b>одноэкранную страницу регистрации</b> → Telegram-бот по лучшим практикам</li>
+    </ul>
+    <ul class="bl check" style="gap:11px">
+      <li>Собирать <b>VSL-воронку</b> для экспертного продукта</li>
+      <li>Писать <b>посты человеческим языком</b> (JTBD + ToV + модели текста)</li>
+      <li>Генерить <b>картинки в фирменном стиле</b> по дизайн-коду</li>
+    </ul>
+  </div>
+  <div class="value"><span>И главное — <b>самостоятельно прогонять и собирать</b> разные воронки под свои сегменты: параллельно агентами, по готовым промптам и плейбукам.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Образ результата</span></div>
+</section>
+
+<!-- 19 · ДОМАШКА / ФИНАЛ -->
+<section class="slide slide--dark slide--title">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.6;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <img class="heroimg" src="assets/hero-bg.png" alt="" style="filter:saturate(.9)">
+  <span class="kicker">Домашка · образ результата</span>
+  <h1 style="font-size:52px;margin-top:14px">Одна база → один CORE-сегмент<br>→ одна <span class="gold">живая автоворонка</span></h1>
+  <p class="lead" style="margin-top:18px;max-width:720px">Соберите папку контекста, вытащите CORE-сегмент, запустите 3–4 агента параллельно и принесите на разбор рабочую воронку + второй мозг, который сам ресёрчит и генерит контент.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Автоворонки + AI</span></div>
+</section>
+
+</div>
+<div id="bar"></div><div id="count"></div>
+<div class="hint">← →  ·  Space  ·  F — полный экран</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];let i=0;
+const bar=document.getElementById('bar'),count=document.getElementById('count');
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));bar.style.width=((i+1)/slides.length*100)+'%';count.textContent=(i+1)+' / '+slides.length}
+function next(){show(i+1)}function prev(){show(i-1)}
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}else if(e.key==='Home'){show(0)}else if(e.key==='End'){show(slides.length-1)}else if(e.key==='f'||e.key==='F'){document.documentElement.requestFullscreen?.()}});
+document.getElementById('stage').addEventListener('click',e=>{const r=document.getElementById('stage').getBoundingClientRect();(e.clientX-r.left)/r.width>0.5?next():prev()});
+function fit(){const s=Math.min(window.innerWidth/1280,window.innerHeight/720);document.getElementById('stage').style.transform=`translate(-50%,-50%) scale(${s})`}
+window.addEventListener('resize',fit);const sa=parseInt(location.hash.replace('#',''),10);fit();show(Number.isFinite(sa)&&sa>0?sa-1:0);
+</script>
+</body>
+</html>
