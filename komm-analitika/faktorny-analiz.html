@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Факторный анализ · Маркетинг & Продажи — A-Players</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.5;padding:34px 24px 60px}
+.wrap{max-width:1120px;margin:0 auto}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:26px}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:flex;align-items:center;gap:8px}
+.kicker::before{content:"●";color:var(--gold);font-size:9px}
+h1{font-family:var(--serif);font-weight:900;font-size:40px;line-height:1.04;letter-spacing:-.5px;margin-top:8px}
+.sub{font-size:18px;color:var(--muted);margin-top:10px;max-width:720px}
+.brandtag{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap;padding-top:6px}
+.brandtag b{color:var(--gold-h)}
+h2{font-family:var(--serif);font-weight:800;font-size:22px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+h2 .badge{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;background:var(--gold);color:#19120A;padding:3px 8px;border-radius:6px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-bottom:22px;box-shadow:0 12px 34px -26px rgba(0,0,0,.35)}
+.hint{font-size:14px;color:var(--muted);margin-bottom:16px}
+.hint b{color:var(--em)}
+
+/* top inputs */
+.topin{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.field input{width:180px;font-family:var(--sans);font-size:17px;font-weight:700;color:var(--em);padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
+.field input:focus{outline:none;border-color:var(--gold)}
+
+/* segment table */
+table{width:100%;border-collapse:collapse}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:10.5px;color:var(--gold-h);text-align:center;padding:8px 8px;border-bottom:2px solid var(--line);font-weight:700}
+th.grp{color:var(--em);border-bottom:2px solid var(--em-2);font-size:11px}
+th:first-child,td:first-child{text-align:left}
+td{padding:6px 8px;border-bottom:1px solid var(--line-soft);text-align:center}
+td.seg{font-weight:800;color:var(--em);font-size:15px}
+td.seg small{display:block;font-weight:500;color:var(--muted);font-size:11.5px;letter-spacing:0;text-transform:none;font-family:var(--sans)}
+.cell input{width:76px;font-family:var(--sans);font-size:15px;font-weight:700;text-align:center;color:var(--ink);padding:7px 4px;border:1.5px solid var(--line);border-radius:8px;background:#fff}
+.cell input:focus{outline:none;border-color:var(--gold);background:#fffdf6}
+.grp-mkt{background:rgba(176,130,46,.05)}
+.grp-sales{background:rgba(20,58,45,.045)}
+.sumrow td{border-top:2px solid var(--line);border-bottom:none;padding-top:10px;font-weight:800;font-size:14px}
+.sum-ok{color:var(--green)} .sum-bad{color:var(--red)}
+.colnote{font-size:12.5px;color:var(--muted);margin-top:12px;display:flex;gap:24px;flex-wrap:wrap}
+.colnote span{display:flex;align-items:center;gap:7px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+/* results */
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.kpi .k{font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.kpi .v{font-family:var(--serif);font-weight:800;font-size:40px;line-height:1.05;margin-top:6px;color:var(--em)}
+.kpi .v.gd{color:var(--gold-h)} .kpi .v.rd{color:var(--red)} .kpi .v.gr{color:var(--green)}
+.kpi .s{font-size:13px;color:var(--muted);margin-top:4px}
+
+.fbars{display:flex;flex-direction:column;gap:14px;margin:6px 0 4px}
+.fbar{display:grid;grid-template-columns:186px 1fr 150px;align-items:center;gap:16px}
+.fbar .lab{font-weight:800;font-size:16px}
+.fbar .lab small{display:block;font-weight:500;font-size:12.5px;color:var(--muted)}
+.fbar .track{height:30px;background:rgba(0,0,0,.06);border-radius:8px;overflow:hidden}
+.fbar .fill{height:100%;border-radius:8px;transition:width .35s ease;min-width:2px}
+.fbar .val{text-align:right;font-family:var(--serif);font-weight:800;font-size:22px}
+.fbar .val small{display:block;font-family:var(--sans);font-weight:600;font-size:12.5px;color:var(--muted)}
+.fill-sales{background:linear-gradient(90deg,#B23B2E,#d05a4c)}
+.fill-mkt{background:linear-gradient(90deg,#C9952B,#dbb04e)}
+.fill-int{background:linear-gradient(90deg,#8a9086,#a6ac9f)}
+
+.verdict{margin-top:20px;background:var(--em);color:#F4F1EA;border-radius:14px;padding:20px 24px;font-size:19px;line-height:1.42}
+.verdict .who{font-family:var(--serif);font-weight:800;font-size:24px;color:var(--gold-2);display:block;margin-bottom:6px}
+.verdict b{color:#fff}
+
+.rub{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.rub .box{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fff}
+.rub .box .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.rub .box .v{font-family:var(--serif);font-weight:800;font-size:26px;color:var(--red);margin-top:4px}
+.rub .box.total .v{color:var(--em)}
+
+.actions{display:flex;gap:12px;margin-top:8px}
+button{font-family:var(--sans);font-weight:700;font-size:14px;padding:10px 18px;border-radius:10px;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--gold)}
+button.primary{background:var(--em);color:#fff;border-color:var(--em)}
+.foot{margin-top:30px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.foot b{color:var(--gold-h)}
+@media(max-width:760px){.kpis,.rub{grid-template-columns:1fr}.fbar{grid-template-columns:1fr}.cell input{width:60px}}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <span class="kicker">Практикум A-Players · Коммерческая аналитика</span>
+      <h1>Факторный анализ:<br>на чьей стороне мяч?</h1>
+      <p class="sub">Раз и навсегда закрываем спор «маркетинг → плохие лиды» ↔ «продажи → не умеют закрывать». Подставьте план и факт — система посчитает, кто именно увёл конверсию вниз и во сколько это обошлось.</p>
+    </div>
+    <div class="brandtag"><b>A-PLAYERS</b><br>Marketing ↔ Sales</div>
+  </header>
+
+  <!-- INPUT -->
+  <div class="panel">
+    <h2><span class="badge">Ввод</span> Ваши данные</h2>
+    <div class="topin">
+      <div class="field"><label>Всего лидов в когорте</label><input id="leads" type="number" value="500" min="0"></div>
+      <div class="field"><label>Средний чек, ₽</label><input id="check" type="number" value="130000" min="0"></div>
+    </div>
+    <p class="hint"><b>Маркетинг</b> отвечает за <b>долю сегментов</b> в потоке (качество трафика / КВАЛ). <b>Продажи</b> — за <b>CR2</b>, конверсию каждого сегмента в оплату (закрытие). Заполните план и факт по обоим.</p>
+    <table id="segtable">
+      <thead>
+        <tr>
+          <th rowspan="2" style="vertical-align:bottom">Сегмент</th>
+          <th class="grp" colspan="2">🎯 Маркетинг · доля в потоке, %</th>
+          <th class="grp" colspan="2">📞 Продажи · CR2 в оплату, %</th>
+        </tr>
+        <tr>
+          <th class="grp-mkt">План</th><th class="grp-mkt">Факт</th>
+          <th class="grp-sales">Эталон</th><th class="grp-sales">Факт</th>
+        </tr>
+      </thead>
+      <tbody id="segbody"><!-- rows injected --></tbody>
+      <tbody>
+        <tr class="sumrow">
+          <td>Итого</td>
+          <td class="grp-mkt"><span id="sumPlan">—</span></td>
+          <td class="grp-mkt"><span id="sumFact">—</span></td>
+          <td class="grp-sales" colspan="2" style="text-align:left;font-weight:500;color:var(--muted);font-size:12.5px">CR2 не суммируется — это конверсия внутри сегмента</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="colnote">
+      <span><i class="sw" style="background:rgba(176,130,46,.5)"></i> Доли план+факт должны давать 100%</span>
+      <span>A — горячий · B — тёплый · C — холодный · D — нецелевой · E — неконтактный</span>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="loadExample()">Загрузить пример из практикума</button>
+      <button onclick="resetZero()">Очистить</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="panel">
+    <h2><span class="badge">Результат</span> Что говорят цифры</h2>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Эталонная конверсия</div><div class="v gd" id="rIdeal">—</div><div class="s">план по качеству и CR2</div></div>
+      <div class="kpi"><div class="k">Фактическая конверсия</div><div class="v rd" id="rFact">—</div><div class="s">что получилось</div></div>
+      <div class="kpi"><div class="k">Отставание от эталона</div><div class="v rd" id="rGap">—</div><div class="s" id="rGapPP">—</div></div>
+    </div>
+
+    <div class="fbars">
+      <div class="fbar">
+        <span class="lab">📞 Продажи <small>CR2 / закрытие</small></span>
+        <div class="track"><div class="fill fill-sales" id="barSales" style="width:0%"></div></div>
+        <span class="val"><span id="wSales">—</span><small id="ppSales">—</small></span>
+      </div>
+      <div class="fbar">
+        <span class="lab">🎯 Маркетинг <small>качество лидов</small></span>
+        <div class="track"><div class="fill fill-mkt" id="barMkt" style="width:0%"></div></div>
+        <span class="val"><span id="wMkt">—</span><small id="ppMkt">—</small></span>
+      </div>
+      <div class="fbar">
+        <span class="lab" style="color:var(--muted)">🔗 Взаимное <small>оба просели разом</small></span>
+        <div class="track"><div class="fill fill-int" id="barInt" style="width:0%"></div></div>
+        <span class="val" style="color:var(--muted)"><span id="wInt">—</span><small id="ppInt">—</small></span>
+      </div>
+    </div>
+
+    <div class="verdict" id="verdict">
+      <span class="who">Заполните данные</span>
+      Введите план и факт по сегментам — система определит, на чьей стороне мяч.
+    </div>
+
+    <div class="rub">
+      <div class="box total"><div class="k">Недобор оплат / выручки — всего</div><div class="v" id="rubTotal">—</div></div>
+      <div class="box"><div class="k">Из-за продаж (CR2)</div><div class="v" id="rubSales">—</div></div>
+      <div class="box"><div class="k">Из-за маркетинга (качество)</div><div class="v" id="rubMkt">—</div></div>
+    </div>
+  </div>
+
+  <div class="foot">Практикум <b>A-Players</b> · инструмент коммерческой аналитики · v1</div>
+</div>
+
+<script>
+// Сегменты: доля план/факт (%), CR2 эталон/факт (%)
+const SEGMENTS=[
+  {id:'A',name:'A',desc:'горячий',   plan:6, fact:5,  cre:53, crf:30},
+  {id:'B',name:'B',desc:'тёплый',    plan:15,fact:12, cre:30, crf:18},
+  {id:'C',name:'C',desc:'холодный',  plan:21,fact:18, cre:7,  crf:4},
+  {id:'D',name:'D',desc:'нецелевой', plan:27,fact:30, cre:0,  crf:0},
+  {id:'E',name:'E',desc:'неконтактный',plan:31,fact:35,cre:0, crf:0},
+];
+
+const body=document.getElementById('segbody');
+SEGMENTS.forEach((s,i)=>{
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td class="seg">${s.name}<small>${s.desc}</small></td>
+    <td class="cell grp-mkt"><input type="number" data-i="${i}" data-f="plan" value="${s.plan}" min="0" step="0.1"></td>
+    <td class="cell grp-mkt"><input type="number" data-i="${i}" data-f="fact" value="${s.fact}" min="0" step="0.1"></td>
+    <td class="cell grp-sales"><input type="number" data-i="${i}" data-f="cre" value="${s.cre}" min="0" step="0.1"></td>
+    <td class="cell grp-sales"><input type="number" data-i="${i}" data-f="crf" value="${s.crf}" min="0" step="0.1"></td>`;
+  body.appendChild(tr);
+});
+
+const $=id=>document.getElementById(id);
+const num=v=>{const n=parseFloat(v);return isFinite(n)?n:0;};
+const pct=x=>(x*100).toFixed(2).replace('.',',')+'%';
+const pp=x=>(x*100).toFixed(2).replace('.',',')+' п.п.';
+const rub=x=>Math.round(x).toLocaleString('ru-RU')+' ₽';
+
+document.addEventListener('input',e=>{ if(e.target.matches('input')) calc(); });
+
+function readSegs(){
+  const rows=[...document.querySelectorAll('#segbody tr')];
+  return rows.map(r=>{
+    const inp=f=>num(r.querySelector(`input[data-f="${f}"]`).value)/100;
+    return {plan:inp('plan'),fact:inp('fact'),cre:inp('cre'),crf:inp('crf')};
+  });
+}
+
+function calc(){
+  const segs=readSegs();
+  const N=num($('leads').value), chk=num($('check').value);
+  // суммы долей
+  const sumP=segs.reduce((a,s)=>a+s.plan,0), sumF=segs.reduce((a,s)=>a+s.fact,0);
+  $('sumPlan').textContent=(sumP*100).toFixed(1).replace('.',',')+'%';
+  $('sumFact').textContent=(sumF*100).toFixed(1).replace('.',',')+'%';
+  $('sumPlan').className=Math.abs(sumP-1)<0.005?'sum-ok':'sum-bad';
+  $('sumFact').className=Math.abs(sumF-1)<0.005?'sum-ok':'sum-bad';
+
+  // конверсии
+  const ideal = segs.reduce((a,s)=>a+s.plan*s.cre,0);   // план микс × эталон CR
+  const fact  = segs.reduce((a,s)=>a+s.fact*s.crf,0);   // факт микс × факт CR
+  const crMkt = segs.reduce((a,s)=>a+s.fact*s.cre,0);   // факт микс × эталон CR (продажи сработали)
+  const crSal = segs.reduce((a,s)=>a+s.plan*s.crf,0);   // план микс × факт CR (маркетинг сработал)
+
+  const gap = ideal - fact;
+  // возврат при починке одной стороны (от факта)
+  let recSales = crMkt - fact;   // чинят продажи (CR2 → эталон)
+  let recMkt   = crSal - fact;   // чинит маркетинг (микс → план)
+  let inter    = gap - recSales - recMkt; // взаимное
+  // защита от отрицательных/деления на ноль
+  recSales=Math.max(0,recSales); recMkt=Math.max(0,recMkt);
+  const parts=recSales+recMkt+Math.max(0,inter);
+  const denom=parts>0?parts:1;
+  const wS=recSales/denom, wM=recMkt/denom, wI=Math.max(0,inter)/denom;
+
+  // KPI
+  $('rIdeal').textContent=pct(ideal);
+  $('rFact').textContent=pct(fact);
+  const rel = ideal>0 ? (fact-ideal)/ideal : 0;
+  $('rGap').textContent=(rel*100).toFixed(0).replace('.',',')+'%';
+  $('rGapPP').textContent=pp(gap)+' разрыва';
+
+  // бары
+  $('barSales').style.width=(wS*100)+'%';
+  $('barMkt').style.width=(wM*100)+'%';
+  $('barInt').style.width=(wI*100)+'%';
+  $('wSales').textContent=(wS*100).toFixed(0)+'%';
+  $('wMkt').textContent=(wM*100).toFixed(0)+'%';
+  $('wInt').textContent=(wI*100).toFixed(0)+'%';
+  $('ppSales').textContent=pp(recSales);
+  $('ppMkt').textContent=pp(recMkt);
+  $('ppInt').textContent=pp(Math.max(0,inter));
+
+  // вердикт
+  const v=$('verdict');
+  if(gap<=0.0001){
+    v.innerHTML='<span class="who">🟢 Мяч ни на чьей стороне</span>Факт держит эталон — конверсия не просела. Так держать.';
+  } else if(recSales>recMkt){
+    v.innerHTML=`<span class="who">📞 Мяч на стороне продаж</span><b>${(wS*100).toFixed(0)}%</b> просадки (${pp(recSales)}) — из-за просевшей CR2 / закрытия. Маркетинг — <b>${(wM*100).toFixed(0)}%</b>. Гнать больше лидов бессмысленно, пока не выправлено закрытие: разбор звонков, отработка возражений, попытка закрытия на оплату.`;
+  } else {
+    v.innerHTML=`<span class="who">🎯 Мяч на стороне маркетинга</span><b>${(wM*100).toFixed(0)}%</b> просадки (${pp(recMkt)}) — из-за качества лидов (доля D+E выросла, КВАЛ упал). Продажи — <b>${(wS*100).toFixed(0)}%</b>. Разгонять объём бессмысленно, пока не выправлено качество трафика.`;
+  }
+
+  // рубли (недобор оплат × чек)
+  const lostPays = gap*N;
+  $('rubTotal').textContent=rub(lostPays*chk);
+  $('rubSales').textContent=rub(recSales*N*chk);
+  $('rubMkt').textContent=rub(recMkt*N*chk);
+}
+
+function loadExample(){
+  const rows=[...document.querySelectorAll('#segbody tr')];
+  SEGMENTS.forEach((s,i)=>{
+    const r=rows[i];
+    r.querySelector('input[data-f="plan"]').value=s.plan;
+    r.querySelector('input[data-f="fact"]').value=s.fact;
+    r.querySelector('input[data-f="cre"]').value=s.cre;
+    r.querySelector('input[data-f="crf"]').value=s.crf;
+  });
+  $('leads').value=500; $('check').value=130000;
+  calc();
+}
+function resetZero(){
+  document.querySelectorAll('#segbody input').forEach(i=>i.value=0);
+  calc();
+}
+calc();
+</script>
+</body>
+</html>

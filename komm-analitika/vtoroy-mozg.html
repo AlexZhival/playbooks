@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Второй мозг — как развернуть · A-Players</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#0F2A20; --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.62}
+.wrap{max-width:880px;margin:0 auto;padding:0 26px}
+a{color:var(--gold-h);font-weight:700;text-decoration:none;border-bottom:1.5px solid rgba(176,130,46,.4)}
+a:hover{border-bottom-color:var(--gold)}
+strong,b{color:var(--em)}
+.hero{position:relative;overflow:hidden;background:var(--em);color:#EFE9DA;padding:46px 0 40px;margin-bottom:34px}
+.hero .bf{position:absolute;inset:0;z-index:0;width:100%;height:100%;opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000,transparent 60%);mask-image:linear-gradient(90deg,#000,transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);font-weight:700}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:38px;line-height:1.05;color:#fff;margin-top:10px}
+.hero p{margin-top:14px;color:rgba(239,233,218,.9);max-width:70ch;font-size:16.5px}
+.hero p b{color:#fff}
+h2{font-family:var(--serif);font-weight:800;font-size:23px;color:var(--em);margin:34px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:12px}
+h2 .no{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:16px;flex:0 0 auto}
+h3{font-family:var(--serif);font-weight:700;font-size:18px;color:var(--em);margin:20px 0 8px}
+p{margin:10px 0}
+ul,ol{padding-left:22px;margin:10px 0}li{margin:6px 0}
+blockquote{border-left:4px solid var(--gold);background:rgba(176,130,46,.08);margin:16px 0;padding:14px 20px;border-radius:0 12px 12px 0;color:#5a4a28;font-size:15.5px}
+blockquote b{color:var(--em)}
+code{background:#EAE3D3;padding:2px 7px;border-radius:5px;font:14px/1.5 var(--mono);color:#3a3120}
+pre{background:var(--em-2);color:#EDE7D6;padding:16px 18px;border-radius:12px;overflow-x:auto;font:13px/1.62 var(--mono);margin:14px 0}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th{background:var(--em);color:#fff;text-align:left;padding:10px 13px;font-size:14px}
+td{padding:10px 13px;border-top:1px solid var(--line);vertical-align:top}
+tr:nth-child(even) td{background:rgba(255,255,255,.55)}
+.chk{list-style:none;padding-left:0}.chk li{padding-left:30px;position:relative}
+.chk li::before{content:"";position:absolute;left:0;top:4px;width:17px;height:17px;border:2px solid var(--gold);border-radius:5px}
+ol.big{counter-reset:s;list-style:none;padding-left:0}
+ol.big>li{position:relative;padding-left:44px;margin:12px 0}
+ol.big>li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:-1px;width:30px;height:30px;border-radius:50%;background:var(--em);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.dl{display:inline-block;background:var(--em);color:#fff !important;border-radius:9px;padding:10px 18px;font-size:15px;font-weight:700;text-decoration:none;border:none;margin:6px 8px 6px 0}
+.dl:hover{background:var(--em-2)}
+.ph{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--gold-h);background:rgba(176,130,46,.09);border:1.5px dashed var(--gold);border-radius:7px;padding:3px 10px;margin:0 2px}
+.warn{background:rgba(178,59,46,.07);border:1.5px solid rgba(178,59,46,.4);border-radius:12px;padding:14px 18px;margin:16px 0;font-size:15px}
+.warn b{color:var(--red)}
+.foot{margin:40px 0 60px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+svg.patternhost{position:absolute;width:0;height:0}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+
+<svg class="patternhost" aria-hidden="true"><defs>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse">
+    <g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle">
+      <text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text>
+      <text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text>
+    </g>
+  </pattern>
+</defs></svg>
+
+<header class="hero">
+  <svg class="bf" preserveAspectRatio="none"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <div class="wrap">
+    <span class="kicker">Практикум A-Players · Коммерческая аналитика · Вариант 1 (руками)</span>
+    <h1>🧠 Второй мозг — как развернуть</h1>
+    <p>Второй мозг — <b>не отдельное приложение и не самописный бот</b>, а <b>папка</b>, которую открывает Claude&nbsp;Code, плюс <b>Telegram</b> как интерфейс и коннекторы к вашим данным <b>только на чтение</b>. Всё работает на вашей машине, наружу ничего не выгружается. Отдельный API-ключ Anthropic не нужен — работает на вашей подписке Claude.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <p><a class="dl" href="#"><span class="ph">⬇️ ссылка на стартовый набор «Второй мозг»</span></a></p>
+  <blockquote>Порядок: откройте папку набора в <b>VS&nbsp;Code</b> → запустите <b>Claude&nbsp;Code</b> → вставьте мастер-промт (раздел 2) — Claude&nbsp;Code проведёт вас за руку. Делайте <b>после</b> собранной обёртки/контекста: ум мозга = качество контекста, который вы в него положили.</blockquote>
+
+  <h2><span class="no">0</span> Как это устроено (30 секунд)</h2>
+  <table>
+    <tr><th>Часть</th><th>Что это</th></tr>
+    <tr><td>🧠 <b>Мозг</b></td><td>папка + <code>CLAUDE.md</code> (главная инструкция) + <code>context/</code> (ваши опорные материалы)</td></tr>
+    <tr><td>💬 <b>Интерфейс</b></td><td>Telegram через <b>официальный плагин Claude&nbsp;Code</b> — пишете/наговариваете, отвечает Claude&nbsp;Code на вашем компьютере</td></tr>
+    <tr><td>🔌 <b>Данные</b></td><td>read-only коннекторы Claude (Drive / Calendar / Notion) + read-only скрипты (предиктивная модель, CRM, дашборды)</td></tr>
+    <tr><td>🔒 <b>Безопасность</b></td><td><code>.claude/settings.json</code> (что можно / что запрещено) + правила в <code>CLAUDE.md</code></td></tr>
+  </table>
+
+  <h2><span class="no">1</span> Предпосылки</h2>
+  <ul class="chk">
+    <li><b>VS&nbsp;Code + Claude&nbsp;Code</b> (вход выполнен, активная подписка Claude)</li>
+    <li><b>Отдельный дополнительный Telegram-аккаунт</b> под бота (не основной рабочий и не личный) с <b>2FA</b></li>
+    <li><b>Токен бота</b> от <code>@BotFather</code> (<code>/newbot</code> → имя + username на <code>bot</code> → токен)</li>
+  </ul>
+
+  <h2><span class="no">2</span> Мастер-промт (вставьте в Claude&nbsp;Code)</h2>
+  <pre>Прочитай файл START-HERE.md целиком и веди меня по настройке второго мозга
+строго по шагам и строго по разделу «Безопасность».
+Правила:
+— Не выполняй ни одного шага без моего подтверждения.
+— Токен бота я настрою сам через /telegram:configure, в чат его не вставляю.
+— Собираем ядро: агент отвечает на вопросы по материалам этой папки,
+  доступ в Telegram — только моему аккаунту (allowlist).
+— Ничего не удаляй, наружу ничего не пиши. Все интеграции — только на чтение.
+Порядок:
+1) проверь предпосылки и .claude/settings.json;
+2) помоги собрать архитектуру контекста — создай папку context/ со структурой
+   (компания, аудитория/JTBD, позиционирование, tone of voice, продукты и цены,
+   клиенты, конкуренты), задай мне вопросы и помоги заполнить CLAUDE.md,
+   я вставлю свои опорные материалы;
+3) настрой Telegram-плагин.</pre>
+
+  <h2><span class="no">3</span> Соберите архитектуру контекста (это и есть «мозг»)</h2>
+  <p><b>Шаг 3.1 — создайте папку проекта</b> (например <code>vtoroy-mozg/</code>) на диске или в облаке и <b>сложите в неё все материалы обёртки, которые вы собирали ранее</b>: JTBD (jobs to be done), tone of voice, бриф о компании, позиционирование/отстройка, продукты и цены, клиенты, конкуренты, презентации. Это «пища» мозга — чем полнее контекст, тем умнее ответы.</p>
+  <p><b>Шаг 3.2 — <code>CLAUDE.md</code></b> — главная инструкция: кто вы, что за компания, целевая аудитория (ICP/JTBD), продукты, цены, tone of voice, как отвечать. В наборе есть шаблон — Claude&nbsp;Code задаст вопросы и поможет заполнить.</p>
+  <p><b>Шаг 3.3 — папка <code>context/</code></b> — разложите опорные материалы по файлам (скелет создаст агент, вы наполните из уже собранных материалов):</p>
+  <pre>context/
+├── компания.md          # о компании, видение, миссия
+├── аудитория-jtbd.md    # ICP, сегменты, Jobs To Be Done
+├── позиционирование.md  # отстройка от конкурентов
+├── tone-of-voice.md
+├── продукты-и-цены.md
+├── клиенты.md
+└── конкуренты.md</pre>
+  <p><b>Викилинки <code>[[имя]]</code></b> (по желанию): внутри файлов ссылайтесь друг на друга — <code>[[продукты-и-цены]]</code>. В <code>CLAUDE.md</code> задано правило открывать такие ссылки. Полезно, когда база растёт.</p>
+  <blockquote>💡 PDF-материалы перед загрузкой прогоните через <b>markitdown</b> (бесплатный инструмент Microsoft) — он переведёт их в текст, и мозг не будет жечь токены при каждом чтении.</blockquote>
+
+  <h2><span class="no">4</span> Подключение Telegram (официальный плагин)</h2>
+  <ol class="big">
+    <li><code>/plugin install telegram@claude-plugins-official</code></li>
+    <li><code>/reload-plugins</code></li>
+    <li><code>/telegram:configure &lt;ваш_токен&gt;</code> — токен уходит в защищённый файл плагина, <b>не в проект и не в git</b></li>
+    <li>Закройте текущую сессию Claude&nbsp;Code, откройте терминал <b>в папке проекта</b> и запустите:<br><code>claude --channels plugin:telegram@claude-plugins-official</code><br><b>Держите терминал открытым — пока он жив, бот работает.</b></li>
+    <li>Напишите боту в личку → 6-значный код → <code>/telegram:access pair &lt;код&gt;</code></li>
+    <li>Замок: <code>/telegram:access policy allowlist</code></li>
+  </ol>
+  <blockquote>🔒 <b>Allowlist не пропускайте.</b> Без него любой, кто узнает username бота, сможет командовать вашим проектом и читать файлы.<br>💡 <b>Как поднять заново:</b> зашли в папку проекта → <code>claude --channels plugin:telegram@claude-plugins-official</code> → бот на связи.</blockquote>
+
+  <h2><span class="no">5</span> 🔒 Безопасность (обязательно)</h2>
+  <ul>
+    <li><b>2FA Telegram:</b> Settings → Privacy and Security → Two-Step Verification. Завершите лишние Active Sessions.</li>
+    <li><b>Только Bot API @BotFather.</b> Никогда: userbot (вход по номеру), QR-подключение личного Telegram в сторонние сервисы. 🚩 Просят «войти по номеру / QR / полный доступ» — СТОП.</li>
+    <li><b>Замок <code>.claude/settings.json</code></b> (уже в наборе): <code>deny</code> — <code>rm -rf</code>, <code>sudo rm</code>, <code>curl … | bash</code>, чтение секретов (<code>.env</code>, <code>*.key</code>, <code>*.token</code>); <code>allow</code> — только Read/Grep/Glob, WebSearch/WebFetch, читающие методы коннекторов и ваши скрипты по имени.</li>
+    <li>Отдельный доп. аккаунт · токен через плагин, не в чат · allowlist только ваш ID · всё только на чтение · секреты — в отдельные файлы вне git.</li>
+    <li><b>Kill switch:</b> <code>@BotFather /revoke</code> → <code>/telegram:access policy disabled</code> → при желании <code>/deletebot</code>.</li>
+  </ul>
+
+  <h2><span class="no">6</span> Коннекторы данных (Фаза 2, по желанию, только чтение)</h2>
+  <p><code>claude.ai → + → Connectors</code> → Google Drive, Google Calendar, Notion. Разрешены только читающие методы. Годятся для простых доков и разовых вопросов.</p>
+
+  <h2><span class="no">7</span> Живая предиктивная модель через бота</h2>
+  <p>Ваша модель — Google&nbsp;Sheets с несколькими вкладками. Коннектор Drive читает обычно только первый лист и не работает по расписанию. Два варианта — от простого к надёжному:</p>
+  <h3>Вариант A · просто (5 минут)</h3>
+  <p>Сделайте в таблице <b>первую вкладку «Сводка»</b> и вынесите на неё ключевые цифры формулами с других вкладок (прогноз, план-факт, run-rate, светофор). Коннектор Drive читает первый лист — бот отвечает по этой сводке по ссылке. Минус: только то, что на «Сводке»; по расписанию не шлёт.</p>
+  <h3>Вариант B · надёжно (Google Sheets API, read-only)</h3>
+  <ol class="big">
+    <li>В Google Cloud Console создайте <b>сервисный аккаунт</b>, включите <b>Google Sheets API</b>, скачайте JSON-ключ (в файл вне git).</li>
+    <li>Расшарьте таблицу на <b>email сервисного аккаунта</b> с правами <b>Viewer</b>.</li>
+    <li>Claude&nbsp;Code напишет скрипт: <code>spreadsheets.values.get(spreadsheetId, 'Вкладка!A1:Z100')</code>, scope <code>spreadsheets.readonly</code>.</li>
+    <li>Скрипт — в белый список; бот вызывает его по запросу «дай статус по модели» и по расписанию.</li>
+  </ol>
+  <p><code>readonly</code> — изменить/удалить в таблице невозможно. Начните с A; нужна автоматика и любые вкладки — переходите на B.</p>
+
+  <h2><span class="no">8</span> Проверка</h2>
+  <p>Сначала — быстрый тест связи: «<i>Прочитай CLAUDE.md и расскажи, какие правила там описаны</i>». Ответил по сути файла — связь есть. Дальше по данным: «<i>Какой прогноз выручки на месяц и где красная зона?</i>» → мозг прочитает контекст/модель и ответит. ✅ Готово — покажите на разборе. Готовые промты — в <code>ПРОМТЫ.md</code> набора.</p>
+
+  <h2><span class="no">9</span> CRM и дашборды (продвинутое, по желанию, строго read-only)</h2>
+  <p><b>Подключение к CRM для сбора данных:</b> заведите <b>отдельного интеграционного пользователя / API-ключ с ролью «только просмотр»</b> · токен вне git, чтение агенту запрещено · один GET-скрипт в белом списке · сначала тестируйте на копии. Без прав на запись — удалить или задублировать базу невозможно. CRM без read-only роли — не подключаем напрямую, а экспортируем копией.</p>
+  <div class="warn"><b>Внимание:</b> бывали случаи, когда агент с правами на запись сносил или дублировал базу CRM. Подключайте <b>только на чтение</b> и с подтверждением действий — так база пользователей и данные не пострадают и не утекут.</div>
+  <h3>🔑 Логин и пароль на страницы с дашбордами</h3>
+  <p>Когда Claude&nbsp;Code соберёт вам дашборды как веб-страницы — <b>обязательно закройте их простым логином и паролем</b> (gate-скрипт есть в наборе). Иначе ссылка с коммерческими данными будет открыта любому, у кого она есть. Промт: «<i>добавь на страницу дашборда вход по логину и паролю, пароль храни вне кода</i>».</p>
+
+  <h2><span class="no">10</span> Ритуалы и кроны</h2>
+  <p>Настройте повторяющиеся задачи на конкретный день/время: вечерний светофор-дайджест по отделам из предиктивной модели, run-rate алерт, сводка SLA/TLT + дожим, крон-ресёрч по нише, аудит недели. Голосом: «<i>каждый будний день в 19:00 собери сводку по отделам и пришли в рабочую группу</i>».</p>
+
+  <h2><span class="no">11</span> Команда и хостинг</h2>
+  <ul>
+    <li><b>Доступ = allowlist Telegram.</b> Новый — добавили ID; уволили — убрали ID.</li>
+    <li><b>С любого устройства</b> — бот доступен каждому из белого списка.</li>
+    <li><b>24/7 и всем</b> — вынесите мозг на всегда-включённую машину (Mac mini / сервер).</li>
+    <li><b>Знания — общий Google Drive</b>; коннекторы, сервисный аккаунт и CRM — на <b>служебном аккаунте компании</b>.</li>
+    <li><b>Офбординг</b> ключевого человека: убрать из allowlist и доступов Drive, <b>перевыпустить</b> токен бота, ключ сервисного аккаунта и CRM-ключ.</li>
+  </ul>
+
+  <h2>Чего НЕ делаем</h2>
+  <ul>
+    <li>❌ userbot и QR-подключения личного Telegram</li>
+    <li>❌ права на запись/удаление в CRM, модели, боевых системах</li>
+    <li>❌ вставлять токены и ключи в чат</li>
+  </ul>
+
+  <p style="margin-top:24px"><a class="dl" href="index.html">← К домашнему заданию</a></p>
+  <div class="foot">A-Players · Коммерческая аналитика · второй мозг (вариант 1). Технический деплой для команды (мульти-доступ, админ-панель) — отдельным созвоном.</div>
+
+</div>
+</body>
+</html>

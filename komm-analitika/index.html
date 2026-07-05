@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание · Коммерческая аналитика — A-Players</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.5}
+a{color:var(--gold-h);font-weight:700;text-decoration:none;border-bottom:1.5px solid rgba(176,130,46,.4)}
+a:hover{border-bottom-color:var(--gold)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+
+/* header */
+.hero{position:relative;overflow:hidden;background:var(--em);color:#EFE9DA;padding:56px 0 48px}
+.hero .bf{position:absolute;inset:0;z-index:0;width:100%;height:100%;opacity:.55;-webkit-mask-image:linear-gradient(90deg,#000,transparent 62%);mask-image:linear-gradient(90deg,#000,transparent 62%)}
+.hero .wrap{position:relative;z-index:1}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);font-weight:700;display:flex;align-items:center;gap:8px}
+.kicker::before{content:"●";color:var(--gold);font-size:9px}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:46px;line-height:1.03;letter-spacing:-.5px;color:#fff;margin-top:12px;max-width:16ch}
+.hero .q{margin-top:20px;font-size:20px;line-height:1.45;color:rgba(239,233,218,.9);max-width:70ch}
+.hero .q b{color:var(--gold-2)}
+.hero .brand{margin-top:26px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(239,233,218,.6);font-weight:600}
+.hero .brand b{color:#fff}
+
+/* section rhythm */
+section{padding:38px 0}
+section + section{border-top:1px solid var(--line)}
+h2{font-family:var(--serif);font-weight:800;font-size:28px;letter-spacing:-.3px;display:flex;align-items:center;gap:14px}
+h2 .no{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:19px;flex:0 0 auto;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.sublead{font-size:17px;color:var(--muted);margin:10px 0 0;max-width:78ch}
+.sublead b{color:var(--em)}
+
+/* level pills */
+.lv{display:inline-flex;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:6px;vertical-align:middle}
+.lv-min{background:rgba(62,142,94,.16);color:#2c6e46;border:1px solid rgba(62,142,94,.4)}
+.lv-goal{background:rgba(176,130,46,.15);color:var(--gold-h);border:1px solid rgba(176,130,46,.45)}
+.lv-max{background:rgba(20,58,45,.1);color:var(--em);border:1px solid rgba(20,58,45,.35)}
+.lvrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+
+/* legend cards */
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;border-top:4px solid var(--gold)}
+.lcard.min{border-top-color:var(--green)} .lcard.goal{border-top-color:var(--gold)} .lcard.max{border-top-color:var(--em)}
+.lcard h3{font-family:var(--serif);font-size:20px;margin-bottom:4px}
+.lcard .who{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.lcard p{font-size:14.5px;color:var(--muted);line-height:1.45}
+
+/* blocks */
+.block{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-top:16px;box-shadow:0 14px 34px -30px rgba(0,0,0,.4)}
+.block .bh{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.block .bh h3{font-family:var(--serif);font-weight:800;font-size:21px;flex:1;min-width:220px}
+.block .bh .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700;background:rgba(176,130,46,.12);border:1px solid rgba(176,130,46,.3);padding:4px 10px;border-radius:20px}
+.block p{font-size:15.5px;line-height:1.5;margin-top:10px}
+.block p.mut{color:var(--muted)}
+
+ul.check{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:9px}
+ul.check li{position:relative;padding-left:30px;font-size:15.5px;line-height:1.42}
+ul.check li::before{content:"";position:absolute;left:0;top:1px;width:18px;height:18px;border:2px solid var(--gold);border-radius:5px}
+ul.check li b{color:var(--em)}
+ul.check li .lv{margin-left:6px}
+
+.value{margin-top:16px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 18px;font-size:15px;line-height:1.42}
+.value b{color:var(--em)}
+.value::before{content:"ЗАЧЕМ";font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:2px}
+
+.warn{margin-top:16px;background:rgba(178,59,46,.07);border:1.5px solid rgba(178,59,46,.4);border-radius:12px;padding:14px 18px;font-size:15px;line-height:1.45}
+.warn b{color:var(--red)}
+.warn::before{content:"⚠ ";font-weight:800}
+
+/* anatomy diagram */
+.anat{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.arow{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);padding:14px 18px;position:relative}
+.arow:not(:last-child){margin-bottom:26px}
+.arow:not(:last-child)::after{content:"▼";position:absolute;left:24px;bottom:-22px;color:var(--gold);font-size:15px}
+.arow .t{font-family:var(--serif);font-weight:700;font-size:17px}
+.arow .d{font-size:14px;color:var(--muted);margin-top:3px}
+
+/* placeholder */
+.ph{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--gold-h);background:rgba(176,130,46,.09);border:1.5px dashed var(--gold);border-radius:7px;padding:3px 10px;margin:0 2px}
+.phbox{margin-top:14px;background:rgba(176,130,46,.06);border:1.5px dashed var(--gold);border-radius:12px;padding:14px 18px;font-size:14.5px;color:var(--muted)}
+.phbox b{color:var(--gold-h)}
+
+/* matrix */
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--gold-h);text-align:center;padding:9px 10px;border-bottom:2px solid var(--line);font-weight:700}
+th:first-child{text-align:left}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:center;color:var(--ink)}
+td:first-child{text-align:left;font-weight:600}
+td.y{color:var(--green);font-weight:800;font-size:16px}
+td.n{color:#c9c2ae}
+tr:nth-child(even) td{background:rgba(255,255,255,.5)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.mini h4{font-family:var(--serif);font-size:16px;margin-bottom:6px}
+.mini p{font-size:14px;color:var(--muted);line-height:1.45}
+
+/* --- отрисованные дашборд-мокапы --- */
+.dash{background:#10231b;border:1px solid #21453a;border-radius:14px;padding:15px 16px;margin-top:16px;overflow-x:auto;box-shadow:0 20px 44px -30px rgba(0,0,0,.6)}
+.dash .dhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;min-width:640px}
+.dash .dtitle{font-family:var(--serif);font-weight:700;font-size:15px;color:#fff}
+.dash .dtitle .mut{color:#7fa394;font-weight:400;font-size:12px;font-family:var(--sans)}
+.dash .dupd{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#6f9284}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-width:640px}
+.fchip{display:inline-flex;align-items:center;gap:7px;background:#17332a;border:1px solid #2c5647;border-radius:8px;padding:7px 11px;font-size:12px;color:#a9c6b9;white-space:nowrap;line-height:1}
+.fchip .fl{color:#7fa394}
+.fchip .fv{color:#C79A45;font-weight:700}
+.fchip::after{content:"▾";color:#5f8273;font-size:9px;margin-left:1px}
+.dkpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px;min-width:640px}
+.dkpi{background:#14291f;border:1px solid #24493c;border-radius:10px;padding:10px 12px}
+.dkpi .k{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:#7fa394}
+.dkpi .v{font-family:var(--serif);font-weight:800;font-size:21px;color:#fff;margin-top:3px;line-height:1}
+.dkpi .v.g{color:#5fbf84}.dkpi .v.r{color:#e0765f}.dkpi .v.y{color:#dbb04e}
+.dkpi .s{font-size:10.5px;color:#6f9284;margin-top:3px}
+.dtable{width:100%;border-collapse:collapse;font-size:11.5px;min-width:640px}
+.dtable th{color:#7fa394;font-family:var(--mono);font-size:9px;letter-spacing:.03em;text-transform:uppercase;text-align:left;padding:7px 8px;border-bottom:1px solid #2c5647;font-weight:600}
+.dtable td{padding:7px 8px;border-bottom:1px solid #1c3b30;color:#cfe3d9;text-align:left}
+.dtable td.num{text-align:right;font-variant-numeric:tabular-nums}
+.dtable th.num{text-align:right}
+.dtable tr.hot td{background:rgba(224,118,95,.13)}
+.dtable .red{color:#e0765f;font-weight:700}
+.dtable .grn{color:#5fbf84;font-weight:700}
+.dtable .yel{color:#dbb04e;font-weight:700}
+.dbars{display:flex;flex-direction:column;gap:7px;min-width:640px}
+.dbar{display:grid;grid-template-columns:150px 1fr 54px;align-items:center;gap:10px}
+.dbar .bl{font-size:11.5px;color:#cfe3d9}
+.dbar .bt{height:16px;background:#14291f;border-radius:4px;overflow:hidden}
+.dbar .bf{height:100%;border-radius:4px}
+.dbar .bv{font-size:11.5px;color:#fff;text-align:right;font-weight:700}
+.dkpis.six{grid-template-columns:repeat(6,1fr)}
+.dkpis.six .dkpi{padding:8px 10px}
+.dkpis.six .dkpi .v{font-size:16px}
+.dchart{background:#14291f;border:1px solid #24493c;border-radius:10px;padding:12px 14px;margin-top:10px;min-width:640px}
+.dchart .ct{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#7fa394;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono)}
+.dchart .leg{display:flex;gap:14px}
+.dchart .leg span{display:flex;align-items:center;gap:6px;color:#cfe3d9;font-family:var(--sans);font-size:11px;text-transform:none;letter-spacing:0}
+.dchart .leg i{width:14px;height:3px;border-radius:2px;display:inline-block}
+.dchart svg{display:block;width:100%;height:auto}
+.dcap{font-size:13px;color:var(--muted);margin-top:9px;display:flex;gap:8px;align-items:baseline}
+.dcap::before{content:"🖼";flex:0 0 auto}
+/* --- методологические визуалы (ABCDE, RFM, AABBCC, когорты) --- */
+.viz{margin-top:14px;overflow-x:auto}
+.qh{display:grid;grid-template-columns:118px 50px 58px 70px 1fr;gap:4px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:0 8px 6px;font-weight:700;min-width:560px}
+.qh span{text-align:center}.qh span:first-child,.qh span:last-child{text-align:left}
+.qrow{display:grid;grid-template-columns:118px 50px 58px 70px 1fr;gap:4px;border-radius:9px;overflow:hidden;margin-bottom:5px;align-items:stretch;font-size:12.5px;min-width:560px}
+.qrow>div{padding:9px 9px;display:flex;align-items:center}
+.qrow .qs{font-weight:800;color:#22302b}
+.qrow .qm{justify-content:center;font-weight:800;font-size:15px}
+.qrow .qd{background:rgba(255,255,255,.5);color:#39413a;font-size:11.8px;line-height:1.32}
+.ok{color:#2c8a52}.no{color:#c0392b}.mb{color:#2e6da4}
+.rfm{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;min-width:540px}
+.rcell{border-radius:10px;padding:12px 13px;min-height:78px;color:#20242a}
+.rcell b{display:block;font-weight:800;font-size:14px;margin-bottom:3px}
+.rcell span{font-size:11.3px;line-height:1.32;opacity:.9}
+.axcap{font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:2px 0 8px;font-weight:700}
+.pmx{display:grid;grid-template-columns:78px repeat(3,1fr);gap:6px;min-width:470px;align-items:stretch}
+.pmx .ph{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--muted);text-align:center;font-weight:700;display:flex;align-items:center;justify-content:center}
+.pmx .pl{font-weight:800;font-size:12.5px;color:var(--em);display:flex;align-items:center}
+.pcell{border-radius:9px;padding:11px 8px;text-align:center;color:#20242a}
+.pcell b{display:block;font-size:17px;font-weight:800}
+.pcell span{font-size:10px;line-height:1.2;display:block;margin-top:2px}
+.coh{border-collapse:collapse;font-size:9.5px;min-width:660px;margin:0 auto}
+.coh th{font-family:var(--mono);font-size:8.5px;color:#5f8273;padding:3px 3px;text-align:center;font-weight:600;white-space:nowrap}
+.coh td{padding:4px 5px;text-align:center;color:#0f2a20;font-variant-numeric:tabular-nums;border:1px solid #fff;font-weight:600}
+.coh td.rl{text-align:left;color:#5a6056;font-weight:600;font-family:var(--mono);font-size:8.5px;background:#fff!important}
+.coh td.e{background:#F4F1EA!important}
+.dcap b{color:var(--em)}
+.foot{padding:34px 0 60px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.foot b{color:var(--gold-h)}
+@media(max-width:820px){.legend,.grid2{grid-template-columns:1fr}.hero h1{font-size:34px}}
+
+/* NV1 pattern host */
+svg.patternhost{position:absolute;width:0;height:0}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+
+<!-- NV1 · Варсити-монограмма «A» -->
+<svg class="patternhost" aria-hidden="true"><defs>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse">
+    <g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle">
+      <text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text>
+      <text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text>
+    </g>
+  </pattern>
+</defs></svg>
+
+<!-- HERO -->
+<header class="hero">
+  <svg class="bf" preserveAspectRatio="none"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <div class="wrap">
+    <span class="kicker">Практикум A-Players · Модуль «Коммерческая аналитика»</span>
+    <h1>Домашнее задание: разверни аналитику и второй мозг</h1>
+    <p class="q">Задача домашки — <b>развернуть систему у себя</b> и прийти на разбор с рабочими дашбордами и живым диалогом со вторым мозгом. К каждому дашборду ниже есть <b>пример «по лекалам»</b> — можно скринить и показывать ИИ как референс.</p>
+    <p class="brand">Как сдавать → на персональном разборе показываете экран: <b>обзорный дашборд · SLA/TLT · второй мозг отвечает голосом</b></p>
+  </div>
+</header>
+
+<!-- BLOCK 0 -->
+<section><div class="wrap">
+  <h2><span class="no">0</span> Гигиена данных <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">«Сначала гигиена, потом модели». Без этого любой дашборд врёт, а второй мозг делает неверные выводы. Три проверки — до первого графика.</p>
+  <div class="block">
+    <ul class="check">
+      <li><b>Весь трафик падает в CRM.</b> Проверьте лиды из чат-бота и форм — любимое упражнение: открыть бота и найти «потеряшек», которые писали «хочу поработать / сколько стоит», но не упали в CRM.</li>
+      <li><b>Все касания логируются.</b> Каждый звонок и переписка фиксируются в CRM (система записи звонков и сообщений). Что не отражается — тем вы уже не управляете.</li>
+      <li><b>Команда сегментирует трафик по ABCDE.</b> В идеале ИИ-контроль качества слушает звонок и проставляет сегмент правильно (СЕЛЗ ошибается: горячему пишет «холодный»). Настроить такой контроль качества помогает команда <a href="https://ainakontrole.ru" target="_blank">ainakontrole.ru</a> — можно написать напрямую Денису в <a href="https://t.me/m/cntnmsBzMDAy" target="_blank">Telegram</a>.</li>
+    </ul>
+    <div class="value"><span>Это фундамент. TLT, факторный анализ и предиктив считаются <b>по касаниям и сегментам</b> — если их нет в CRM, вся аналитика поверх — фикция.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 1 -->
+<section><div class="wrap">
+  <h2><span class="no">1</span> Каркас: решение → дерево → глоссарий <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Под каждый дашборд пройдите первые 3 из «7 шагов». Дашборд строится <b>сверху вниз, от цели</b>, а не «померим всё, что можем».</p>
+  <div class="block">
+    <ul class="check">
+      <li><b>Определи решение.</b> Какое одно управленческое решение обслуживает дашборд? Кто и как часто его принимает?</li>
+      <li><b>Возьми узел дерева метрик.</b> Только те метрики, что отвечают на вопрос «почему такой показатель». В дашборд контроля качества не пихаем метрики маркетинга.</li>
+      <li><b>Пропиши глоссарий и формулы.</b> Договоритесь, как считаете (спроси 10 компаний про «конверсию в продажу» — получишь 10 ответов). Глоссарий — инструкция к дашборду, снимает споры «в CRM одна цифра, в дашборде другая». <a href="https://docs.google.com/spreadsheets/d/1B4VSkSPd1UvWevkfeCXU1nSky5ZNpw8PBooIx4TFtmA/edit?gid=293225922#gid=293225922" target="_blank">Пример глоссария →</a></li>
+    </ul>
+    <div class="value"><span>Дерево метрик позволяет от корня-цели быстро дойти до причины: <b>почему когорта просела или выстрелила</b>. Ответ всегда внутри одной из веток.</span></div>
+  </div>
+</div></section>
+
+<!-- ANATOMY -->
+<section><div class="wrap">
+  <h2><span class="no">▤</span> Анатомия любого дашборда «по лекалам»</h2>
+  <p class="sublead">Все дашборды собраны по одной вёрстке — сверху вниз: <b>шапка с фильтрами → цель-метрики → графики → детализация</b>. Вот как выглядит шапка — это тот самый набор фильтров, которые вы задаёте.</p>
+
+  <!-- нарисованная шапка дашборда -->
+  <div class="dash">
+    <div class="dhead"><div class="dtitle">Шапка дашборда <span class="mut">— панель фильтров (срезов)</span></div><div class="dupd">пример вёрстки</div></div>
+    <div class="filters">
+      <span class="fchip"><span class="fl">Период</span> <span class="fv">01.06 – 30.06</span></span>
+      <span class="fchip"><span class="fl">Сравнить с</span> <span class="fv">пред. месяц</span></span>
+      <span class="fchip"><span class="fl">Конвертер</span> <span class="fv">Вебинар</span></span>
+      <span class="fchip"><span class="fl">Отдел / группа</span> <span class="fv">Все</span></span>
+      <span class="fchip"><span class="fl">Менеджер</span> <span class="fv">Все</span></span>
+      <span class="fchip"><span class="fl">Продукт / юнит</span> <span class="fv">Все</span></span>
+      <span class="fchip"><span class="fl">Канал трафика</span> <span class="fv">Все</span></span>
+      <span class="fchip"><span class="fl">Сегмент ABCDE</span> <span class="fv">A · B</span></span>
+      <span class="fchip"><span class="fl">Этап воронки</span> <span class="fv">Счёт выставлен</span></span>
+      <span class="fchip"><span class="fl">Причина отказа</span> <span class="fv">Все</span></span>
+    </div>
+    <div class="dkpis">
+      <div class="dkpi"><div class="k">Лиды</div><div class="v">1 240</div><div class="s">план 1 300 · 🟡 95%</div></div>
+      <div class="dkpi"><div class="k">Конверсия в оплату</div><div class="v r">7,1%</div><div class="s">план 9% · 🔴 79%</div></div>
+      <div class="dkpi"><div class="k">Средний чек</div><div class="v g">132 400 ₽</div><div class="s">план 130к · 🟢 102%</div></div>
+      <div class="dkpi"><div class="k">LTV / CAC</div><div class="v y">2,7</div><div class="s">норма ≥ 3 · 🟡</div></div>
+    </div>
+  </div>
+  <div class="dcap"><span><b>Заскриньте эту шапку</b> и покажите ИИ как референс — «собери мне дашборд с такими фильтрами и метриками, подключись к моей CRM».</span></div>
+
+  <div class="anat" style="margin-top:22px">
+    <div class="arow"><div class="t">1 · Панель фильтров (срезов)</div><div class="d">Период · сравнение периодов · конвертер (вебинар/диагностика/звонок) · отдел/группа · менеджер · продукт/юнит · канал трафика · сегмент ABCDE · этап воронки · причина отказа. Срез можно наложить на срез (июнь этого года vs июнь прошлого).</div></div>
+    <div class="arow"><div class="t">2 · Ключевые цель-метрики (план-факт)</div><div class="d">Главные KPI крупно. Где задан план — подсвечиваем красную зону 🟢🟡🔴, чтобы «что сломалось» читалось за 30 секунд. Где плана нет — просто факт в динамике.</div></div>
+    <div class="arow"><div class="t">3 · Графики динамики</div><div class="d">Не «прошлая неделя», а тренд период-к-периоду — только так принимается решение.</div></div>
+    <div class="arow"><div class="t">4 · Детализация (drill-down)</div><div class="d">По клику — список конкретных сделок с ID-ссылкой в CRM, отсортированный по проблемному показателю. Отсюда идёшь чинить.</div></div>
+  </div>
+  <div class="value"><span>Вайб-кодинг: загружаете <b>пример-дашборд</b> (скрин или ссылку) в Claude Code → подключаете CRM токеном → он строит такой же по этим лекалам. Экономит десятки часов против сборки с нуля.</span></div>
+  <div class="warn"><b>Безопасность (в каждом CLAUDE.md зашита):</b> подключение к CRM — <b>только на чтение</b> (отдельный API-ключ с ролью «просмотр»), агент ничего не удаляет и не дублирует, токены — вне кода. Готовую страницу дашборда <b>закрывайте логином и паролем</b> — иначе коммерческие данные открыты по ссылке любому.</div>
+</div></section>
+
+<!-- BLOCK 2 -->
+<section><div class="wrap">
+  <h2><span class="no">2</span> Дашборд №1 — Обзорный (гендиректорский) <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">Первое упражнение, где всегда находятся точки роста. База из <b>4 рычагов роста</b> (лиды · конверсия · чек · LTV) в разных срезах.</p>
+  <div class="block">
+    <div class="bh"><h3>Что должно быть внутри</h3><span class="tag">Обязательный для всех</span></div>
+    <ul class="check">
+      <li>4 рычага Абрахама крупно + светофор против плана</li>
+      <li><b>Маркетинговые метрики сквозной по каналам:</b> CPL, CAC, ROMI, CTR, КВАЛ-1, % дозвона — то, что смотрит маркетинг</li>
+      <li><b>Полный набор фильтров</b> (см. анатомию): период, конвертер, отдел/группа, менеджер, продукт/юнит, канал, сегмент, этап, причина отказа</li>
+      <li><b>Графики динамики</b> — как ведёт себя выбранный срез во времени (кривые линии по неделям), а не только текущий факт</li>
+      <li>Возможность <b>сравнивать</b>: менеджер vs менеджер, сегмент vs сегмент, период vs период</li>
+    </ul>
+
+    <div class="dash">
+      <div class="dhead"><div class="dtitle">Обзорный дашборд <span class="mut">— рычаги + сквозная по каналам + динамика</span></div><div class="dupd">пример</div></div>
+      <div class="filters">
+        <span class="fchip"><span class="fl">Период</span> <span class="fv">Июнь</span></span>
+        <span class="fchip"><span class="fl">Отдел</span> <span class="fv">Все</span></span>
+        <span class="fchip"><span class="fl">Менеджер</span> <span class="fv">Все</span></span>
+        <span class="fchip"><span class="fl">Продукт</span> <span class="fv">Все</span></span>
+        <span class="fchip"><span class="fl">Канал</span> <span class="fv">Все</span></span>
+        <span class="fchip"><span class="fl">Разрез графика</span> <span class="fv">Конверсия × канал</span></span>
+      </div>
+      <div class="dkpis">
+        <div class="dkpi"><div class="k">Лиды</div><div class="v">1 240</div><div class="s">🟡 95% плана</div></div>
+        <div class="dkpi"><div class="k">Конверсия</div><div class="v r">7,1%</div><div class="s">🔴 79% плана</div></div>
+        <div class="dkpi"><div class="k">Средний чек</div><div class="v g">132 400 ₽</div><div class="s">🟢 102%</div></div>
+        <div class="dkpi"><div class="k">LTV / CAC</div><div class="v y">2,7</div><div class="s">🟡 норма ≥3</div></div>
+      </div>
+      <div class="dkpis six">
+        <div class="dkpi"><div class="k">CPL</div><div class="v">640 ₽</div></div>
+        <div class="dkpi"><div class="k">CAC</div><div class="v">9 000 ₽</div></div>
+        <div class="dkpi"><div class="k">ROMI</div><div class="v g">310%</div></div>
+        <div class="dkpi"><div class="k">CTR</div><div class="v">1,8%</div></div>
+        <div class="dkpi"><div class="k">КВАЛ-1</div><div class="v y">48%</div></div>
+        <div class="dkpi"><div class="k">% дозвона</div><div class="v">63%</div></div>
+      </div>
+      <table class="dtable">
+        <thead><tr><th>Канал</th><th class="num">Лиды</th><th class="num">CPL</th><th class="num">КВАЛ-2</th><th class="num">Конверсия</th><th class="num">Чек</th><th class="num">ROMI</th></tr></thead>
+        <tbody>
+          <tr><td>🟢 Реферальный</td><td class="num">210</td><td class="num">180 ₽</td><td class="num">41%</td><td class="num grn">12,4%</td><td class="num">148к</td><td class="num grn">720%</td></tr>
+          <tr><td>🟡 Яндекс.Директ</td><td class="num">430</td><td class="num">720 ₽</td><td class="num">28%</td><td class="num yel">7,0%</td><td class="num">129к</td><td class="num yel">240%</td></tr>
+          <tr><td>🔴 Таргет VK</td><td class="num">360</td><td class="num red">1 090 ₽</td><td class="num red">14%</td><td class="num red">3,8%</td><td class="num">121к</td><td class="num red">70%</td></tr>
+          <tr><td>🟢 Партнёры</td><td class="num">240</td><td class="num">210 ₽</td><td class="num">36%</td><td class="num grn">10,1%</td><td class="num">140к</td><td class="num grn">560%</td></tr>
+        </tbody>
+      </table>
+      <div class="dchart">
+        <div class="ct"><span>Динамика конверсии по неделям (выбранный срез)</span><span class="leg"><span><i style="background:#5fbf84"></i>Реферальный</span><span><i style="background:#C79A45"></i>Яндекс</span><span><i style="background:#e0765f"></i>Таргет VK</span></span></div>
+        <svg viewBox="0 0 620 150" preserveAspectRatio="none" aria-hidden="true">
+          <g stroke="#24493c" stroke-width="1">
+            <line x1="20" y1="30" x2="600" y2="30"/><line x1="20" y1="60" x2="600" y2="60"/><line x1="20" y1="90" x2="600" y2="90"/><line x1="20" y1="120" x2="600" y2="120"/>
+          </g>
+          <polyline fill="none" stroke="#5fbf84" stroke-width="2.5" points="20,45 105,40 190,50 275,38 360,42 445,35 530,40 600,38"/>
+          <polyline fill="none" stroke="#C79A45" stroke-width="2.5" points="20,80 105,78 190,85 275,82 360,88 445,80 530,79 600,83"/>
+          <polyline fill="none" stroke="#e0765f" stroke-width="2.5" points="20,95 105,100 190,98 275,105 360,110 445,108 530,115 600,118"/>
+          <g fill="#5f8273" font-size="9" font-family="ui-monospace,Menlo,monospace">
+            <text x="20" y="145">W1</text><text x="188" y="145">W3</text><text x="358" y="145">W5</text><text x="528" y="145">W7</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="dcap"><span>Пример «по лекалам». Видно и факт, и <b>тренд</b>: 🔴 Таргет VK — дорогой лид (CPL 1090 ₽), низкий КВАЛ-2 и конверсия <b>ползёт вниз неделя к неделе</b>. Реферальный держит 🟢. <a href="claude-md/obzorny.md" download><b>Скачать CLAUDE.md для обзорного →</b></a></span></div>
+
+    <div class="value"><span>Нет компании, где все каналы и все менеджеры дают план. Обзорный дашборд всегда отвечает на вопрос <b>«за счёт чего заработать больше здесь и сейчас»</b> — через сравнение срезов.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 3 -->
+<section><div class="wrap">
+  <h2><span class="no">3</span> Дашборд №2 — SLA / TLT <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead"><b>TLT = Time from Last Touch</b> — сколько дней/минут прошло с последнего касания. Собирается по любой CRM за ~15 минут, если касания логируются. Спасает часы ручного клика по сделкам.</p>
+  <div class="block">
+    <div class="bh"><h3>Что показывает и как читать</h3><span class="tag">Обязательный, если касания в CRM</span></div>
+    <ul class="check">
+      <li>По каждой сделке: <b>число касаний</b>, <b>TLT</b>, дней в воронке, время последнего касания</li>
+      <li>Фильтр по <b>этапу воронки</b> (напр. «счёт выставлен» — горячие пирожки) + сортировка от большего → сразу видно брошенные сделки</li>
+      <li>Доп. срез по температуре: открой всех <b>A-лидов</b> — если по ним ≤2 касаний, это <b>прямые потерянные деньги</b></li>
+      <li>Привязка к ритуалу: превышение TLT → сделка уходит в дожим, разбор на планёрке</li>
+    </ul>
+
+    <div class="dash">
+      <div class="dhead"><div class="dtitle">Дашборд SLA / TLT <span class="mut">— брошенные сделки</span></div><div class="dupd">пример</div></div>
+      <div class="filters">
+        <span class="fchip"><span class="fl">Воронка</span> <span class="fv">Основная</span></span>
+        <span class="fchip"><span class="fl">Этап</span> <span class="fv">Счёт выставлен</span></span>
+        <span class="fchip"><span class="fl">Период</span> <span class="fv">30 дней</span></span>
+        <span class="fchip"><span class="fl">Сортировка</span> <span class="fv">TLT ↓</span></span>
+      </div>
+      <div class="dkpis">
+        <div class="dkpi"><div class="k">Сделок на этапе</div><div class="v">86</div><div class="s">в работе</div></div>
+        <div class="dkpi"><div class="k">Ср. TLT</div><div class="v y">3,4 дн</div><div class="s">норма ≤1</div></div>
+        <div class="dkpi"><div class="k">TLT &gt; 2 дней</div><div class="v r">31</div><div class="s">🔴 забыты</div></div>
+        <div class="dkpi"><div class="k">A-лиды ≤2 касаний</div><div class="v r">9</div><div class="s">потерянные ₽</div></div>
+      </div>
+      <table class="dtable">
+        <thead><tr><th>Сделка</th><th>Сегмент</th><th class="num">Дней в воронке</th><th class="num">Касаний</th><th class="num">TLT, дн</th></tr></thead>
+        <tbody>
+          <tr class="hot"><td>#48210</td><td class="red">A · горячий</td><td class="num">11</td><td class="num red">2</td><td class="num red">6,5</td></tr>
+          <tr class="hot"><td>#48197</td><td class="red">A · горячий</td><td class="num">9</td><td class="num red">2</td><td class="num red">5,0</td></tr>
+          <tr><td>#48176</td><td class="yel">B · тёплый</td><td class="num">7</td><td class="num">4</td><td class="num yel">3,2</td></tr>
+          <tr><td>#48155</td><td class="yel">B · тёплый</td><td class="num">6</td><td class="num">5</td><td class="num yel">2,4</td></tr>
+          <tr><td>#48140</td><td>C · холодный</td><td class="num">12</td><td class="num">6</td><td class="num grn">0,8</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dcap"><span>Пример «по лекалам». Отсортировали по TLT ↓ → сверху <b>2 горячих A-лида с 2 касаниями и TLT 5–6 дней</b>. Это прямые деньги на дожим. <a href="claude-md/sla-tlt.md" download><b>Скачать CLAUDE.md для SLA/TLT →</b></a></span></div>
+
+    <div class="value"><span>За 3 клика находите оставленные сделки даже в объёме 1000+. Дожим таких возвращает <b>20–30% сделок ≈ +10% выручки ежемесячно</b> без рекламы.</span></div>
+    <div class="warn"><b>Условие:</b> работает, только если Блок 0 закрыт — все касания (звонки + переписки) реально пишутся в CRM.</div>
+  </div>
+
+  <div class="block">
+    <div class="bh"><h3>Связанный дашборд — воронка дожима</h3><span class="tag">формируется из TLT + контроля качества</span></div>
+    <p class="mut">Сделки с превышением TLT и «косяками» контроля качества автоматически попадают сюда. Дашборд показывает, как их вернули в работу и дожали.</p>
+    <div class="dash">
+      <div class="dhead"><div class="dtitle">Воронка дожима <span class="mut">— возврат сделок в оплату</span></div><div class="dupd">пример</div></div>
+      <div class="filters">
+        <span class="fchip"><span class="fl">Период</span> <span class="fv">Июнь</span></span>
+        <span class="fchip"><span class="fl">Источник</span> <span class="fv">Все</span></span>
+        <span class="fchip"><span class="fl">Причина</span> <span class="fv">Все</span></span>
+        <span class="fchip"><span class="fl">Менеджер дожима</span> <span class="fv">Все</span></span>
+      </div>
+      <div class="dkpis">
+        <div class="dkpi"><div class="k">Сделок в дожиме</div><div class="v">148</div><div class="s">авто + ручной</div></div>
+        <div class="dkpi"><div class="k">CR дожима</div><div class="v g">24%</div><div class="s">вернули в оплату</div></div>
+        <div class="dkpi"><div class="k">Выручка с дожима</div><div class="v g">4,3 млн ₽</div><div class="s">без рекламы</div></div>
+        <div class="dkpi"><div class="k">Ср. касаний до оплаты</div><div class="v">3,1</div><div class="s">до возврата</div></div>
+      </div>
+      <div class="dbars">
+        <div class="dbar"><span class="bl">Нет денег сейчас</span><div class="bt"><div class="bf" style="width:70%;background:linear-gradient(90deg,#B0822E,#C79A45)"></div></div><span class="bv">62</span></div>
+        <div class="dbar"><span class="bl">Недозвон</span><div class="bt"><div class="bf" style="width:48%;background:linear-gradient(90deg,#B0822E,#C79A45)"></div></div><span class="bv">41</span></div>
+        <div class="dbar"><span class="bl">Ошибка менеджера (ОКК)</span><div class="bt"><div class="bf" style="width:33%;background:linear-gradient(90deg,#e0765f,#d05a4c)"></div></div><span class="bv">28</span></div>
+        <div class="dbar"><span class="bl">Отказ банка</span><div class="bt"><div class="bf" style="width:20%;background:linear-gradient(90deg,#B0822E,#C79A45)"></div></div><span class="bv">17</span></div>
+      </div>
+    </div>
+    <div class="dcap"><span>Пример «по лекалам». В дожим падают <b>только сделки с отправленной ссылкой на оплату</b> (был согласованный оффер) — тогда возврат реален. <a href="claude-md/dozhim.md" download><b>Скачать CLAUDE.md для воронки дожима →</b></a></span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 4 -->
+<section><div class="wrap">
+  <h2><span class="no">4</span> Дашборды под твой провисший рычаг <span class="lv lv-goal">Цель</span> <span class="lv lv-max">Макс</span></h2>
+  <p class="sublead">Выбери 1–2 под самую слабую метрику. Ниже — что это такое и как выглядит. К каждому есть <code>CLAUDE.md</code>: скачай → положи в папку проекта → открой в VS&nbsp;Code + Claude&nbsp;Code → напиши «прочитай файл и веди меня по нему по шагам». Он соберёт дашборд за руку.</p>
+
+  <!-- ABCDE -->
+  <div class="block">
+    <div class="bh"><h3>ABCDE / КВАЛ — сегментация по температуре</h3><span class="lv lv-goal">Цель</span></div>
+    <p class="mut">Квалификация на основе 3 критериев: <b>цель · деньги · срочность</b> (обсуждаются в первом звонке). КВАЛ-1 = A+B+C, КВАЛ-2 = A+B. Единственный честный способ сравнивать менеджеров.</p>
+    <div class="viz">
+      <div class="qh"><span>Сегмент</span><span>Цель</span><span>Деньги</span><span>Срочность</span><span>Описание</span></div>
+      <div class="qrow" style="background:#bfe3cd"><div class="qs">🔥 Горячий (A)</div><div class="qm ok">✓</div><div class="qm ok">✓</div><div class="qm ok">✓</div><div class="qd">Есть цель, деньги и срочность — готов купить сейчас</div></div>
+      <div class="qrow" style="background:#f6e9a8"><div class="qs">🌤 Тёплый (B)</div><div class="qm ok">✓</div><div class="qm mb">✓/?</div><div class="qm no">✗</div><div class="qd">Потребность есть, срочности нет — надо сформировать срочность / решить вопрос оплаты</div></div>
+      <div class="qrow" style="background:#bfe8ef"><div class="qs">❄️ Холодный (C)</div><div class="qm ok">✓</div><div class="qm no">✗</div><div class="qm no">✗</div><div class="qd">Интерес есть, по деньгам/срокам чёткого ответа нет («пришёл посмотреть вебинар»)</div></div>
+      <div class="qrow" style="background:#b9c6ec"><div class="qs">🚫 Нецелевой (D)</div><div class="qm" style="grid-column:span 3;color:#2e3a63">коммуникация была, но лид не наш</div><div class="qd">Случайная заявка, не наш профиль, «продам диван», дети до 17</div></div>
+      <div class="qrow" style="background:#f2c3ad"><div class="qs">📵 Неконтактный (E)</div><div class="qm" style="grid-column:span 3;color:#7a3a28">контакт не состоялся</div><div class="qd">Недозвоны, тесты, дубли — не удалось поговорить</div></div>
+    </div>
+    <div class="dcap"><span>Пример «по лекалам». Дашборд показывает доли A–E по дням + КВАЛ-1/КВАЛ-2 и конверсию по каждому сегменту у каждого менеджера. <a href="claude-md/abcde.md" download><b>Скачать CLAUDE.md для ABCDE →</b></a></span></div>
+  </div>
+
+  <!-- RFM -->
+  <div class="block">
+    <div class="bh"><h3>RFM — сегментация базы (давность · частота · сумма)</h3><span class="lv lv-max">Макс</span></div>
+    <p class="mut">Делит базу на сегменты, чтобы работать с ней таргетированно (а не поливать всех outbound). Главный источник быстрых денег — «в зоне риска».</p>
+    <div class="axcap">↑ частота покупок · → давность последнего заказа</div>
+    <div class="viz"><div class="rfm">
+      <div class="rcell" style="grid-area:1/1;background:#b9a3e3"><b>Лояльные</b><span>3+ заказов, недавно · апселл, премиум, рефералы</span></div>
+      <div class="rcell" style="grid-area:1/2;background:#f2a9ab"><b>В зоне риска</b><span>3+ заказов, начали уходить · звонок РОПа, не в лоб</span></div>
+      <div class="rcell" style="grid-area:1/3;background:#e2726f"><b>В зоне потери</b><span>3+ заказов, давно · последний сильный оффер</span></div>
+      <div class="rcell" style="grid-area:2/1;background:#d3c6ef"><b>Перспективные</b><span>2 заказа, недавно · довести до 3-го</span></div>
+      <div class="rcell" style="grid-row:2/4;grid-column:2;background:#f4d97a"><b>Дрейфующие</b><span>1–2 заказа, средне · реактивация контентом + оффер</span></div>
+      <div class="rcell" style="grid-row:2/4;grid-column:3;background:#cdc9c0"><b>Спящие</b><span>1–2 заказа, давно · только топ-20% по чеку, персонально</span></div>
+      <div class="rcell" style="grid-area:3/1;background:#ddd3f2"><b>Новички</b><span>1 заказ, 0–30 дней · авто-цепочка на 2-й заказ</span></div>
+    </div></div>
+    <div class="dcap"><span>Пример «по лекалам». Дашборд показывает движение клиентов между сегментами неделя к неделе + тревожные сигналы. <a href="claude-md/rfm.md" download><b>Скачать CLAUDE.md для RFM →</b></a></span></div>
+  </div>
+
+  <!-- AABBCC -->
+  <div class="block">
+    <div class="bh"><h3>Потенциал × Факт (AA / AC / CC) — где недозарабатываете</h3><span class="lv lv-max">Макс</span></div>
+    <p class="mut">Первая буква — <b>потенциал</b> клиента (сколько может закупать), вторая — <b>факт</b> (сколько закупает сейчас). Разрыв = деньги на столе. Чаще для B2B.</p>
+    <div class="viz"><div class="pmx">
+      <div class="ph"></div><div class="ph">Факт: A</div><div class="ph">Факт: B</div><div class="ph">Факт: C</div>
+      <div class="pl">Потенциал A</div>
+      <div class="pcell" style="background:#bfe3cd"><b>AA</b><span>выжат по максимуму — удерживать</span></div>
+      <div class="pcell" style="background:#f6e9a8"><b>AB</b><span>недобор — развивать</span></div>
+      <div class="pcell" style="background:#f2b3a0"><b>AC</b><span>большой недозаработок → key account</span></div>
+      <div class="pl">Потенциал B</div>
+      <div class="pcell" style="background:#d7ecd0"><b>BA</b><span>выше потенциала</span></div>
+      <div class="pcell" style="background:#f6e9a8"><b>BB</b><span>в норме</span></div>
+      <div class="pcell" style="background:#f4d5a0"><b>BC</b><span>недобор — растить</span></div>
+      <div class="pl">Потенциал C</div>
+      <div class="pcell" style="background:#e5e0d4"><b>CA</b><span>максимум выжали</span></div>
+      <div class="pcell" style="background:#ece7db"><b>CB</b><span>норма</span></div>
+      <div class="pcell" style="background:#dcd8ce"><b>CC</b><span>мало и так — авто-продукт</span></div>
+    </div></div>
+    <div class="dcap"><span>Пример «по лекалам». Красная зона (AC, BC) — куда ставить key account manager. <a href="claude-md/aabbcc.md" download><b>Скачать CLAUDE.md для потенциал×факт →</b></a></span></div>
+  </div>
+
+  <!-- КОГОРТНЫЙ -->
+  <div class="block">
+    <div class="bh"><h3>Когортный анализ — как дозревают лиды во времени</h3><span class="lv lv-max">Макс</span></div>
+    <p class="mut">Строка — как дозревает когорта во времени · столбец — сравнение когорт в одном возрасте · <b>обрыв между соседними = свежая проблема</b>. Точечная конверсия врёт при длинном цикле.</p>
+    <div class="dash">
+      <div class="dhead"><div class="dtitle">Когортный анализ <span class="mut">— накопленная конверсия, %</span></div><div class="dupd">пример</div></div>
+      <div class="filters">
+        <span class="fchip"><span class="fl">Тип метрик</span> <span class="fv">Cohort</span></span>
+        <span class="fchip"><span class="fl">Метрика ячейки</span> <span class="fv">Конверсия</span></span>
+        <span class="fchip"><span class="fl">Канал</span> <span class="fv">Все</span></span>
+        <span class="fchip"><span class="fl">Воронка</span> <span class="fv">Основная</span></span>
+        <span class="fchip"><span class="fl">Тип лида</span> <span class="fv">Целевой</span></span>
+        <span class="fchip"><span class="fl">Продукт</span> <span class="fv">Все</span></span>
+      </div>
+      <table class="coh">
+        <thead><tr><th>Когорта</th><th>Мес&nbsp;0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+        <tbody>
+          <tr><td class="rl">Янв</td><td style="background:#eaf1fb">1,2</td><td style="background:#cfe0f7">3,1</td><td style="background:#a9c7f0">5,8</td><td style="background:#7ea9e6;color:#fff">7,4</td><td style="background:#6b9ce0;color:#fff">8,6</td><td style="background:#5b8fd6;color:#fff">9,2</td><td style="background:#5b8fd6;color:#fff">9,5</td></tr>
+          <tr><td class="rl">Фев</td><td style="background:#eaf1fb">1,4</td><td style="background:#cfe0f7">3,4</td><td style="background:#a9c7f0">6,1</td><td style="background:#7ea9e6;color:#fff">7,9</td><td style="background:#6b9ce0;color:#fff">9,0</td><td style="background:#5b8fd6;color:#fff">9,6</td><td style="background:#5b8fd6;color:#fff">9,9</td></tr>
+          <tr><td class="rl">Мар</td><td style="background:#eaf1fb">1,1</td><td style="background:#cfe0f7">2,9</td><td style="background:#a9c7f0">5,2</td><td style="background:#7ea9e6;color:#fff">6,8</td><td style="background:#6b9ce0;color:#fff">7,9</td><td style="background:#5b8fd6;color:#fff">8,4</td><td class="e"></td></tr>
+          <tr><td class="rl">Апр</td><td style="background:#eaf1fb">1,3</td><td style="background:#cfe0f7">3,2</td><td style="background:#a9c7f0">5,6</td><td style="background:#7ea9e6;color:#fff">7,1</td><td style="background:#6b9ce0;color:#fff">8,2</td><td class="e"></td><td class="e"></td></tr>
+          <tr><td class="rl">Май</td><td style="background:#eaf1fb">0,9</td><td style="background:#e3ebf9">2,1</td><td style="background:#cfe0f7">3,4</td><td style="background:#a9c7f0">4,6</td><td class="e"></td><td class="e"></td><td class="e"></td></tr>
+          <tr><td class="rl">Июн</td><td style="background:#eaf1fb">1,2</td><td style="background:#cfe0f7">3,0</td><td style="background:#a9c7f0">5,1</td><td class="e"></td><td class="e"></td><td class="e"></td><td class="e"></td></tr>
+          <tr><td class="rl">Июл</td><td style="background:#eaf1fb">1,3</td><td style="background:#cfe0f7">3,3</td><td class="e"></td><td class="e"></td><td class="e"></td><td class="e"></td><td class="e"></td></tr>
+          <tr><td class="rl">Авг</td><td style="background:#eaf1fb">1,4</td><td class="e"></td><td class="e"></td><td class="e"></td><td class="e"></td><td class="e"></td><td class="e"></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dcap"><span>Обрыв виден: <b>Май</b> к мес&nbsp;3 даёт 4,6% против 6,8–7,9% у соседей — в мае что-то сломалось (качество трафика / SLA / скрипт). <b>Фильтры обязательно:</b> тип метрик Cohort · метрика ячейки (конверсия / выручка / LTV) · канал / группа каналов · воронка · тип лида · продукт · период когорт · возраст. <a href="claude-md/kogorty.md" download><b>Скачать CLAUDE.md для когорт →</b></a></span></div>
+  </div>
+
+  <div class="grid2">
+    <div class="mini"><h4>Сквозная по каналам <span class="lv lv-goal">Цель</span></h4><p>Уже показана в Обзорном дашборде (метрики + динамика по каналам). Обогащение событий: выступления, PR — тоже оцифровываются UTM-меткой. <a href="claude-md/skvoznaya.md" download>CLAUDE.md →</a></p></div>
+    <div class="mini"><h4>Состояние команды <span class="lv lv-goal">Цель</span></h4><p>Уровень энергии + эмоция понедельником. Опережающий сигнал — один своевременный 1-на-1 спасает больше выручки, чем 4 гипотезы. <a href="claude-md/sostoyanie.md" download>CLAUDE.md →</a></p></div>
+  </div>
+
+  <div class="dcap"><span>Факторный анализ маркетинг↔продажи — как готовый интерактивный инструмент: <a href="faktorny-analiz.html" target="_blank"><b>открыть калькулятор «чей мяч» →</b></a></span></div>
+  <div class="value"><span>После того как дашборды подсветили проблемы — гипотезы ранжируем по <b>ICE = Impact × Confidence ÷ Effort</b>, берём ТОП-3 с эффектом в ₽. Не чините всё сразу.</span></div>
+</div></section>
+
+<!-- BLOCK 5 -->
+<section><div class="wrap">
+  <h2><span class="no">5</span> Второй мозг — два варианта сборки <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">Агент (Telegram-бот с голосовым вводом), которому вы «скормили» контекст компании и который постоянно к нему обращается. Делает дебаг за вас и создаёт повторяющиеся ритуалы.</p>
+  <div class="grid2">
+    <div class="block" style="margin-top:0">
+      <div class="bh"><h3>Вариант A · VS&nbsp;Code + Claude&nbsp;Code «за руку»</h3><span class="tag">полный, «пощупать»</span></div>
+      <ul class="check">
+        <li>Создаёте <b>папку проекта</b> и складываете в неё <b>все ранее собранные материалы обёртки</b> (JTBD, tone of voice, бриф, позиционирование, продукты и цены, клиенты, конкуренты)</li>
+        <li>Открываете папку в VS&nbsp;Code, запускаете Claude&nbsp;Code — по мастер-промту он <b>ведёт за руку пошагово</b></li>
+        <li>Подключаете источники <b>только на чтение</b> (CRM, дашборды, предиктивная модель, календарь, база знаний) + Telegram-плагин</li>
+        <li>Зашит <b>слой безопасности</b> (данные и база пользователей не утекают) + отключение доступа при офбординге</li>
+      </ul>
+      <p style="margin-top:12px"><a href="vtoroy-mozg.html" target="_blank"><b>→ Полный пошаговый гайд сборки (вариант A)</b></a></p>
+    </div>
+    <div class="block" style="margin-top:0">
+      <div class="bh"><h3>Вариант B · с исполнителем</h3><span class="tag">быстрее, под ключ</span></div>
+      <ul class="check">
+        <li>Развернуть второй мозг под ключ поможет исполнитель — <b>Дмитрий</b>, <a href="https://t.me/fomdi" target="_blank">@fomdi</a></li>
+        <li>Вы отдаёте ту же папку контекста и доступы (только на чтение)</li>
+        <li>Подходит, если вайб-кодинг пока не ваша зона</li>
+      </ul>
+    </div>
+  </div>
+  <div class="block">
+    <div class="bh"><h3>Что подключаем</h3></div>
+    <p class="mut">CRM · дашборды · рекламные кабинеты · речевая аналитика · <b>предиктивная модель</b> (даже если это Google-таблица) · база знаний (Notion / Google / Яндекс.Облако) · календарь.</p>
+    <div class="warn"><b>Безопасность обязательна.</b> Дайте боту права/подтверждения на действия (бывали случаи — снёс или задублировал базу). Никогда не подключайте Telegram по QR в чужие «AI-сервисы» — это угон сессии. Токен = пароль.</div>
+  </div>
+</div></section>
+
+<!-- BLOCK 6 -->
+<section><div class="wrap">
+  <h2><span class="no">6</span> Автоматизированная отчётность и ритуалы (кроны) <span class="lv lv-goal">Цель</span> <span class="lv lv-max">Макс</span></h2>
+  <p class="sublead">Ядро задачи: чтобы второй мозг <b>сам читал предиктивную аналитику</b> и приходил к вам, а не вы лезли в 33 таблицы. Настройте на конкретный день и время.</p>
+  <div class="block">
+    <ul class="check">
+      <li><b>Вечерний светофор-дайджест по отделам</b> <span class="lv lv-goal">Цель</span> — берёт предиктивную модель каждого отдела и присылает сводку в группу</li>
+      <li><b>Run-rate алерт</b> <span class="lv lv-goal">Цель</span> — «идёшь на 60% плана, на этой неделе нужны доп. действия»</li>
+      <li><b>Сводка SLA/TLT + дожим</b> <span class="lv lv-goal">Цель</span> — сам вытаскивает брошенные сделки в адженду планёрки</li>
+      <li><b>Крон-ресёрч</b> <span class="lv lv-max">Макс</span> — напр. вторник/четверг 10:30: сводка по нише + темы для контента</li>
+      <li><b>Аудит недели / календаря</b> <span class="lv lv-max">Макс</span> — что делегировать, что убрать; сверка с ОКР и предиктивной моделью</li>
+    </ul>
+    <div class="value"><span>Ритуал должен быть <b>в один и тот же день и время</b>. Иначе — режим тушения пожаров. Дашборд без ритуала не нужен: его надо выбросить.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 7 -->
+<section><div class="wrap">
+  <h2><span class="no">7</span> Мост к следующей встрече <span class="lv lv-max">Макс</span></h2>
+  <p class="sublead">Следующий модуль — автоворонки + продающий лендинг на вайб-кодинге под вебинар. Подготовьте почву заранее.</p>
+  <div class="block">
+    <ul class="check">
+      <li>Сделать <b>RFM + сегментацию по потенциалу</b> своей базы</li>
+      <li>Выделить <b>списки, кого звать на вебинар</b> (кого реально можно реактивировать)</li>
+      <li>Определить <b>ключевой сегмент и продукт</b>, под который будем строить лендинг и оффер</li>
+    </ul>
+    <div class="value"><span>Тогда на следующей встрече сразу собираем персональные приглашения и продающую страницу под <b>реальный сегмент</b>, а не «в стол».</span></div>
+  </div>
+</div></section>
+
+<!-- MATRIX -->
+<section><div class="wrap">
+  <h2><span class="no">✓</span> Карта уровней — что сдаём</h2>
+  <p class="sublead">Отметьте свой уровень и закройте всё в его колонке. На разбор приносите рабочие экраны.</p>
+  <table>
+    <thead><tr><th>Результат</th><th>Минимум</th><th>Цель</th><th>Максимум</th></tr></thead>
+    <tbody>
+      <tr><td>Гигиена данных (трафик, касания, ABCDE)</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+      <tr><td>Обзорный дашборд с фильтрами</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+      <tr><td>Дашборд SLA / TLT</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+      <tr><td>Второй мозг отвечает по контексту</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+      <tr><td>Глоссарий + дерево метрик</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+      <tr><td>1–2 дашборда под провисший рычаг</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+      <tr><td>Второй мозг ← предиктивная модель + 1 ритуал</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+      <tr><td>Когорты · факторный · RFM/потенциал</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+      <tr><td>Кроны, алерты, библиотека скиллов</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+      <tr><td>RFM-списки на вебинар (мост)</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>«Что должно произойти, чтобы у вас не случились аномальные результаты? Я не знаю. Всё упирается только в <b>execution</b>».</span></div>
+</div></section>
+
+<div class="foot">Практикум <b>A-Players</b> · Домашнее задание модуля «Коммерческая аналитика»</div>
+
+</body>
+</html>
