@@ -1,7 +1,7 @@
 /* A-Players · Pro Vibe Coding — вход по логину/паролю + кнопка «назад».
    СМЕНИ ЛОГИН/ПАРОЛЬ В СЛЕДУЮЩЕЙ СТРОКЕ ↓ (это единственное место). */
 (function () {
-  var USER = "bplelektro", PASS = "BPLelektro-2026";   // ← логин и пароль сюда
+  var USER = "praktikum", PASS = "Praktikum-2026";   // ← логин и пароль сюда
   var OK = "apx_gate_ok";
   var authed = false;
   try { authed = sessionStorage.getItem(OK) === "1"; } catch (e) {}
