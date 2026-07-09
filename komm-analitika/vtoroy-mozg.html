@@ -83,6 +83,8 @@ svg.patternhost{position:absolute;width:0;height:0}
   <p><a class="dl" href="vtoroy-mozg-starter.zip" download>⬇️ Скачать стартовый набор «Второй мозг»</a></p>
   <blockquote>Порядок: откройте папку набора в <b>VS&nbsp;Code</b> → запустите <b>Claude&nbsp;Code</b> → вставьте мастер-промт (раздел 2) — Claude&nbsp;Code проведёт вас за руку. Делайте <b>после</b> собранной обёртки/контекста: ум мозга = качество контекста, который вы в него положили.</blockquote>
 
+  <blockquote>🧭 <b>Где вы всё это делаете — важно.</b> «Второй мозг» живёт в <b>VS&nbsp;Code</b> с расширением <b>Claude&nbsp;Code</b> (иконка Claude слева, поле ввода снизу). Все обычные запросы и <b>команды со слэшем</b> (например <code>/plugin&nbsp;install…</code>, <code>/telegram:configure…</code>) вводите <b>в поле Claude&nbsp;Code</b> — по одной, не в обычный чат на сайте. Команды вида <code>claude&nbsp;--channels…</code> — это уже <b>терминал</b> (в VS&nbsp;Code: Terminal → New Terminal, в папке проекта). Ниже у каждого шага помечено, где он выполняется: <b>[Claude&nbsp;Code]</b> или <b>[Терминал]</b>.</blockquote>
+
   <h2><span class="no">0</span> Как это устроено (30 секунд)</h2>
   <table>
     <tr><th>Часть</th><th>Что это</th></tr>
@@ -131,14 +133,24 @@ svg.patternhost{position:absolute;width:0;height:0}
   <p><b>Викилинки <code>[[имя]]</code></b> (по желанию): внутри файлов ссылайтесь друг на друга — <code>[[продукты-и-цены]]</code>. В <code>CLAUDE.md</code> задано правило открывать такие ссылки. Полезно, когда база растёт.</p>
   <blockquote>💡 PDF-материалы перед загрузкой прогоните через <b>markitdown</b> (бесплатный инструмент Microsoft) — он переведёт их в текст, и мозг не будет жечь токены при каждом чтении.</blockquote>
 
+  <h2><span class="no">🧩</span> Скиллы — усиливают второй мозг (по желанию)</h2>
+  <p>Скиллы — готовые экспертные модули для Claude&nbsp;Code: ставятся один раз, включаются автоматически под задачу. Полезные для аналитического второго мозга:</p>
+  <ul>
+    <li><b>Everything Claude Code (ECC)</b> — большая библиотека (~120 скиллов/субагентов: аналитика, код-ревью, ресёрч, дебаг) → <a href="https://github.com/affaan-m/everything-claude-code" target="_blank">github.com/affaan-m/everything-claude-code</a></li>
+    <li><b>Context Engineering</b> — сжимает ответы и экономит токены на объёмных отчётах → <a href="https://github.com/muratcankoylan/agent-skills-for-context-engineering" target="_blank">github</a></li>
+    <li><b>Stop Slop</b> — сводки и дайджесты человеческим языком, без «воды ИИ» → <a href="https://github.com/hardikpandya/stop-slop" target="_blank">github</a></li>
+  </ul>
+  <p><b>Установка</b> (в поле Claude&nbsp;Code): через маркетплейс — <code>/plugin marketplace add anthropics/claude-plugins-official</code> → <code>/plugin install &lt;имя&gt;</code>; либо вручную — склонируйте репозиторий в папку <code>~/.claude/skills/</code>. Проверить установленное: <code>/plugin</code>.</p>
+
   <h2><span class="no">4</span> Подключение Telegram (официальный плагин)</h2>
+  <p>Шаги 1–3, 5, 6 — это <b>команды Claude&nbsp;Code</b>: вводите их <b>в поле Claude&nbsp;Code</b> (панель Claude в VS&nbsp;Code), по одной. Шаг 4 — в <b>терминале</b>. Каждый шаг помечен.</p>
   <ol class="big">
-    <li><code>/plugin install telegram@claude-plugins-official</code></li>
-    <li><code>/reload-plugins</code></li>
-    <li><code>/telegram:configure &lt;ваш_токен&gt;</code> — токен уходит в защищённый файл плагина, <b>не в проект и не в git</b></li>
-    <li>Закройте текущую сессию Claude&nbsp;Code, откройте терминал <b>в папке проекта</b> и запустите:<br><code>claude --channels plugin:telegram@claude-plugins-official</code><br><b>Держите терминал открытым — пока он жив, бот работает.</b></li>
-    <li>Напишите боту в личку → 6-значный код → <code>/telegram:access pair &lt;код&gt;</code></li>
-    <li>Замок: <code>/telegram:access policy allowlist</code></li>
+    <li><b>[Claude&nbsp;Code]</b> Ставим плагин Telegram — введите в поле Claude:<br><code>/plugin install telegram@claude-plugins-official</code></li>
+    <li><b>[Claude&nbsp;Code]</b> Перечитать плагины:<br><code>/reload-plugins</code></li>
+    <li><b>[Claude&nbsp;Code]</b> Привязать токен бота (от @BotFather):<br><code>/telegram:configure &lt;ваш_токен&gt;</code> — токен уходит в защищённый файл плагина, <b>не в проект и не в git</b></li>
+    <li><b>[Терминал]</b> Закройте текущую сессию Claude&nbsp;Code, откройте терминал <b>в папке проекта</b> (в VS&nbsp;Code: Terminal → New Terminal) и запустите:<br><code>claude --channels plugin:telegram@claude-plugins-official</code><br><b>Держите терминал открытым — пока он жив, бот работает.</b></li>
+    <li><b>[Claude&nbsp;Code]</b> Напишите боту в личку в Telegram → он даст 6-значный код → введите в поле Claude:<br><code>/telegram:access pair &lt;код&gt;</code></li>
+    <li><b>[Claude&nbsp;Code]</b> Закройте доступ только вам:<br><code>/telegram:access policy allowlist</code></li>
   </ol>
   <blockquote>🔒 <b>Allowlist не пропускайте.</b> Без него любой, кто узнает username бота, сможет командовать вашим проектом и читать файлы.<br>💡 <b>Как поднять заново:</b> зашли в папку проекта → <code>claude --channels plugin:telegram@claude-plugins-official</code> → бот на связи.</blockquote>
 
