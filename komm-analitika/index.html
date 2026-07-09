@@ -301,52 +301,62 @@ svg.patternhost{position:absolute;width:0;height:0}
 <!-- BLOCK 2 -->
 <section><div class="wrap">
   <h2><span class="no">2</span> Дашборд №1 — Обзорный (гендиректорский) <span class="lv lv-min">Мин</span></h2>
-  <p class="sublead">Первое упражнение, где всегда находятся точки роста. База из <b>4 рычагов роста</b> (лиды · конверсия · чек · LTV) в разных срезах.</p>
+  <p class="sublead">Экран первого лица: <b>сверху — деньги</b> (выручка факт/план, прогноз к плану, cash-in, маржа), ниже — драйверы (лиды × конверсия × чек × LTV) и юнит-экономика. За 30 секунд: сколько денег, идём ли к плану, где узкое место.</p>
   <div class="block">
     <div class="bh"><h3>Что должно быть внутри</h3><span class="tag">Обязательный для всех</span></div>
     <ul class="check">
-      <li>4 рычага Абрахама крупно + светофор против плана</li>
-      <li><b>Маркетинговые метрики сквозной по каналам:</b> CPL, CAC, ROMI, CTR, КВАЛ-1, % дозвона — то, что смотрит маркетинг</li>
-      <li><b>Полный набор фильтров</b> (см. анатомию): период, конвертер, отдел/группа, менеджер, продукт/юнит, канал, сегмент, этап, причина отказа</li>
-      <li><b>Графики динамики</b> — как ведёт себя выбранный срез во времени (кривые линии по неделям), а не только текущий факт</li>
-      <li>Возможность <b>сравнивать</b>: менеджер vs менеджер, сегмент vs сегмент, период vs период</li>
+      <li><b>Блок «Деньги» сверху и крупно:</b> выручка факт/план, <b>прогноз к плану (run-rate)</b>, cash-in (поступления), средний чек, валовая маржа %</li>
+      <li><b>Драйверы под деньгами:</b> 4 рычага роста (лиды · конверсия в оплату · чек · LTV/CAC) со светофором против плана</li>
+      <li><b>Маркетинговые метрики сквозной:</b> CPL, CAC, ROMI, КВАЛ-1/2, % дозвона</li>
+      <li><b>Полный набор фильтров</b> (см. анатомию): период + сравнение периодов, конвертер, отдел/группа, менеджер, продукт/юнит, канал, сегмент</li>
+      <li><b>Динамика + прогноз:</b> кривые по неделям и run-rate к плану месяца — не только текущий факт</li>
+      <li>Возможность <b>сравнивать</b> срезы: канал vs канал, менеджер vs менеджер, период vs период</li>
     </ul>
 
     <div class="dash">
-      <div class="dhead"><div class="dtitle">Обзорный дашборд <span class="mut">— рычаги + сквозная по каналам + динамика</span></div><div class="dupd">пример</div></div>
+      <div class="dhead"><div class="dtitle">Обзорный дашборд (EO) <span class="mut">— деньги → воронка → каналы → динамика</span></div><div class="dupd">пример</div></div>
       <div class="filters">
         <span class="fchip"><span class="fl">Период</span> <span class="fv">Июнь</span></span>
+        <span class="fchip"><span class="fl">Сравнить с</span> <span class="fv">Май</span></span>
         <span class="fchip"><span class="fl">Отдел</span> <span class="fv">Все</span></span>
         <span class="fchip"><span class="fl">Менеджер</span> <span class="fv">Все</span></span>
         <span class="fchip"><span class="fl">Продукт</span> <span class="fv">Все</span></span>
         <span class="fchip"><span class="fl">Канал</span> <span class="fv">Все</span></span>
-        <span class="fchip"><span class="fl">Разрез графика</span> <span class="fv">Конверсия × канал</span></span>
       </div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#7fa394;font-weight:700;margin:2px 0 6px">💰 Деньги</div>
+      <div class="dkpis">
+        <div class="dkpi"><div class="k">Выручка</div><div class="v y">6,2 млн ₽</div><div class="s">план 7,0 · 🟡 89%</div></div>
+        <div class="dkpi"><div class="k">Прогноз к плану (run-rate)</div><div class="v r">6,6 млн</div><div class="s">🔴 94% — не дотягиваем</div></div>
+        <div class="dkpi"><div class="k">Cash-in (поступления)</div><div class="v y">5,4 млн ₽</div><div class="s">🟡 87% плана</div></div>
+        <div class="dkpi"><div class="k">Валовая маржа</div><div class="v g">61%</div><div class="s">🟢 план 58%</div></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#7fa394;font-weight:700;margin:8px 0 6px">⚙ Воронка · юнит-экономика</div>
       <div class="dkpis">
         <div class="dkpi"><div class="k">Лиды</div><div class="v">1 240</div><div class="s">🟡 95% плана</div></div>
-        <div class="dkpi"><div class="k">Конверсия</div><div class="v r">7,1%</div><div class="s">🔴 79% плана</div></div>
-        <div class="dkpi"><div class="k">Средний чек</div><div class="v g">132 400 ₽</div><div class="s">🟢 102%</div></div>
+        <div class="dkpi"><div class="k">Конверсия в оплату</div><div class="v r">7,1%</div><div class="s">🔴 79% плана</div></div>
+        <div class="dkpi"><div class="k">Оплат / средний чек</div><div class="v">47 · 132к</div><div class="s">🟢 чек 102%</div></div>
         <div class="dkpi"><div class="k">LTV / CAC</div><div class="v y">2,7</div><div class="s">🟡 норма ≥3</div></div>
       </div>
+      <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:#7fa394;font-weight:700;margin:8px 0 6px">📣 Маркетинг сквозной</div>
       <div class="dkpis six">
         <div class="dkpi"><div class="k">CPL</div><div class="v">640 ₽</div></div>
         <div class="dkpi"><div class="k">CAC</div><div class="v">9 000 ₽</div></div>
         <div class="dkpi"><div class="k">ROMI</div><div class="v g">310%</div></div>
-        <div class="dkpi"><div class="k">CTR</div><div class="v">1,8%</div></div>
         <div class="dkpi"><div class="k">КВАЛ-1</div><div class="v y">48%</div></div>
+        <div class="dkpi"><div class="k">КВАЛ-2</div><div class="v">27%</div></div>
         <div class="dkpi"><div class="k">% дозвона</div><div class="v">63%</div></div>
       </div>
-      <table class="dtable">
-        <thead><tr><th>Канал</th><th class="num">Лиды</th><th class="num">CPL</th><th class="num">КВАЛ-2</th><th class="num">Конверсия</th><th class="num">Чек</th><th class="num">ROMI</th></tr></thead>
+      <table class="dtable" style="margin-top:10px">
+        <thead><tr><th>Канал</th><th class="num">Выручка</th><th class="num">Лиды</th><th class="num">CPL</th><th class="num">Конверсия</th><th class="num">ROMI</th></tr></thead>
         <tbody>
-          <tr><td>🟢 Реферальный</td><td class="num">210</td><td class="num">180 ₽</td><td class="num">41%</td><td class="num grn">12,4%</td><td class="num">148к</td><td class="num grn">720%</td></tr>
-          <tr><td>🟡 Яндекс.Директ</td><td class="num">430</td><td class="num">720 ₽</td><td class="num">28%</td><td class="num yel">7,0%</td><td class="num">129к</td><td class="num yel">240%</td></tr>
-          <tr><td>🔴 Таргет VK</td><td class="num">360</td><td class="num red">1 090 ₽</td><td class="num red">14%</td><td class="num red">3,8%</td><td class="num">121к</td><td class="num red">70%</td></tr>
-          <tr><td>🟢 Партнёры</td><td class="num">240</td><td class="num">210 ₽</td><td class="num">36%</td><td class="num grn">10,1%</td><td class="num">140к</td><td class="num grn">560%</td></tr>
+          <tr><td>🟢 Реферальный</td><td class="num grn">1,9 млн</td><td class="num">210</td><td class="num">180 ₽</td><td class="num grn">12,4%</td><td class="num grn">720%</td></tr>
+          <tr><td>🟡 Яндекс.Директ</td><td class="num">2,7 млн</td><td class="num">430</td><td class="num">720 ₽</td><td class="num yel">7,0%</td><td class="num yel">240%</td></tr>
+          <tr><td>🔴 Таргет VK</td><td class="num red">0,7 млн</td><td class="num">360</td><td class="num red">1 090 ₽</td><td class="num red">3,8%</td><td class="num red">70%</td></tr>
+          <tr><td>🟢 Партнёры</td><td class="num">0,9 млн</td><td class="num">240</td><td class="num">210 ₽</td><td class="num grn">10,1%</td><td class="num grn">560%</td></tr>
         </tbody>
       </table>
       <div class="dchart">
-        <div class="ct"><span>Динамика конверсии по неделям (выбранный срез)</span><span class="leg"><span><i style="background:#5fbf84"></i>Реферальный</span><span><i style="background:#C79A45"></i>Яндекс</span><span><i style="background:#e0765f"></i>Таргет VK</span></span></div>
+        <div class="ct"><span>Динамика конверсии по каналам (по неделям)</span><span class="leg"><span><i style="background:#5fbf84"></i>Реферальный</span><span><i style="background:#C79A45"></i>Яндекс</span><span><i style="background:#e0765f"></i>Таргет VK</span></span></div>
         <svg viewBox="0 0 620 150" preserveAspectRatio="none" aria-hidden="true">
           <g stroke="#24493c" stroke-width="1">
             <line x1="20" y1="30" x2="600" y2="30"/><line x1="20" y1="60" x2="600" y2="60"/><line x1="20" y1="90" x2="600" y2="90"/><line x1="20" y1="120" x2="600" y2="120"/>
@@ -360,7 +370,7 @@ svg.patternhost{position:absolute;width:0;height:0}
         </svg>
       </div>
     </div>
-    <div class="dcap"><span>Пример «по лекалам». Видно и факт, и <b>тренд</b>: 🔴 Таргет VK — дорогой лид (CPL 1090 ₽), низкий КВАЛ-2 и конверсия <b>ползёт вниз неделя к неделе</b>. Реферальный держит 🟢. <a href="claude-md/obzorny.md" download><b>Скачать CLAUDE.md для обзорного →</b></a></span></div>
+    <div class="dcap"><span>Первое лицо сразу видит: <b>выручка 🟡 89% плана</b>, а прогноз (run-rate) 🔴 не дотягивает. Узкое место — <b>конверсия в оплату</b> (🔴 79%) и канал <b>Таргет VK</b> (дорогой лид, низкий ROMI). Реферальный держит 🟢. <a href="claude-md/obzorny.md" download><b>Скачать CLAUDE.md для обзорного →</b></a></span></div>
 
     <div class="value"><span>Нет компании, где все каналы и все менеджеры дают план. Обзорный дашборд всегда отвечает на вопрос <b>«за счёт чего заработать больше здесь и сейчас»</b> — через сравнение срезов.</span></div>
   </div>
