@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="gate.js"></script>
+<title>ДЗ · Автоворонки, парники и вебинары — A-Players</title>
+<meta name="description" content="Домашнее задание финального модуля: собрать воронку под свой продукт по алгоритму A-Players.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --c-bg:#F4F1EA; --c-bg-2:#EFE9D9; --c-card:#FCFAF4;
+  --c-ink:#16201B; --c-muted:#5A6056; --c-line:#DCD4C2; --c-line-soft:#E6DECE;
+  --c-emerald:#143A2D; --c-emerald-2:#1C4C3B; --c-dark-ink:#EFE9DA;
+  --c-gold:#B0822E; --c-gold-2:#C79A45; --c-gold-hover:#977019;
+  --maxw:920px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Manrope",sans-serif;background:var(--c-bg);color:var(--c-ink);
+  -webkit-font-smoothing:antialiased;line-height:1.62;overflow-x:hidden}
+main{overflow-x:hidden;width:100%}
+h1,h2,h3{font-family:"Roboto Slab",Georgia,serif;font-weight:800;line-height:1.08;letter-spacing:-.01em}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.mono{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:600}
+a{color:var(--c-gold-hover);text-decoration:none;font-weight:600;border-bottom:1px solid rgba(176,130,46,.35)}
+a:hover{color:var(--c-emerald);border-color:var(--c-gold)}
+.hl{background:linear-gradient(180deg,transparent 58%,rgba(176,130,46,.34) 58%);color:#0F2B20;font-weight:900;padding:0 .04em}
+
+/* monogram */
+.bcanvas{position:absolute;inset:0;z-index:0;pointer-events:none}
+.hero-mask{-webkit-mask-image:linear-gradient(180deg,#000 0,#000 6%,transparent 38%);mask-image:linear-gradient(180deg,#000 0,#000 6%,transparent 38%)}
+.inner{position:relative;z-index:1}
+
+/* brand bar */
+.topbar{background:var(--c-emerald);color:var(--c-dark-ink)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Roboto Slab",serif;font-weight:900;font-size:17px;color:#fff}
+.brand .mark{width:28px;height:28px;border-radius:7px;background:rgba(199,154,69,.9);color:var(--c-emerald);
+  display:grid;place-items:center;font-weight:900;font-size:17px}
+.topbar .t{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em;font-size:11px;color:rgba(239,233,218,.7)}
+@media(max-width:600px){.topbar .t{display:none}}
+
+/* hero */
+.hero{background:radial-gradient(120% 90% at 88% -10%,var(--c-bg-2),var(--c-bg));padding:70px 0 46px;position:relative;overflow:hidden}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--c-ink);color:var(--c-bg);
+  padding:8px 15px;border-radius:100px;font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;
+  letter-spacing:.12em;font-size:11px;font-weight:600}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--c-gold-2);box-shadow:0 0 0 4px rgba(176,130,46,.2)}
+.hero h1{font-size:clamp(2.2rem,5vw,3.5rem);margin:20px 0 18px;max-width:17ch}
+.hero .sub{font-size:clamp(16px,1.6vw,19px);color:var(--c-muted);max-width:56ch;font-weight:500}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--c-card);border:1px solid var(--c-line);
+  padding:9px 14px;border-radius:10px;font-weight:700;font-size:14px}
+.chip svg{width:16px;height:16px;color:var(--c-gold)}
+
+/* callout */
+.callout{background:var(--c-emerald);color:var(--c-dark-ink);border-radius:16px;padding:24px 28px;margin:32px 0 6px;
+  display:flex;gap:16px;align-items:flex-start}
+.callout .i{flex:0 0 auto;width:38px;height:38px;border-radius:10px;background:rgba(199,154,69,.9);color:var(--c-emerald);
+  display:grid;place-items:center;font-family:"Roboto Slab",serif;font-weight:900;font-size:20px}
+.callout p{font-size:16px;font-weight:600;color:#fff}
+.callout p b{color:var(--c-gold-2)}
+
+/* section */
+.sec{padding:46px 0 8px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px;border-bottom:2px solid var(--c-line);padding-bottom:14px}
+.sec-head .n{font-family:"Roboto Slab",serif;font-weight:900;font-size:15px;color:#fff;background:var(--c-emerald);
+  border-radius:8px;padding:4px 11px;flex:0 0 auto}
+.sec-head h2{font-size:clamp(1.5rem,3vw,2.1rem)}
+.sec-head .tail{margin-left:auto;font-size:13px;color:var(--c-muted);font-weight:600;white-space:nowrap}
+.sec .intro{color:var(--c-muted);font-size:16px;font-weight:500;margin:16px 0 4px}
+
+/* steps */
+.step{display:grid;grid-template-columns:44px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid var(--c-line-soft)}
+.step:last-child{border-bottom:none}
+.step__n{width:44px;height:44px;border-radius:12px;background:var(--c-card);border:1.5px solid var(--c-gold);
+  color:var(--c-gold-hover);display:grid;place-items:center;font-family:"Roboto Slab",serif;font-weight:900;font-size:18px}
+.step__b h3{font-size:18px;margin-bottom:5px}
+.step__b p{font-size:15.5px;color:#39423B;font-weight:500}
+.pb{display:inline-flex;align-items:center;gap:7px;margin-top:11px;
+  background:rgba(176,130,46,.12);color:var(--c-gold-hover);border:1px solid rgba(176,130,46,.28);
+  border-radius:100px;padding:6px 13px;font-weight:700;font-size:12.5px}
+.pb svg{width:13px;height:13px}
+.pb .lbl{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;color:var(--c-gold);opacity:.85}
+a.pb{text-decoration:none;border:1px solid rgba(176,130,46,.28);transition:background .2s,transform .2s}
+a.pb:hover{background:rgba(176,130,46,.2);transform:translateY(-1px)}
+a.pb::after{content:"↗";font-size:11px;margin-left:2px}
+
+/* skills grid */
+.skills{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+@media(max-width:620px){.skills{grid-template-columns:1fr}}
+.skill{background:var(--c-card);border:1px solid var(--c-line);border-radius:12px;padding:15px 17px;text-decoration:none;color:inherit;display:block;transition:border-color .2s,transform .2s}
+.skill:hover{border-color:var(--c-gold);transform:translateY(-2px)}
+.skill b{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:15px;margin-bottom:3px;border:none}
+.skill b::after{content:"↗";color:var(--c-gold);font-size:13px}
+.skill span{font-size:13.5px;color:var(--c-muted);font-weight:500}
+
+/* artifact tag */
+.arte{display:inline-flex;align-items:center;gap:8px;margin-top:16px;background:rgba(20,58,45,.07);
+  border:1px dashed rgba(20,58,45,.3);border-radius:10px;padding:10px 15px;font-size:14px;font-weight:700;color:var(--c-emerald)}
+
+/* webinar block */
+.web{background:var(--c-emerald);color:var(--c-dark-ink);border-radius:18px;padding:30px 30px 26px;margin:40px 0}
+.web .eyebrow{color:var(--c-gold-2);margin-bottom:8px}
+.web h2{color:#fff;font-size:clamp(1.4rem,2.6vw,1.9rem)}
+.web p{color:rgba(239,233,218,.8);font-size:15.5px;font-weight:500;margin:12px 0 20px;max-width:60ch}
+.web-links{display:grid;gap:11px}
+.web-link{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(199,154,69,.25);
+  border-radius:12px;padding:15px 18px;transition:background .25s}
+.web-link:hover{background:rgba(255,255,255,.09);border-color:var(--c-gold-2)}
+.web-link .ic{flex:0 0 auto;width:36px;height:36px;border-radius:9px;background:rgba(199,154,69,.16);color:var(--c-gold-2);
+  display:grid;place-items:center}
+.web-link .ic svg{width:18px;height:18px}
+.web-link a{color:#fff;border:none;font-size:15.5px;font-weight:700;display:block;line-height:1.3}
+.web-link a:hover{color:var(--c-gold-2)}
+.web-link .u{font-size:12px;color:rgba(239,233,218,.55);font-weight:500;word-break:break-all;margin-top:2px}
+
+/* эталон-цепочка */
+.chain{display:grid;margin-top:14px}
+.chain-step{display:grid;grid-template-columns:40px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid rgba(199,154,69,.16)}
+.chain-step:last-child{border-bottom:none}
+.chain-num{width:40px;height:40px;border-radius:11px;background:rgba(199,154,69,.16);color:var(--c-gold-2);display:grid;place-items:center;font-family:"Roboto Slab",serif;font-weight:900;font-size:15px}
+.chain-step h4{color:#fff;font-family:"Roboto Slab",serif;font-size:16.5px;font-weight:800;margin-bottom:4px}
+.chain-step p{color:rgba(239,233,218,.72);font-size:14.5px;font-weight:500;margin:0}
+.chain-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chain-link{display:inline-flex;align-items:center;gap:7px;background:rgba(199,154,69,.14);border:1px solid rgba(199,154,69,.32);border-radius:100px;padding:6px 13px;font-weight:700;font-size:12.5px;color:var(--c-gold-2);text-decoration:none;transition:background .2s}
+.chain-link:hover{background:rgba(199,154,69,.28)}
+.chain-link::after{content:"↗";font-size:11px;opacity:.7}
+.chain-link .lbl{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.08em;font-size:9.5px;opacity:.7}
+.chain-final{background:linear-gradient(120deg,rgba(199,154,69,.22),rgba(255,255,255,.05));border:1px solid rgba(199,154,69,.4);border-radius:14px;padding:18px 22px;margin-top:8px}
+.chain-final h4{color:var(--c-gold-2);font-family:"Roboto Slab",serif;font-size:17px;font-weight:900;margin-bottom:5px}
+.chain-final p{color:rgba(239,233,218,.82);font-size:14.5px;font-weight:500}
+
+/* DoD */
+.dod{background:var(--c-card);border:1px solid var(--c-line);border-radius:18px;padding:30px;margin:34px 0;
+  box-shadow:0 30px 60px -46px rgba(20,32,27,.5)}
+.dod h2{font-size:clamp(1.4rem,2.6vw,1.9rem);margin-bottom:6px}
+.dod .s{color:var(--c-muted);font-size:15px;font-weight:500;margin-bottom:20px}
+.dod ul{list-style:none;display:grid;gap:13px}
+.dod li{display:flex;gap:13px;align-items:flex-start;font-size:15.5px;font-weight:600;color:#2A322C}
+.dod li .ck{flex:0 0 auto;width:24px;height:24px;border-radius:7px;background:var(--c-emerald);color:var(--c-gold-2);
+  display:grid;place-items:center;font-weight:900;font-size:13px;margin-top:1px}
+
+/* CTA */
+.cta{background:linear-gradient(120deg,var(--c-emerald),var(--c-emerald-2));color:#fff;border-radius:18px;
+  padding:34px;text-align:center;margin:34px 0}
+.cta h2{color:#fff;font-size:clamp(1.4rem,2.6vw,1.9rem);margin-bottom:10px}
+.cta p{color:rgba(239,233,218,.82);font-size:16px;font-weight:500;max-width:48ch;margin:0 auto 22px}
+.btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;
+  font-weight:800;padding:15px 30px;border-radius:11px;font-size:16px;border:none;
+  box-shadow:0 16px 30px -12px rgba(176,130,46,.6)}
+.btn:hover{transform:translateY(-2px)}
+
+/* skills-links footer list */
+.links-foot{margin:30px 0 10px;padding:24px;background:var(--c-bg-2);border-radius:14px}
+.links-foot .mono{color:var(--c-gold-hover);margin-bottom:14px}
+.links-foot ul{list-style:none;display:grid;gap:9px;grid-template-columns:repeat(2,1fr)}
+@media(max-width:620px){.links-foot ul{grid-template-columns:1fr}}
+.links-foot li{font-size:14px;font-weight:600;color:var(--c-ink)}
+.links-foot li a{word-break:break-word}
+
+footer{background:var(--c-emerald);color:rgba(239,233,218,.7);padding:36px 0;font-size:13.5px;margin-top:40px}
+.foot-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.foot-row .brand{color:#fff}
+.foot-row .brand .mark{background:rgba(255,255,255,.12);color:#fff}
+
+.js .rev{opacity:0;transform:translateY(22px)}
+@media(prefers-reduced-motion:reduce){.js .rev{opacity:1;transform:none}}
+@media print{.topbar,.cta .btn{-webkit-print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<main>
+
+<svg width="0" height="0" style="position:absolute"><defs>
+  <pattern id="mono-em" width="62" height="66" patternUnits="userSpaceOnUse">
+    <g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle">
+      <text x="16" y="34" font-size="34" fill="rgba(20,58,45,.4)">A</text>
+      <text x="47" y="64" font-size="34" fill="rgba(20,58,45,.4)">A</text>
+    </g>
+  </pattern>
+</defs></svg>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="wrap row">
+    <div class="brand"><span class="mark">A</span>A-PLAYERS</div>
+    <div class="t">Домашнее задание · финальный модуль</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="bcanvas hero-mask" style="opacity:.28"><svg width="100%" height="100%"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg></div>
+  <div class="wrap inner">
+    <span class="pill rev"><span class="dot"></span>Финал воркшопов</span>
+    <h1 class="rev">Автоворонки, парники и вебинары</h1>
+    <p class="sub rev">На встрече мы за час прошли весь алгоритм и собрали три воронки под живой пример — вебинарную, VSL и воронку-диагностику, вместе с прогревом в чат-боте, регламентом касаний и предиктивной моделью. Ваша задача — воспроизвести этот путь <b>под свой продукт</b>.</p>
+    <div class="meta rev">
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg>8 этапов + отдел продаж</span>
+      <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>Цель: прийти на разбор с артефактами</span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap inner">
+
+  <!-- principle callout -->
+  <div class="callout rev">
+    <span class="i">!</span>
+    <p>Принцип, который держим на каждом этапе: <b>выкручиваем ручку требовательности на максимум</b>. У каждого этапа — свой плейбук. Нет плейбука → нет высокой конверсии, только имитация бурной деятельности.</p>
+  </div>
+
+  <!-- RESOURCES -->
+  <section class="sec">
+    <div class="sec-head rev"><span class="n">📎</span><h2>Ресурсы, которые у вас уже есть</h2></div>
+    <p class="intro rev">Опирайтесь на них с первого этапа — это ваши готовые шаблоны и примеры. Вся библиотека — 113 плейбуков.</p>
+    <div class="web-links rev" style="margin-top:6px">
+      <div class="web-link" style="background:var(--c-card);border-color:var(--c-line)">
+        <span class="ic" style="background:rgba(20,58,45,.08);color:var(--c-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></span>
+        <div><a href="https://docs.google.com/spreadsheets/d/181XqLUtKN0OwBJIotpg1z7SpcWfhuABp8NT2REPgFhY/edit?gid=770699372#gid=770699372" target="_blank" style="color:var(--c-emerald)">Рабочая тетрадь</a><div class="u" style="color:var(--c-muted)">Бриф · анализ конкурентов и отстройка · JTBD · ToV · Видение и Миссия · Позиционирование</div></div>
+      </div>
+      <div class="web-link" style="background:var(--c-card);border-color:var(--c-line)">
+        <span class="ic" style="background:rgba(20,58,45,.08);color:var(--c-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></span>
+        <div><a href="https://docs.google.com/spreadsheets/d/1oM4L3G_S4fezpeHrpnTpfd4rzdrmjROR4KYXmevd7m8/edit?gid=1591372745#gid=1591372745" target="_blank" style="color:var(--c-emerald)">Пример CORE JTBD</a><div class="u" style="color:var(--c-muted)">Как выглядит готовая карта JTBD и корсегментов</div></div>
+      </div>
+      <div class="web-link" style="background:var(--c-card);border-color:var(--c-line)">
+        <span class="ic" style="background:rgba(20,58,45,.08);color:var(--c-emerald)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5M8 13h8M8 17h6"/></svg></span>
+        <div><a href="https://alexzhival.github.io/playbooks/" target="_blank" style="color:var(--c-emerald)">Библиотека плейбуков (113 материалов)</a><div class="u" style="color:var(--c-muted)">Все плейбуки программы в одном месте</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="sec">
+    <div class="sec-head rev"><span class="n">0</span><h2>Перед стартом — поставьте скиллы</h2></div>
+    <p class="intro rev">Дают нейросети глубину контекста, ответы становятся кратно сильнее. Ссылки — в конце документа.</p>
+    <div class="skills rev">
+      <a class="skill" href="https://github.com/coreyhaines31/marketingskills" target="_blank"><b>Маркетинговые скиллы</b><span>Каналы, конвертеры, копирайтинг</span></a>
+      <a class="skill" href="https://github.com/hardikpandya/stop-slop" target="_blank"><b>stop-slop</b><span>Пишет по-человечески, убирает нейросетевой флёр</span></a>
+      <a class="skill" href="https://www.remotion.dev/docs/ai/skills" target="_blank"><b>remotion</b><span>Анимированные ролики по одному запросу (VSL/промо)</span></a>
+      <a class="skill" href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill" target="_blank"><b>UI UX Pro Max</b><span>Стили, палитры, шрифты — сайт не выглядит «нейросетевым»</span></a>
+      <a class="skill" href="https://github.com/microsoft/markitdown" target="_blank"><b>markitdown</b><span>PDF/документы → Markdown, экономит токены</span></a>
+      <a class="skill" href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering" target="_blank"><b>context-engineering</b><span>Оптимизация контекста и длинных цепочек</span></a>
+    </div>
+  </section>
+
+  <!-- PART 1 -->
+  <section class="sec">
+    <div class="sec-head rev"><span class="n">1</span><h2>Смыслы — кому и что продаём</h2><span class="tail">этапы 1–4</span></div>
+    <p class="intro rev">Воронку всегда строим от клиента. Пока не ясны сегмент и оффер — любой трафик сливается.</p>
+
+    <div class="step rev">
+      <div class="step__n">01</div>
+      <div class="step__b"><h3>Jobs to be Done + сегментация</h3>
+        <p>Постройте карту JTBD. Режьте рынок по «работе», которую нанимают ваш продукт сделать, а не по демографии. Шаблон — вкладка JTBD в рабочей тетради, ориентир — готовый пример.</p>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/181XqLUtKN0OwBJIotpg1z7SpcWfhuABp8NT2REPgFhY/edit?gid=770699372#gid=770699372" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Тетрадь</span> JTBD</a>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/1oM4L3G_S4fezpeHrpnTpfd4rzdrmjROR4KYXmevd7m8/edit?gid=1591372745#gid=1591372745" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Пример</span> CORE JTBD</a>
+      </div>
+    </div>
+    <div class="step rev">
+      <div class="step__n">02</div>
+      <div class="step__b"><h3>Выбор корсегментов</h3>
+        <p>Выделите 2–3 ключевых: где боль острее, деньги быстрее, доступ реальнее. Письменно ответьте: почему именно они и почему не распыляемся. Ориентир — как расставлены приоритеты в примере CORE JTBD.</p>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/1oM4L3G_S4fezpeHrpnTpfd4rzdrmjROR4KYXmevd7m8/edit?gid=1591372745#gid=1591372745" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Пример</span> CORE JTBD</a>
+      </div>
+    </div>
+    <div class="step rev">
+      <div class="step__n">03</div>
+      <div class="step__b"><h3>Value Proposition Canvas</h3>
+        <p>Отдельно на каждый корсегмент. Синхронизируйте боли/выгоды/задачи клиента с тем, что даёт продукт. Отдельный документ под каждый сегмент — это ваш вход в маркетинговые смыслы. Как собрать — по плейбуку.</p>
+        <a class="pb" href="vp-canvas.html" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Плейбук</span> VP Canvas по корсегментам</a>
+      </div>
+    </div>
+    <div class="step rev">
+      <div class="step__n">04</div>
+      <div class="step__b"><h3>Обёртка компании</h3>
+        <p>Под каждый корсегмент: позиционирование, OTB-отстройка от конкурентов, ключевые смыслы и фразы, tone of voice. У премиум-продукта не может быть инфоцыганских заходов и ответов через 3 часа. Всё это — вкладки рабочей тетради.</p>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/181XqLUtKN0OwBJIotpg1z7SpcWfhuABp8NT2REPgFhY/edit?gid=770699372#gid=770699372" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Тетрадь</span> Отстройка · ToV · Позиционирование</a>
+      </div>
+    </div>
+    <span class="arte rev">📁 Артефакт: папка с сегментацией, VP-канвасами и обёрткой/ToV по корсегментам</span>
+  </section>
+
+  <!-- PART 2 -->
+  <section class="sec">
+    <div class="sec-head rev"><span class="n">2</span><h2>Исследование и фокус</h2><span class="tail">этапы 5–6</span></div>
+    <p class="intro rev">Любая коммерческая стратегия ложится на фреймворк <b>AARRR</b> (пиратский маркетинг): awareness → acquisition → activation → revenue → referral → retention. На практике это три воронки: <b>охватная</b> (первые касания), <b>прогрева</b> (конвертер + догрев холодных лидов) и <b>обратная</b> (рекомендации и повторные продажи). Прежде чем строить, определите, на какой этап AARRR вы влияете этой воронкой. Готовая рабочая тетрадь помогает сформулировать всю стратегию по этапам.</p>
+    <a class="pb rev" style="margin:0 0 8px" href="https://docs.google.com/spreadsheets/d/1ju--qVZb60OBfUsiFCQyRSd6Thhq70EmXYEM3Q5t3wg/edit?usp=sharing" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Тетрадь</span> Стратегия по AARRR · какой этап воронки строить</a>
+    <div class="step rev">
+      <div class="step__n">05</div>
+      <div class="step__b"><h3>Research: воронки, каналы, конвертеры</h3>
+        <p>Какие воронки, каналы трафика и конвертеры подходят под корсегменты. Конвертер = то, через что клиент активируется в продажу (вебинар, диагностика, демо). Относимся к нему как к части продукта.</p>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/1ju--qVZb60OBfUsiFCQyRSd6Thhq70EmXYEM3Q5t3wg/edit?usp=sharing" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Тетрадь</span> Карта каналов и конвертеров (AARRR)</a>
+      </div>
+    </div>
+    <div class="step rev">
+      <div class="step__n">06</div>
+      <div class="step__b"><h3>Приоритизация</h3>
+        <p>Выберите один канал + один конвертер + один корсегмент для первого запуска. Соберите плейбуки лучших практик именно под эту связку.</p>
+        <span class="pb" style="background:rgba(20,58,45,.06);color:var(--c-emerald);border-color:rgba(20,58,45,.2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zM12 8v4l3 2"/></svg><span class="lbl" style="color:var(--c-emerald);opacity:.6">Метод</span> Research лучших практик под выбранную связку</span>
+      </div>
+    </div>
+    <span class="arte rev">📁 Артефакт: карта каналов/конвертеров + обоснованный выбор приоритетной связки</span>
+  </section>
+
+  <!-- PART 3 -->
+  <section class="sec">
+    <div class="sec-head rev"><span class="n">3</span><h2>Сборка воронки</h2><span class="tail">этапы 7–8</span></div>
+    <div class="step rev">
+      <div class="step__n">07</div>
+      <div class="step__b"><h3>Плейбуки под сборку</h3>
+        <p>Переплавьте research в пошаговые плейбуки: как собрать этот канал и этот конвертер на высокой конверсии. Как выглядит готовый набор плейбуков под воронку — смотрите в эталоне вебинарной воронки ниже. Ориентир по формату — наша библиотека.</p>
+        <a class="pb" href="https://alexzhival.github.io/playbooks/" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Ориентир</span> Библиотека плейбуков</a>
+      </div>
+    </div>
+    <div class="step rev">
+      <div class="step__n">08</div>
+      <div class="step__b"><h3>Собрать минимум одну воронку под ключ</h3>
+        <p><b>Лендинг регистрации:</b> бонус/лид-магнит за регистрацию, двухшаговая форма (имя+телефон → заявка принята → email), вход в чат-бот. Дизайн — из брендбука (соберите дизайн-код).<br>
+        <b>Прогрев в чат-боте:</b> ТЗ для техспеца — блок-схема, кнопки, теги, что и когда выдаём.<br>
+        <b>Если конвертер = вебинар:</b> кликбейт-тема (боль + результат + цифра) + буллеты + структура продающего вебинара по минутам. Полный разбор вебинарной воронки — в эталоне ниже.</p>
+        <a class="pb" href="https://docs.google.com/document/d/1adImAK4tl1MCsrgO_-eThOtVACOsDkoWLMj2U1YXXFU/edit?usp=sharing" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Плейбук</span> Прогревы и запуски</a>
+      </div>
+    </div>
+    <span class="arte rev">📁 Артефакт: минимум 1 собранная воронка (лендинг + прогрев в чат-боте)</span>
+  </section>
+
+  <!-- PART 4 -->
+  <section class="sec">
+    <div class="sec-head rev"><span class="n">4</span><h2>Отдел продаж — низ воронки</h2></div>
+    <p class="intro rev">Воронка не заканчивается на заявке. Чаще всего она здесь и ломается.</p>
+    <div class="step rev">
+      <div class="step__n">A</div>
+      <div class="step__b"><h3>Регламент касаний</h3>
+        <p>На встрече выяснилось: его до сих пор нет ни у кого. Сделайте. Каналы, каденция дозвона под ваш цикл сделки, что фиксируем в CRM, что делаем, если клиент не дошёл. Контроль — через дашборд TLT/SLA. Готовый образец-каркас приложен — берите за основу.</p>
+        <a class="pb" href="reglament-kasaniy.html" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Образец</span> Регламент касаний</a>
+      </div>
+    </div>
+    <div class="step rev">
+      <div class="step__n">B</div>
+      <div class="step__b"><h3>Арсенал продавца</h3>
+        <p>Скрипты по этапам воронки, обработка возражений, прогревающие сообщения, дожимные (эвейк) цепочки. Соберите продающий скрипт по рабочей тетради (CJM в связке с AARRR) и чек-листу по работе со скриптами.</p>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/1FwfNw1sZuKA7Cstd-bXM1B7oALfxReOB_w-6SyltOOU/edit?usp=sharing" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Тетрадь</span> CJM × AARRR × Скрипт</a>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/1VOjnISmObBxFvsWM1O8sd28ikMG6bWX3ZAjLJnktgYQ/edit?gid=1812428843#gid=1812428843" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Чек-лист</span> Работа со скриптами</a>
+      </div>
+    </div>
+    <div class="step rev">
+      <div class="step__n">C</div>
+      <div class="step__b"><h3>Управление по цифрам</h3>
+        <p>Конвертером и всей воронкой управляем через <b>предиктивную модель</b> (см. этап 5): видим экономику наперёд и где докрутить. Плюс <b>факторный анализ</b> — калькулятор, который показывает, где именно просадка: в маркетинге или в продажах. Оперативная отчётность + когортный анализ подсвечивают бутылочное горлышко.</p>
+        <a class="pb" href="faktorny-analiz.html" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Калькулятор</span> Факторный анализ · Маркетинг & Продажи</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PART 5 -->
+  <section class="sec">
+    <div class="sec-head rev"><span class="n">5</span><h2>Предиктивная модель</h2></div>
+    <p class="intro rev">Соберите предиктивку под свои воронки: <b>Excel + Claude</b>.</p>
+    <div class="step rev">
+      <div class="step__n">★</div>
+      <div class="step__b"><h3>Excel + Claude</h3>
+        <p>Скормите: шаблон предиктивной модели + транскрипт встречи + плейбук-чек-лист по построению модели. Используйте вкладку <b>«Допущения»</b> для сценарного планирования (меняете чек/конверсии — модель пересчитывается). По желанию — подключите модель к «второму мозгу» через Google API, чтобы он сам считывал бутылочные горлышки.</p>
+        <a class="pb" href="https://docs.google.com/document/d/1U2GpGyRg5DoLYZ9EUOtD1ntS-psltYi1ouNVg7bO1AY/edit?tab=t.0" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Плейбук</span> Чек-лист предиктивной модели</a>
+        <a class="pb" href="https://docs.google.com/spreadsheets/d/1WSFzYqeDRRMTdU9Fsc0Z2fqFSDKxdx6Y7vlw-kvPb6E/edit?gid=1476745970#gid=1476745970" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h11l5 5v11H4z"/><path d="M15 4v5h5"/></svg><span class="lbl">Пример</span> Предиктивная модель</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭТАЛОН вебинарной воронки -->
+  <div class="web rev">
+    <div class="mono eyebrow">Эталон готового ДЗ</div>
+    <h2>Как выглядит идеально собранное ДЗ — на примере вебинарной воронки</h2>
+    <p>Все воронки в одном задании не охватить. Поэтому вот эталон на самом частом конвертере в экспертном продукте — вебинаре. Пройдите этот путь под свой продукт: на каждом этапе — свой плейбук, в конце — предиктивная модель по этой воронке. Именно так замыкается критический путь.</p>
+    <div class="chain">
+      <div class="chain-step"><div class="chain-num">1</div>
+        <div><h4>Смыслы</h4><p>JTBD-сегментация → 2–3 корсегмента → VP Canvas по каждому → обёртка (позиционирование, отстройка, ключевые смыслы, ToV).</p>
+          <div class="chain-links">
+            <a class="chain-link" href="https://docs.google.com/spreadsheets/d/181XqLUtKN0OwBJIotpg1z7SpcWfhuABp8NT2REPgFhY/edit?gid=770699372#gid=770699372" target="_blank"><span class="lbl">Тетрадь</span> Бриф · JTBD · ToV · Позиционирование</a>
+            <a class="chain-link" href="https://docs.google.com/spreadsheets/d/1oM4L3G_S4fezpeHrpnTpfd4rzdrmjROR4KYXmevd7m8/edit?gid=1591372745#gid=1591372745" target="_blank"><span class="lbl">Пример</span> CORE JTBD</a>
+          </div>
+        </div>
+      </div>
+      <div class="chain-step"><div class="chain-num">2</div>
+        <div><h4>Выбор конвертера → вебинар</h4><p>Усиливаем то, что уже работает. В экспертном дорогостоящем продукте вебинар — проверенный конвертер. Сначала изучаем лучшие практики.</p>
+          <div class="chain-links">
+            <a class="chain-link" href="https://docs.google.com/spreadsheets/d/1C0fYNWBq39RQQmXxEGPfjvnxl7dssf8gjhiqLPIRA6Q/edit?gid=672046647#gid=672046647" target="_blank"><span class="lbl">Таблица</span> Лучшие практики на вебинарах</a>
+          </div>
+        </div>
+      </div>
+      <div class="chain-step"><div class="chain-num">3</div>
+        <div><h4>Сборка вебинара</h4><p>Кликбейт-тема (боль + результат + цифра) + буллеты + структура продающего вебинара по минутам. Собираем строго по плейбуку поминутной сборки.</p>
+          <div class="chain-links">
+            <a class="chain-link" href="https://docs.google.com/document/d/15HhBU3s4K1kRoVcTUzQThBTL8k4rvApCYKjnTYPu108/edit?usp=sharing" target="_blank"><span class="lbl">Плейбук</span> Продающий вебинар · поминутная сборка</a>
+          </div>
+        </div>
+      </div>
+      <div class="chain-step"><div class="chain-num">4</div>
+        <div><h4>Лендинг регистрации + прогрев в чат-боте</h4><p>Бонус/лид-магнит за регистрацию, двухшаговая форма (имя+телефон → email), вход в чат-бот. Внутри бота — автоцепочка прогрева (ТЗ для техспеца), которая тянет доходимость до вебинара.</p>
+          <div class="chain-links">
+            <a class="chain-link" href="https://docs.google.com/document/d/1adImAK4tl1MCsrgO_-eThOtVACOsDkoWLMj2U1YXXFU/edit?usp=sharing" target="_blank"><span class="lbl">Плейбук</span> Прогревы и запуски</a>
+          </div>
+        </div>
+      </div>
+      <div class="chain-step"><div class="chain-num">5</div>
+        <div><h4>Отдел продаж</h4><p>Заявки с вебинара → регламент касаний, арсенал продавца (скрипты, возражения, дожим), управление по цифрам.</p>
+          <div class="chain-links">
+            <a class="chain-link" href="reglament-kasaniy.html" target="_blank"><span class="lbl">Образец</span> Регламент касаний</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="chain-final">
+      <h4>🎯 Финал — предиктивная модель по этой воронке</h4>
+      <p>Соберите предиктивку именно под вебинарную воронку: регистрации → доходимость → заявки → оплаты, со вкладкой «Допущения». Так вы видите экономику ещё до запуска трафика и понимаете, где докручивать.</p>
+      <div class="chain-links">
+        <a class="chain-link" href="https://docs.google.com/document/d/1U2GpGyRg5DoLYZ9EUOtD1ntS-psltYi1ouNVg7bO1AY/edit?tab=t.0" target="_blank"><span class="lbl">Плейбук</span> Чек-лист предиктивной модели</a>
+        <a class="chain-link" href="https://docs.google.com/spreadsheets/d/1WSFzYqeDRRMTdU9Fsc0Z2fqFSDKxdx6Y7vlw-kvPb6E/edit?gid=1476745970#gid=1476745970" target="_blank"><span class="lbl">Пример</span> Предиктивная модель</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- DoD -->
+  <div class="dod rev">
+    <h2>✅ Что принести на разбор</h2>
+    <p class="s">Definition of Done — с этим приходите на первый персональный разбор.</p>
+    <ul>
+      <li><span class="ck">1</span>Папка с опорными материалами: JTBD-сегментация, VP-канвасы, обёртка/ToV по корсегментам</li>
+      <li><span class="ck">2</span>Минимум одна собранная воронка: лендинг + прогревающая цепочка в чат-боте</li>
+      <li><span class="ck">3</span>Предиктивная модель под ваши воронки</li>
+      <li><span class="ck">4</span>Заранее прописанный запрос: что конкретно хотите разобрать и какой результат нужен на выходе</li>
+    </ul>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta rev">
+    <h2>Записаться на разбор</h2>
+    <p>2 месяца сопровождения. 30 минут на ваш конкретный запрос. Приходите с артефактом — выкручиваем вашу воронку.</p>
+    <a class="btn" href="https://calendly.com/zhivotov-alexander/a-players" target="_blank">Открыть календарь →</a>
+  </div>
+
+  <!-- skills links -->
+  <div class="links-foot rev">
+    <div class="mono">Ссылки на скиллы</div>
+    <ul>
+      <li>stop-slop — <a href="https://github.com/hardikpandya/stop-slop" target="_blank">github.com/hardikpandya/stop-slop</a></li>
+      <li>Маркетинговые скиллы — <a href="https://github.com/coreyhaines31/marketingskills" target="_blank">github.com/coreyhaines31/marketingskills</a></li>
+      <li>Remotion — <a href="https://www.remotion.dev/docs/ai/skills" target="_blank">remotion.dev/docs/ai/skills</a></li>
+      <li>UI UX Pro Max — <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill" target="_blank">github.com/nextlevelbuilder/ui-ux-pro-max-skill</a></li>
+      <li>markitdown — <a href="https://github.com/microsoft/markitdown" target="_blank">github.com/microsoft/markitdown</a></li>
+      <li>Context Engineering — <a href="https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering" target="_blank">github.com/muratcankoylan/Agent-Skills-for-Context-Engineering</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="brand"><span class="mark">A</span>A-PLAYERS</div>
+    <div>Домашнее задание · Автоворонки, парники и вебинары</div>
+    <div>© 2026 A-Players</div>
+  </div>
+</footer>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+document.documentElement.classList.add('js');
+window.addEventListener('load',()=>{
+  if(location.search.includes('static')){document.querySelectorAll('.rev').forEach(e=>{e.style.opacity=1;e.style.transform='none'});return;}
+  if(!window.gsap){document.querySelectorAll('.rev').forEach(e=>{e.style.opacity=1;e.style.transform='none'});return;}
+  gsap.registerPlugin(ScrollTrigger);
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+    document.querySelectorAll('.rev').forEach(e=>{e.style.opacity=1;e.style.transform='none'});return;}
+  ScrollTrigger.batch('.rev',{start:'top 92%',onEnter:b=>gsap.to(b,{opacity:1,y:0,duration:.7,ease:'power3.out',stagger:.06,overwrite:true})});
+  setTimeout(()=>{document.querySelectorAll('.rev').forEach(e=>{if(parseFloat(getComputedStyle(e).opacity)<.05)gsap.to(e,{opacity:1,y:0,duration:.5})})},2500);
+});
+</script>
+</body>
+</html>

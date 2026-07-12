@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="gate.js"></script>
+<title>Регламент касаний — образец · A-Players</title>
+<meta name="description" content="Образец регламента касаний: как выстроить системную работу с каждым лидом в отделе продаж.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c-bg:#F4F1EA; --c-bg-2:#EFE9D9; --c-card:#FCFAF4;
+  --c-ink:#16201B; --c-muted:#5A6056; --c-line:#DCD4C2; --c-line-soft:#E6DECE;
+  --c-emerald:#143A2D; --c-emerald-2:#1C4C3B; --c-dark-ink:#EFE9DA;
+  --c-gold:#B0822E; --c-gold-2:#C79A45; --c-gold-hover:#977019; --c-red:#9A3B2E;
+  --maxw:860px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Manrope",sans-serif;background:var(--c-bg);color:var(--c-ink);-webkit-font-smoothing:antialiased;line-height:1.62}
+h1,h2,h3{font-family:"Roboto Slab",Georgia,serif;font-weight:800;line-height:1.1;letter-spacing:-.01em}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.mono{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:600}
+a{color:var(--c-gold-hover);font-weight:600}
+
+.topbar{background:var(--c-emerald);color:var(--c-dark-ink)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Roboto Slab",serif;font-weight:900;font-size:17px;color:#fff;text-decoration:none}
+.brand .mark{width:28px;height:28px;border-radius:7px;background:rgba(199,154,69,.9);color:var(--c-emerald);display:grid;place-items:center;font-weight:900;font-size:17px}
+.topbar .back{color:rgba(239,233,218,.8);font-size:13px;font-weight:600;text-decoration:none}
+.topbar .back:hover{color:#fff}
+
+.hero{background:radial-gradient(120% 90% at 88% -10%,var(--c-bg-2),var(--c-bg));padding:60px 0 40px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--c-ink);color:var(--c-bg);padding:8px 15px;border-radius:100px;font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--c-gold-2);box-shadow:0 0 0 4px rgba(176,130,46,.2)}
+.hero h1{font-size:clamp(2rem,4.4vw,3rem);margin:18px 0 16px;max-width:18ch}
+.hero .sub{font-size:clamp(16px,1.6vw,18px);color:var(--c-muted);max-width:56ch;font-weight:500}
+.note{background:rgba(176,130,46,.1);border:1px solid rgba(176,130,46,.28);border-radius:12px;padding:14px 18px;margin-top:24px;font-size:14.5px;font-weight:600;color:var(--c-gold-hover)}
+
+.sec{padding:38px 0 4px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;border-bottom:2px solid var(--c-line);padding-bottom:12px}
+.sec-head .n{font-family:"Roboto Slab",serif;font-weight:900;font-size:14px;color:#fff;background:var(--c-emerald);border-radius:8px;padding:4px 11px;flex:0 0 auto}
+.sec-head h2{font-size:clamp(1.4rem,2.8vw,1.9rem)}
+
+.principles{display:grid;gap:11px;margin-top:6px}
+.principle{display:flex;gap:14px;align-items:flex-start;background:var(--c-card);border:1px solid var(--c-line);border-radius:12px;padding:16px 18px}
+.principle .k{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--c-emerald);color:var(--c-gold-2);display:grid;place-items:center;font-family:"Roboto Slab",serif;font-weight:900;font-size:15px}
+.principle p{font-size:15.5px;font-weight:600;color:#2A322C}
+.principle p b{color:var(--c-emerald)}
+
+table{width:100%;border-collapse:collapse;margin:8px 0;background:var(--c-card);border:1px solid var(--c-line);border-radius:12px;overflow:hidden}
+th,td{text-align:left;padding:13px 16px;font-size:15px;border-bottom:1px solid var(--c-line-soft)}
+th{background:var(--c-emerald);color:var(--c-dark-ink);font-family:"Roboto Slab",serif;font-weight:700;font-size:14px}
+tr:last-child td{border-bottom:none}
+td b{color:var(--c-emerald)}
+.tbl-wrap{overflow-x:auto}
+
+.day{display:grid;grid-template-columns:120px 1fr;gap:16px;padding:15px 0;border-bottom:1px solid var(--c-line-soft)}
+.day:last-child{border-bottom:none}
+.day .d{font-family:"Roboto Slab",serif;font-weight:900;font-size:16px;color:var(--c-emerald)}
+.day p{font-size:15px;font-weight:500;color:#2A322C}
+.day p b{color:var(--c-ink)}
+
+.script{background:var(--c-card);border:1px solid var(--c-line);border-left:3px solid var(--c-gold);border-radius:10px;padding:16px 18px;margin:11px 0}
+.script .lbl{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.08em;font-size:10.5px;font-weight:700;color:var(--c-gold-hover);margin-bottom:7px}
+.script p{font-size:15px;font-weight:500;color:#2A322C;font-style:italic}
+
+.stop{background:#FBF1EE;border:1px solid rgba(154,59,46,.25);border-radius:14px;padding:22px 24px;margin-top:12px}
+.stop h3{color:var(--c-red);font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:9px}
+.stop ul{list-style:none;display:grid;gap:9px}
+.stop li{padding-left:24px;position:relative;font-size:15px;font-weight:500;color:#4A3330}
+.stop li::before{content:"✕";position:absolute;left:0;top:0;color:var(--c-red);font-weight:900}
+.stop li b{color:var(--c-red)}
+
+.log{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px}
+@media(max-width:600px){.log{grid-template-columns:1fr}}
+.log div{background:var(--c-card);border:1px solid var(--c-line);border-radius:10px;padding:12px 15px;font-size:14.5px;font-weight:600;color:#2A322C}
+.log div span{color:var(--c-gold-hover);font-weight:800}
+
+footer{background:var(--c-emerald);color:rgba(239,233,218,.7);padding:34px 0;font-size:13.5px;margin-top:44px}
+.foot-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.foot-row .brand{color:#fff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap row">
+    <a class="brand" href="index.html"><span class="mark">A</span>A-PLAYERS</a>
+    <a class="back" href="index.html">← к домашнему заданию</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="pill"><span class="dot"></span>Образец · Отдел продаж</span>
+    <h1>Регламент касаний</h1>
+    <p class="sub">Чёткий алгоритм работы с каждым лидом — не случайные действия, а система. Заявки, пришедшие с воронки, дальше проходят через отдел продаж. Без регламента здесь теряется до половины целевых лидов.</p>
+    <div class="note">📌 Это образец-каркас. Адаптируйте под свой цикл сделки, каналы и продукт — цифры и скрипты подставьте свои.</div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">1</span><h2>Принципы — почему именно так</h2></div>
+    <div class="principles">
+      <div class="principle"><span class="k">1</span><p><b>Скорость решает.</b> Первый контакт ≤ 5 минут после лида. Ответ за 5 минут → кратно выше шанс квалификации. В B2B большинство покупают у того, кто ответил первым.</p></div>
+      <div class="principle"><span class="k">2</span><p><b>Ведём до результата.</b> Не бросаем после 1–2 попыток. Большинство продаж требуют 5+ касаний. Цель — записать и довести до встречи, а не «отметиться».</p></div>
+      <div class="principle"><span class="k">3</span><p><b>Мультиканал.</b> Звонок + мессенджер параллельно повышают конверсию касания.</p></div>
+      <div class="principle"><span class="k">4</span><p><b>Ценность вместо давления.</b> Каждое касание несёт пользу или заботу, а не «ну что, надумали?».</p></div>
+      <div class="principle"><span class="k">5</span><p><b>Доходимость — отдельная задача.</b> Не пришёл на встречу — связываемся повторно, пока не запишем заново.</p></div>
+      <div class="principle"><span class="k">6</span><p><b>Всё фиксируем.</b> Время захода, число касаний, последнее касание, следующий шаг — иначе лид теряется.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">2</span><h2>Каденция касаний (по дням)</h2></div>
+    <p style="color:var(--c-muted);font-weight:500;margin-bottom:14px">Цель этапа — дозвониться и записать на встречу. Параллельно с каждым недозвоном — сообщение в мессенджере. Пример под короткий/средний цикл сделки:</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Лид пришёл</th><th>Звонков в День 1</th><th>Параллельно</th></tr>
+      <tr><td><b>Утром (до 12:00)</b></td><td>3 попытки</td><td>при каждом недозвоне — сообщение</td></tr>
+      <tr><td><b>После 12:00</b></td><td>2 попытки</td><td>то же</td></tr>
+      <tr><td><b>Вечером</b></td><td>1 попытка</td><td>то же</td></tr>
+    </table></div>
+    <div class="day"><div class="d">День 2</div><p>Минимум <b>2 попытки</b> (звонки) + сообщение.</p></div>
+    <div class="day"><div class="d">День 3</div><p>2 попытки (утро/вечер) + сообщение. Меняем угол захода — ценность, а не «перезваниваю».</p></div>
+    <div class="day"><div class="d">День 4</div><p>1–2 попытки + сообщение с <b>полезным материалом</b>.</p></div>
+    <div class="day"><div class="d">День 5</div><p>1 попытка + сообщение. Тишина → переводим в долгий прогрев/реактивацию, контакт не теряем.</p></div>
+    <p class="note">✅ Активный режим — дни 1–5. Дальше касания реже (раз в 5–7 дней), мягче, через ценность. Длинный цикл сделки → растягиваем регламент под него, но дозвониться всё равно нужно в первую очередь.</p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">3</span><h2>Доходимость (не пришёл на встречу)</h2></div>
+    <div class="day"><div class="d">Шаг 1</div><p>В течение <b>5–10 минут</b> — звонок + забота, не упрёк: «всё в порядке, давайте перенесём».</p></div>
+    <div class="day"><div class="d">Шаг 2</div><p>Не дозвонились → сообщение: тёплый текст + 2 слота на выбор.</p></div>
+    <div class="day"><div class="d">Шаг 3</div><p>Не ответил → на следующий день повтор (звонок + сообщение).</p></div>
+    <div class="day"><div class="d">Шаг 4</div><p><b>Ведём до повторной записи</b> — пока человек снова не записан. Это ключевой рычаг доходимости.</p></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">4</span><h2>Скрипты (шаблоны)</h2></div>
+    <p style="color:var(--c-muted);font-weight:500;margin-bottom:6px">Коротко, по-человечески, с заботой/ценностью. Подставьте свой tone of voice и реальные материалы.</p>
+    <div class="script"><div class="lbl">Первый звонок · квалификация</div><p>«[Имя], здравствуйте! Это [менеджер], [компания]. Вы только что оставили заявку на [оффер] — я на связи. Удобно пару минут? Хочу коротко понять ваш запрос, чтобы предложить точный следующий шаг.»</p></div>
+    <div class="script"><div class="lbl">Сообщение при недозвоне · День 1</div><p>«[Имя], это [менеджер] из [компания] 👋 Звонил по вашей заявке — не дозвонился. Когда удобно созвониться на 5–7 минут: сегодня вечером или завтра утром?»</p></div>
+    <div class="script"><div class="lbl">Не пришёл на встречу</div><p>«[Имя], мы вас ждали на [встрече] в [время] — не увидели вас, всё ли в порядке? Если что-то поменялось — давайте подберём удобное время. Вот два слота: [A] / [B].»</p></div>
+    <div class="script"><div class="lbl">Касание через ценность · День 4–5</div><p>«[Имя], пока думаете — вот что может быть полезно по вашему запросу [боль]: [материал]. Без обязательств, просто чтобы было от чего оттолкнуться 🙌»</p></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">5</span><h2>Что фиксируем по каждому лиду</h2></div>
+    <div class="log">
+      <div><span>·</span> Дата и время захода (утро/после 12/вечер)</div>
+      <div><span>·</span> Тип лида и маршрут</div>
+      <div><span>·</span> Каждое касание: канал + результат</div>
+      <div><span>·</span> Число касаний и дата последнего</div>
+      <div><span>·</span> Статус встречи (записан/проведена/no-show)</div>
+      <div><span>·</span> Следующий шаг и его дата</div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">6</span><h2>Стоп-слова — чего НИКОГДА не делаем</h2></div>
+    <div class="stop">
+      <h3>🚫 Инфоцыганщина и впаривание</h3>
+      <ul>
+        <li><b>Волшебная таблетка:</b> «всё само придёт», «успех гарантирован», «секретная формула».</li>
+        <li><b>Нереалистичные обещания:</b> «к Х числу заработаете Y».</li>
+        <li><b>Искусственный дефицит,</b> если это неправда: «последнее место», «только сегодня».</li>
+        <li><b>Давление:</b> «ну что, надумали?», «почему до сих пор не решили».</li>
+      </ul>
+    </div>
+    <div class="stop" style="margin-top:12px">
+      <h3>🚫 Критические ошибки</h3>
+      <ul>
+        <li><b>Цена до ценности</b> — стоимость только после сформированной ценности.</li>
+        <li><b>Характеристики вместо ценности</b> — каждое касание бьёт в JTBD/боль клиента.</li>
+        <li><b>«Я не знаю» по продукту</b> — не знаем → обещаем узнать и возвращаемся с ответом.</li>
+        <li><b>Сделка висит без касания &gt; 3 дней</b> — касание есть всегда; перезвон согласован позже → задача в CRM.</li>
+        <li><b>Хамство, превосходство, переход на личности</b> — вежливо, на «вы», с заботой.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="brand"><span class="mark">A</span>A-PLAYERS</div>
+    <div>Образец регламента касаний · адаптируйте под свой продукт</div>
+    <div>© 2026 A-Players</div>
+  </div>
+</footer>
+
+</body>
+</html>

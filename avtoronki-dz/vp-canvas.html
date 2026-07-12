@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script src="gate.js"></script>
+<title>Плейбук · Value Proposition Canvas — A-Players</title>
+<meta name="description" content="Как под каждый корсегмент из JTBD собрать оффер, от которого трудно отказаться.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c-bg:#F4F1EA; --c-bg-2:#EFE9D9; --c-card:#FCFAF4;
+  --c-ink:#16201B; --c-muted:#5A6056; --c-line:#DCD4C2; --c-line-soft:#E6DECE;
+  --c-emerald:#143A2D; --c-emerald-2:#1C4C3B; --c-dark-ink:#EFE9DA;
+  --c-gold:#B0822E; --c-gold-2:#C79A45; --c-gold-hover:#977019; --c-red:#9A3B2E;
+  --maxw:900px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:"Manrope",sans-serif;background:var(--c-bg);color:var(--c-ink);-webkit-font-smoothing:antialiased;line-height:1.62}
+h1,h2,h3,h4{font-family:"Roboto Slab",Georgia,serif;font-weight:800;line-height:1.12;letter-spacing:-.01em}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+.mono{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.14em;font-size:12px;font-weight:600}
+a{color:var(--c-gold-hover);font-weight:600}
+
+.topbar{background:var(--c-emerald);color:var(--c-dark-ink)}
+.topbar .row{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Roboto Slab",serif;font-weight:900;font-size:17px;color:#fff;text-decoration:none}
+.brand .mark{width:28px;height:28px;border-radius:7px;background:rgba(199,154,69,.9);color:var(--c-emerald);display:grid;place-items:center;font-weight:900;font-size:17px}
+.topbar .back{color:rgba(239,233,218,.8);font-size:13px;font-weight:600;text-decoration:none}
+.topbar .back:hover{color:#fff}
+
+.hero{background:radial-gradient(120% 90% at 88% -10%,var(--c-bg-2),var(--c-bg));padding:60px 0 40px}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--c-ink);color:var(--c-bg);padding:8px 15px;border-radius:100px;font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600}
+.pill .dot{width:7px;height:7px;border-radius:50%;background:var(--c-gold-2);box-shadow:0 0 0 4px rgba(176,130,46,.2)}
+.hero h1{font-size:clamp(2rem,4.4vw,3rem);margin:18px 0 16px;max-width:18ch}
+.hero .sub{font-size:clamp(16px,1.6vw,18px);color:var(--c-muted);max-width:58ch;font-weight:500}
+
+.sec{padding:38px 0 4px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;border-bottom:2px solid var(--c-line);padding-bottom:12px}
+.sec-head .n{font-family:"Roboto Slab",serif;font-weight:900;font-size:14px;color:#fff;background:var(--c-emerald);border-radius:8px;padding:4px 11px;flex:0 0 auto}
+.sec-head h2{font-size:clamp(1.4rem,2.8vw,1.9rem)}
+.lead{color:var(--c-muted);font-size:16px;font-weight:500;margin-bottom:14px}
+.lead b{color:var(--c-emerald)}
+
+/* canvas two sides */
+.canvas{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 6px}
+@media(max-width:720px){.canvas{grid-template-columns:1fr}}
+.side{border-radius:16px;padding:24px;border:1px solid var(--c-line)}
+.side.value{background:var(--c-emerald);color:var(--c-dark-ink);border-color:transparent}
+.side.profile{background:var(--c-card)}
+.side .cap{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.1em;font-size:11px;font-weight:700;margin-bottom:4px}
+.side.value .cap{color:var(--c-gold-2)}
+.side.profile .cap{color:var(--c-gold-hover)}
+.side h3{font-size:20px;margin-bottom:14px}
+.side.value h3{color:#fff}
+.blk{margin-bottom:14px}
+.blk:last-child{margin-bottom:0}
+.blk .t{font-family:"Roboto Slab",serif;font-weight:800;font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.side.value .blk .t{color:#fff}
+.blk .t .e{font-size:15px}
+.blk p{font-size:14px;font-weight:500;color:#39423B}
+.side.value .blk p{color:rgba(239,233,218,.75)}
+.fit{display:flex;align-items:center;gap:10px;justify-content:center;margin:2px 0 8px;color:var(--c-muted);font-weight:700;font-size:13.5px}
+.fit .ar{width:34px;height:34px;border-radius:50%;background:rgba(176,130,46,.14);color:var(--c-gold-hover);display:grid;place-items:center;font-size:16px}
+
+/* steps */
+.step{display:grid;grid-template-columns:42px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--c-line-soft)}
+.step:last-child{border-bottom:none}
+.step__n{width:42px;height:42px;border-radius:12px;background:var(--c-card);border:1.5px solid var(--c-gold);color:var(--c-gold-hover);display:grid;place-items:center;font-family:"Roboto Slab",serif;font-weight:900;font-size:17px}
+.step h4{font-size:17px;margin-bottom:5px}
+.step p{font-size:15px;font-weight:500;color:#2A322C}
+
+/* example table */
+.tbl-wrap{overflow-x:auto;margin:6px 0}
+table{width:100%;border-collapse:collapse;background:var(--c-card);border:1px solid var(--c-line);border-radius:12px;overflow:hidden;min-width:560px}
+th,td{text-align:left;padding:13px 16px;font-size:14.5px;border-bottom:1px solid var(--c-line-soft);vertical-align:top}
+th{background:var(--c-emerald);color:var(--c-dark-ink);font-family:"Roboto Slab",serif;font-weight:700;font-size:13.5px}
+tr:last-child td{border-bottom:none}
+td b{color:var(--c-emerald)}
+
+/* prompt */
+.prompt{background:#12241C;border-radius:14px;padding:22px 24px;margin:8px 0;position:relative}
+.prompt .cap{font-family:ui-monospace,Menlo,monospace;text-transform:uppercase;letter-spacing:.1em;font-size:10.5px;font-weight:700;color:var(--c-gold-2);margin-bottom:10px}
+.prompt p{font-family:ui-monospace,Menlo,monospace;font-size:13.5px;line-height:1.7;color:#DCE7DF;white-space:pre-wrap}
+
+/* stop */
+.stop{background:#FBF1EE;border:1px solid rgba(154,59,46,.25);border-radius:14px;padding:20px 24px;margin-top:10px}
+.stop ul{list-style:none;display:grid;gap:9px}
+.stop li{padding-left:24px;position:relative;font-size:15px;font-weight:500;color:#4A3330}
+.stop li::before{content:"✕";position:absolute;left:0;top:0;color:var(--c-red);font-weight:900}
+.stop li b{color:var(--c-red)}
+
+.dod{background:var(--c-card);border:1px solid var(--c-line);border-radius:16px;padding:24px 26px;margin:22px 0}
+.dod h3{margin-bottom:12px}
+.dod ul{list-style:none;display:grid;gap:11px}
+.dod li{display:flex;gap:12px;align-items:flex-start;font-size:15px;font-weight:600;color:#2A322C}
+.dod li .ck{flex:0 0 auto;width:23px;height:23px;border-radius:7px;background:var(--c-emerald);color:var(--c-gold-2);display:grid;place-items:center;font-weight:900;font-size:12px;margin-top:1px}
+
+footer{background:var(--c-emerald);color:rgba(239,233,218,.7);padding:34px 0;font-size:13.5px;margin-top:44px}
+.foot-row{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.foot-row .brand{color:#fff}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap row">
+    <a class="brand" href="index.html"><span class="mark">A</span>A-PLAYERS</a>
+    <a class="back" href="index.html">← к домашнему заданию</a>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="pill"><span class="dot"></span>Плейбук · Этап 3</span>
+    <h1>Value Proposition Canvas</h1>
+    <p class="sub">Как под каждый корсегмент из JTBD собрать оффер, от которого трудно отказаться. VPC синхронизирует то, чего хочет клиент, с тем, что даёт ваш продукт — и рождает маркетинговые смыслы для всей воронки.</p>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">1</span><h2>Что это и зачем</h2></div>
+    <p class="lead">Value Proposition Canvas — фреймворк из двух половин: <b>профиль клиента</b> (чего он хочет) и <b>карта ценности</b> (что вы даёте). Когда они совпадают — получается «fit», ценностное предложение, которое попадает точно в боль.</p>
+    <p class="lead">Ключевое правило: VPC делается <b>отдельно на каждый корсегмент</b>, который вы выделили в JTBD. Один канвас на всех = размытая коммуникация и слитые конверсии. Разные сегменты — разные боли, разные смыслы.</p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">2</span><h2>Две половины канваса</h2></div>
+    <div class="canvas">
+      <div class="side profile">
+        <div class="cap">Справа · берём из JTBD</div>
+        <h3>Профиль клиента</h3>
+        <div class="blk"><div class="t"><span class="e">🎯</span>Jobs — задачи клиента</div><p>«Работа», которую клиент нанимает продукт сделать: функциональная, эмоциональная, социальная. Прямо из JTBD корсегмента.</p></div>
+        <div class="blk"><div class="t"><span class="e">😣</span>Pains — боли</div><p>Что мешает, раздражает, чего боится, какие препятствия и риски на пути к решению задачи.</p></div>
+        <div class="blk"><div class="t"><span class="e">✨</span>Gains — желаемые выгоды</div><p>Какой результат хочет получить, что для него «победа», что приятно сверх ожидания.</p></div>
+      </div>
+      <div class="side value">
+        <div class="cap">Слева · ваш продукт</div>
+        <h3>Карта ценности</h3>
+        <div class="blk"><div class="t"><span class="e">📦</span>Продукты и услуги</div><p>Что конкретно вы предлагаете этому сегменту — фичи, форматы, пакеты.</p></div>
+        <div class="blk"><div class="t"><span class="e">🩹</span>Обезболивающие (pain relievers)</div><p>Как именно продукт снимает каждую ключевую боль клиента.</p></div>
+        <div class="blk"><div class="t"><span class="e">🚀</span>Создатели выгод (gain creators)</div><p>Как продукт создаёт желаемые выгоды и приятные «сверх».</p></div>
+      </div>
+    </div>
+    <div class="fit"><span class="ar">⇄</span> Fit: на каждую топ-боль и топ-выгоду клиента — конкретный ответ продукта</div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">3</span><h2>Как собрать — пошагово</h2></div>
+    <div class="step"><div class="step__n">1</div><div><h4>Возьмите корсегмент из JTBD</h4><p>Делаем по одному канвасу на каждый из 2–3 приоритетных корсегментов. Не смешиваем сегменты в одном канвасе.</p></div></div>
+    <div class="step"><div class="step__n">2</div><div><h4>Заполните профиль клиента</h4><p>Jobs / Pains / Gains — с опорой на JTBD. Затем <b>ранжируйте</b>: что для этого сегмента критично, а что второстепенно. Работаем с топом.</p></div></div>
+    <div class="step"><div class="step__n">3</div><div><h4>Заполните карту ценности</h4><p>Продукты → обезболивающие → создатели выгод. Каждый элемент должен на что-то отвечать, а не «просто быть».</p></div></div>
+    <div class="step"><div class="step__n">4</div><div><h4>Проверьте fit</h4><p>Пройдите по топ-болям и топ-выгодам: на каждую есть конкретный ответ продукта? Если боль не закрыта — либо дорабатываем оффер, либо честно не бьём в неё.</p></div></div>
+    <div class="step"><div class="step__n">5</div><div><h4>Вытащите маркетинговые смыслы</h4><p>Из готового fit достаём ключевые формулировки — они пойдут в обёртку, на лендинг, в тему вебинара, в прогрев. Это и есть «язык сегмента».</p></div></div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">4</span><h2>Мини-пример (B2B)</h2></div>
+    <p class="lead">Корсегмент: операционный директор среднего бизнеса.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Профиль клиента</th><th>Карта ценности продукта</th></tr>
+      <tr><td><b>Job:</b> держать процессы под контролем без ручного участия в каждой задаче</td><td><b>Продукт:</b> система, где видно статус всех процессов на одном экране</td></tr>
+      <tr><td><b>Pain:</b> задачи срываются, а он узнаёт об этом последним</td><td><b>Обезболивающее:</b> автоматические сигналы о срыве до того, как стало поздно</td></tr>
+      <tr><td><b>Gain:</b> спокойствие и высвобожденное время на стратегию</td><td><b>Создатель выгоды:</b> контроль без личного участия — «работает без вас»</td></tr>
+    </table></div>
+    <p class="lead" style="margin-top:12px">Смысл для коммуникации, рождённый из этого fit: <b>«Контроль процессов без вашего личного участия»</b> — эта фраза дальше идёт в заголовок лендинга, тему вебинара и прогрев.</p>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">5</span><h2>Собрать с AI</h2></div>
+    <p class="lead">Дайте нейросети JTBD корсегмента и описание продукта — она соберёт черновик VPC, который вы дальше вычитываете и усиливаете.</p>
+    <div class="prompt">
+      <div class="cap">Промпт</div>
+      <p>У тебя есть карта JTBD и мои корсегменты (в папке) и описание продукта [ссылка].
+Собери Value Proposition Canvas ОТДЕЛЬНО под каждый выбранный корсегмент.
+Для каждого: профиль клиента (jobs, pains, gains — с ранжированием по важности) и карту ценности (продукты, обезболивающие, создатели выгод).
+Затем проверь fit и вытащи 5–7 ключевых маркетинговых смыслов/фраз на языке этого сегмента, которые я смогу использовать в обёртке, на лендинге и в вебинаре.
+Отдельный документ на каждый корсегмент.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head"><span class="n">6</span><h2>Критические ошибки</h2></div>
+    <div class="stop"><ul>
+      <li><b>Один канвас на все сегменты.</b> Разные боли размываются в кашу — коммуникация перестаёт попадать.</li>
+      <li><b>Характеристики вместо ценности.</b> «У нас есть модуль X» — это не выгода. Выгода — что модуль X даёт клиенту в его ситуации.</li>
+      <li><b>Не ранжировали боли и выгоды.</b> Бьём во всё сразу и слабо. Работаем с топ-3.</li>
+      <li><b>Fit «на бумаге».</b> Заявили ответ продукта, которого на деле нет. VPC должен отражать реальность, а не мечты.</li>
+    </ul></div>
+  </section>
+
+  <div class="dod">
+    <h3>✅ Результат этапа</h3>
+    <ul>
+      <li><span class="ck">1</span>Отдельный VP Canvas на каждый приоритетный корсегмент (2–3 документа)</li>
+      <li><span class="ck">2</span>Проверенный fit: топ-боли и топ-выгоды закрыты элементами продукта</li>
+      <li><span class="ck">3</span>Список ключевых маркетинговых смыслов/фраз на языке каждого сегмента — вход в обёртку и воронку</li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  <div class="wrap foot-row">
+    <div class="brand"><span class="mark">A</span>A-PLAYERS</div>
+    <div>Плейбук · Value Proposition Canvas</div>
+    <div>© 2026 A-Players</div>
+  </div>
+</footer>
+
+</body>
+</html>
