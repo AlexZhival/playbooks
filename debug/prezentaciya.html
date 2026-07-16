@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · Дебаг бизнеса и стратегическая сборка</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --bg-alt:#EBE5D7; --card:#FCFAF4;
+  --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --dark-ink:#EFE9DA;
+  --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif;
+  --sans:"Manrope",system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0c0f0d;overflow:hidden;font-family:var(--sans)}
+#stage{position:absolute;top:50%;left:50%;width:1280px;height:720px;transform:translate(-50%,-50%);transform-origin:center center;background:var(--bg);box-shadow:0 30px 90px -20px rgba(0,0,0,.7)}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;padding:50px 72px 42px;color:var(--ink);flex-direction:column}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.kicker{font-family:var(--mono);font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+h1{font-family:var(--serif);font-weight:900;font-size:60px;line-height:1.02;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:38px;line-height:1.06;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:22px;line-height:1.15}
+.lead{font-size:21px;line-height:1.45;color:var(--muted);font-weight:500}
+p{font-size:18px;line-height:1.5}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 2px}
+.gold{color:var(--gold-h)}
+b,strong{font-weight:800}
+.spacer{flex:1}
+.mt8{margin-top:8px}.mt14{margin-top:14px}.mt18{margin-top:18px}.mt24{margin-top:24px}
+
+.foot{margin-top:auto;padding-top:14px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.foot .brand{display:flex;align-items:center;gap:9px;font-weight:600}
+.foot .brand img{height:17px;opacity:.92}
+.slide--dark .foot{color:rgba(239,233,218,.6)}
+.slide--dark .foot .brand img{filter:brightness(0) invert(1);opacity:.85}
+
+.slide--dark{background:var(--em);color:var(--dark-ink)}
+.slide--dark h1,.slide--dark h2,.slide--dark h3{color:#fff}
+.slide--dark .lead{color:rgba(239,233,218,.82)}
+.slide--dark .kicker{color:var(--gold-2)}
+.bfield{position:absolute;inset:0;z-index:0;width:1280px;height:720px;pointer-events:none}
+.slide>*{position:relative;z-index:1}
+.slide>svg.bfield{position:absolute;z-index:0}
+
+.slide--title{justify-content:center;overflow:hidden}
+.slide--title .heroimg{position:absolute;right:-40px;top:50%;transform:translateY(-50%);height:760px;opacity:.9;z-index:0;pointer-events:none}
+.slide--title h1{font-size:62px;max-width:940px}
+.tpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#F4F1EA;font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;padding:9px 16px;border-radius:30px;font-weight:600}
+.tpill.gold{background:transparent;border:1.5px solid var(--gold);color:var(--gold-h)}
+
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:1fr 1fr}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.g5{grid-template-columns:repeat(5,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.slide--dark .card{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.card h3{margin-bottom:6px}
+.card p{font-size:15px;color:var(--muted);line-height:1.4}
+.slide--dark .card p{color:rgba(239,233,218,.72)}
+.num{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:18px;margin-bottom:11px;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.icon{font-size:25px;margin-bottom:7px;display:block}
+
+.value{margin-top:13px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 18px;font-size:16px;line-height:1.4}
+.value b{color:var(--em)}
+.value::before{content:"СМЫСЛ";font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:3px}
+.slide--dark .value{background:rgba(199,154,69,.15);color:rgba(239,233,218,.9)}
+.slide--dark .value b{color:#fff}
+
+.slide--img{padding:42px 54px 40px}
+.imgbar{display:flex;align-items:baseline;gap:16px;margin-bottom:12px}
+.imgbar h2{font-size:30px}
+.imgwrap{flex:1;display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 18px 50px -28px rgba(0,0,0,.4);min-height:0}
+.imgwrap.dk{background:#10231b}
+.imgwrap img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.note{margin-top:11px;font-size:14.5px;color:var(--muted);line-height:1.4;display:flex;gap:9px}
+.note::before{content:"▸";color:var(--gold);font-weight:800}
+
+.imgside{display:grid;grid-template-columns:1fr 350px;gap:30px;flex:1;min-height:0;align-items:stretch}
+.imgside .imgwrap{width:100%}
+.sideinfo{display:flex;flex-direction:column;justify-content:center}
+.sideinfo h2{font-size:26px;margin-bottom:12px}
+.sideinfo .bl li{font-size:16px}
+
+.bl{list-style:none;display:flex;flex-direction:column;gap:12px}
+.bl li{position:relative;padding-left:24px;font-size:18px;line-height:1.4}
+.bl li::before{content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:50%;background:var(--gold)}
+.bl.check li::before{content:"✓";top:0;left:0;width:auto;height:auto;background:none;color:var(--green);font-weight:800;font-size:18px;border-radius:0}
+.bl.cross li::before{content:"✕";top:0;left:0;width:auto;height:auto;background:none;color:var(--red);font-weight:800;font-size:18px;border-radius:0}
+.slide--dark .bl li{color:rgba(239,233,218,.9)}
+
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;font-size:11px;color:var(--gold-h);text-align:left;padding:8px 11px;border-bottom:2px solid var(--line)}
+td{padding:8px 11px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.32;color:var(--ink)}
+tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+td b{color:var(--em)}
+/* dark-slide table fix */
+.slide--dark th{color:var(--gold-2);border-bottom-color:rgba(199,154,69,.4)}
+.slide--dark td{color:rgba(239,233,218,.92);border-bottom-color:rgba(255,255,255,.12)}
+.slide--dark td b{color:#fff}
+.slide--dark tr:nth-child(even) td{background:rgba(255,255,255,.05)}
+
+.quote{font-family:var(--serif);font-weight:700;font-size:42px;line-height:1.18;letter-spacing:-.4px;max-width:1010px}
+.quote .gold{color:var(--gold-2)}
+
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:10px 18px;font-weight:700;font-size:16px}
+.chip.on{background:rgba(199,154,69,.22);border-color:var(--gold)}
+.slide--dark .chip{background:rgba(255,255,255,.07);border-color:rgba(199,154,69,.3);color:#fff}
+.arr{color:var(--gold);font-weight:800;font-size:20px}
+
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#BE8E34,#C79A45);z-index:50;transition:width .3s}
+#count{position:absolute;right:18px;bottom:14px;z-index:50;font-family:var(--mono);font-size:12px;color:#8a8d86;letter-spacing:.1em}
+.hint{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:#555;letter-spacing:.1em;z-index:60;opacity:.5}
+
+.tag{display:inline-block;background:rgba(176,130,46,.13);color:var(--gold-h);border:1px solid rgba(176,130,46,.35);border-radius:20px;padding:4px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.agenda{display:flex;flex-direction:column;gap:9px}
+.agitem{display:flex;align-items:center;gap:18px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 20px}
+.agitem .t{font-family:var(--mono);font-size:13px;color:var(--gold-h);font-weight:700;width:64px;flex:0 0 64px}
+.agitem h3{font-size:18px}
+.agitem .d{margin-left:auto;font-size:14px;color:var(--muted);text-align:right;max-width:380px}
+.warnbox{background:rgba(178,59,46,.08);border:1.5px solid rgba(178,59,46,.4);border-radius:14px;padding:16px 20px}
+.okbox{background:rgba(62,142,94,.09);border:1.5px solid rgba(62,142,94,.4);border-radius:14px;padding:16px 20px}
+
+.stats{display:flex;gap:14px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.slide--dark .stat{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.stat .k{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:var(--serif);font-weight:800;font-size:34px;line-height:1.1;margin-top:4px;color:var(--em)}
+.slide--dark .stat .v{color:#fff}
+.stat .v.gd{color:var(--gold-h)} .stat .v.rd{color:var(--red)}
+.slide--dark .stat .v.gd{color:var(--gold-2)}
+
+/* node flow / loop */
+.loop{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.lnode{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;text-align:center;min-width:120px}
+.lnode b{display:block;font-family:var(--serif);font-size:18px;color:var(--em)}
+.lnode span{font-size:12px;color:var(--muted)}
+.lnode.hot{border:1.5px solid var(--gold);background:rgba(199,154,69,.16)}
+.lnode.win{border:1.5px solid var(--green)}
+.slide--dark .lnode{background:rgba(255,255,255,.06);border-color:rgba(199,154,69,.3)}
+.slide--dark .lnode b{color:#fff}
+.slide--dark .lnode span{color:rgba(239,233,218,.65)}
+.slide--dark .lnode.hot{background:rgba(199,154,69,.22)}
+.loopback{text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700;margin-top:12px}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.pill-lg{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:5px 12px;border-radius:20px;margin-bottom:8px}
+.pill-red{background:rgba(178,59,46,.12);color:var(--red)}
+.pill-green{background:rgba(62,142,94,.14);color:var(--green)}
+
+/* terminal / copy-paste prompt */
+.term{background:#0f2018;border:1px solid #2a4c3e;border-radius:16px;padding:22px 26px;font-family:var(--mono);font-size:16.5px;line-height:1.62;color:#d3e6da;white-space:pre-wrap;box-shadow:0 24px 56px -30px rgba(0,0,0,.6)}
+.term .c{color:#7fa394}
+.term .ph{color:var(--gold-2);font-weight:700}
+.termhead{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+.termhead .d{width:11px;height:11px;border-radius:50%}
+.termhead .r{background:#e0705f}.termhead .y{background:#e6b34d}.termhead .g{background:#5bbd7e}
+.termhead .lbl{margin-left:8px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#7fa394;font-weight:700}
+
+/* native chart wraps */
+.draw{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+.draw svg{width:100%;height:100%;max-height:430px}
+
+/* second brain flow */
+.sb{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:center;flex:1;min-height:0}
+.sbchain{display:flex;flex-direction:column;gap:10px}
+.sbstep{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px}
+.sbstep .e{font-size:24px;flex:0 0 auto}
+.sbstep b{font-size:16px;color:var(--em);display:block}
+.sbstep span{font-size:13px;color:var(--muted)}
+.sbstep.hot{border:1.5px solid var(--gold);background:rgba(199,154,69,.12)}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="p-va" width="62" height="66" patternUnits="userSpaceOnUse">
+    <g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle">
+      <text x="16" y="34" font-size="34" fill="rgba(20,58,45,.42)">A</text>
+      <text x="47" y="64" font-size="34" fill="rgba(20,58,45,.42)">A</text>
+    </g>
+  </pattern>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse">
+    <g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle">
+      <text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text>
+      <text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text>
+    </g>
+  </pattern>
+</defs></svg>
+<div id="stage">
+
+<!-- 1 · TITLE -->
+<section class="slide slide--title active">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va)"/></svg>
+  <img class="heroimg" src="assets/hero-bg.png" alt="">
+  <div style="display:flex;gap:10px;margin-bottom:24px">
+    <span class="tpill">● Практикум A-Players</span>
+    <span class="tpill gold">Модуль · Дебаг бизнеса</span>
+  </div>
+  <h1>Дебаг бизнеса и<br><span class="hl">стратегическая сборка</span></h1>
+  <p class="lead" style="margin-top:22px;max-width:760px">Главный навык управленца: быстро находить, <b style="color:var(--em)">где именно тормозит рост</b> — и превращать это в масштабируемые технологии, которые исполняет команда.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png" alt="A-Players">Практикум A-Players</span><span>Дебаг бизнеса</span></div>
+</section>
+
+<!-- 2 · BIG IDEA -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Главный тезис модуля</span>
+  <div class="spacer"></div>
+  <p class="quote">Дебаг — это <span class="gold">ключевая мышца</span> управленца. Она отвечает за <span class="gold">execution</span>.</p>
+  <p class="lead" style="margin-top:26px;max-width:940px">Можно иметь гениальную стратегию и кучу дипломов. Но если execution на уровне табуретки — результата не будет. <b style="color:#fff">Средняя стратегия при сильном execution бьёт гениальную стратегию при слабом.</b> Дебаг — это и есть мышца исполнения.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Execution &gt; стратегия</span></div>
+</section>
+
+<!-- 3 · AGENDA -->
+<section class="slide">
+  <span class="kicker">Программа встречи</span>
+  <h2 style="margin:12px 0 16px">Наша задача: через дебаг собрать <span class="hl">масштабируемые технологии</span></h2>
+  <div class="agenda">
+    <div class="agitem"><span class="t">Блок 1</span><h3>Что такое дебаг и зачем это мышца №1</h3><span class="d">точность · петля улучшений</span></div>
+    <div class="agitem"><span class="t">Блок 2</span><h3>Что вы должны создавать — масштабируемые технологии</h3><span class="d">ларёк vs Walmart · примеры</span></div>
+    <div class="agitem"><span class="t">Блок 3</span><h3>Как дебажить: находим бутылочные горлышки</h3><span class="d">Исикава · 5 почему · ICE</span></div>
+    <div class="agitem"><span class="t">Блок 4</span><h3>Результат дебага — playbook в библиотеку</h3><span class="d">и его обязательно исполнять</span></div>
+    <div class="agitem"><span class="t">Блок 5</span><h3>Фокус, ритм и второй мозг для дебага</h3><span class="d">как внедрить у себя</span></div>
+  </div>
+  <div class="value"><span><b>Итог встречи:</b> вы уносите топ-3 своих бутылочных горлышка, метод их дебажить и первый playbook, который забираете в исполнение.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Программа</span></div>
+</section>
+
+<!-- 4 · ТОЧНОСТЬ (притча) -->
+<section class="slide">
+  <span class="kicker">Блок 1 · Что такое дебаг</span>
+  <h2 style="margin:12px 0 14px">Дебаг — это про <span class="hl">точность</span>, а не про количество действий</h2>
+  <div class="two" style="align-items:center">
+    <div>
+      <p style="font-size:20px;line-height:1.5">Мастер починил машину одним ударом молотка и выставил счёт на <b>100&nbsp;$</b>.</p>
+      <p style="font-size:20px;line-height:1.5;margin-top:14px">«За что? Вы всего лишь стукнули молотком!»</p>
+      <p style="font-size:20px;line-height:1.5;margin-top:14px">— <b>1&nbsp;$ за удар и 99&nbsp;$ за знание, куда бить.</b></p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="icon">🎯</span>
+      <h3>Дебаг = снайперский выстрел</h3>
+      <p style="font-size:16px;margin-top:6px">Не бить по воробьям из пушки. Знать, <b>куда</b>, с какой <b>точностью</b> и <b>силой</b> ударить, чтобы дойти до результата.</p>
+      <p style="font-size:16px;margin-top:10px;color:var(--em)"><b>«Мы делаем ооочень много действий, а роста нет»</b> — это и есть отсутствие дебага.</p>
+    </div>
+  </div>
+  <div class="value"><span>Команда из 10 человек нагенерила <b>241 гипотезу</b>. Их не реализовать и за 4 года. Дебаг отвечает на вопрос: <b>на что из этого сделать ставку.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Точность</span></div>
+</section>
+
+<!-- 5 · ЧТО ТАКОЕ BUG (native) -->
+<section class="slide">
+  <span class="kicker">Блок 1 · Откуда термин</span>
+  <h2 style="margin:12px 0 6px">Дебажим не код, а <span class="hl">процессы</span></h2>
+  <p class="lead" style="margin-bottom:18px;font-size:18px">Bug = «жук». Первый баг — реальный жук, окисливший плату первого компьютера. С тех пор код, который не работает, идут «дебажить».</p>
+  <div class="two">
+    <div class="card">
+      <span class="pill-lg" style="background:rgba(20,58,45,.08);color:var(--em)">В программировании</span>
+      <ul class="bl" style="gap:10px;margin-top:6px">
+        <li>Разбить на блоки и найти ошибку</li>
+        <li>Протестировать гипотезы</li>
+        <li>Закоммитить то, в чём красная зона</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="pill-lg pill-green">В менеджменте — то же самое</span>
+      <ul class="bl" style="gap:10px;margin-top:6px">
+        <li>Разложить процесс на составляющие</li>
+        <li>Найти, где именно бутылочное горлышко</li>
+        <li>Расшить его и зафиксировать в playbook</li>
+      </ul>
+    </div>
+  </div>
+  <div class="value"><span>Мы дебажим не строчки кода, а воронки, конверсии и процессы. <b>Метод — ровно тот же самый.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Что такое bug</span></div>
+</section>
+
+<!-- 6 · ПЕТЛЯ ДАЛИО (native) -->
+<section class="slide">
+  <span class="kicker">Блок 1 · Фрейм Рэя Далио</span>
+  <h2 style="margin:12px 0 14px">Петля вечных улучшений</h2>
+  <div class="loop">
+    <div class="lnode"><b>Амбициозная<br>цель</b></div><span class="arr">→</span>
+    <div class="lnode"><b>Неудача</b><span>80% команд</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>Дебаг</b><span>принципы → плейбуки</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Улучшение</b></div><span class="arr">→</span>
+    <div class="lnode win"><b>↑ Ещё более<br>амбициозная цель</b></div>
+  </div>
+  <div class="loopback">↺ петля повторяется — так себя строит любая миллиардная компания</div>
+  <div class="two" style="margin-top:18px">
+    <div class="warnbox"><b style="color:var(--red)">Сценарий 1 — отпустил руль.</b> «Всё враньё, ничего не работает» — признал поражение. Не та воронка, не тот продукт.</div>
+    <div class="okbox"><b style="color:var(--green)">Сценарий 2 — пошёл в дебаг.</b> Факторный анализ → находит принципы → делает playbook → берёт более амбициозную цель.</div>
+  </div>
+  <div class="value"><span>Неудача с первого раза — <b>норма для 80% команд</b>. Всё решает развилка: сдаться или продебажить. Мы уже собираем эту петлю сами.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Петля улучшений</span></div>
+</section>
+
+<!-- 7 · УПРАВЛЕНЧЕСКАЯ РАМКА (native) -->
+<section class="slide">
+  <span class="kicker">Середина программы</span>
+  <h2 style="margin:12px 0 16px">Все инструменты сходятся в <span class="hl">одну систему</span></h2>
+  <div class="loop">
+    <div class="lnode"><b>Цель</b><span>куда идём</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Модель</b><span>🟢🟡🔴 где просадка</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>Дебаг</b><span>почему и что чинить</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Action plan</b><span>OKR / OGSM</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Playbook</b><span>как повторять</span></div>
+  </div>
+  <div class="loopback">↺ и снова новая цель — управленческая рамка</div>
+  <div class="grid g3" style="margin-top:20px">
+    <div class="card"><h3 style="font-size:18px">Модель показывает</h3><p style="font-size:14.5px">Предиктивная модель уже подсвечивает, где красная зона. Но это только табличка.</p></div>
+    <div class="card" style="border-top:3px solid var(--gold)"><h3 style="font-size:18px">Дебаг оживляет</h3><p style="font-size:14.5px">Метод «почему просели / что чинить». Превращает цифры в конкретные проекты.</p></div>
+    <div class="card"><h3 style="font-size:18px">Playbook закрепляет</h3><p style="font-size:14.5px">То, что сработало, становится повторяемой технологией и новой целью.</p></div>
+  </div>
+  <div class="value"><span>Модель без дебага — просто табличка. <b>Дебаг превращает цифры в решения</b>, а playbook — в масштабируемую технологию.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Где мы в программе</span></div>
+</section>
+
+<!-- 8 · ДВУСТОРОННИЙ ДЕБАГ -->
+<section class="slide">
+  <span class="kicker">Блок 1 · Две стороны дебага</span>
+  <h2 style="margin:12px 0 16px">Дебаг — это <span class="hl">не только</span> красное → зелёное</h2>
+  <div class="two">
+    <div class="card"><span class="pill-lg pill-red">Красная зона</span><h3>Превращаем 🔴 → 🟢</h3><p style="font-size:16px;margin-top:6px">Находим узкое место, расшиваем, метрика восстанавливается. Это все умеют помнить полгода.</p></div>
+    <div class="card"><span class="pill-lg pill-green">Аномальная зелёная</span><h3>Превращаем 🟢 → масштабируемое 🟢</h3><p style="font-size:16px;margin-top:6px">Сработало сверх плана — задаём вопрос «как теперь это повторить системно?». А мы принимаем это как «само собой».</p></div>
+  </div>
+  <div class="okbox" style="margin-top:16px">
+    <b>Кейс:</b> на выставке рекламное агентство раздавало QR-коды на филиппинских бананчиках (50&nbsp;₽ штука) → <b>300 заявок за 2–3 дня</b>. Аномальная зелёная зона. Решение банальное: посадить junior-пиарщика (65&nbsp;т.р.) изучить <b>все</b> релевантные выставки России — их &gt;100 — и повторять механику. Так собирается масштабируемый канал.
+  </div>
+  <div class="value"><span>Решения по масштабированию зелёных зон почти всегда <b>очень простые и очевидные.</b> Мы просто не успеваем задать себе вопрос и подумать глубже.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Масштабируем зелёное</span></div>
+</section>
+
+<!-- 9 · BIG IDEA — технологии -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Блок 2 · Что вы создаёте</span>
+  <div class="spacer"></div>
+  <p class="quote">Задача предпринимателя — создать систему, которая <span class="gold">генерирует ценность</span> и захватывает её часть в виде прибыли — <span class="gold">воспроизводимо</span> и без личного участия на каждом шаге.</p>
+  <p class="lead" style="margin-top:24px;max-width:960px">Найти <b style="color:#fff">повторяемую модель</b> создания и захвата ценности — а потом масштабировать её быстрее, чем это сделают конкуренты.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Масштабируемая технология</span></div>
+</section>
+
+<!-- 10 · ЛАРЁК vs WALMART -->
+<section class="slide slide--img">
+  <div class="imgbar"><span class="tag">Технология vs самозанятость</span><h2>Оба продают. Но масштабируется — один</h2></div>
+  <div class="imgwrap" style="max-height:420px"><img src="img/kiosk-walmart.png" alt="Ларёк и Walmart"></div>
+  <div class="note">Ларёк — это ручной труд одного человека. Walmart — это <b>задокументированная технология</b>, которую можно развернуть тысячи раз с предсказуемым результатом. Ваша задача — строить второе, а не первое.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Ларёк vs Walmart</span></div>
+</section>
+
+<!-- 11 · MCDONALDS -->
+<section class="slide slide--img">
+  <div class="imgbar"><span class="tag">Пример технологии</span><h2>Технология описана до каждого шага</h2></div>
+  <div class="imgwrap" style="max-height:430px"><img src="img/mcd-ukraine.png" alt="Как работает McDonald's"></div>
+  <div class="note">Гамбургер на биме — <b>10 минут</b>, наггетсы — 20, иначе в мусор. Роли, зоны, тайминги, поставки — всё стандартизировано. Это и есть «стандарты операционки»: любой новый ресторан работает одинаково хорошо <b>без основателя внутри</b>.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Пример · McDonald's</span></div>
+</section>
+
+<!-- 12 · WHIZZ CASE -->
+<section class="slide slide--img">
+  <div class="imgbar"><span class="tag">Кейс · дебаг + первые принципы</span><h2>«Искали клиентов в Instagram — нашли в мечетях»</h2></div>
+  <div class="imgside">
+    <div class="imgwrap"><img src="img/whizz-case.png" alt="Кейс масштабирования канала"></div>
+    <div class="sideinfo">
+      <p style="font-size:15.5px;color:var(--muted);line-height:1.45"><b style="color:var(--em)">Дано:</b> подписка на e-байки курьерам в Нью-Йорке, дорогой CAC, «пилим фабрику креативов», льём в перформанс.</p>
+      <p style="font-size:15.5px;color:var(--muted);line-height:1.45;margin-top:8px"><b style="color:var(--em)">Дебаг от первых принципов:</b> курьера легко таргетировать вживую → команда амбассадоров-промоутеров.</p>
+      <p style="font-size:15.5px;color:var(--muted);line-height:1.45;margin-top:8px"><b style="color:var(--em)">Дальше:</b> сначала плохо → не сдались, уволили лида, оставили «амбассадора с результатом» → тесты, улучшение каждого этапа → мечети, хостелы, комьюнити → 2-уровневая мотивация.</p>
+      <div class="okbox" style="margin-top:12px;padding:12px 16px"><b>Итог:</b> 60 амбассадоров в 4 городах, <b>&gt;1000 новых клиентов/мес.</b> Год назад канала не существовало.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Кейс масштабирования</span></div>
+</section>
+
+<!-- 13 · УЗКОЕ МЕСТО (native SVG funnel) -->
+<section class="slide">
+  <span class="kicker">Блок 3 · Как дебажить</span>
+  <h2 style="margin:12px 0 8px">Узкое место ограничивает <span class="hl">всю дорогу</span></h2>
+  <div class="draw">
+    <svg viewBox="0 0 1040 300" preserveAspectRatio="xMidYMid meet">
+      <!-- open road to goal -->
+      <rect x="560" y="118" width="410" height="64" fill="#e7efe9" stroke="#cbd8cf"/>
+      <line x1="580" y1="150" x2="930" y2="150" stroke="#9fb3a7" stroke-width="3" stroke-dasharray="18 14"/>
+      <!-- funnel (jam side) -->
+      <polygon points="60,40 560,118 560,182 60,260" fill="#f2e8d6" stroke="#dccfb2"/>
+      <!-- cars in jam -->
+      <g fill="#c0473a">
+        <rect x="110" y="70" width="34" height="16" rx="4"/><rect x="160" y="66" width="34" height="16" rx="4"/><rect x="212" y="72" width="34" height="16" rx="4"/>
+        <rect x="120" y="104" width="34" height="16" rx="4"/><rect x="172" y="106" width="34" height="16" rx="4"/><rect x="226" y="108" width="34" height="16" rx="4"/><rect x="286" y="110" width="34" height="16" rx="4"/>
+        <rect x="150" y="140" width="34" height="16" rx="4"/><rect x="205" y="142" width="34" height="16" rx="4"/><rect x="262" y="143" width="34" height="16" rx="4"/><rect x="322" y="144" width="34" height="16" rx="4"/><rect x="386" y="145" width="34" height="16" rx="4"/>
+        <rect x="130" y="178" width="34" height="16" rx="4"/><rect x="188" y="180" width="34" height="16" rx="4"/><rect x="248" y="182" width="34" height="16" rx="4"/><rect x="312" y="183" width="34" height="16" rx="4"/>
+        <rect x="120" y="214" width="34" height="16" rx="4"/><rect x="176" y="216" width="34" height="16" rx="4"/>
+      </g>
+      <!-- neck highlight (bottleneck) -->
+      <rect x="546" y="116" width="26" height="68" rx="5" fill="#B0822E"/>
+      <!-- goal flag -->
+      <line x1="936" y1="96" x2="936" y2="204" stroke="#143A2D" stroke-width="4"/>
+      <polygon points="936,100 986,116 936,132" fill="#143A2D"/>
+      <!-- labels -->
+      <text x="52" y="150" font-family="Manrope,sans-serif" font-size="20" font-weight="800" fill="#16201B" text-anchor="end">ТЫ</text>
+      <text x="559" y="214" font-family="Manrope,sans-serif" font-size="15" font-weight="800" fill="#8a6a1f" text-anchor="middle">узкое место</text>
+      <text x="936" y="224" font-family="Manrope,sans-serif" font-size="16" font-weight="800" fill="#143A2D" text-anchor="middle">твоя цель</text>
+      <!-- research pointer -->
+      <text x="640" y="250" font-family="Manrope,sans-serif" font-size="16" font-weight="800" fill="#B23B2E">↑ ресёрчим и дебажим здесь</text>
+    </svg>
+  </div>
+  <div class="value"><span>Красная зона в модели = бутылочное горлышко. Расширять то, что и так пропускает, бессмысленно — <b>чинить нужно сам узкий участок.</b> И дебажим не только маркетинг с продуктом, но и систему управления.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Bottleneck</span></div>
+</section>
+
+<!-- 14 · ЧТО ДЕБАЖИТЬ — ICE/PHADI -->
+<section class="slide">
+  <span class="kicker">Блок 3 · Что дебажить в первую очередь</span>
+  <h2 style="margin:12px 0 14px">Красных зон много. Как выбрать <span class="hl">ТОП-1</span>?</h2>
+  <div class="two">
+    <div>
+      <div class="card" style="margin-bottom:12px"><h3>PHADI, а не HADI</h3><p style="font-size:15.5px;margin-top:5px"><b>HADI</b> — улучшаем всё подряд. <b>PHADI</b> — сначала самая ключевая боль (P — problem). Малой команде с ограниченным ресурсом — всегда PHADI.</p></div>
+      <div class="card"><h3>Считаем вес в деньгах (ICE)</h3><p style="font-size:15.5px;margin-top:5px">Маленькая матмодель: сколько денег принесёт гипотеза. Не можете сами — попросите Claude задать вопросы и посчитать за 10–15 мин, потом перепроверить себя.</p></div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold);display:flex;flex-direction:column;justify-content:center">
+      <p style="font-size:19px;line-height:1.5">Сказать <b style="color:var(--em)">«да»</b> одной гипотезе = сказать <b style="color:var(--red)">«нет»</b> двадцати другим (или на парковку).</p>
+      <p style="font-size:16px;color:var(--muted);margin-top:14px;line-height:1.45">У любого бизнеса аудиторы найдут <b>&gt;200 точек роста.</b> Их всегда много. Навык — выбрать снайперский выстрел.</p>
+      <p style="font-size:16px;color:var(--em);margin-top:12px;line-height:1.45"><b>«Не приходи, если решение по году не приносит &gt;100 млн»</b> — так растёт твой внутренний чек.</p>
+    </div>
+  </div>
+  <div class="value"><span>Если на вопрос «сколько это принесёт денег?» ответа нет — <b>трижды подумай, зачем ты вообще это делаешь.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>PHADI · ICE</span></div>
+</section>
+
+<!-- 15 · ГОРЛЫШКО = МЕТРИКА (dark, fixed) -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 3 · Правило приземления</span>
+  <h2 style="margin:12px 0 10px">Бутылочное горлышко <span class="gold">всегда</span> сводится к метрике</h2>
+  <p class="lead" style="margin-bottom:16px">«Расфокус», «время», «execution» — это не горлышки. Называй вещи своими именами и приземляй на цифру.</p>
+  <table>
+    <thead><tr><th>Говорят так</th><th>А горлышко на самом деле</th><th>Метрика</th></tr></thead>
+    <tbody>
+      <tr><td>«Не хватает времени»</td><td><b>Тайм-менеджмент</b> — ты управляешь 24 часами</td><td>часы на ТОП-задачи</td></tr>
+      <tr><td>«Низкий execution»</td><td>Падает <b>чистая прибыль / конверсия</b></td><td>ЧП, CR, выручка/сотрудник</td></tr>
+      <tr><td>«Проблема с людьми»</td><td><b>Скорость и качество</b> вывода менеджеров</td><td>CR новичка, срок вывода</td></tr>
+      <tr><td>«Мало лидов»</td><td>Провал <b>квалификации</b>: 70% не доходят</td><td>КВАЛ, доля целевых</td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>Нет метрики — нет управления. <b>Метрика оживает только когда у неё есть один ответственный и плановое значение.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Горлышко = цифра</span></div>
+</section>
+
+<!-- 16 · TOOLBOX ПРИНЦИПОВ -->
+<section class="slide">
+  <span class="kicker">Блок 3 · Toolbox дебага</span>
+  <h2 style="margin:12px 0 14px">Чем расшиваем горлышко — 8 приёмов</h2>
+  <div class="grid g4" style="gap:12px">
+    <div class="card" style="padding:15px"><span class="icon">🧩</span><h3 style="font-size:16px">Декомпозиция</h3><p style="font-size:13.5px">Разложить процесс на составляющие и срезы</p></div>
+    <div class="card" style="padding:15px"><span class="icon">🪜</span><h3 style="font-size:16px">По шагам</h3><p style="font-size:13.5px">Разложить проблемный процесс — где именно сбоит</p></div>
+    <div class="card" style="padding:15px"><span class="icon">🔍</span><h3 style="font-size:16px">Research (90%)</h3><p style="font-size:13.5px">Пойти на рынок, узнать реальные бенчмарки</p></div>
+    <div class="card" style="padding:15px"><span class="icon">🔬</span><h3 style="font-size:16px">До элемента</h3><p style="font-size:13.5px">Провалиться до конкретной сделки / ученика / урока</p></div>
+    <div class="card" style="padding:15px"><span class="icon">🌳</span><h3 style="font-size:16px">Дерево метрик</h3><p style="font-size:13.5px">Собрать бенчмарки → красное/зелёное → где трабл</p></div>
+    <div class="card" style="padding:15px"><span class="icon">👁️</span><h3 style="font-size:16px">До данных</h3><p style="font-size:13.5px">Своими глазами: карточка в CRM, звонок, БД</p></div>
+    <div class="card" style="padding:15px"><span class="icon">👤</span><h3 style="font-size:16px">Один ответственный</h3><p style="font-size:13.5px">Картина мира: кто за что и за какую метрику</p></div>
+    <div class="card" style="padding:15px"><span class="icon">⚖️</span><h3 style="font-size:16px">Бенчмарк внутри</h3><p style="font-size:13.5px">Сильный vs слабый продажник → в чём разница</p></div>
+  </div>
+  <div class="value"><span>Плюс два предохранителя: <b>ухудшающие тесты</b> («отруби и посмотри, влияло ли») и <b>откат на рабочую версию</b>, если что-то сломали.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Toolbox</span></div>
+</section>
+
+<!-- 17 · ИСИКАВА (native SVG fishbone) -->
+<section class="slide">
+  <span class="kicker">Приём · декомпозиция</span>
+  <h2 style="margin:12px 0 6px">Диаграмма Исикавы — раскладываем «слона» по костям</h2>
+  <div class="draw">
+    <svg viewBox="0 0 1040 360" preserveAspectRatio="xMidYMid meet">
+      <!-- tail -->
+      <polygon points="34,180 92,146 92,214" fill="#C79A45"/>
+      <!-- spine -->
+      <line x1="92" y1="180" x2="836" y2="180" stroke="#C79A45" stroke-width="6"/>
+      <!-- head -->
+      <rect x="836" y="140" width="184" height="80" rx="12" fill="#143A2D"/>
+      <text x="928" y="174" font-family="Manrope,sans-serif" font-size="17" font-weight="800" fill="#fff" text-anchor="middle">Бутылочное</text>
+      <text x="928" y="197" font-family="Manrope,sans-serif" font-size="17" font-weight="800" fill="#fff" text-anchor="middle">горлышко</text>
+      <!-- top ribs -->
+      <g stroke="#B0822E" stroke-width="2.5">
+        <line x1="250" y1="180" x2="180" y2="70"/><line x1="470" y1="180" x2="400" y2="70"/><line x1="690" y1="180" x2="620" y2="70"/>
+      </g>
+      <g font-family="Manrope,sans-serif" font-size="17" font-weight="700" fill="#16201B" text-anchor="middle">
+        <text x="176" y="58">Сотрудники</text><text x="396" y="58">Материалы</text><text x="616" y="58">Оборудование</text>
+      </g>
+      <!-- bottom ribs -->
+      <g stroke-width="2.5">
+        <line x1="250" y1="180" x2="180" y2="290" stroke="#B0822E"/><line x1="470" y1="180" x2="400" y2="290" stroke="#B23B2E"/><line x1="690" y1="180" x2="620" y2="290" stroke="#B0822E"/>
+      </g>
+      <g font-family="Manrope,sans-serif" font-size="17" font-weight="700" text-anchor="middle">
+        <text x="176" y="312" fill="#16201B">Измерения</text>
+        <text x="392" y="312" fill="#B23B2E">Процессы 🔴</text>
+        <text x="616" y="312" fill="#16201B">Среда</text>
+      </g>
+    </svg>
+  </div>
+  <div class="value"><span>Берём горлышко (голова рыбы) и раскидываем на ветки. По каждой быстро проходим чек-листом — где «загорелась лампочка», там корень. Так на заводах Японии находили брак.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Исикава</span></div>
+</section>
+
+<!-- 18 · ИСИКАВА — ПРОМПТ -->
+<section class="slide slide--dark">
+  <span class="kicker">Приём · дебаг с ИИ · Исикава</span>
+  <h2 style="margin:12px 0 14px">Готовый промпт — просто <span class="gold">скопируй и начни дебажить</span></h2>
+  <div class="term">
+    <div class="termhead"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="lbl">вставьте в Claude / второй мозг</span></div>
+<span class="c"># Дебаг горлышка через диаграмму Исикавы</span>
+Действуй как дебаг-инженер. Моё бутылочное горлышко:
+<span class="ph">[метрика, текущее значение, за какой период просела]</span>.
+Разложи проблему на 6 веток Исикавы: сотрудники, процессы,
+оборудование, материалы, измерения, среда. По каждой ветке
+задай мне 2–3 конкретных вопроса, чтобы понять, где сбоит.
+Потом собери топ-3 самые вероятные корневые причины.</div>
+  <div class="value"><span>ИИ дебажит без эго и на бенчмарках — часто лучше, чем мы. Задача — задавать правильные вопросы. Конверсию 97% на выставке подсказал именно Claude.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Промпт · Исикава</span></div>
+</section>
+
+<!-- 19 · 5 ПОЧЕМУ -->
+<section class="slide">
+  <span class="kicker">Приём · японская техника</span>
+  <h2 style="margin:12px 0 14px">«5 почему» — быстрый спуск до корня</h2>
+  <div class="loop" style="justify-content:flex-start;gap:6px;flex-wrap:wrap">
+    <div class="lnode" style="min-width:auto;text-align:left"><b style="font-size:15px">Не выполнили план по лидам</b><span>метрика</span></div>
+    <span class="arr">→</span>
+    <div class="lnode" style="min-width:auto;text-align:left"><span>Яндекс не дал трафика</span></div>
+    <span class="arr">→</span>
+    <div class="lnode" style="min-width:auto;text-align:left"><span>Открутили 100к вместо 200к</span></div>
+    <span class="arr">→</span>
+    <div class="lnode" style="min-width:auto;text-align:left"><span>Поздно завели кабинет</span></div>
+    <span class="arr">→</span>
+    <div class="lnode hot" style="min-width:auto;text-align:left"><b style="font-size:15px">Петя не поставил напоминание</b><span>корень</span></div>
+  </div>
+  <h3 style="margin:20px 0 8px">Что делаем на уровне Пети?</h3>
+  <ul class="bl" style="gap:9px">
+    <li>Ставим напоминание и уведомление в предиктивной модели</li>
+    <li>Петя ежедневно отчитывается о целевом трафике к вечеру</li>
+    <li>Разворачиваем <b>систему координации</b>, где руками не делаем ничего — но повториться это больше не может</li>
+  </ul>
+  <div class="value"><span>Самое дебильное — <b>проигнорировать.</b> Самое сложное для модератора — не уходить в эмоции и продолжать задавать «почему», возвращая ответственность команде.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>5 почему</span></div>
+</section>
+
+<!-- 20 · 5 ПОЧЕМУ — ПРОМПТ -->
+<section class="slide slide--dark">
+  <span class="kicker">Приём · дебаг с ИИ · 5 почему</span>
+  <h2 style="margin:12px 0 14px">Готовый промпт для метода <span class="gold">«5 почему»</span></h2>
+  <div class="term">
+    <div class="termhead"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="lbl">вставьте в Claude / второй мозг</span></div>
+<span class="c"># Дебаг горлышка методом «5 почему»</span>
+Проведи меня по технике «5 почему» для проблемы:
+<span class="ph">[что именно не выполнено / какая метрика просела]</span>.
+Задавай по одному вопросу «почему?», дожидайся моего ответа,
+и спускайся глубже — минимум 5 уровней, пока не дойдём до
+корня на уровне конкретного человека или элемента.
+В конце предложи реакцию: что поставить в систему координации,
+чтобы это больше никогда не повторилось.</div>
+  <div class="value"><span>Всегда есть причинно-следственная связь. Не видишь причину — значит <b>не погрузился достаточно глубоко.</b> ИИ ускоряет спуск до корня.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Промпт · 5 почему</span></div>
+</section>
+
+<!-- 21 · ДЕРЕВО ГИПОТЕЗ (native) -->
+<section class="slide">
+  <span class="kicker">Приём · дерево гипотез + research</span>
+  <h2 style="margin:12px 0 14px">Крестик / галочка через <span class="hl">research</span></h2>
+  <div class="two" style="align-items:start;gap:26px">
+    <div>
+      <div class="lnode hot" style="text-align:left;min-width:auto;margin-bottom:12px"><b style="font-size:17px">Почему не продаём Python?</b><span>корневой вопрос</span></div>
+      <ul class="bl cross" style="gap:11px">
+        <li>Python устарел → <b>ресёрч спроса: нет, нужен</b></li>
+        <li>Другие не продают → <b>витрины: продают все</b></li>
+        <li>Продукт плохой → <b>опровергли</b></li>
+      </ul>
+      <ul class="bl check" style="gap:11px;margin-top:12px">
+        <li><b>Не умеем продавать</b> → метрики не в бенчмарке: CR на <b>40% ниже рынка</b></li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold);display:flex;flex-direction:column;justify-content:center">
+      <h3 style="margin-bottom:8px">Как читать дерево</h3>
+      <p style="font-size:16px;color:var(--muted);line-height:1.5"><b style="color:var(--red)">✕ крестик</b> — гипотеза опровергнута ресёрчем.<br><b style="color:var(--green)">✓ галочка</b> — подтверждённый корень.</p>
+      <p style="font-size:16px;color:var(--em);margin-top:14px;line-height:1.5">Когда проверяешь цифрами и бенчмарками — <b>эмоции и самоуверенность отпадают</b>, остаются веса.</p>
+    </div>
+  </div>
+  <div class="value"><span>Ходим и <b>вглубь</b> (до конкретной метрики), и <b>вверх</b> (не тот продукт/рынок — тоже фактор). Research сейчас делается за минуты.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Дерево гипотез</span></div>
+</section>
+
+<!-- 22 · ДО ЭЛЕМЕНТА -->
+<section class="slide">
+  <span class="kicker">Приём · провалиться до элемента</span>
+  <h2 style="margin:12px 0 14px">Ничто так не отрезвляет, как <span class="hl">открыть 10 сделок в CRM</span></h2>
+  <div class="two" style="align-items:stretch">
+    <div class="warnbox">
+      <b style="color:var(--red)">Кейс.</b> Онлайн-школа: «на рынке всё поменялось, продавать невозможно». Проваливаемся в конкретную воронку → в чат-боте <b>500+ заявок</b>. Открываем CRM — <b>их там нет.</b> Техническая ошибка: лиды застряли и не долетели.
+      <p style="margin-top:10px;font-size:15px">РОП винит маркетинг, маркетинг винит продажи — а полтысячи лидов просто зависли.</p>
+    </div>
+    <div class="okbox">
+      <b style="color:var(--green)">Что делать.</b> Пройти путь клиента глазами. Оставить заявку тайным покупателем. Послушать звонки.
+      <p style="margin-top:10px;font-size:15px">Вице-президент Hilti (10&nbsp;000+ сотрудников) сам приходит на онбординг новичков и принимает экзамены. Пока сам не посмотрел — не знаешь, что там на самом деле.</p>
+    </div>
+  </div>
+  <div class="value"><span>Никогда не будь в позиции «я слишком высоко сижу, чтобы спускаться до элемента». <b>Это самый быстрый способ найти корень.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>До элемента</span></div>
+</section>
+
+<!-- 23 · ПРАВИЛА ДЕБАГА -->
+<section class="slide">
+  <span class="kicker">Блок 3 · Правила чистого дебага</span>
+  <h2 style="margin:12px 0 14px">5 правил, чтобы дебаг был <span class="hl">честным</span></h2>
+  <div class="grid g5" style="gap:12px">
+    <div class="card" style="padding:16px"><span class="num">1</span><h3 style="font-size:16px">Цифрами</h3><p style="font-size:13.5px">Проблема обоснована на цифрах — насколько именно замедлились</p></div>
+    <div class="card" style="padding:16px"><span class="num">2</span><h3 style="font-size:16px">Все варианты</h3><p style="font-size:13.5px">Убедиться, что рассмотрели все ветки, а не первую пришедшую</p></div>
+    <div class="card" style="padding:16px"><span class="num">3</span><h3 style="font-size:16px">Сильные стороны</h3><p style="font-size:13.5px">Заканчиваем на «как усилим то, что работает»</p></div>
+    <div class="card" style="padding:16px"><span class="num">4</span><h3 style="font-size:16px">Вглубь и вверх</h3><p style="font-size:13.5px">Не тот продукт / рынок — тоже «верхний» фактор</p></div>
+    <div class="card" style="padding:16px"><span class="num">5</span><h3 style="font-size:16px">Без эмоций</h3><p style="font-size:13.5px">Факторный анализ — только цифрами, не мнением</p></div>
+  </div>
+  <div class="okbox" style="margin-top:16px"><b>AI как дебаг-инженер.</b> «Действуй как дебаг-инженер: задай мне вопросы по этому горлышку и дай высоковероятные гипотезы решения». Часто он дебажит лучше нас — потому что делает это без эго и на бенчмарках.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Правила</span></div>
+</section>
+
+<!-- 24 · ПОСТ-РАЗБОР ФАКТОРОВ -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Результат дебага</span>
+  <h2 style="margin:12px 0 14px">В результате формируется <span class="hl">вывод</span> — в деньгах</h2>
+  <div class="two">
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <div class="tag" style="margin-bottom:10px">Пост-разбор роста · только цифры</div>
+      <ul class="bl" style="gap:9px">
+        <li><b>Рост заявок +35%</b> → +3,5 млн ₽</li>
+        <li><b>CR лид→продажа 3,2% → 5,7%</b> (+78%) → cash-in +7,5 млн ₽</li>
+        <li><b>Средний чек +10%</b> → +2 млн ₽ к приросту</li>
+      </ul>
+      <p style="font-size:14px;color:var(--muted);margin-top:12px">Каждый фактор — с ответственным и суммой. Дальше: <b style="color:var(--em)">как усилим сильные стороны</b> → гант → playbook.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center">
+      <p style="font-size:19px;line-height:1.5">Разбираем не только «почему не растём», но и <b style="color:var(--em)">«почему выросли»</b>.</p>
+      <p style="font-size:17px;color:var(--muted);margin-top:14px;line-height:1.45">Как только нашли, что реально сработало — это <b>сакральное знание.</b> Кидаем весь ресурс команды, чтобы сделать эту зону ещё сильнее.</p>
+      <p style="font-size:17px;color:var(--muted);margin-top:12px;line-height:1.45">Это понимание, <b>во что инвестировать деньги и ресурс команды.</b></p>
+    </div>
+  </div>
+  <div class="value"><span>Всё приземляется на планёрку: к встрече <b>заранее приложен факторный анализ</b> — топ-3 причины отклонения и что забираю на этой неделе.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Вывод в деньгах</span></div>
+</section>
+
+<!-- 25 · PLAYBOOK -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 4 · Playbook</span>
+  <h2 style="margin:12px 0 10px">Ошибка → вывод → <span class="gold">playbook</span> → технология</h2>
+  <p class="lead" style="margin-bottom:16px">Playbook — это как ваша выстраданная ошибка превращается в повторяемую инструкцию. Процесс повторится ещё десятки раз — инструкция должна быть готова заранее.</p>
+  <div class="stats">
+    <div class="stat"><div class="k">Плейбуков в компании</div><div class="v gd">300+</div><div class="k" style="margin-top:4px">на все ключевые процессы</div></div>
+    <div class="stat"><div class="k">Найм · вебинары · GTM</div><div class="v">∀</div><div class="k" style="margin-top:4px">всё, что влияет на деньги</div></div>
+    <div class="stat"><div class="k">Калибруется</div><div class="v gd">×10</div><div class="k" style="margin-top:4px">раз, не идеален с первого</div></div>
+  </div>
+  <div class="value" style="margin-top:18px"><span>Если плейбуки не пополняются и не обновляются — <b>значит, у вас вообще нет дебага</b>, и непонятно, как вы вообще крутите метрики.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Playbook</span></div>
+</section>
+
+<!-- 26 · БИБЛИОТЕКА ПЛЕЙБУКОВ -->
+<section class="slide slide--img">
+  <div class="imgbar"><span class="tag">Результат — в библиотеку</span><h2>Плейбуки складываются в библиотеку</h2></div>
+  <div class="imgside">
+    <div class="imgwrap dk"><img src="img/playbook-library.png" alt="Библиотека плейбуков"></div>
+    <div class="sideinfo">
+      <h2>База лучших практик</h2>
+      <p style="font-size:16px;color:var(--muted);line-height:1.45">Founder impact, B2B GTM, Hiring, Performance, Company management — на каждый процесс своя карточка с бенчмарками.</p>
+      <ul class="bl" style="gap:9px;margin-top:12px">
+        <li>Надиктовали голосом процесс → <b>AI собрал playbook</b></li>
+        <li>Он становится частью командной работы</li>
+        <li>Для новых сотрудников — готовое решение</li>
+      </ul>
+      <div class="value" style="margin-top:12px"><span>Плейбуки — это то, что нужно <b>обязательно исполнять</b>, а не просто хранить.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Библиотека</span></div>
+</section>
+
+<!-- 27 · БАЗА ЗНАНИЙ -->
+<section class="slide slide--img">
+  <div class="imgbar"><span class="tag">Один хаб на компанию</span><h2>Библиотека живёт в базе знаний</h2></div>
+  <div class="imgside">
+    <div class="imgwrap"><img src="img/knowledge-hub.png" alt="База знаний компании"></div>
+    <div class="sideinfo">
+      <h2>Central hub</h2>
+      <p style="font-size:16px;color:var(--muted);line-height:1.45">Все отделы, культура, онбординг, политики, процессы — в одном месте. Это тот же «второй мозг», который мы собирали на прошлом модуле.</p>
+      <div class="value" style="margin-top:14px"><span>Ключевой вопрос: <b>кто ответственный за плейбуки каждого отдела?</b> Без владельца библиотека мертвеет.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>База знаний</span></div>
+</section>
+
+<!-- 28 · СБОРКА ТЕХНОЛОГИИ (native grid, синтез) -->
+<section class="slide">
+  <span class="kicker">Синтез модуля</span>
+  <h2 style="margin:12px 0 14px">Как собрать <span class="hl">масштабируемую технологию</span></h2>
+  <div class="grid g4" style="gap:10px">
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">1 · Описать технологию</h3><p style="font-size:13px">путь / процесс по шагам</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">2 · Риски</h3><p style="font-size:13px">где может сбоить</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">3 · Где горлышки</h3><p style="font-size:13px">узкие места процесса</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">4 · Лучшие практики</h3><p style="font-size:13px">research бенчмарков</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">5 · Усиление команды</h3><p style="font-size:13px">постоянное</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">6 · PHADI-циклы</h3><p style="font-size:13px">цикл улучшения</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">7 · Один ответственный</h3><p style="font-size:13px">+ архитектура ролей</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">8 · План-факт</h3><p style="font-size:13px">и точки контроля</p></div>
+    <div class="card" style="padding:13px;border:1.5px solid var(--gold);background:rgba(199,154,69,.13)"><h3 style="font-size:15px">9 · Дебаг 🎯</h3><p style="font-size:13px">ядро всей сборки</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">10 · Плейбуки</h3><p style="font-size:13px">в библиотеку</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">11 · Точки контроля</h3><p style="font-size:13px">кто и когда сверяет</p></div>
+    <div class="card" style="padding:13px"><h3 style="font-size:15px">12 · Ресёрчи</h3><p style="font-size:13px">постоянно на рынке</p></div>
+  </div>
+  <div class="value"><span>Дебаг — <b>ядро</b> этой сборки. Через него зелёные зоны становятся повторяемыми, а красные — расшиваются. Так «ларёк» превращается в «Walmart».</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сборка технологии</span></div>
+</section>
+
+<!-- 29 · ФОКУС (native) -->
+<section class="slide">
+  <span class="kicker">Блок 5 · Фокус</span>
+  <h2 style="margin:12px 0 14px">Фокус руководит в ключевые <span class="hl">точки роста</span></h2>
+  <div class="two">
+    <div class="card"><span class="pill-lg pill-red">Как обычно</span><h3>Фокус распылён</h3><p style="font-size:15.5px;margin-top:6px">Тянем всё подряд по чуть-чуть. Красные точки размазаны по всей пирамиде — нигде не хватает мощности, чтобы сдвинуть.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="pill-lg pill-green">Как надо</span><h3>Шаг 1 — локализуй в деньгах · Шаг 2 — весь фокус в одно горлышко</h3><p style="font-size:15.5px;margin-top:6px">Находим самое большое узкое место и концентрируем туда ресурс. Где фокус — там результат.</p></div>
+  </div>
+  <div class="flow" style="margin-top:18px">
+    <span class="chip on">CEO сам дебажит ключевую воронку</span>
+    <span class="chip">прямой репорт 2 самых быстрых каналов</span>
+    <span class="chip">запуск ключевых проектов роста лично</span>
+  </div>
+  <div class="value"><span>«Сдаю себя в аренду» узкому месту на квартал — по 20–30 часов. Узкое место всегда «уезжает»: расшил одно — переноси фокус на новое. <b>Нельзя делать всё сразу.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Фокус</span></div>
+</section>
+
+<!-- 30 · ВНЕДРЕНИЕ НА ВСЕХ УРОВНЯХ -->
+<section class="slide">
+  <span class="kicker">Блок 5 · Внедрение</span>
+  <h2 style="margin:12px 0 16px">Дебаг каскадируется на <span class="hl">все уровни</span> управления</h2>
+  <div class="loop" style="margin:8px 0 18px">
+    <div class="lnode"><b>Сотрудник</b><span>красные зоны</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Руководитель отдела</b><span>собирает «почему»</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Его руководитель</b><span>дебажит выше</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>CEO</b><span>ключевые горлышки</span></div>
+  </div>
+  <div class="two">
+    <div class="card"><h3>Почему нельзя всё самому</h3><p style="font-size:16px;margin-top:6px">Один человек не расшьёт все горлышки. Внедрять нужно на каждом уровне — иначе команда не прокачивает мышцу.</p></div>
+    <div class="card"><h3>Полезное давление сверху</h3><p style="font-size:16px;margin-top:6px">Слабый менеджмент = давление не оказывается. Команда всегда копирует модель поведения сверху.</p></div>
+  </div>
+  <div class="value"><span>Когда команда умеет дебажить сама — вот тогда возможен реальный «выход из операционки». Не раньше.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Все уровни</span></div>
+</section>
+
+<!-- 31 · КАК ЧАСТО -->
+<section class="slide">
+  <span class="kicker">Блок 5 · Ритм</span>
+  <h2 style="margin:12px 0 14px">Как часто проводить дебаг</h2>
+  <table>
+    <thead><tr><th>Когда</th><th>Что ловим</th><th>Почему важно</th></tr></thead>
+    <tbody>
+      <tr><td><b>Еженедельно</b></td><td>Операционные просадки (SLA, TLT, конверсии)</td><td>Устраняем «красное» раньше, чем оно бьёт по выручке</td></tr>
+      <tr><td><b>Ежемесячно</b></td><td>Стратегические / системные баги</td><td>Калибруем процессы, инструменты, команду</td></tr>
+      <tr><td><b>После релиза</b></td><td>Ошибки внедрения нового инструмента</td><td>Мониторинг каждые 2 дня → экономим нервы и бюджет</td></tr>
+      <tr><td><b>При скачках метрик</b></td><td>Аномалии ±5% и больше</td><td>Быстрая контр-атака вместо «пожаров»</td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>Делаешь это <b>механически каждую неделю</b> — через год команда щёлкает дебаг как орешки. Мышца под постоянным давлением прокачивается сама.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Ритм дебага</span></div>
+</section>
+
+<!-- 32 · ВТОРОЙ МОЗГ — ДЕБАГ В TELEGRAM -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 55%);mask-image:linear-gradient(270deg,#000 0%,transparent 55%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Блок 5 · Второй мозг</span>
+  <h2 style="margin:12px 0 16px">Дебаг прямо в телефоне — через <span class="gold">Telegram-бота</span></h2>
+  <div class="sb">
+    <div class="sbchain">
+      <div class="sbstep"><span class="e">📊</span><div><b>Предиктивная модель</b><span>ваша воронка и метрики в таблице</span></div></div>
+      <div class="sbstep"><span class="e">🔌</span><div><b>Google API</b><span>второй мозг читает модель напрямую</span></div></div>
+      <div class="sbstep hot"><span class="e">🧠</span><div><b>Второй мозг + плейбуки дебага</b><span>контекст бизнеса, этап, воронка, playbooks</span></div></div>
+      <div class="sbstep"><span class="e">💬</span><div><b>Telegram-бот</b><span>дебаг вместе с вами прямо в чате</span></div></div>
+    </div>
+    <div>
+      <ul class="bl" style="gap:12px">
+        <li>Смотрит на ваши метрики и <b style="color:#fff">сам видит красные зоны</b></li>
+        <li>В нём уже лежит <b style="color:#fff">контекст</b>: воронка, продукт, этап бизнеса</li>
+        <li>Использует <b style="color:#fff">плейбуки дебага</b> — 5 почему, Исикава, дерево гипотез</li>
+        <li>Задаёт «почему», предлагает гипотезы и <b style="color:#fff">проводит дебаг вместе с вами</b></li>
+      </ul>
+    </div>
+  </div>
+  <div class="value"><span>Не нужен компьютер и таблицы — <b>дебажите неделю с телефона.</b> В домашке дадим готовые плейбуки дебага, которые вы кладёте в свой второй мозг.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Дебаг в Telegram</span></div>
+</section>
+
+<!-- 33 · ДЕБАГ КАК КУЛЬТУРА -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 5 · Культура</span>
+  <h2 style="margin:12px 0 10px">Модель — это <span class="gold">живой организм</span></h2>
+  <div class="two" style="margin-top:6px">
+    <div>
+      <div class="tag" style="margin-bottom:10px;background:rgba(178,59,46,.2);color:#f0b0a5;border-color:rgba(178,59,46,.5)">Мёртвая табличка</div>
+      <ul class="bl cross" style="gap:8px">
+        <li>Всё чисто, нет комментариев</li>
+        <li>Нет светофора</li>
+        <li>В минутках пусто, нет артефактов</li>
+        <li>Плейбуки не формируются</li>
+      </ul>
+      <p style="font-size:14px;color:rgba(239,233,218,.7);margin-top:10px">= команда этим не управляет. Слабый execution.</p>
+    </div>
+    <div>
+      <div class="tag" style="margin-bottom:10px;background:rgba(62,142,94,.22);color:#a8e0bf;border-color:rgba(62,142,94,.5)">Рабочая лошадка</div>
+      <ul class="bl check" style="gap:8px">
+        <li>Вся модель в светофоре</li>
+        <li>Комментарии и мысли команды</li>
+        <li>В минутках — задачи, артефакты, ссылки</li>
+        <li>Плейбуки пополняются</li>
+      </ul>
+      <p style="font-size:14px;color:rgba(239,233,218,.7);margin-top:10px">= там есть жизнь. Дебаг работает.</p>
+    </div>
+  </div>
+  <div class="value" style="margin-top:16px"><span>Культура <b>«красная зона = норм, просто задача»</b> снижает стресс и поднимает скорость реакции. Забираем дебаг как повторяющийся ритуал.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Культура дебага</span></div>
+</section>
+
+<!-- 34 · ДОМАШКА -->
+<section class="slide">
+  <span class="kicker">Практика · домашнее задание</span>
+  <h2 style="margin:12px 0 16px">Что сделать до следующей встречи</h2>
+  <div class="grid g2" style="gap:12px 34px">
+    <ul class="bl" style="gap:10px">
+      <li><b>Топ-3 бутылочных горлышка:</b> жизнь · отдел · компания — с приземлением на метрику</li>
+      <li><b>Продебажь главное</b> — Исикава / 5 почему / дерево гипотез с ресёрчем</li>
+      <li><b>Посчитай вес в деньгах</b> (ICE) — сколько принесёт расшивка</li>
+    </ul>
+    <ul class="bl" style="gap:10px">
+      <li><b>Собери Action plan</b> на квартал — забираешь в исполнение</li>
+      <li><b>Опиши 1 технологию как playbook</b> и заведи библиотеку</li>
+      <li><b>Положи плейбуки дебага</b> во второй мозг — дебажь с телефона</li>
+    </ul>
+  </div>
+  <div class="okbox" style="margin-top:14px"><b>Приходи на валидацию.</b> Разберём вместе: почему именно это — твоё ключевое горлышко. Это не «домашка» — это то, что ты берёшь в работу прямо сейчас, чтобы на тех же ресурсах зарабатывать больше. Заложи время в календаре.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Домашка</span></div>
+</section>
+
+<!-- 35 · ФИНАЛ -->
+<section class="slide slide--dark slide--title">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.6;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <img class="heroimg" src="assets/hero-bg.png" alt="" style="filter:saturate(.9)">
+  <span class="kicker">Итог модуля</span>
+  <h1 style="font-size:64px;margin-top:16px">Через дебаг —<br>к <span class="gold">масштабируемым технологиям</span></h1>
+  <p class="lead" style="margin-top:22px;max-width:720px">Находим горлышко → расшиваем от первых принципов → превращаем в playbook → складываем в библиотеку → команда исполняет. Так строится execution, который двигает результат каждую неделю.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Дебаг бизнеса</span></div>
+</section>
+
+</div>
+
+<div id="bar"></div>
+<div id="count"></div>
+<div class="hint">← →  ·  Space  ·  F — полный экран</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+const bar=document.getElementById('bar'), count=document.getElementById('count');
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  bar.style.width=((i+1)/slides.length*100)+'%';
+  count.textContent=(i+1)+' / '+slides.length;
+}
+function next(){show(i+1)} function prev(){show(i-1)}
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}
+  else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}
+  else if(e.key==='Home'){show(0)} else if(e.key==='End'){show(slides.length-1)}
+  else if(e.key==='f'||e.key==='F'){document.documentElement.requestFullscreen?.()}
+});
+document.getElementById('stage').addEventListener('click',e=>{
+  const r=document.getElementById('stage').getBoundingClientRect();
+  (e.clientX-r.left)/r.width>0.5?next():prev();
+});
+function fit(){
+  const s=Math.min(window.innerWidth/1280, window.innerHeight/720);
+  document.getElementById('stage').style.transform=`translate(-50%,-50%) scale(${s})`;
+}
+window.addEventListener('resize',fit);
+const startAt=parseInt(location.hash.replace('#',''),10);
+fit(); show(Number.isFinite(startAt)&&startAt>0?startAt-1:0);
+</script>
+</body>
+</html>

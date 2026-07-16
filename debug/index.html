@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание · Дебаг бизнеса — A-Players</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.5}
+a{color:var(--gold-h);font-weight:700;text-decoration:none;border-bottom:1.5px solid rgba(176,130,46,.4)}
+a:hover{border-bottom-color:var(--gold)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+
+.hero{position:relative;overflow:hidden;background:var(--em);color:#EFE9DA;padding:56px 0 48px}
+.hero .bf{position:absolute;inset:0;z-index:0;width:100%;height:100%;opacity:.55;-webkit-mask-image:linear-gradient(90deg,#000,transparent 62%);mask-image:linear-gradient(90deg,#000,transparent 62%)}
+.hero .wrap{position:relative;z-index:1}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);font-weight:700;display:flex;align-items:center;gap:8px}
+.kicker::before{content:"●";color:var(--gold);font-size:9px}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:46px;line-height:1.03;letter-spacing:-.5px;color:#fff;margin-top:12px;max-width:18ch}
+.hero .q{margin-top:20px;font-size:20px;line-height:1.45;color:rgba(239,233,218,.9);max-width:72ch}
+.hero .q b{color:var(--gold-2)}
+.hero .brand{margin-top:26px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(239,233,218,.6);font-weight:600}
+.hero .brand b{color:#fff}
+
+section{padding:38px 0}
+section + section{border-top:1px solid var(--line)}
+h2{font-family:var(--serif);font-weight:800;font-size:28px;letter-spacing:-.3px;display:flex;align-items:center;gap:14px}
+h2 .no{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:19px;flex:0 0 auto;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.sublead{font-size:17px;color:var(--muted);margin:10px 0 0;max-width:80ch}
+.sublead b{color:var(--em)}
+
+.lv{display:inline-flex;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:6px;vertical-align:middle}
+.lv-min{background:rgba(62,142,94,.16);color:#2c6e46;border:1px solid rgba(62,142,94,.4)}
+.lv-goal{background:rgba(176,130,46,.15);color:var(--gold-h);border:1px solid rgba(176,130,46,.45)}
+.lv-max{background:rgba(20,58,45,.1);color:var(--em);border:1px solid rgba(20,58,45,.35)}
+
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;border-top:4px solid var(--gold)}
+.lcard.min{border-top-color:var(--green)} .lcard.goal{border-top-color:var(--gold)} .lcard.max{border-top-color:var(--em)}
+.lcard h3{font-family:var(--serif);font-size:20px;margin-bottom:4px}
+.lcard .who{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.lcard p{font-size:14.5px;color:var(--muted);line-height:1.45}
+
+.block{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-top:16px;box-shadow:0 14px 34px -30px rgba(0,0,0,.4)}
+.block .bh{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.block .bh h3{font-family:var(--serif);font-weight:800;font-size:21px;flex:1;min-width:220px}
+.block .bh .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700;background:rgba(176,130,46,.12);border:1px solid rgba(176,130,46,.3);padding:4px 10px;border-radius:20px}
+.block p{font-size:15.5px;line-height:1.5;margin-top:10px}
+.block p.mut{color:var(--muted)}
+
+ul.check{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:9px}
+ul.check li{position:relative;padding-left:30px;font-size:15.5px;line-height:1.42}
+ul.check li::before{content:"";position:absolute;left:0;top:1px;width:18px;height:18px;border:2px solid var(--gold);border-radius:5px}
+ul.check li b{color:var(--em)}
+ul.check li .lv{margin-left:6px}
+
+.value{margin-top:16px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 18px;font-size:15px;line-height:1.42}
+.value b{color:var(--em)}
+.value::before{content:"ЗАЧЕМ";font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:2px}
+
+.warn{margin-top:16px;background:rgba(178,59,46,.07);border:1.5px solid rgba(178,59,46,.4);border-radius:12px;padding:14px 18px;font-size:15px;line-height:1.45}
+.warn b{color:var(--red)}
+.warn::before{content:"⚠ ";font-weight:800}
+
+.tip{margin-top:16px;background:rgba(62,142,94,.08);border:1.5px solid rgba(62,142,94,.4);border-radius:12px;padding:14px 18px;font-size:15px;line-height:1.45}
+.tip b{color:#2c6e46}
+.tip::before{content:"💡 ";font-weight:800}
+
+.anat{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.arow{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);padding:14px 18px;position:relative}
+.arow:not(:last-child){margin-bottom:26px}
+.arow:not(:last-child)::after{content:"▼";position:absolute;left:24px;bottom:-22px;color:var(--gold);font-size:15px}
+.arow .t{font-family:var(--serif);font-weight:700;font-size:17px}
+.arow .d{font-size:14px;color:var(--muted);margin-top:3px}
+
+.ph{display:inline-block;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--gold-h);background:rgba(176,130,46,.09);border:1.5px dashed var(--gold);border-radius:7px;padding:3px 10px;margin:0 2px}
+.phbox{margin-top:14px;background:rgba(176,130,46,.06);border:1.5px dashed var(--gold);border-radius:12px;padding:14px 18px;font-size:14.5px;color:var(--muted)}
+.phbox b{color:var(--gold-h)}
+.prompt{margin-top:12px;background:#10231b;border:1px solid #21453a;border-radius:12px;padding:15px 17px;font-family:var(--mono);font-size:13.5px;line-height:1.55;color:#cfe3d8;white-space:pre-wrap;overflow-x:auto}
+.prompt .c{color:#7fa394}
+.prompt .v{color:var(--gold-2);font-weight:700}
+.plabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:800;margin-top:16px}
+
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--gold-h);text-align:center;padding:9px 10px;border-bottom:2px solid var(--line);font-weight:700}
+th:first-child{text-align:left}
+td{padding:9px 10px;border-bottom:1px solid var(--line-soft);text-align:center;color:var(--ink);vertical-align:top}
+td:first-child{text-align:left;font-weight:600}
+td b{color:var(--em)}
+tr:nth-child(even) td{background:rgba(255,255,255,.5)}
+td.l{text-align:left;font-weight:400}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.mini h4{font-family:var(--serif);font-size:16px;margin-bottom:6px}
+.mini p{font-size:14px;color:var(--muted);line-height:1.45}
+
+.why{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin-top:14px}
+.why .n{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 13px;font-size:13.5px;line-height:1.3;max-width:170px;display:flex;align-items:center}
+.why .n.root{border:1.5px solid var(--gold);background:rgba(199,154,69,.13);font-weight:700}
+.why .a{align-self:center;color:var(--gold);font-weight:800;font-size:18px}
+
+.bones{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.bone{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold-2);border-radius:10px;padding:12px 14px}
+.bone b{font-family:var(--serif);font-size:15px;color:var(--em)}
+.bone p{font-size:13px;color:var(--muted);margin-top:3px;line-height:1.4}
+
+/* AARRR stages */
+.aarrr{display:grid;grid-template-columns:repeat(6,1fr);gap:9px;margin-top:16px}
+.st{background:var(--card);border:1px solid var(--line);border-top:4px solid var(--gold-2);border-radius:12px;padding:14px 12px;text-align:center}
+.st .e{font-size:22px;display:block;margin-bottom:5px}
+.st b{font-family:var(--serif);font-size:15px;color:var(--em);display:block}
+.st span{font-size:12px;color:var(--muted);line-height:1.35;display:block;margin-top:4px}
+.pickone{margin-top:14px;background:var(--em);color:#EFE9DA;border-radius:12px;padding:14px 18px;font-size:15.5px;line-height:1.45}
+.pickone b{color:var(--gold-2)}
+
+/* workbook steps */
+.wb{margin-top:16px;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.wbh{background:var(--em);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.wbh .t{font-family:var(--serif);font-weight:800;font-size:18px}
+.wbh a{color:var(--gold-2);border-bottom-color:rgba(199,154,69,.5);font-size:14px}
+.wb table{margin:0;font-size:13.5px}
+.wb th{background:var(--bg-2);text-align:left;padding:9px 14px}
+.wb td{text-align:left;padding:9px 14px;font-weight:400}
+.wb td:first-child{font-family:var(--mono);font-weight:700;color:var(--gold-h);width:52px}
+.wb td b{color:var(--em)}
+
+.btn{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-weight:800;font-size:15px;padding:12px 20px;border-radius:11px;border:none;box-shadow:0 10px 22px -10px rgba(176,130,46,.7);margin-top:14px}
+.btn:hover{background:linear-gradient(180deg,#C79A45,#B0822E)}
+
+.deliver{background:var(--em);color:#EFE9DA;border-radius:16px;padding:26px 28px;margin-top:18px;position:relative;overflow:hidden}
+.deliver h3{font-family:var(--serif);color:#fff;font-size:22px;margin-bottom:6px}
+.deliver ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.deliver li{position:relative;padding-left:28px;font-size:15.5px;line-height:1.42;color:rgba(239,233,218,.92)}
+.deliver li::before{content:"→";position:absolute;left:0;color:var(--gold-2);font-weight:800}
+.deliver b{color:#fff}
+.deliver .lvd{display:inline-flex;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:6px;margin-left:6px}
+.lvd-min{background:rgba(62,142,94,.25);color:#a8e0bf}
+.lvd-goal{background:rgba(176,130,46,.25);color:#e6c980}
+.lvd-max{background:rgba(255,255,255,.14);color:#cfe3d8}
+
+.footer{padding:30px 0 46px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:820px){
+  .legend,.grid2,.grid3,.bones{grid-template-columns:1fr}
+  .aarrr{grid-template-columns:repeat(2,1fr)}
+  .hero h1{font-size:34px}
+}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <svg class="bf" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-va-d)"/>
+    <defs><pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse">
+      <g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle">
+        <text x="16" y="34" font-size="34" fill="rgba(199,154,69,.5)">A</text>
+        <text x="47" y="64" font-size="34" fill="rgba(199,154,69,.5)">A</text>
+      </g></pattern></defs>
+  </svg>
+  <div class="wrap">
+    <div class="kicker">Практикум A-Players · Модуль «Дебаг бизнеса»</div>
+    <h1>Домашнее задание: найди горлышко и собери коммерческую стратегию</h1>
+    <p class="q">Это <b>не «домашка»</b>. Это то, что вы и так обязаны делать внутри своего бизнеса — просто на более высоком уровне и со снайперским выстрелом в результате. Найти горлышко → расшить от первых принципов → превратить в playbook → отдать команде в исполнение.</p>
+    <div class="brand"><b>Дедлайн — 2 недели</b> · заложите время в календаре · обязательно приходите на разборы</div>
+    <div style="margin-top:20px;display:flex;gap:12px;flex-wrap:wrap">
+      <a href="prezentaciya.html" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(199,154,69,.5);color:#EFE9DA;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;border-bottom-width:1px">🖥️ Презентация модуля</a>
+      <a href="https://docs.google.com/spreadsheets/d/1ju--qVZb60OBfUsiFCQyRSd6Thhq70EmXYEM3Q5t3wg/edit?usp=sharing" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(199,154,69,.5);color:#EFE9DA;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;border-bottom-width:1px">📓 Рабочая тетрадь</a>
+      <a href="debug-playbooks.zip" download style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(199,154,69,.5);color:#EFE9DA;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;border-bottom-width:1px">⬇️ Плейбуки дебага</a>
+    </div>
+  </div>
+</header>
+
+<!-- LEVELS -->
+<section><div class="wrap">
+  <h2>Три уровня — начните с «Мин», дотянитесь до «Макс»</h2>
+  <p class="sublead">Не играйте в отличников. Лучше быстро пройти минимум и прийти на разбор, чем полгода полировать. <b>С первого раза будет полная херня — это норма.</b> Задача — двигать метрики, а не тюнинговать таблички.</p>
+  <div class="legend" style="margin-top:18px">
+    <div class="lcard min"><h3>Мин</h3><div class="who">каждый обязан</div><p>Оживить модель, назвать топ-3 горлышка, подключить второй мозг к модели и продебажить одно горлышко.</p></div>
+    <div class="lcard goal"><h3>Цель</h3><div class="who">на что целимся</div><p>Разложить рост на два слоя, выбрать один этап AARRR и собрать по рабочей тетради коммерческую стратегию с математикой.</p></div>
+    <div class="lcard max"><h3>Макс</h3><div class="who">кто хочет кратно</div><p>Своя уникальная метрика, один ответственный с KPI, ритм дебага в планёрках, аудит календаря через второй мозг.</p></div>
+  </div>
+  <div class="value"><span>Смысл модуля: <b>построить масштабируемую технологию.</b> Технология — это любой процесс, который поддаётся масштабированию: ваш продукт, ваша воронка, то, как вы продаёте. Смотрите на неё как на внутренний продукт, который строите вы и команда.</span></div>
+</div></section>
+
+<!-- BLOCK 0 -->
+<section><div class="wrap">
+  <h2><span class="no">0</span> Оживи модель и выкрути «ручку требовательности» <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">Модель — <b>живой организм</b>. Если это чистая табличка без комментариев — там нет управления. На старте бизнесу хватает ручки, выкрученной на 20%. Чтобы вырасти в разы, её нужно выкрутить до 200% — это тотальный фокус и ежедневный поиск корневых проблем.</p>
+  <div class="block">
+    <ul class="check">
+      <li><b>Вся модель в светофоре</b> 🟢🟡🔴 — по каждой метрике с планом задана красная зона</li>
+      <li><b>Комментарии команды</b> у отклонений: топ-3 причины и «что забираю на этой неделе»</li>
+      <li><b>Минутки живые:</b> задачи, артефакты, ссылки на результаты дебага — а не пустые ячейки</li>
+      <li><b>Плейбуки пополняются</b> — если за месяц не появилось ни одного, значит дебага нет</li>
+    </ul>
+    <div class="warn"><b>Цена слабых стандартов:</b> 12 месяцев оклада теряет бизнес на каждом неподходящем найме (из-за ленивой проверки на входе). <b>40% новых менеджеров</b> уволятся в первый год, если онбординг слабый. Это теория разбитых окон: толерантность к мелким опозданиям кричит команде «слабое исполнение — норма».</div>
+    <div class="value"><span>По модели за 5 секунд видно, есть ли управление. Пустая табличка = слабый execution. <b>Полезное давление всегда идёт сверху</b> — команда копирует вашу модель поведения.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 1 -->
+<section><div class="wrap">
+  <h2><span class="no">1</span> Назови топ-3 бутылочных горлышка <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">По трём уровням: <b>твоя жизнь · твой отдел · твоя компания</b>. И сразу приземляй на метрику — иначе управлять нечем.</p>
+  <div class="block">
+    <div class="bh"><h3>Правило приземления</h3><span class="tag">горлышко = всегда цифра</span></div>
+    <p class="mut">«Не хватает времени», «нет людей», «расфокус» — это не горлышки. Вот как это дожимали на встрече вживую:</p>
+    <table>
+      <thead><tr><th>Сказали на встрече</th><th>А горлышко на самом деле</th><th>Метрика</th></tr></thead>
+      <tbody>
+        <tr><td>«Не хватает времени»</td><td class="l"><b>Пропускная способность</b> — из бэклога успеваешь 2%</td><td>доля выполненных задач</td></tr>
+        <tr><td>«Хаос, делаю по несколько раз»</td><td class="l">Нет сильного <b>ассистента</b> / проект-менеджера</td><td>скорость реализации идеи</td></tr>
+        <tr><td>«Не хватает инженеров»</td><td class="l">Долгий <b>пресейл</b> — теряем клиента до КП</td><td>дни от ТЗ до КП</td></tr>
+        <tr><td>«Зависимость от одного канала»</td><td class="l">Не оцифрован <b>результат канала</b> — окупается или нет</td><td>ROMI канала</td></tr>
+        <tr><td>«Не хватает лидов»</td><td class="l">Возможно — <b>средняя компетентность</b> команды</td><td>CR, качество найма</td></tr>
+      </tbody>
+    </table>
+    <div class="tip"><b>Проблема, которую ты чётко сформулировал, решена на 50%.</b> Если почти все пишут «фокус» и «тайм-менеджмент» — навык дебага пока на 5–10%. Дожми каждое горлышко до конкретной метрики.</div>
+  </div>
+</div></section>
+
+<!-- BLOCK 2 — SECOND BRAIN -->
+<section><div class="wrap">
+  <h2><span class="no">2</span> Подключи второй мозг к предиктивной модели <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">Через <b>Google API</b> подключаем вашу предиктивную модель ко второму мозгу, который вы уже строили, и даём ему <b>плейбуки дебага</b>. Дальше он помогает дебажить любую просадку или рост — прямо в Telegram, с телефона.</p>
+  <div class="block">
+    <div class="bh"><h3>Что сделать</h3><span class="tag">это ядро домашки</span></div>
+    <ul class="check">
+      <li><b>Подключи модель через Google Sheets API</b> — строго <b>на чтение</b> (роль «просмотр»). Токены — вне кода и вне git</li>
+      <li><b>Положи плейбуки дебага</b> в проект второго мозга — папка <span class="ph">claude-md/</span> (даю готовыми: мастер-плейбук, выбор горлышка, Исикава, 5 почему, дерево гипотез, факторный анализ, сборка playbook, ритм)</li>
+      <li><b>В главный CLAUDE.md добавь строку:</b> «При запросе дебага читай <span class="ph">claude-md/00-debug-master.md</span> и веди по нему»</li>
+      <li><b>Проверь:</b> напиши боту «дебаг» — он должен посмотреть модель, найти красные зоны и начать разбор</li>
+      <li><b>Поставь еженедельный ритуал</b> — бот сам приносит разбор недели</li>
+    </ul>
+    <div class="plabel">Промпт · первая проверка второго мозга</div>
+    <div class="prompt"><span class="c"># напишите боту / в Claude Code</span>
+Посмотри мою предиктивную модель за последнюю неделю.
+Найди топ-3 отклонения от плана (красные и жёлтые зоны)
+и одну аномально зелёную зону. По каждому — оцени, сколько
+это стоит в деньгах к плану месяца. Потом спроси меня,
+какое из них разбираем первым.</div>
+    <div class="value"><span>Задача — чтобы <b>еженедельный дебаг стал культурой</b> внутри команды, и второй мозг позволял быстрее дебажить любую просадку либо рост и превращать это в масштабируемую технологию.</span></div>
+    <a class="btn" href="debug-playbooks.zip" download>⬇️ Скачать плейбуки дебага (8 файлов + инструкция)</a>
+  </div>
+</div></section>
+
+<!-- BLOCK 3 -->
+<section><div class="wrap">
+  <h2><span class="no">3</span> Продебажь ТОП-1 горлышко <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Возьми выбранное горлышко и расшей его одним из приёмов (лучше двумя). Решения принимаем <b>только на основе цифр</b>, не на интуиции.</p>
+
+  <div class="block">
+    <div class="bh"><h3>Приём A · «5 почему»</h3><span class="tag">быстрый спуск до корня</span></div>
+    <div class="why">
+      <div class="n">Не выполнили план по лидам</div><span class="a">→</span>
+      <div class="n">Не нашли вовремя подрядчика</div><span class="a">→</span>
+      <div class="n">Мало встреч, не искали новых</div><span class="a">→</span>
+      <div class="n">Не поставил себе в графике</div><span class="a">→</span>
+      <div class="n root">Продолбал → что делаем с этим?</div>
+    </div>
+    <p class="mut" style="margin-top:12px">Корень всегда на уровне конкретного элемента и человека. Реакция: напоминание в модели, ежедневный отчёт, система координации — руками не делаем ничего, но повториться это больше не может.</p>
+    <div class="prompt"><span class="c"># промпт «5 почему»</span>
+Проведи меня по технике «5 почему» для проблемы:
+<span class="v">[что не выполнено / какая метрика просела]</span>.
+Задавай по одному вопросу «почему?», дожидайся ответа
+и спускайся глубже — минимум 5 уровней, до корня на уровне
+конкретного человека или элемента. В конце предложи, что
+поставить в систему координации, чтобы это не повторилось.</div>
+  </div>
+
+  <div class="block">
+    <div class="bh"><h3>Приём B · Диаграмма Исикавы</h3><span class="tag">декомпозиция «слона»</span></div>
+    <p class="mut">Голова рыбы — твоё горлышко. Раскидай на кости и по каждой пройди чек-листом — где «загорелась лампочка», там корень.</p>
+    <div class="bones">
+      <div class="bone"><b>Сотрудники</b><p>квалификация, мотивация, найм</p></div>
+      <div class="bone"><b>Процессы</b><p>регламенты, воронка, скрипты</p></div>
+      <div class="bone"><b>Оборудование</b><p>телефония, CRM, интеграции</p></div>
+      <div class="bone"><b>Материалы</b><p>трафик, лиды, контент</p></div>
+      <div class="bone"><b>Измерения</b><p>что и как считаем, бенчмарки</p></div>
+      <div class="bone"><b>Среда</b><p>рынок, продукт, сегмент</p></div>
+    </div>
+    <div class="prompt"><span class="c"># промпт «Исикава» — челлендж-режим</span>
+Действуй как дебаг-инженер. Моё бутылочное горлышко:
+<span class="v">[метрика, значение, период]</span>.
+Разложи по диаграмме Исикавы на 6 веток и задавай мне вопросы.
+Челленджи меня, ни в коем случае не подхалимничай и не соглашайся
+просто так. Наша задача — снайперский выстрел: найти реальную
+проблему, на что мне сейчас надо повлиять. Потом — топ-3 корневые причины.</div>
+    <div class="tip"><b>Зачем челлендж-режим:</b> ты тоже человек — устаёшь, куча дел, замыленный взгляд. ИИ дебажит без эго и на бенчмарках.</div>
+  </div>
+
+  <div class="block">
+    <div class="bh"><h3>Приём C · Ресёрч + провалиться до элемента</h3><span class="tag">обязательно</span></div>
+    <ul class="check">
+      <li><b>Ресёрчь любое горлышко.</b> Конверсия выступления 2%? Иди изучай, как выступать, чтобы было 90%. Канал не окупается? Есть компании, у которых окупается — что они делают?</li>
+      <li><b>Провались до конкретного элемента:</b> возьми 10 сделок и послушай сам. Даже если ты фаундер и супер уставший — 20 минут всегда можно найти. Ничто так не отрезвляет.</li>
+      <li><b>Заверши на сильных сторонах:</b> «как усилим то, что уже работает».</li>
+    </ul>
+    <div class="warn"><b>Эмоции на планёрке = следствие отсутствия дебага.</b> Защитная позиция, «это всё они виноваты» — в 90% случаев это синдром самозванца у человека, который просто не сделал дебаг. Правильная реакция: «Я верю, что ты разберёшься. Остановись, сделай дебаг, и давай переназначим встречу».</div>
+  </div>
+</div></section>
+
+<!-- BLOCK 4 — ДВА СЛОЯ -->
+<section><div class="wrap">
+  <h2><span class="no">4</span> Разложи рост на два слоя <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Рост любой компании на планете делится на два слоя. Вопрос — с какого начинать.</p>
+  <div class="grid2">
+    <div class="mini" style="border-top:4px solid var(--green)"><h4>Слой 1 · Масштабируем то, что уже работает</h4><p><b style="color:var(--green)">ВСЕГДА НАЧИНАЕМ ОТСЮДА.</b> Есть исторический шлейф — что-то уже приносит результат. Вопрос: сделали ли вы достаточно глубокий дебаг этих процессов, чтобы привести их к большему результату?</p></div>
+    <div class="mini"><h4>Слой 2 · Потенциальные новые драйверы</h4><p>Любая новая воронка, канал, гипотеза — это <b>всегда больше времени и больше ресурса</b>. Идём сюда только после того, как чётко ответили, за счёт чего масштабируем работающее.</p></div>
+  </div>
+  <div class="block">
+    <div class="bh"><h3>Кейсы: как из работающего собирают технологию</h3><span class="tag">все три — про ручку требовательности</span></div>
+    <ul class="check">
+      <li><b>Амбассадоры вместо Facebook.</b> Подписка на e-байки курьерам в Нью-Йорке. «Если мы платим FB за таргетинг курьеров — можем ли таргетировать их сами и лучше?». Сначала плохо → не сдались → уволили лида, повысили «амбассадора с результатом» → улучшали каждый этап → мечети, хостелы, профсоюзы → 2-уровневая мотивация. <b>Итог: 60 амбассадоров в 4 городах, &gt;1000 клиентов/мес. Год назад канала не было.</b></li>
+      <li><b>Партнёрская сеть.</b> B2B-компания по речевой аналитике: за год — 210 партнёров, всё оперирует <b>один человек</b>. Постоянные апдейты, личка, приглашения, кросс-пиар. Растут быстрее рынка, где у всех «партнёрка ничего не принесла».</li>
+      <li><b>Подкасты.</b> Кто-то сделает один подкаст. А кто-то построит технологию: 10 подкастов в месяц, амбассадоры, команда → <b>одна воронка приносит полмиллиарда.</b></li>
+    </ul>
+    <div class="value"><span>Если вы нащупали что-то, что приносит результат даже при самом пессимистичном сценарии — <b>это уже означает, что надо брать и строить технологию дальше.</b> Не выкрутив ручку требовательности, воронка никогда не вырастет — при том, что она рабочая на 100%.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 5 — AARRR + РАБОЧАЯ ТЕТРАДЬ -->
+<section><div class="wrap">
+  <h2><span class="no">5</span> Найди свой этап AARRR и собери стратегию по рабочей тетради <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Определи, <b>на каком этапе воронки</b> сейчас твоё бутылочное горлышко. Если не можешь ответить, на какой этап оно влияет — скорее всего, чинить его вообще не надо.</p>
+
+  <div class="aarrr">
+    <div class="st"><span class="e">📣</span><b>Awareness</b><span>Узнаваемость</span></div>
+    <div class="st"><span class="e">🎯</span><b>Acquisition</b><span>Привлечение</span></div>
+    <div class="st"><span class="e">⚡</span><b>Activation</b><span>Активация</span></div>
+    <div class="st"><span class="e">🔄</span><b>Retention</b><span>Удержание</span></div>
+    <div class="st"><span class="e">💰</span><b>Revenue</b><span>Монетизация</span></div>
+    <div class="st"><span class="e">🤝</span><b>Referral</b><span>Рекомендации</span></div>
+  </div>
+  <div class="pickone"><b>Берём ОДИН этап на ближайший квартал.</b> Не распыляемся. Пойдёте сразу в три — физически невозможно: команды пока небольшие. Ставим на тот, что даст самый большой импакт, и фокусируемся только на нём.</div>
+
+  <div class="wb">
+    <div class="wbh">
+      <span class="t">📓 Рабочая тетрадь: Коммерческая стратегия и драйверы роста</span>
+      <a href="https://docs.google.com/spreadsheets/d/1ju--qVZb60OBfUsiFCQyRSd6Thhq70EmXYEM3Q5t3wg/edit?usp=sharing" target="_blank">Открыть тетрадь →</a>
+    </div>
+    <table>
+      <thead><tr><th>Шаг</th><th>Что делаем</th><th>Что загружаем в Claude / второй мозг</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><b>Чеклист готовности</b> — все опорные материалы собраны</td><td>—</td></tr>
+        <tr><td>1</td><td><b>Анализ текущих драйверов</b> — горлышки + потенциал каждого в ₽/мес</td><td>Предиктивная модель, данные по отделам</td></tr>
+        <tr><td>2</td><td><b>Awareness</b> — стратегия роста узнаваемости</td><td>Бриф, JTBD, ToV, конкуренты, плейбук Awareness</td></tr>
+        <tr><td>3</td><td><b>Acquisition</b> — привлечение лидов</td><td>Бриф, JTBD, модель, плейбук Acquisition</td></tr>
+        <tr><td>4</td><td><b>Activation</b> — aha-момент, онбординг</td><td>JTBD, ToV, плейбук Activation, конвертеры</td></tr>
+        <tr><td>5</td><td><b>Retention</b> — удержание и рост LTV</td><td>JTBD, CJM клиента, плейбук Retention</td></tr>
+        <tr><td>6</td><td><b>Revenue</b> — продуктовая матрица и монетизация</td><td>JTBD, продуктовая матрица, плейбук Revenue</td></tr>
+        <tr><td>7</td><td><b>Referral</b> — реферальный канал с нулевым CAC</td><td>CJM клиента, плейбук Referral</td></tr>
+        <tr><td>8</td><td><b>ICE-приоритизация</b> — все гипотезы ранжируем</td><td>Гипотезы из шагов 2–7</td></tr>
+        <tr><td>9</td><td><b>Математика гипотез</b> — влияние в рублях</td><td>ICE-таблица, предиктивная модель</td></tr>
+        <tr><td>10</td><td><b>Итоговая стратегия</b> — один экран для защиты</td><td>Результаты всех шагов</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="block">
+    <div class="bh"><h3>Как работать с тетрадью</h3><span class="tag">каждая вкладка = один шаг</span></div>
+    <p class="mut">В каждом шаге есть: что подготовить, <b>какой промпт скопировать в Claude</b>, что загрузить вместе с промптом и что должно получиться на выходе. Внутри блока вашего этапа — подробная инструкция, плейбук, бенчмарки, что делать и чего не делать. Загружаете плейбук в свой второй мозг — и он опирается на ваш контекст и нишу.</p>
+    <ul class="check">
+      <li><b>Проходи последовательно</b> — каждый следующий шаг опирается на предыдущий</li>
+      <li><b>Сначала слой 1:</b> что уже делаешь в этом направлении → как это масштабировать</li>
+      <li><b>Потом слой 2:</b> потенциальные новые драйверы</li>
+      <li><b>Double check:</b> действительно ли твоё горлышко влияет на выбранный этап AARRR</li>
+      <li><b>Посчитай влияние:</b> приходишь на разбор и говоришь «если сделаем вот это — заработаю столько-то миллионов»</li>
+    </ul>
+    <div class="warn"><b>Перед стартом должны быть готовы:</b> бриф компании/эксперта, JTBD-сегментация, core-сегменты, ToV, видение и миссия, позиционирование, предиктивная модель (план-факт), бутылочные горлышки с расчётом влияния на выручку. Это топливо для каждого шага — без них тетрадь не поедет.</div>
+    <a class="btn" href="https://docs.google.com/spreadsheets/d/1ju--qVZb60OBfUsiFCQyRSd6Thhq70EmXYEM3Q5t3wg/edit?usp=sharing" target="_blank">📓 Открыть рабочую тетрадь</a>
+  </div>
+</div></section>
+
+<!-- BLOCK 6 — ICE + МАТЕМАТИКА -->
+<section><div class="wrap">
+  <h2><span class="no">6</span> ICE-приоритизация и математика гипотез <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Когда горлышко выбрано, гипотез становится 10–20. Надо проголосовать за одну. Работаем через <b>PHADI</b> (от ключевой боли, P — problem), а не HADI (улучшаем всё подряд).</p>
+  <div class="block">
+    <div class="bh"><h3>ICE — оценка по 10-балльной шкале</h3><span class="tag">I × C × E</span></div>
+    <table>
+      <thead><tr><th>Буква</th><th>Что значит</th><th>10 баллов</th><th>1 балл</th></tr></thead>
+      <tbody>
+        <tr><td><b>I</b> — Impact</td><td class="l">Влияние на результат</td><td>максимальное влияние</td><td>влияния почти нет</td></tr>
+        <tr><td><b>C</b> — Confidence</td><td class="l">Уверенность, что сработает</td><td>есть доказательный подход</td><td>вообще не уверены</td></tr>
+        <tr><td><b>E</b> — Easy / Effort</td><td class="l">Легкость реализации</td><td>низковисящий фрукт</td><td>огромный ресурс</td></tr>
+      </tbody>
+    </table>
+    <p class="mut">Перемножаем → сортируем по баллу → забираем топ. В тетради всё считается автоматически: гипотеза → балл → приоритет → ресурс на запуск → ответственный → тест → дедлайн.</p>
+    <div class="plabel">Промпт · матмодель с тремя сценариями</div>
+    <div class="prompt"><span class="c"># считаем деньги по гипотезе</span>
+Построй математический прогноз по гипотезе: <span class="v">[описание]</span>.
+Дай три сценария: ниже ожиданий / реалистичный / максимальный.
+Задай мне уточняющие вопросы (текущие метрики, объёмы, конверсии,
+чек, цикл сделки). Учти, что процесс запускается с нуля.
+Потом сам зачелленджи свои расчёты: где ты мог ошибиться?</div>
+    <div class="value"><span>Если на вопрос «сколько это принесёт денег за год?» ответа нет — <b>трижды подумай, зачем ты это делаешь.</b> Ресурс — ваш главный актив, и он всегда ограничен.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 7 — СВОЯ МЕТРИКА -->
+<section><div class="wrap">
+  <h2><span class="no">7</span> Найди свою уникальную метрику <span class="lv lv-max">Макс</span></h2>
+  <p class="sublead">Если ваша предиктивная модель ровно такая же, как у любой другой компании — лиды, конверсия, средний чек — и нет ничего конкретно вашего, <b>это говорит, что технология недостроена.</b> Когда докопались до сути, всегда рождаются метрики, которых нет у других.</p>
+  <div class="block">
+    <div class="bh"><h3>Кейс: средний чек 85к → 168к = +600 млн ₽ за год</h3><span class="tag">так рождается своя метрика</span></div>
+    <div class="anat" style="margin-top:16px">
+      <div class="arow"><div class="t">1 · Брейншторм факторов</div><div class="d">Команда выписала 40–50 факторов, влияющих на рост и падение среднего чека.</div></div>
+      <div class="arow"><div class="t">2 · Ресёрч лучших практик</div><div class="d">Пошли изучать, кто и как повышает чек. Выяснилось: существует более 20 стратегий ценообразования (а знаем мы обычно 2–3).</div></div>
+      <div class="arow"><div class="t">3 · Кастдевы</div><div class="d">Транскрибировали 10 000 звонков + 20–30 живых кастдевов. Три вопроса: на что люди хотят потратить деньги · что блокирует прийти в точку Б · что поможет принять решение.</div></div>
+      <div class="arow"><div class="t">4 · План действий в 4 слоя</div><div class="d">Подготовка → регламенты и настройка процессов → обучение команды (аттестации) → контроль. Родились два тарифа: премиум с релокацией и тариф с менторством.</div></div>
+      <div class="arow"><div class="t">5 · Запустили — и НИЧЕГО не выросло</div><div class="d">Команда приносит: «продукт никому не нужен, мы не попали». Но подход был доказательный — значит, ищем дальше.</div></div>
+      <div class="arow"><div class="t">6 · Нашли СВОЮ метрику — «продуктовый каскад»</div><div class="d">В какой доле звонков менеджер <b>сначала</b> предлагает дорогой тариф. Оказалось — максимум в 5%. Причина — человеческий фактор: «боюсь продавать дороже», «привык к стандартному».</div></div>
+      <div class="arow"><div class="t">7 · Выкрутили ручку: 5% → 20 → 40 → 60 → 80 → 90%</div><div class="d">Каждое утро смотрели эту метрику. Когда дошла до 90% — чек вырос почти вдвое. Дельта за год: <b>+600 млн ₽</b>. Всего процесс занял месяц.</div></div>
+    </div>
+    <div class="grid2" style="margin-top:18px">
+      <div class="mini"><h4>Продуктовый каскад</h4><p>В какой последовательности менеджер называет продукты на звонке. Прописанный алгоритм в отделе продаж.</p></div>
+      <div class="mini"><h4>Финансовый каскад</h4><p>В какой поочерёдности продаёте способ оплаты. Пример нормы: если доля <b>внутренних рассрочек &gt;16%</b> — юнит-экономика ломается (churn rate). Дебажим, как растить полную оплату: бандлы, спецусловия.</p></div>
+    </div>
+    <div class="tip"><b>Забейте на «у нас много табличек».</b> Таблички бесплатные. Проблема не в том, что их 10 — проблема в том, что вы не вносите туда ключевые показатели и не смотрите на них. Воронка — как машина: там каждый день транзакции, человеческий фактор, где важно как поздоровались и какой фоллоу-ап отправили.</div>
+    <div class="value"><span><b>Задание:</b> найди хотя бы одну метрику, которой нет у других в твоей нише, но которая критична именно для твоей технологии. Внеси в модель и начни смотреть.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 8 — ОТВЕТСТВЕННЫЙ + РИТМ -->
+<section><div class="wrap">
+  <h2><span class="no">8</span> Один ответственный + ритм дебага <span class="lv lv-max">Макс</span></h2>
+  <p class="sublead">Пока в компании нет одного ответственного за исполнение дебага — он <b>никогда</b> не будет доведён до результата. Пока нет конкретной <b>фамилии напротив метрики</b> — она никуда не сдвинется.</p>
+  <div class="block">
+    <div class="bh"><h3>Фамилия напротив метрики</h3><span class="tag">+ привязка к доходу</span></div>
+    <ul class="check">
+      <li><b>Один человек, фамилия, KPI, образ результата на квартал</b> — по каждой ключевой метрике (лиды · конверсия · чек · LTV)</li>
+      <li><b>Привязка к доходу.</b> Пример: не выполняю план по среднему чеку → обнуляется 50% квартального бонуса. Без полезного давления не работает</li>
+      <li><b>Калибруемый или некалибруемый?</b> Некалибруемого учить бесполезно — это выкинутые минуты жизни. Тогда вопрос в скорости вашей воронки найма</li>
+    </ul>
+    <p class="mut">Средний чек в компании не двигался целый год — пока лично не появился один ответственный за его рост. Все и так убеждали, что «мы продаём дороже конкурентов».</p>
+  </div>
+  <div class="block">
+    <div class="bh"><h3>Ритм: дебаг ДО планёрки, а не НА планёрке</h3><span class="tag">важное правило</span></div>
+    <table>
+      <thead><tr><th>Когда</th><th>Что ловим</th><th>Почему важно</th></tr></thead>
+      <tbody>
+        <tr><td><b>Еженедельно</b></td><td class="l">Просадки и рост по модели</td><td class="l">Устраняем «красное» раньше, чем оно бьёт по выручке</td></tr>
+        <tr><td><b>Ежемесячно</b></td><td class="l">Стратегические / системные баги</td><td class="l">Калибруем процессы, инструменты, команду</td></tr>
+        <tr><td><b>После релиза</b></td><td class="l">Ошибки внедрения</td><td class="l">Мониторинг каждые 2 дня</td></tr>
+        <tr><td><b>При скачках ±5%</b></td><td class="l">Аномалии вверх и вниз</td><td class="l">Быстрая контр-атака вместо «пожаров»</td></tr>
+      </tbody>
+    </table>
+    <div class="warn"><b>Никогда не проводите дебаг на планёрке.</b> Команда приходит на планёрку <b>уже с подведённым итогом по дебагу</b> и отчитывается по нему. Нужен дополнительный дебаг — ставьте отдельную встречу. Эскалация идёт снизу вверх: задача — дать фреймворк команде, а не быть самому этим бутылочным горлышком.</div>
+  </div>
+</div></section>
+
+<!-- BLOCK 9 — АУДИТ КАЛЕНДАРЯ -->
+<section><div class="wrap">
+  <h2><span class="no">9</span> Аудит календаря через второй мозг <span class="lv lv-max">Макс</span></h2>
+  <p class="sublead">Раньше нанимали бизнес-коучей за 300 т.р./мес, которые сидели рядом с утра до вечера и оцифровывали твоё время. Сейчас это делает второй мозг — остаётся только задавать правильные вопросы раз в месяц.</p>
+  <div class="block">
+    <ul class="check">
+      <li><b>Подключи второй мозг к календарю и трекеру задач</b> (Infinity / Trello / Notion — где ведёшь задачи)</li>
+      <li><b>Поставь напоминание раз в месяц</b> на аудит</li>
+      <li><b>Дай ему роль, в которую хочешь вырасти</b> — пусть разбирает исходя из неё</li>
+      <li><b>Попроси без сглаживания углов:</b> что делаешь правильно, что неправильно, что давно пора было поменять, что делегировать</li>
+    </ul>
+    <div class="plabel">Промпт · ежемесячный аудит</div>
+    <div class="prompt"><span class="c"># раз в месяц</span>
+Посмотри мой календарь и задачи за последний месяц.
+Разбери меня как <span class="v">[роль, в которую я хочу вырасти]</span>.
+Без сглаживания углов: что я делаю правильно, чем занимаюсь
+зря на своём уровне, что давно пора делегировать или
+автоматизировать, как должен перестроиться мой календарь.
+Дай конкретный план действий.</div>
+    <div class="value"><span>Любая трансформация внутри бизнеса — это <b>всегда трансформация мышления.</b> Без внешнего взгляда и без чёткого плана действий (лучше текстом) ничего не поменяется.</span></div>
+  </div>
+</div></section>
+
+<!-- DELIVERABLES -->
+<section><div class="wrap">
+  <h2>Что принести на разбор</h2>
+  <p class="sublead">Обязательно приходите на разборы — показывайте, что получается и что не получается. Кому нужно помочь достроить технологию и плейбуки — подключаемся.</p>
+  <div class="deliver">
+    <h3>Чек-лист сдачи · дедлайн 2 недели</h3>
+    <ul>
+      <li><b>Оживлённая модель</b> — светофор, комментарии, минутки <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Топ-3 горлышка</b> (жизнь / отдел / компания), приземлённые на метрику <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Второй мозг подключён к модели</b> через Google API + плейбуки дебага внутри <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Продебаженное ТОП-1 горлышко</b> — Исикава / 5 почему / ресёрч <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Рост разложен на два слоя</b> — что масштабируем из работающего <span class="lvd lvd-goal">Цель</span></li>
+      <li><b>Выбран ОДИН этап AARRR</b> на квартал + коммерческая стратегия по рабочей тетради <span class="lvd lvd-goal">Цель</span></li>
+      <li><b>ICE-таблица + математика гипотез</b> — «если сделаем это, заработаю столько-то» <span class="lvd lvd-goal">Цель</span></li>
+      <li><b>Своя уникальная метрика</b> в модели + фамилия ответственного напротив каждой метрики <span class="lvd lvd-max">Макс</span></li>
+      <li><b>Еженедельный дебаг как ритуал</b> + аудит календаря через второй мозг <span class="lvd lvd-max">Макс</span></li>
+    </ul>
+  </div>
+  <div class="warn"><b>Не относитесь к этому как к домашнему заданию.</b> Это то, что вы и так должны делать внутри своего бизнеса — прямое влияние на вашу прибыль и деньги. Практикум лишь позволяет сделать это на более высоком уровне и с чётким подходом. Заложите время в календаре: задача не на один час.</div>
+</div></section>
+
+<div class="footer">Практикум A-Players · Модуль «Дебаг бизнеса и стратегическая сборка»</div>
+
+</body>
+</html>
