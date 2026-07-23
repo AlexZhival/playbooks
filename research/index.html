@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Домашнее задание · Pro-Research — A-Players</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);font-family:var(--sans);color:var(--ink);line-height:1.5}
+a{color:var(--gold-h);font-weight:700;text-decoration:none;border-bottom:1.5px solid rgba(176,130,46,.4)}
+a:hover{border-bottom-color:var(--gold)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 26px}
+
+.hero{position:relative;overflow:hidden;background:var(--em);color:#EFE9DA;padding:56px 0 48px}
+.hero .bf{position:absolute;inset:0;z-index:0;width:100%;height:100%;opacity:.55;-webkit-mask-image:linear-gradient(90deg,#000,transparent 62%);mask-image:linear-gradient(90deg,#000,transparent 62%)}
+.hero .wrap{position:relative;z-index:1}
+.kicker{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);font-weight:700;display:flex;align-items:center;gap:8px}
+.kicker::before{content:"●";color:var(--gold);font-size:9px}
+.hero h1{font-family:var(--serif);font-weight:900;font-size:45px;line-height:1.04;letter-spacing:-.5px;color:#fff;margin-top:12px;max-width:19ch}
+.hero .q{margin-top:20px;font-size:20px;line-height:1.45;color:rgba(239,233,218,.9);max-width:72ch}
+.hero .q b{color:var(--gold-2)}
+.hero .brand{margin-top:26px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:rgba(239,233,218,.6);font-weight:600}
+.hero .brand b{color:#fff}
+.hero .nav{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap}
+.hero .nav a{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(199,154,69,.5);color:#EFE9DA;border-radius:10px;padding:10px 16px;font-size:14px;font-weight:700;border-bottom-width:1px}
+
+section{padding:38px 0}
+section + section{border-top:1px solid var(--line)}
+h2{font-family:var(--serif);font-weight:800;font-size:28px;letter-spacing:-.3px;display:flex;align-items:center;gap:14px}
+h2 .no{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:19px;flex:0 0 auto;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.sublead{font-size:17px;color:var(--muted);margin:10px 0 0;max-width:80ch}
+.sublead b{color:var(--em)}
+
+.lv{display:inline-flex;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:6px;vertical-align:middle}
+.lv-min{background:rgba(62,142,94,.16);color:#2c6e46;border:1px solid rgba(62,142,94,.4)}
+.lv-goal{background:rgba(176,130,46,.15);color:var(--gold-h);border:1px solid rgba(176,130,46,.45)}
+.lv-max{background:rgba(20,58,45,.1);color:var(--em);border:1px solid rgba(20,58,45,.35)}
+
+.legend{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;border-top:4px solid var(--gold)}
+.lcard.min{border-top-color:var(--green)} .lcard.goal{border-top-color:var(--gold)} .lcard.max{border-top-color:var(--em)}
+.lcard h3{font-family:var(--serif);font-size:20px;margin-bottom:4px}
+.lcard .who{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:10px}
+.lcard p{font-size:14.5px;color:var(--muted);line-height:1.45}
+
+.block{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 26px;margin-top:16px;box-shadow:0 14px 34px -30px rgba(0,0,0,.4)}
+.block .bh{display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.block .bh h3{font-family:var(--serif);font-weight:800;font-size:21px;flex:1;min-width:220px}
+.block .bh .tag{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700;background:rgba(176,130,46,.12);border:1px solid rgba(176,130,46,.3);padding:4px 10px;border-radius:20px}
+.block p{font-size:15.5px;line-height:1.5;margin-top:10px}
+.block p.mut{color:var(--muted)}
+
+ul.check{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:9px}
+ul.check li{position:relative;padding-left:30px;font-size:15.5px;line-height:1.42}
+ul.check li::before{content:"";position:absolute;left:0;top:1px;width:18px;height:18px;border:2px solid var(--gold);border-radius:5px}
+ul.check li b{color:var(--em)}
+ul.check li .lv{margin-left:6px}
+
+.value{margin-top:16px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 18px;font-size:15px;line-height:1.42}
+.value b{color:var(--em)}
+.value::before{content:"ЗАЧЕМ";font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:2px}
+
+.warn{margin-top:16px;background:rgba(178,59,46,.07);border:1.5px solid rgba(178,59,46,.4);border-radius:12px;padding:14px 18px;font-size:15px;line-height:1.45}
+.warn b{color:var(--red)}
+.warn::before{content:"⚠ ";font-weight:800}
+
+.tip{margin-top:16px;background:rgba(62,142,94,.08);border:1.5px solid rgba(62,142,94,.4);border-radius:12px;padding:14px 18px;font-size:15px;line-height:1.45}
+.tip b{color:#2c6e46}
+.tip::before{content:"💡 ";font-weight:800}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.mini{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.mini h4{font-family:var(--serif);font-size:16px;margin-bottom:6px}
+.mini p{font-size:14px;color:var(--muted);line-height:1.45}
+.mini .num2{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:8px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:15px;margin-bottom:8px}
+
+.prompt{margin-top:12px;background:#10231b;border:1px solid #21453a;border-radius:12px;padding:15px 17px;font-family:var(--mono);font-size:13.5px;line-height:1.55;color:#cfe3d8;white-space:pre-wrap;overflow-x:auto}
+.prompt .c{color:#7fa394}.prompt .v{color:var(--gold-2);font-weight:700}
+.plabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:800;margin-top:16px}
+
+/* AARRR / benchmark chips */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chipb{background:var(--card);border:1px solid var(--line);border-top:3px solid var(--gold-2);border-radius:10px;padding:11px 14px;flex:1;min-width:150px}
+.chipb b{font-family:var(--serif);font-size:15px;color:var(--em);display:block}
+.chipb span{font-size:12.5px;color:var(--muted)}
+
+/* funnel */
+.funnel{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:14px}
+.funnel .n{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 13px;font-size:13.5px;font-weight:700;color:var(--em)}
+.funnel .n.hot{border:1.5px solid var(--gold);background:rgba(199,154,69,.13)}
+.funnel .a{color:var(--gold);font-weight:800}
+
+/* intro templates */
+.intro{background:rgba(62,142,94,.07);border:1.5px solid rgba(62,142,94,.35);border-radius:12px;padding:14px 18px;margin-top:12px;font-size:14.5px;line-height:1.5}
+.intro .lab{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#2c6e46;font-weight:800;display:block;margin-bottom:6px}
+.intro .q{color:var(--ink)}
+
+/* resources catalog */
+.rescat{margin-top:22px}
+.rescat > h3{font-family:var(--serif);font-size:19px;color:var(--em);display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+.rescat > h3 .e{font-size:20px}
+.resrow{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:9px 2px;border-bottom:1px solid var(--line-soft);align-items:baseline}
+.resrow .rn{font-weight:700;font-size:14.5px}
+.resrow .rn a{border-bottom-color:rgba(176,130,46,.35)}
+.resrow .rd{font-size:13.5px;color:var(--muted);line-height:1.4}
+.resrow .rb{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:.02em;text-transform:uppercase;font-weight:700;padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:middle}
+.b-ru{background:rgba(62,142,94,.15);color:#2c6e46}.b-free{background:rgba(176,130,46,.16);color:var(--gold-h)}.b-vpn{background:rgba(178,59,46,.1);color:var(--red)}
+@media (max-width:720px){.resrow{grid-template-columns:1fr;gap:2px}.legend,.grid2,.grid3{grid-template-columns:1fr}.hero h1{font-size:33px}}
+
+.deliver{background:var(--em);color:#EFE9DA;border-radius:16px;padding:26px 28px;margin-top:18px;position:relative;overflow:hidden}
+.deliver h3{font-family:var(--serif);color:#fff;font-size:22px;margin-bottom:6px}
+.deliver ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:10px}
+.deliver li{position:relative;padding-left:28px;font-size:15.5px;line-height:1.42;color:rgba(239,233,218,.92)}
+.deliver li::before{content:"→";position:absolute;left:0;color:var(--gold-2);font-weight:800}
+.deliver b{color:#fff}
+.deliver .lvd{display:inline-flex;font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:6px;margin-left:6px}
+.lvd-min{background:rgba(62,142,94,.25);color:#a8e0bf}.lvd-goal{background:rgba(176,130,46,.25);color:#e6c980}.lvd-max{background:rgba(255,255,255,.14);color:#cfe3d8}
+
+.footer{padding:30px 0 46px;text-align:center;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+</style>
+<script src="gate.js"></script>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <svg class="bf" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#p-va-d)"/>
+    <defs><pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse">
+      <g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle">
+        <text x="16" y="34" font-size="34" fill="rgba(199,154,69,.5)">A</text>
+        <text x="47" y="64" font-size="34" fill="rgba(199,154,69,.5)">A</text>
+      </g></pattern></defs>
+  </svg>
+  <div class="wrap">
+    <div class="kicker">Практикум A-Players · Модуль «Pro-Research»</div>
+    <h1>Домашнее задание: ресёрч бутылочного горлышка и свой advisory board</h1>
+    <p class="q">Advisory board — <b>самое ценное образование в жизни, которое стоит 0 ₽.</b> Ваша задача: через дебаг найти самый сильный рычаг → сделать по нему ресёрч → собрать вокруг него совет экспертов, который ускорит результат. И сделать ресёрч <b>еженедельным ритуалом</b> команды.</p>
+    <div class="brand"><b>Дедлайн</b> — до следующей встречи (первая версия) · обязательно приходите на разборы</div>
+    <div class="nav">
+      <a href="prezentaciya.html">🖥️ Презентация модуля</a>
+      <a href="#resources">🔗 Все ресурсы и ссылки</a>
+    </div>
+  </div>
+</header>
+
+<!-- LEVELS -->
+<section><div class="wrap">
+  <h2>Три уровня — начните с «Мин», дотянитесь до «Макс»</h2>
+  <p class="sublead">Не отсиживайтесь. Лучше прийти на разбор с сырым результатом, чем не прийти. <b>Пустота — тоже сигнал, разберём.</b> Задача — не идеальный отчёт, а первый живой ресёрч и первый адвайзер.</p>
+  <div class="legend" style="margin-top:18px">
+    <div class="lcard min"><h3>Мин</h3><div class="who">каждый обязан</div><p>Выбрать одно горлышко, найти бенчмарк, провести ресёрч и одну встречу с экспертом. Составить интро.</p></div>
+    <div class="lcard goal"><h3>Цель</h3><div class="who">на что целимся</div><p>Собрать advisory board из 2–3 человек под горлышко, завести хранилище знаний, поставить 1 слот ресёрча в неделю.</p></div>
+    <div class="lcard max"><h3>Макс</h3><div class="who">кто хочет кратно</div><p>Запустить машину аутрича (Sales Navigator → Crystal → Trigify), подключить второй мозг и deep-research к базе знаний.</p></div>
+  </div>
+  <div class="value"><span>Ресёрч — это <b>непрекращающийся цикл</b> поиска лучших практик. Не раз в квартал, а как воронка продаж — <b>еженедельно</b>. Если вы ничего не тестируете и бюджета на тесты нет — ресёрч мёртв, его надо реанимировать.</span></div>
+</div></section>
+
+<!-- BLOCK 1 -->
+<section><div class="wrap">
+  <h2><span class="no">1</span> Выбери ОДНО бутылочное горлышко из дебага <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">Не ресёрчь всё подряд — вокруг тонны инфошума. Возьми <b>одну ключевую метрику</b>, где сейчас лежит самый большой рост, и направь все усилия только на неё. Так ты повышаешь вероятность успеха там, где горлышко.</p>
+  <div class="block">
+    <ul class="check">
+      <li><b>Приземли на метрику.</b> Горлышко — это всегда показатель (дозвон, открываемость писем, конверсия SDR, выработка на менеджера), а не «нам не хватает людей»</li>
+      <li><b>Опирайся на предиктивную модель:</b> опережающие и запаздывающие показатели уже подсвечивают, где просадка</li>
+      <li><b>Сформулируй чётко:</b> «метрика X = Y, бенчмарк ≈ Z, расшивка даёт ≈ N ₽» — половина решения в точной формулировке</li>
+    </ul>
+    <div class="value"><span>Осознание «здесь я отстаю, и этому есть доказательства» <b>сильнее любой гипотезы в тысячу раз</b> — не сомневаешься, надо или нет, а просто идёшь и дожимаешь.</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 2 -->
+<section><div class="wrap">
+  <h2><span class="no">2</span> Найди бенчмарк своей метрики <span class="lv lv-min">Мин</span></h2>
+  <p class="sublead">Бенчмарк — средняя или лучшая практика-стандарт в отрасли. Сегодня почти по любой метрике есть открытые данные, а с нейросетями искать стало проще. Четыре типа — используй все.</p>
+  <div class="chips">
+    <div class="chipb"><b>Внутренний</b><span>сильный vs слабый сейлс → калька лучших практик</span></div>
+    <div class="chipb"><b>Конкурентный</b><span>твои цифры vs ближайшие конкуренты</span></div>
+    <div class="chipb"><b>Функциональный</b><span>из других отраслей со схожей моделью (кейс Hilti)</span></div>
+    <div class="chipb"><b>Стратегический</b><span>вертолётный взгляд: бизнес-модели и revenue-модель (AARRR)</span></div>
+  </div>
+  <div class="tip"><b>«Со мной никто не поделится» — это миф.</b> Даже в закрытых нишах люди делятся. Мы собирали всех ключевых конкурентов EdTech в один чат и обменивались практиками — это дало сотни миллионов. Просто подберите ключик к взаимоотношениям.</div>
+  <div class="warn"><b>Экран восприятия.</b> Ресёрч работает, только если он открыт. Если управленец приносит «мы и так крутые, всё супер» и ни одного «на что повлиять» — экран закрыт (positive reporting). Калибруемые растут, некалибруемые упёрлись в потолок. Проговаривайте это на one-on-one.</div>
+</div></section>
+
+<!-- BLOCK 3 -->
+<section><div class="wrap">
+  <h2><span class="no">3</span> Кого ресёрчить + инструменты <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Сравниваем не только прямых конкурентов, а <b>бизнес-модели</b>. Сигналы, кого брать в доноры: перегретые рынки, тонкая дифференциация, кого часто рекомендуют, рейтинги (крупные + быстрорастущие аномалии), кто поднял раунды, подрядчики топ-игроков.</p>
+  <div class="block">
+    <div class="bh"><h3>Инструменты под ваше горлышко</h3><span class="tag">полный каталог — ниже в разделе «Ресурсы»</span></div>
+    <ul class="check">
+      <li><b>Реклама и воронки конкурентов:</b> <a href="https://spywords.ru" target="_blank">SpyWords</a>, <a href="https://keys.so" target="_blank">Keys.so</a>, <a href="https://adheart.me/ru" target="_blank">AdHeart</a>, <a href="https://mpstats.io" target="_blank">MPStats</a>, <a href="https://tgstat.ru" target="_blank">TGStat</a></li>
+      <li><b>Рынок и спрос:</b> <a href="https://wordstat.yandex.ru" target="_blank">Wordstat</a>, <a href="https://trends.google.com" target="_blank">Google Trends</a>, <a href="https://datainsight.ru" target="_blank">Data Insight</a>, <a href="https://buildpad.io" target="_blank">BuildPad</a>, <a href="https://trustmrr.com" target="_blank">TrustMRR</a></li>
+      <li><b>Данные и парсинг лидов:</b> <a href="https://zachestnyibiznes.ru" target="_blank">За честный бизнес</a> (ИП по ОКВЭД → база телефонов), <a href="https://focus.kontur.ru" target="_blank">Контур.Фокус</a>, Ultimate/Instant Data Scraper</li>
+    </ul>
+    <div class="value"><span>Заведите папку <b>«Исследования»</b>: компании-доноры, рейтинги, тенденции. Кто-то уже сегодня заберёт себе механику, <b>как напарсить новых лидов</b> — см. раздел «Ресурсы».</span></div>
+  </div>
+</div></section>
+
+<!-- BLOCK 4 -->
+<section><div class="wrap">
+  <h2><span class="no">4</span> Сделай ресёрч по горлышку <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Прогони горлышко через AI-ресёрч и покажи на результатах дебага, к чему пришёл. Всегда требуй источники и вывод «на что повлиять».</p>
+  <div class="block">
+    <div class="plabel">Промпт · бенчмаркинг просевшей метрики</div>
+    <div class="prompt"><span class="c"># Perplexity Deep Research / Claude / ChatGPT</span>
+Я в нише <span class="v">[ниша]</span>. Метрика <span class="v">[метрика]</span> = <span class="v">[значение]</span>.
+Найди рыночные бенчмарки этой метрики, топ-компании и практики,
+за счёт которых у них выше. Дай источники и вывод:
+на что мне повлиять в первую очередь. Перепроверь себя на ошибки.</div>
+    <div class="plabel">Промпт · продуктовые гипотезы из отзывов</div>
+    <div class="prompt"><span class="c"># сырьё для гипотез</span>
+Собери из отзывов и форумов по <span class="v">[продукт/ниша]</span> топ-боли
+и невыполненные «работы» клиентов (JTBD). Сгруппируй в 5 гипотез
+улучшения. Со ссылками на источники.</div>
+    <p class="mut" style="margin-top:14px"><b>Чем ресёрчить:</b> <a href="https://perplexity.ai" target="_blank">Perplexity Deep Research</a> (мультиагентный режим, копает вплоть до отчётов McKinsey), <a href="https://notebooklm.google.com" target="_blank">NotebookLM</a> (второй мозг из ваших источников), <a href="https://consensus.app" target="_blank">Consensus</a> (научные статьи), <a href="https://genspark.ai" target="_blank">Genspark</a> (агент). Полный список и промпты — в разделе «Ресурсы».</p>
+  </div>
+</div></section>
+
+<!-- BLOCK 5 -->
+<section><div class="wrap">
+  <h2><span class="no">5</span> Собери advisory board <span class="lv lv-goal">Цель</span></h2>
+  <p class="sublead">Advisory board — внешние консультанты с проверенным трекшеном именно в той области, где ваше горлышко. Бьём в одну точку. Здесь проваливается 90% талантливых — не из-за возможностей, а из-за дисциплины.</p>
+
+  <div class="block">
+    <div class="bh"><h3>Кто носитель знания и где его брать</h3><span class="tag">не всегда CEO</span></div>
+    <ul class="check">
+      <li>Компетенция часто <b>в середине иерархии</b> — у того, кто руками строил процесс. На него и проще выйти</li>
+      <li>Спроси у каждого: «с кем ещё 2–3 точно стоит пообщаться?» + «сделаешь интро?» — цепочка не прерывается</li>
+      <li>Купить час эксперта: <a href="https://experum.ru" target="_blank">Experum</a>, <a href="https://getmentor.dev" target="_blank">GetMentor</a>, <a href="https://career.habr.com/mentors" target="_blank">Хабр Эксперты</a>, <a href="https://growthmentor.com" target="_blank">GrowthMentor</a>, <a href="https://clarity.fm" target="_blank">Clarity.fm</a></li>
+    </ul>
+  </div>
+
+  <div class="block">
+    <div class="bh"><h3>Воронка: эксперт → адвайзер → сотрудник</h3><span class="tag">снижает риски найма</span></div>
+    <div class="funnel">
+      <span class="n">Консультация</span><span class="a">→</span>
+      <span class="n">Аудит</span><span class="a">→</span>
+      <span class="n">Партайм-проект</span><span class="a">→</span>
+      <span class="n">Мастермайнд</span><span class="a">→</span>
+      <span class="n hot">В команду, когда откроется окно</span>
+    </div>
+    <p class="mut" style="margin-top:12px">Так мы ставили и комдира, и гендира — не с HeadHunter, а из этой цепочки. Плюс это снижает риск найма: даёшь одну маленькую зону ответственности и сразу видишь результат, не переплачивая 12 окладов за ошибку.</p>
+    <div class="value"><span><b>Никогда не будь в позиции потребителя.</b> Сначала думай, что <b>ты можешь дать</b> (данные, бенчмарки, интро, доступ к аудитории). За счёт этой позиции большинство сопровождает бесплатно.</span></div>
+  </div>
+
+  <div class="block">
+    <div class="bh"><h3>Машина аутрича на адвайзеров</h3><span class="tag">Макс</span> <span class="lv lv-max" style="margin-left:4px">Макс</span></div>
+    <p class="mut">Связка для персонализированных касаний (клиенты и адвайзеры одинаково):</p>
+    <div class="funnel">
+      <span class="n"><a href="https://linkedin.com/sales" target="_blank">Sales Navigator</a></span><span class="a">→</span>
+      <span class="n"><a href="https://evaboot.com" target="_blank">Evaboot</a></span><span class="a">→</span>
+      <span class="n"><a href="https://clay.com" target="_blank">Clay</a> / <a href="https://apollo.io" target="_blank">Apollo</a></span><span class="a">→</span>
+      <span class="n"><a href="https://crystalknows.com" target="_blank">Crystal</a> (психотип)</span><span class="a">→</span>
+      <span class="n">персонализация через Claude</span>
+    </div>
+    <p class="mut" style="margin-top:12px"><a href="https://trigify.io" target="_blank">Trigify</a> ловит, кто комментирует посты лидеров мнений (тёплые по интересу), обогащаешь через Apollo. <b>Crystal Knows</b> раскладывает DISC-психотип по профилю и даёт: как писать, что делать и чего не делать — у тебя одна попытка.</p>
+    <div class="warn"><b>РФ:</b> LinkedIn заблокирован — нужен VPN со стабильным IP + зарубежная карта для оплаты этих сервисов.</div>
+  </div>
+
+  <div class="block">
+    <div class="bh"><h3>Задание 3 · Составь своё интро (несколько вариаций)</h3><span class="tag">чтобы вас правильно представить</span></div>
+    <p class="mut">Приём «бренд соседства»: если компания ноунейм — называй бренды клиентов/партнёров + цифру статуса.</p>
+    <div class="intro"><span class="lab">1 · Офлайн / клуб — «ты кто?» (10 сек вслух)</span><span class="q">«Привет, я <b>[имя]</b>. Строю <b>[продукт]</b> — <b>[категория одной фразой]</b>. Мы №1 в <b>[сегмент]</b>, делаем <b>[выручка]</b>, растём на <b>[%]</b> в год. С нами уже работают <b>[бренды-соседи]</b>. Пришёл сюда за <b>[люди/экспертиза]</b>. А ты чем занимаешься?»</span></div>
+    <div class="intro"><span class="lab">2 · Холодное сообщение эксперту</span><span class="q">«<b>[Имя]</b>, добрый день. Я <b>[имя, роль, компания + цифра/бренд соседства]</b>. Читаю вас по <b>[конкретный пост/тема]</b> — сильно откликнулось про <b>[что именно]</b>. Пишу не просить, а с пользой: у нас есть <b>[данные/бенчмарк/доступ]</b>, которые могут быть вам полезны по <b>[их тема]</b> — готов поделиться. Если откликается — скину в двух словах.»</span></div>
+    <div class="intro"><span class="lab">3 · Онлайн-визитка (3 строки)</span><span class="q">«<b>[Имя]</b> — строю <b>[продукт]</b>, №1 в <b>[сегмент]</b>, <b>[выручка]</b>. Клиенты: <b>[бренды]</b>. Помогаю с <b>[что даю рынку]</b>.»</span></div>
+    <div class="tip">Кажется, это одно предложение — вы охренеете, насколько это непросто. Присылайте варианты в чат на разбор, поможем дособрать и сделаем тёплое интро.</div>
+  </div>
+</div></section>
+
+<!-- BLOCK 6 -->
+<section><div class="wrap">
+  <h2><span class="no">6</span> Инфраструктура: хранилище + второй мозг <span class="lv lv-max">Макс</span></h2>
+  <p class="sublead">Заранее определите, где собираете всю базу знаний — командой, а не только вы. Это превращается в единое хранилище, к которому подключается второй мозг.</p>
+  <div class="block">
+    <div class="bh"><h3>Что складываем по каждой встрече</h3><span class="tag">единое хранилище</span></div>
+    <ul class="check">
+      <li>Название · с кем встретились · компания · тип · <b>ссылка на контакт</b></li>
+      <li>Статус · <b>запись встречи</b> + транскрибация · ссылки на артефакты</li>
+      <li>Ключевые инсайты и бенчмарки</li>
+    </ul>
+    <div class="value"><span>Второй мозг подключается к хранилищу: «достань лучшую практику по <b>[тема]</b>» — и он берёт её из &gt;10 000 страниц вашего контекста (встречи, мастермайнды). Первым делом при любом запросе — обращаешься к базе знаний.</span></div>
+  </div>
+  <div class="block">
+    <div class="bh"><h3>Прокачать deep research в Claude Code</h3><span class="tag">скилл + MCP</span></div>
+    <p class="mut">Скилл <b>deep-research</b> под Claude Code копает ещё глубже и находит лучшие практики. Ставится через маркетплейс, плюс MCP-серверы поиска:</p>
+    <div class="prompt"><span class="c"># установка (в поле Claude Code)</span>
+/plugin marketplace add anthropics/claude-plugins-official
+<span class="c"># MCP-поиск (в терминале):</span>
+claude mcp add --transport http exa https://mcp.exa.ai/mcp   <span class="c"># без ключа</span>
+claude mcp add --transport http tavily "https://mcp.tavily.com/mcp/?tavilyApiKey=КЛЮЧ"  <span class="c"># 1000/мес free</span></div>
+    <p class="mut" style="margin-top:12px">Связка: <b>Tavily/Exa</b> (поиск) + <b>Firecrawl</b> (забрать контент страниц) + скилл <b>deep-research</b> как оркестратор. Все ссылки — в разделе «Ресурсы».</p>
+  </div>
+</div></section>
+
+<!-- DELIVERABLES -->
+<section><div class="wrap">
+  <h2>Что принести на разбор</h2>
+  <p class="sublead">Обязательно приходите — показывайте, что получилось и что нет. Кому нужно помочь с поиском человека или тёплым интро — приходите ко мне или подключаем ресурсы друг друга.</p>
+  <div class="deliver">
+    <h3>Чек-лист сдачи</h3>
+    <ul>
+      <li><b>Одно ключевое горлышко</b> из дебага, приземлённое на метрику <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Ресёрч по горлышку</b> + бенчмарк + вывод «на что повлиять» (на результатах дебага) <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Минимум 1 встреча с экспертом</b>: с кем и почему именно с ним <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Интро в нескольких вариациях</b> (офлайн · холодное · визитка) <span class="lvd lvd-min">Мин</span></li>
+      <li><b>Advisory board 2–3 человека</b> под горлышко + заведённое хранилище знаний <span class="lvd lvd-goal">Цель</span></li>
+      <li><b>1 слот ресёрча в неделю</b> в календаре + машина аутрича / второй мозг <span class="lvd lvd-max">Макс</span></li>
+    </ul>
+  </div>
+  <div class="warn"><b>Ресёрч сегодняшнего дня должен стать еженедельным процессом в команде.</b> Это ключевое. Не разовая история — а ритуал, как еженедельный просмотр воронки продаж.</div>
+</div></section>
+
+<!-- ===================== RESOURCES ===================== -->
+<section id="resources"><div class="wrap">
+  <h2><span class="no">🔗</span> Все ресурсы и ссылки</h2>
+  <p class="sublead">Полный каталог инструментов, сервисов и материалов, которые мы собрали и проверили при подготовке модуля. <b>Легенда:</b> <span class="rb b-ru">РФ</span> доступно из России · <span class="rb b-free">free</span> есть бесплатный доступ · <span class="rb b-vpn">VPN+карта</span> нужен VPN и зарубежная карта.</p>
+
+  <div class="rescat">
+    <h3><span class="e">🎯</span> Реклама и воронки конкурентов</h3>
+    <div class="resrow"><div class="rn"><a href="https://spywords.ru" target="_blank">SpyWords</a><span class="rb b-ru">РФ</span></div><div class="rd">Ключи, объявления и оценка бюджетов конкурента в Директе/Google. «Битва доменов».</div></div>
+    <div class="resrow"><div class="rn"><a href="https://keys.so" target="_blank">Keys.so</a><span class="rb b-ru">РФ</span></div><div class="rd">Крупнейшая РФ-база: органика + контекст конкурента по домену, пересечение семантики.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://adheart.me/ru" target="_blank">AdHeart</a><span class="rb b-ru">РФ</span></div><div class="rd">База рекламных креативов Facebook*/Instagram* и приложений по нишам.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://mpstats.io" target="_blank">MPStats</a><span class="rb b-ru">РФ</span></div><div class="rd">Аналитика маркетплейсов: выручка ниши, что и почём продают на WB/Ozon.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://tgstat.ru" target="_blank">TGStat</a> · <a href="https://telemetr.me" target="_blank">Telemetr</a><span class="rb b-ru">РФ</span></div><div class="rd">Аналитика Telegram-каналов: охваты, архив рекламных постов, площадки для посевов.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://telega.io" target="_blank">Telega.in</a><span class="rb b-ru">РФ</span></div><div class="rd">Биржа 30 000+ Telegram-каналов с проверкой на накрутку и гарант-сделкой.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://advse.ru" target="_blank">Advse</a><span class="rb b-ru">РФ</span></div><div class="rd">По каким запросам конкурент реально показывался в рекламе. От ~1 000 ₽/год.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://similarweb.com/ru/website" target="_blank">Similarweb</a><span class="rb b-free">free-чек</span></div><div class="rd">Бесплатный чек трафика конкурента: источники, каналы, топ-ключи.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://popsters.ru" target="_blank">Popsters</a><span class="rb b-ru">РФ</span></div><div class="rd">Анализ контента конкурентов в соцсетях: что даёт вовлечённость.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://brandanalytics.ru" target="_blank">Brand Analytics</a><span class="rb b-ru">РФ</span></div><div class="rd">Мониторинг 55 000+ площадок: упоминания, боли и язык аудитории.</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">📊</span> Рынок, спрос и жизнеспособность</h3>
+    <div class="resrow"><div class="rn"><a href="https://wordstat.yandex.ru" target="_blank">Яндекс Wordstat</a><span class="rb b-ru">РФ</span><span class="rb b-free">free</span></div><div class="rd">Число запросов по РФ + сезонность — оценка спроса и SAM.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://trends.google.com" target="_blank">Google Trends</a> · <a href="https://www.google.com/alerts" target="_blank">Alerts</a><span class="rb b-free">free</span></div><div class="rd">Динамика спроса по миру + авто-дайджест упоминаний темы/конкурента.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://bukvarix.com" target="_blank">Bukvarix</a><span class="rb b-free">free</span></div><div class="rd">База ключевых слов для быстрого сбора семантики и оценки ширины спроса.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://datainsight.ru" target="_blank">Data Insight</a><span class="rb b-ru">РФ</span></div><div class="rd">Готовые e-commerce исследования РФ (объёмы, сегменты) + бесплатные отчёты.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://marketing.rbc.ru" target="_blank">РБК Магазин исследований</a><span class="rb b-ru">РФ</span></div><div class="rd">10 000+ готовых исследований и бизнес-планов, часть бесплатно.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://mediascope.net" target="_blank">Mediascope</a><span class="rb b-ru">РФ</span></div><div class="rd">Официальный измеритель аудиторий медиа и интернета в РФ.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://buildpad.io" target="_blank">BuildPad</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">AI-кофаундер: сканирует Reddit/X на боли аудитории, валидирует гипотезу.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://trustmrr.com" target="_blank">TrustMRR</a><span class="rb b-free">free</span></div><div class="rd">Реальная выручка стартапов через Stripe. Колонка MoM Growth — карта рынка в деньгах.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://www.mckinsey.com/quarterly/overview" target="_blank">McKinsey Quarterly</a><span class="rb b-free">free</span></div><div class="rd">Стратегические тренды (AI, экономика 2026) — материал для стратегического бенчмаркинга.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://alsoasked.com" target="_blank">AlsoAsked</a> · <a href="https://answerthepublic.com" target="_blank">AnswerThePublic</a><span class="rb b-free">free</span></div><div class="rd">Карта реальных вопросов людей — сырьё для продуктовых и контент-гипотез.</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">🗂️</span> Данные о компаниях РФ · lead-gen · парсинг</h3>
+    <div class="resrow"><div class="rn"><a href="https://zachestnyibiznes.ru" target="_blank">За честный бизнес</a><span class="rb b-ru">РФ</span><span class="rb b-free">free</span></div><div class="rd">ИП по ОКВЭД и региону → база телефонов → Яндекс.Аудитории. B2B lead-gen.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://www.rusprofile.ru" target="_blank">Rusprofile</a> · <a href="https://focus.kontur.ru" target="_blank">Контур.Фокус</a><span class="rb b-ru">РФ</span></div><div class="rd">Досье на компанию РФ: выручка, владельцы, связи, красные флаги.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://kontur.ru/compass" target="_blank">Контур.Компас</a><span class="rb b-ru">РФ</span></div><div class="rd">Поиск B2B-компаний по 70+ фильтрам, выгрузка в Excel/CRM. 30 дней free.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://dadata.ru" target="_blank">DaData</a><span class="rb b-ru">РФ</span><span class="rb b-free">free</span></div><div class="rd">Обогащение и стандартизация базы по ИНН/телефону/email.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://chromewebstore.google.com/detail/ultimate-web-scraper/pdeldjlcnhallaapdggcmhpailpnnkmg" target="_blank">Ultimate Web Scraper</a><span class="rb b-free">free</span></div><div class="rd">Chrome: парсит витрину, продуктовую матрицу и цены конкурента в таблицу.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://chromewebstore.google.com/detail/instant-data-scraper/ofaokhiedipichpaobibbnahnkdoiiah" target="_blank">Instant Data Scraper</a><span class="rb b-free">free</span></div><div class="rd">Chrome: парсит таблицы/списки/отзывы в CSV с пагинацией.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://smsaero.ru" target="_blank">SmsAero</a><span class="rb b-ru">РФ</span></div><div class="rd">SMS/Viber-рассылка по базе телефонов. Только с согласием (152-ФЗ).</div></div>
+    <div class="resrow"><div class="rn"><a href="https://t.me/ParserTgChat_bot" target="_blank">@ParserTgChat_bot</a><span class="rb b-ru">РФ</span></div><div class="rd">Парсинг участников Telegram-чатов ниши. ToS/152-ФЗ — на свой риск.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://seowriting.ai" target="_blank">SEOWriting.ai</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Генерация SEO-статей в 1 клик под найденные ниши.</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">🧑‍💼</span> Покупка консультаций экспертов (advisory board)</h3>
+    <div class="resrow"><div class="rn"><a href="https://experum.ru" target="_blank">Experum</a><span class="rb b-ru">РФ</span></div><div class="rd">Первый российский маркетплейс экспертов: предприниматели, инвесторы, топы (5000+).</div></div>
+    <div class="resrow"><div class="rn"><a href="https://getmentor.dev" target="_blank">GetMentor</a><span class="rb b-ru">РФ</span></div><div class="rd">Менторы-практики из Яндекса, Авито, Google. Без комиссии, платишь напрямую.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://career.habr.com/mentors" target="_blank">Хабр Эксперты</a><span class="rb b-ru">РФ</span></div><div class="rd">7000+ IT-наставников, ~1–3 т.р. за консультацию.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://solvery.io" target="_blank">Solvery</a> · <a href="https://profi.ru" target="_blank">Профи.ру</a><span class="rb b-ru">РФ</span></div><div class="rd">Менторы (IT+смежное) и 3000+ бизнес-консультантов. Бесплатный звонок на совместимость.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://growthmentor.com" target="_blank">GrowthMentor</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Членство ~$75/мес → звонки с growth/маркетинг/продукт-менторами.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://clarity.fm" target="_blank">Clarity.fm</a> · <a href="https://intro.co" target="_blank">Intro.co</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Self-serve: находишь эксперта, платишь поминутно ($1–10/мин).</div></div>
+    <div class="resrow"><div class="rn"><a href="https://mentorcruise.com" target="_blank">MentorCruise</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Разовые сессии $60–200/час или подписка. Продукт/рост/карьера.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://glginsights.com" target="_blank">GLG</a> · <a href="https://dialecticanet.com" target="_blank">Dialectica</a> · <a href="https://tegus.com" target="_blank">Tegus</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Премиум expert networks (investor-grade, $1000+/час). Для серьёзного due diligence.</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">🔎</span> Поиск людей и машина аутрича</h3>
+    <div class="resrow"><div class="rn"><a href="https://business.linkedin.com/sales-solutions" target="_blank">LinkedIn Sales Navigator</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Поиск по 30+ фильтрам: должность, компания, «работал в X», скиллы.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://crystalknows.com" target="_blank">Crystal Knows</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Психотип DISC по профилю: как писать, что делать и чего не делать. Расширение.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://apollo.io" target="_blank">Apollo.io</a> · <a href="https://clay.com" target="_blank">Clay</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">База контактов + обогащение email (Clay — waterfall по 150+ источникам).</div></div>
+    <div class="resrow"><div class="rn"><a href="https://evaboot.com" target="_blank">Evaboot</a> · <a href="https://wiza.co" target="_blank">Wiza</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Выгрузка и чистка списков Sales Navigator + рабочие email.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://trigify.io" target="_blank">Trigify</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Сигнальный аутрич: ловит комментаторов постов лидеров мнений (тёплые по интересу).</div></div>
+    <div class="resrow"><div class="rn"><a href="https://phantombuster.com" target="_blank">PhantomBuster</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Парсинг комментаторов/участников + обогащение. Риск ToS LinkedIn.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://persana.ai" target="_blank">Persana AI</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Обогащение email + сигналы (смена работы, раунды). ⚠ сливается с Rox.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://waalaxy.com" target="_blank">Waalaxy</a> · <a href="https://expandi.io" target="_blank">Expandi</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Безопасная авто-цепочка касаний в LinkedIn.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://hunter.io" target="_blank">Hunter.io</a> · <a href="https://snov.io" target="_blank">Snov.io</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Поиск и верификация корпоративных email по домену.</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">🤖</span> AI для глубокого ресёрча</h3>
+    <div class="resrow"><div class="rn"><a href="https://perplexity.ai" target="_blank">Perplexity (Deep Research)</a><span class="rb b-vpn">загран-карта</span></div><div class="rd">Мультиагентный ресёрч со сверкой источников, копает вплоть до отчётов McKinsey.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://notebooklm.google.com" target="_blank">NotebookLM</a><span class="rb b-free">free</span><span class="rb b-vpn">VPN</span></div><div class="rd">База знаний из ваших источников + аудио-обзоры. Поддерживает русский.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://chatgpt.com" target="_blank">ChatGPT Deep Research</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Автономный многошаговый веб-ресёрч → отчёт со ссылками.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://gemini.google.com" target="_blank">Gemini Deep Research</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Анализ сотен источников в отчёт.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://claude.ai" target="_blank">Claude · Research + Projects</a><span class="rb b-vpn">VPN+карта</span></div><div class="rd">Агентный веб-ресёрч + Projects как база знаний. Лучшее качество для длинных документов.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://consensus.app" target="_blank">Consensus</a> · <a href="https://elicit.com" target="_blank">Elicit</a><span class="rb b-vpn">загран-карта</span></div><div class="rd">Ресёрч по научным статьям — доказательная база под гипотезы и viability.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://genspark.ai" target="_blank">Genspark</a> · <a href="https://manus.im" target="_blank">Manus</a><span class="rb b-vpn">загран-карта</span></div><div class="rd">AI-агенты: автономно собирают ресёрч и артефакты (слайды, таблицы).</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">⚙️</span> Claude Code — deep research (скилл + MCP)</h3>
+    <div class="resrow"><div class="rn">Скилл <b>deep-research</b><span class="rb b-free">skill</span></div><div class="rd">Многошаговый веб-ресёрч с проверкой источников. Ставится: <code>/plugin marketplace add anthropics/claude-plugins-official</code></div></div>
+    <div class="resrow"><div class="rn"><a href="https://github.com/exa-labs/exa-mcp-server" target="_blank">Exa MCP</a><span class="rb b-free">без ключа</span></div><div class="rd">Семантический поиск + краулинг. <code>claude mcp add --transport http exa https://mcp.exa.ai/mcp</code></div></div>
+    <div class="resrow"><div class="rn"><a href="https://docs.tavily.com/documentation/mcp" target="_blank">Tavily MCP</a><span class="rb b-free">1000/мес</span></div><div class="rd">Поиск под AI-агентов, чистые результаты с источниками. 1000 поисков/мес бесплатно.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://github.com/firecrawl/firecrawl-mcp-server" target="_blank">Firecrawl MCP</a><span class="rb b-free">freemium</span></div><div class="rd">Вытягивает целые сайты в чистый Markdown — экономит токены.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://github.com/brave/brave-search-mcp-server" target="_blank">Brave Search MCP</a><span class="rb b-free">2000/мес</span></div><div class="rd">Независимый веб-индекс. 2000 запросов/мес бесплатно.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://docs.perplexity.ai" target="_blank">Perplexity MCP</a></div><div class="rd">Ответы с реальными цитатами прямо в Claude Code (Sonar API, платно).</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">🏛️</span> Бизнес-клубы (где водятся адвайзеры)</h3>
+    <div class="resrow"><div class="rn"><a href="https://www.ypo.org" target="_blank">YPO</a></div><div class="rd">Глобальная сеть первых лиц компаний, форум-группы с peer-разбором.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://tiger21.com" target="_blank">Tiger 21</a></div><div class="rd">Клуб владельцев крупного капитала: peer-разборы бизнесов и портфелей.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://www.campdenclub.com" target="_blank">Campden Club</a></div><div class="rd">Сообщество состоятельных семей и family offices.</div></div>
+    <div class="resrow"><div class="rn">R360 · <a href="https://www.rolls-roycemotorcars.com/en_US/ownership/whispers.html" target="_blank">Rolls-Royce Whispers</a></div><div class="rd">Инвайт-онли клубы для капитала от $100 млн и владельцев Rolls-Royce.</div></div>
+    <div class="resrow"><div class="rn">Свой мини-клуб<span class="rb b-ru">РФ</span><span class="rb b-free">0 ₽</span></div><div class="rd">Мастермайнд/баня/чайная на 5–10 человек — тот же advisory board, только бесплатно.</div></div>
+  </div>
+
+  <div class="rescat">
+    <h3><span class="e">🌍</span> Микро-перезагрузка (анти-выгорание)</h3>
+    <div class="resrow"><div class="rn"><a href="https://www.window-swap.com" target="_blank">WindowSwap</a></div><div class="rd">Вид из чужих окон по всему миру.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://randomstreetview.com" target="_blank">Random Street View</a></div><div class="rd">Телепорт в случайную точку планеты через панорамы улиц.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://www.earthcam.com" target="_blank">EarthCam</a></div><div class="rd">Живые веб-камеры мира в реальном времени.</div></div>
+    <div class="resrow"><div class="rn"><a href="https://driveandlisten.herokuapp.com" target="_blank">Drive &amp; Listen</a></div><div class="rd">Виртуальная поездка по городам мира с местным радио.</div></div>
+    <div class="resrow"><div class="rn">The Secret Door</div><div class="rd">Дверь в случайное красивое место (если оригинал недоступен — есть клоны).</div></div>
+  </div>
+
+  <div class="value" style="margin-top:24px"><span>Всё это <b>стоит 0 ₽ или копейки</b> и даёт насмотренность, которой нет ни у одного конкурента. Начните с одного слота ресёрча в неделю — через год будете себе безумно благодарны.</span></div>
+</div></section>
+
+<div class="footer">Практикум A-Players · Модуль «Pro-Research — насмотренность и адвайзеры»</div>
+
+</body>
+</html>
