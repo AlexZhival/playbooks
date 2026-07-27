@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · OGSM &amp; OKR — квартальная система целей</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --bg-alt:#EBE5D7; --card:#FCFAF4;
+  --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --dark-ink:#EFE9DA;
+  --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0c0f0d;overflow:hidden;font-family:var(--sans)}
+#stage{position:absolute;top:50%;left:50%;width:1280px;height:720px;transform:translate(-50%,-50%);transform-origin:center center;background:var(--bg);box-shadow:0 30px 90px -20px rgba(0,0,0,.7)}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;padding:44px 62px 38px;color:var(--ink);flex-direction:column}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.17em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+h1{font-family:var(--serif);font-weight:900;font-size:56px;line-height:1.02;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:35px;line-height:1.06;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:21px;line-height:1.15}
+.lead{font-size:20px;line-height:1.45;color:var(--muted);font-weight:500}
+p{font-size:17px;line-height:1.5}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 2px}
+.gold{color:var(--gold-h)}
+b,strong{font-weight:800}
+.spacer{flex:1}
+.foot{margin-top:auto;padding-top:11px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.foot .brand{display:flex;align-items:center;gap:9px;font-weight:600}
+.foot .brand img{height:16px;opacity:.92}
+.slide--dark .foot{color:rgba(239,233,218,.6)}
+.slide--dark .foot .brand img{filter:brightness(0) invert(1);opacity:.85}
+.slide--dark{background:var(--em);color:var(--dark-ink)}
+.slide--dark h1,.slide--dark h2,.slide--dark h3{color:#fff}
+.slide--dark .lead{color:rgba(239,233,218,.82)}
+.slide--dark .kicker{color:var(--gold-2)}
+.bfield{position:absolute;inset:0;z-index:0;width:1280px;height:720px;pointer-events:none}
+.slide>*{position:relative;z-index:1}
+.slide>svg.bfield{position:absolute;z-index:0}
+.slide--title{justify-content:center;overflow:hidden}
+.slide--title .heroimg{position:absolute;right:-10px;top:50%;transform:translateY(-50%);height:620px;opacity:.92;z-index:0;pointer-events:none}
+.slide--title.slide--dark .heroimg{height:640px;opacity:.9}
+.slide--title h1{font-size:58px;max-width:760px}
+.tpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#F4F1EA;font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 15px;border-radius:30px;font-weight:600}
+.tpill.gold{background:transparent;border:1.5px solid var(--gold);color:var(--gold-h)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.slide--dark .card{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.card h3{margin-bottom:6px}.card p{font-size:14.5px;color:var(--muted);line-height:1.4}
+.slide--dark .card p{color:rgba(239,233,218,.72)}
+.num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:17px;margin-bottom:10px;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.icon{font-size:24px;margin-bottom:6px;display:block}
+.value{margin-top:12px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:11px 17px;font-size:15px;line-height:1.4}
+.value b{color:var(--em)}
+.value::before{content:"СМЫСЛ";font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:3px}
+.slide--dark .value{background:rgba(199,154,69,.15);color:rgba(239,233,218,.9)}
+.slide--dark .value b{color:#fff}
+.bl{list-style:none;display:flex;flex-direction:column;gap:10px}
+.bl li{position:relative;padding-left:23px;font-size:17px;line-height:1.4}
+.bl li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.bl.check li::before{content:"✓";top:0;left:0;width:auto;height:auto;background:none;color:var(--green);font-weight:800;font-size:17px;border-radius:0}
+.bl.cross li::before{content:"✕";top:0;left:0;width:auto;height:auto;background:none;color:var(--red);font-weight:800;font-size:17px;border-radius:0}
+.slide--dark .bl li{color:rgba(239,233,218,.9)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--gold-h);text-align:left;padding:8px 10px;border-bottom:2px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.3;color:var(--ink)}
+tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+td b{color:var(--em)}
+.slide--dark th{color:var(--gold-2);border-bottom-color:rgba(199,154,69,.4)}
+.slide--dark td{color:rgba(239,233,218,.92);border-bottom-color:rgba(255,255,255,.12)}
+.slide--dark td b{color:#fff}.slide--dark tr:nth-child(even) td{background:rgba(255,255,255,.05)}
+.quote{font-family:var(--serif);font-weight:700;font-size:40px;line-height:1.18;letter-spacing:-.4px;max-width:1010px}
+.quote .gold{color:var(--gold-2)}
+.flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:9px 16px;font-weight:700;font-size:15px}
+.chip.on{background:rgba(199,154,69,.22);border-color:var(--gold)}
+.slide--dark .chip{background:rgba(255,255,255,.07);border-color:rgba(199,154,69,.3);color:#fff}
+.arr{color:var(--gold);font-weight:800;font-size:19px}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#BE8E34,#C79A45);z-index:50;transition:width .3s}
+#count{position:absolute;right:16px;bottom:13px;z-index:50;font-family:var(--mono);font-size:12px;color:#8a8d86;letter-spacing:.1em}
+.hint{position:fixed;left:50%;bottom:9px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:#555;letter-spacing:.1em;z-index:60;opacity:.5}
+.tag{display:inline-block;background:rgba(176,130,46,.13);color:var(--gold-h);border:1px solid rgba(176,130,46,.35);border-radius:20px;padding:4px 11px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.agenda{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.agitem{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 15px}
+.agitem .t{font-family:var(--mono);font-size:12px;color:var(--gold-h);font-weight:700;width:26px;flex:0 0 26px}
+.agitem h3{font-size:15.5px}
+.warnbox{background:rgba(178,59,46,.08);border:1.5px solid rgba(178,59,46,.4);border-radius:14px;padding:15px 19px}
+.okbox{background:rgba(62,142,94,.09);border:1.5px solid rgba(62,142,94,.4);border-radius:14px;padding:15px 19px}
+.stats{display:flex;gap:12px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+.slide--dark .stat{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1.1;margin-top:4px;color:var(--em)}
+.slide--dark .stat .v{color:#fff} .stat .v.gd{color:var(--gold-h)} .stat .v.rd{color:var(--red)} .stat .v.gr{color:var(--green)}
+.slide--dark .stat .v.gd{color:var(--gold-2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pill-lg{display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:5px 11px;border-radius:20px;margin-bottom:7px}
+.pill-red{background:rgba(178,59,46,.12);color:var(--red)}.pill-green{background:rgba(62,142,94,.14);color:var(--green)}
+.term{background:#0f2018;border:1px solid #2a4c3e;border-radius:14px;padding:16px 18px;font-family:var(--mono);font-size:13.5px;line-height:1.52;color:#d3e6da;white-space:pre-wrap;box-shadow:0 20px 50px -30px rgba(0,0,0,.6)}
+.term .c{color:#7fa394}.term .ph{color:var(--gold-2);font-weight:700}
+.plabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:800;margin:6px 0}
+/* image accent */
+.imgacc{display:grid;grid-template-columns:1fr 340px;gap:22px;flex:1;min-height:0;align-items:center}
+.miro{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 46px -26px rgba(0,0,0,.4)}
+.miro img{width:100%;height:100%;object-fit:cover}
+/* loop / flow nodes */
+.loop{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.lnode{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 15px;text-align:center;min-width:116px}
+.lnode b{display:block;font-family:var(--serif);font-size:16px;color:var(--em)}.lnode span{font-size:11.5px;color:var(--muted)}
+.lnode.hot{border:1.5px solid var(--gold);background:rgba(199,154,69,.16)}
+.slide--dark .lnode{background:rgba(255,255,255,.06);border-color:rgba(199,154,69,.3)}.slide--dark .lnode b{color:#fff}.slide--dark .lnode span{color:rgba(239,233,218,.65)}
+/* OGSM/OKR anatomy tiers */
+.tiers{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.tier{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:12px 16px}
+.tier .tl{font-family:var(--serif);font-weight:800;font-size:16px;color:var(--em)}
+.tier .tl span{display:block;font-family:var(--mono);font-size:10px;color:var(--gold-h);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.tier .tv{font-size:14.5px;color:var(--muted);line-height:1.4}
+.tier .tv b{color:var(--ink)}
+/* 9-box scorecard */
+.box9{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.box9 .cell{border-radius:9px;padding:12px 11px;min-height:74px;font-size:12.5px;line-height:1.3;border:1px solid var(--line)}
+.box9 .g{background:rgba(62,142,94,.16)} .box9 .y{background:rgba(201,149,43,.15)} .box9 .r{background:rgba(178,59,46,.1)}
+.box9 .cell b{display:block;font-family:var(--serif);font-size:13.5px;color:var(--em);margin-bottom:2px}
+.axis{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+/* mockups (dark tracker/dashboard) */
+.mock{background:#10231b;border:1px solid #21453a;border-radius:14px;padding:14px 15px;box-shadow:0 20px 44px -30px rgba(0,0,0,.6);overflow:hidden}
+.mock .mh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.mock .mt{font-family:var(--serif);font-weight:700;font-size:14px;color:#fff}
+.mock .mt .mut{color:#7fa394;font-weight:400;font-size:11.5px;font-family:var(--sans)}
+.mock .mu{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#6f9284}
+.trk{width:100%;border-collapse:collapse;font-size:12px}
+.trk th{color:#8fb3a4;font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;text-align:center;padding:5px 6px;border-bottom:1px solid #2c5647}
+.trk th:first-child{text-align:left}
+.trk td{padding:6px 6px;border-bottom:1px solid #1c3a30;color:#cfe3d8;text-align:center}
+.trk td:first-child{text-align:left;color:#eaf3ee;font-weight:600;font-size:12px}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%}
+.dg{background:#4ea96f}.dy{background:#d6a63f}.dr{background:#c85a4b}.dn{background:#2c5647}
+.mkpis{display:flex;gap:9px}
+.mkpi{flex:1;background:#17332a;border:1px solid #2c5647;border-radius:9px;padding:9px 11px}
+.mkpi .k{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:#7fa394}
+.mkpi .v{font-family:var(--serif);font-weight:800;font-size:22px;color:#fff;margin-top:2px}
+.mkpi .v.gd{color:#d6a63f}.mkpi .v.gr{color:#5bbd7e}
+.bars{display:flex;align-items:flex-end;gap:7px;height:66px;margin-top:4px}
+.bars .b{flex:1;background:linear-gradient(180deg,#2f6b52,#1c4536);border-radius:4px 4px 0 0}
+.bars .b.on{background:linear-gradient(180deg,#C79A45,#A87C24)}
+.steps{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.step{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 15px}
+.step .sn{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:14px;display:grid;place-items:center}
+.step .st{font-family:var(--serif);font-weight:700;font-size:15.5px;color:var(--em)}
+.step .sd{font-size:13.5px;color:var(--muted);line-height:1.35}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="p-va" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(20,58,45,.42)">A</text><text x="47" y="64" font-size="34" fill="rgba(20,58,45,.42)">A</text></g></pattern>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text><text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text></g></pattern>
+</defs></svg>
+<div id="stage">
+
+<!-- 1 · TITLE -->
+<section class="slide slide--title active">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.45;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 46%);mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 46%)"><rect width="100%" height="100%" fill="url(#p-va)"/></svg>
+  <img class="heroimg" src="gen/hero-focus.png" alt="">
+  <div style="display:flex;gap:10px;margin-bottom:22px">
+    <span class="tpill">● Практикум A-Players</span>
+    <span class="tpill gold">Модуль · OGSM &amp; OKR</span>
+  </div>
+  <h1>OGSM &amp; OKR:<br>стратегия → <span class="hl">квартальные проекты</span> команды</h1>
+  <p class="lead" style="margin-top:20px;max-width:640px">Как из годовой стратегии собрать фокус, по которому <b style="color:var(--em)">каждый управленец лидирует свои проекты</b> — и по ним же оценивается его перформанс. Не разовая активность, а квартальная операционная система роста.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png" alt="A-Players">Практикум A-Players</span><span>OGSM &amp; OKR</span></div>
+</section>
+
+<!-- 2 · THESIS -->
+<section class="slide slide--dark">
+  <svg class="bfield" preserveAspectRatio="none" style="-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Главный тезис модуля</span>
+  <div class="spacer"></div>
+  <p class="quote">Без системы целеполагания рост — это <span class="gold">хаотичные действия</span>.</p>
+  <p class="lead" style="margin-top:24px;max-width:960px">Нас часто зовут, когда уже падает прибыль. И почти всегда причина одна: <b style="color:#fff">разбалансировка</b> — непонятно, кто на какие педали жмёт и как каждый влияет на выручку. OGSM/OKR — это то, что превращает стратегию в <b style="color:#fff">фокус, прозрачность и управляемый перформанс</b>.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Система &gt; хаос</span></div>
+</section>
+
+<!-- 3 · WHERE IN PROGRAM -->
+<section class="slide">
+  <span class="kicker">Где мы в программе</span>
+  <h2 style="margin:10px 0 16px">Всё, что вы строили, сходится в <span class="hl">целеполагание</span></h2>
+  <div class="loop">
+    <div class="lnode"><b>Команда</b><span>точка А</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Модели</b><span>предиктив</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Координация</b><span>ритмы</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Дебаг</b><span>горлышки</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Ресёрч</b><span>практики</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>OGSM / OKR</b><span>цели и проекты</span></div>
+  </div>
+  <div class="two" style="margin-top:22px">
+    <div class="card"><h3>Это не новая тема с нуля</h3><p style="font-size:15px;margin-top:5px">Драйверы вы уже нашли через дебаг и ресёрч, приоритизировали через ICE. Сегодня — превращаем их в цели, которые вы лидируете.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3>Это часть управленческой рамки</h3><p style="font-size:15px;margin-top:5px">OGSM/OKR встают в рамку навсегда — как квартальный цикл, а не разовая подготовка к стратсессии.</p></div>
+  </div>
+  <div class="value"><span>Сегодняшний воркшоп — <b>предшествующий этап к вашей стратсессии.</b> Разбираем методологию, забираем рабочую тетрадь и запускаем цикл.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Где мы</span></div>
+</section>
+
+<!-- 4 · AGENDA -->
+<section class="slide">
+  <span class="kicker">С чем вы выйдете</span>
+  <h2 style="margin:10px 0 16px">Маршрут воркшопа</h2>
+  <div class="agenda">
+    <div class="agitem"><span class="t">1</span><h3>Зачем система: боли без целеполагания</h3></div>
+    <div class="agitem"><span class="t">2</span><h3>3 кита: OGSM · OKR · KPI</h3></div>
+    <div class="agitem"><span class="t">3</span><h3>OGSM: что, как собирается, чек-лист</h3></div>
+    <div class="agitem"><span class="t">4</span><h3>OKR: что, как писать O и KR, чек-лист</h3></div>
+    <div class="agitem"><span class="t">5</span><h3>Как выбрать ручки: бенчмарк · ICE · прогноз</h3></div>
+    <div class="agitem"><span class="t">6</span><h3>Каскад OGSM ⇄ OKR + цикл и ретро</h3></div>
+    <div class="agitem"><span class="t">7</span><h3>Связь с перформансом (perf review → PDP)</h3></div>
+    <div class="agitem"><span class="t">8</span><h3>Инструменты: трекер, дашборд + домашка</h3></div>
+  </div>
+  <div class="value"><span><b>Образ результата встречи:</b> вы уходите с черновиком своих <b>Q1-OKR</b> — 2–3 проектами, которые вы лидируете, привязанными к OGSM компании.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Маршрут</span></div>
+</section>
+
+<!-- 5 · ЛЕБЕДЬ РАК ЩУКА -->
+<section class="slide slide--img" style="padding:42px 54px 40px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px"><span class="tag">Блок 1 · Боль №1</span><h2 style="font-size:31px">«Лебедь, рак и щука»</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:19px;margin-bottom:14px">Люди годами работают в одной команде, но тянут результат в разные стороны. Спроси каждого «в какой компании ты работаешь и за счёт чего мы №1» — <b style="color:var(--em)">получишь разные ответы, иногда буквально разные бизнесы.</b></p>
+      <div class="warnbox" style="padding:13px 17px">Рассинхрон не виден в отчёте, но проявляется везде — в конфликтах, в срывах на стыках, в том, что «каждый прав по-своему».</div>
+    </div>
+    <div class="miro"><img src="gen/chaos-order.png" alt="хаос → фокус"></div>
+  </div>
+  <div class="value"><span>OGSM/OKR синхронизируют команду <b>смотреть в одну сторону</b> и превращают разнонаправленные усилия в один вектор.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Разбалансировка</span></div>
+</section>
+
+<!-- 6 · 210 ГИПОТЕЗ -->
+<section class="slide">
+  <span class="kicker">Блок 1 · Боль №2</span>
+  <h2 style="margin:10px 0 14px">210 гипотез, которые <span class="hl">не реализовать</span></h2>
+  <div class="two">
+    <div>
+      <p class="lead" style="font-size:19px">На стратсессии команда из 13 человек сгенерила <b style="color:var(--em)">210 гипотез</b> за день. Это физически невозможно сделать. Большинство улетит на пыльную полку.</p>
+      <p style="font-size:17px;margin-top:14px">Задача — свести всё к <b style="color:var(--em)">~10 главным ставкам</b>, на которые реально инвестируем фокус и время.</p>
+    </div>
+    <div class="stats" style="flex-direction:column;gap:12px">
+      <div class="stat"><div class="k">Нагенерили за день</div><div class="v rd">210</div><div class="k" style="margin-top:3px">гипотез — распыление</div></div>
+      <div class="stat"><div class="k">Берём в фокус</div><div class="v gr">~10</div><div class="k" style="margin-top:3px">ставок в квартал → OKR</div></div>
+    </div>
+  </div>
+  <div class="value"><span>Фокус и время — <b>ключевой актив</b>. OKR — это про то, как из вороха идей выбрать те, что двигают результат, и не распыляться.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Фокус</span></div>
+</section>
+
+<!-- 7 · КАК СОТРУДНИК ВЛИЯЕТ -->
+<section class="slide">
+  <span class="kicker">Блок 1 · Боль №3</span>
+  <h2 style="margin:10px 0 14px">«Непонятно, как сотрудник <span class="hl">влияет на прибыль</span>»</h2>
+  <p class="lead" style="margin-bottom:16px;font-size:18px">В правильной картине мира <b style="color:var(--em)">не существует сотрудника, который не влияет на выручку и прибыль.</b> Кто-то больше, кто-то косвенно — но влияет каждый.</p>
+  <div class="grid g3">
+    <div class="card"><span class="icon">🎯</span><h3 style="font-size:16px">Прозрачная зона</h3><p>У каждого — чёткие проекты, которые он лидирует, и метрика, за которую отвечает</p></div>
+    <div class="card"><span class="icon">🔗</span><h3 style="font-size:16px">Явная связь с деньгами</h3><p>Видно, как проект человека тянет к выручке и чистой прибыли</p></div>
+    <div class="card"><span class="icon">⚖️</span><h3 style="font-size:16px">Основа для перформанса</h3><p>По этим проектам потом оценивается результат и строится развитие</p></div>
+  </div>
+  <div class="value"><span>Пример логики: топ-менеджеру дешевле оплатить домработницу, чем он сам будет тратить время на рутину. <b>Каждое действие можно приземлить на вклад в результат.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Влияние на прибыль</span></div>
+</section>
+
+<!-- 8 · ЧТО ДАЁТ СИСТЕМА -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 1 · Итог</span>
+  <h2 style="margin:10px 0 16px">Что даёт система целеполагания</h2>
+  <div class="grid g4">
+    <div class="card"><span class="icon">🎯</span><h3 style="font-size:17px">Фокус</h3><p>Из 210 идей — 10 ставок. Ресурс не распыляется</p></div>
+    <div class="card"><span class="icon">🪟</span><h3 style="font-size:17px">Прозрачность</h3><p>У каждого чёткая зона ответственности и проекты</p></div>
+    <div class="card"><span class="icon">🧭</span><h3 style="font-size:17px">Синхрон</h3><p>Вся команда смотрит в одну сторону</p></div>
+    <div class="card"><span class="icon">⚖️</span><h3 style="font-size:17px">Перформанс</h3><p>По проектам оценивается результат и бонусы</p></div>
+  </div>
+  <div class="value"><span>И бонусом — <b>фундамент оргструктуры</b>: видно, где не хватает капасити и пора нанимать. Об этом в конце.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>4 выгоды</span></div>
+</section>
+
+<!-- 9 · 3 КИТА -->
+<section class="slide">
+  <span class="kicker">Блок 2 · Карта территории</span>
+  <h2 style="margin:10px 0 14px">Три кита целеполагания</h2>
+  <div class="grid g3">
+    <div class="card" style="border-top:4px solid var(--em)"><span class="num">O</span><h3>OGSM</h3><p style="margin-top:5px"><b style="color:var(--em)">Годовая стратегическая карта.</b> Видение и как мы к нему идём. Мало кто про неё слышал.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">K</span><h3>OKR</h3><p style="margin-top:5px"><b style="color:var(--em)">Квартальные проекты роста.</b> Ambition-цели с образом результата. Вы будете с ними жить.</p></div>
+    <div class="card" style="border-top:4px solid var(--green)"><span class="num">Π</span><h3>KPI</h3><p style="margin-top:5px"><b style="color:var(--em)">Ежедневный контроль.</b> То, что вы смотрите в моделях каждый день. Реалистичные, цель — 100%.</p></div>
+  </div>
+  <div class="value"><span>Звучит сложно — на деле просто. Это <b>три горизонта одной системы</b>: год → квартал → день. Дальше разведём, когда что.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>3 кита</span></div>
+</section>
+
+<!-- 10 · СРАВНЕНИЕ -->
+<section class="slide">
+  <span class="kicker">Блок 2 · Когда что использовать</span>
+  <h2 style="margin:10px 0 12px">OGSM / OKR / KPI — в чём разница</h2>
+  <table>
+    <thead><tr><th></th><th>OGSM</th><th>OKR</th><th>KPI</th></tr></thead>
+    <tbody>
+      <tr><td><b>Горизонт</b></td><td>Год (видение 1–3)</td><td>Квартал (~3 мес)</td><td>День / неделя</td></tr>
+      <tr><td><b>Функция</b></td><td>Стратегическая карта, синхрон</td><td>Проекты роста, фокус</td><td>Контроль и мониторинг</td></tr>
+      <tr><td><b>Амбиция</b></td><td>Амбициозная, драйвит</td><td>Амбициозная (stretch)</td><td>Реалистичная, достижимая</td></tr>
+      <tr><td><b>Норма выполнения</b></td><td>—</td><td><b>~70% — это норма</b></td><td>Целимся в 100%</td></tr>
+      <tr><td><b>Связь с бонусами</b></td><td>Косвенно</td><td><b>Всегда → мотивация</b></td><td>Через операционку</td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>Ключевое: <b>OKR всегда амбициозны и всегда связаны с бонусами</b>, а KPI — реалистичны и про ежедневный контроль. Не путать.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сравнение</span></div>
+</section>
+
+<!-- 11 · КАСКАД -->
+<section class="slide slide--img" style="padding:42px 54px 40px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px"><span class="tag">Блок 2 · Как они дружат</span><h2 style="font-size:31px">Каскад: OGSM → OKR → KPI</h2></div>
+  <div class="imgacc">
+    <div>
+      <div class="tiers">
+        <div class="tier" style="border-left-color:var(--em)"><div class="tl">OGSM<span>год</span></div><div class="tv"><b>Куда идём и как.</b> Годовая стратегия → из неё вытекают квартальные ставки.</div></div>
+        <div class="tier" style="border-left-color:var(--gold)"><div class="tl">OKR<span>квартал</span></div><div class="tv"><b>Что делаем сейчас.</b> 2–3 проекта на квартал, которые двигают стратегию.</div></div>
+        <div class="tier" style="border-left-color:var(--green)"><div class="tl">KPI<span>день</span></div><div class="tv"><b>Как контролируем.</b> Опережающие метрики внутри проектов — в предиктивной модели.</div></div>
+      </div>
+    </div>
+    <div class="miro"><img src="gen/cascade.png" alt="каскад целей"></div>
+  </div>
+  <div class="value"><span>Внутри OKR-проектов живут <b>опережающие индикаторы</b> — те же, что вы уже ведёте в моделях. Всё связано в один поток.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Каскад</span></div>
+</section>
+
+<!-- 12 · ЧТО ТАКОЕ OGSM -->
+<section class="slide">
+  <span class="kicker">Блок 3 · OGSM</span>
+  <h2 style="margin:10px 0 14px">OGSM — годовая <span class="hl">стратегическая карта</span></h2>
+  <div class="grid g4">
+    <div class="card"><span class="num">O</span><h3 style="font-size:17px">Objective</h3><p>Качественная амбициозная цель — куда идём за год. Видение одной фразой</p></div>
+    <div class="card"><span class="num">G</span><h3 style="font-size:17px">Goals</h3><p>Оцифрованные цели — на сколько именно. Выручка, маржа, доля рынка</p></div>
+    <div class="card"><span class="num">S</span><h3 style="font-size:17px">Strategies</h3><p>За счёт чего дойдём — ключевые направления/ставки года</p></div>
+    <div class="card"><span class="num">M</span><h3 style="font-size:17px">Measures</h3><p>Как измеряем движение по каждой стратегии — метрики</p></div>
+  </div>
+  <div class="value"><span>OGSM заполняет <b>один человек</b> (обычно первое лицо) — это фундамент, из которого потом строятся OKR всех отделов. На практике беру горизонт <b>1 год</b>: на 2–3 сложно декомпозировать в проекты.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>OGSM</span></div>
+</section>
+
+<!-- 13 · АНАТОМИЯ OGSM -->
+<section class="slide">
+  <span class="kicker">Блок 3 · Анатомия на примере</span>
+  <h2 style="margin:10px 0 12px">Как выглядит заполненный OGSM</h2>
+  <div class="tiers">
+    <div class="tier" style="border-left-color:var(--em)"><div class="tl">Objective<span>куда</span></div><div class="tv"><b>Стать №1 по качеству в своём сегменте и вырасти в устойчивую компанию, не разваливаясь.</b></div></div>
+    <div class="tier"><div class="tl">Goals<span>на сколько</span></div><div class="tv">Выручка <b>×1,8</b> · валовая маржа <b>58% → 63%</b> · LTV/CAC <b>≥ 3</b> к концу года</div></div>
+    <div class="tier"><div class="tl">Strategies<span>за счёт чего</span></div><div class="tv">1) Масштаб работающего канала · 2) Рост среднего чека через продуктовый каскад · 3) Удержание и апсейл базы</div></div>
+    <div class="tier"><div class="tl">Measures<span>как мерим</span></div><div class="tv">Лиды/CPL по каналу · доля дорогого тарифа в каскаде · retention когорт · NRR</div></div>
+  </div>
+  <div class="value"><span>Из <b>Strategies и Measures</b> напрямую вырастают квартальные OKR отделов. Это мост от годовой карты к проектам.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Пример OGSM</span></div>
+</section>
+
+<!-- 14 · 3 ВОПРОСА -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 3 · Синхронизация</span>
+  <h2 style="margin:10px 0 16px">3 вопроса, с которых начинается стратегия</h2>
+  <div class="grid g3">
+    <div class="card"><span class="num">1</span><h3 style="font-size:18px">Кто мы?</h3><p>Что мы за компания на самом деле</p></div>
+    <div class="card"><span class="num">2</span><h3 style="font-size:18px">Для кого и на каком рынке?</h3><p>Кому и где мы играем</p></div>
+    <div class="card" style="border-top:3px solid var(--gold-2)"><span class="num">3</span><h3 style="font-size:18px">За счёт чего №1 в мире?</h3><p>Наш источник преимущества</p></div>
+  </div>
+  <div class="value"><span><b>~70% команд отвечают по-разному</b> — иногда описывают буквально разные бизнесы. Пока не синхронизируетесь здесь — OGSM будет собран вслепую.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>3 вопроса</span></div>
+</section>
+
+<!-- 15 · КАК СОБИРАЕТСЯ OGSM -->
+<section class="slide">
+  <span class="kicker">Блок 3 · Сборка</span>
+  <h2 style="margin:10px 0 12px">Как собирается OGSM — по шагам</h2>
+  <div class="steps">
+    <div class="step"><div class="sn">1</div><div><div class="st">Синхрон на 3 вопросах</div><div class="sd">Кто мы / для кого / за счёт чего №1 — выравниваем картину мира команды.</div></div></div>
+    <div class="step"><div class="sn">2</div><div><div class="st">Objective — амбициозное видение года</div><div class="sd">Одна качественная цель, которая драйвит. Ради чего просыпаемся.</div></div></div>
+    <div class="step"><div class="sn">3</div><div><div class="st">Goals — оцифровка</div><div class="sd">Переводим видение в конкретные числа: выручка, маржа, ключевые метрики.</div></div></div>
+    <div class="step"><div class="sn">4</div><div><div class="st">Strategies — 3–5 ставок года</div><div class="sd">За счёт чего дойдём. Опираемся на дебаг (горлышки) и ресёрч (практики).</div></div></div>
+    <div class="step"><div class="sn">5</div><div><div class="st">Measures — метрики по каждой стратегии</div><div class="sd">Как поймём, что движемся. Эти метрики уходят в OKR и модели.</div></div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сборка OGSM</span></div>
+</section>
+
+<!-- 16 · ЧЕК-ЛИСТ OGSM -->
+<section class="slide">
+  <span class="kicker">Блок 3 · ✅ Чек-лист</span>
+  <h2 style="margin:10px 0 14px">Чек-лист качественного OGSM</h2>
+  <div class="two">
+    <ul class="bl check" style="gap:11px">
+      <li>Команда одинаково отвечает на 3 вопроса стратегии</li>
+      <li>Objective амбициозен и вдохновляет, а не «удержать текущее»</li>
+      <li>Goals оцифрованы — есть конкретные числа и срок</li>
+    </ul>
+    <ul class="bl check" style="gap:11px">
+      <li>Strategies — 3–5 фокусов, а не «делаем всё»</li>
+      <li>У каждой Strategy есть Measures (метрика движения)</li>
+      <li>Из Strategies/Measures очевидно вырастают OKR отделов</li>
+    </ul>
+  </div>
+  <div class="value"><span>Если по любому пункту «нет» — OGSM ещё сырой. Лучше меньше, но <b>с цифрами и синхроном</b>, чем красиво и вслепую.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Чек-лист OGSM</span></div>
+</section>
+
+<!-- 17 · ОШИБКИ OGSM -->
+<section class="slide">
+  <span class="kicker">Блок 3 · Как НЕ надо</span>
+  <h2 style="margin:10px 0 14px">Типовые ошибки OGSM</h2>
+  <ul class="bl cross" style="gap:12px">
+    <li><b>Размытый Objective</b> — «стать лучше», «расти» без образа и амбиции</li>
+    <li><b>Goals без цифр</b> — цели, которые нельзя измерить и проверить</li>
+    <li><b>Стратегия «обо всём»</b> — 15 направлений вместо 3–5 ставок → распыление</li>
+    <li><b>Measures оторваны от Strategies</b> — метрики есть, но не про движение по стратегии</li>
+    <li><b>Собран в одиночку без синхрона</b> — команда не разделяет и не исполняет</li>
+  </ul>
+  <div class="value"><span>Хорошая проверка: покажите OGSM любому в команде — сможет ли он из него вывести <b>свои проекты на квартал?</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Ошибки OGSM</span></div>
+</section>
+
+<!-- 18 · ЧТО ТАКОЕ OKR -->
+<section class="slide">
+  <span class="kicker">Блок 4 · OKR</span>
+  <h2 style="margin:10px 0 14px">OKR — квартальные <span class="hl">проекты роста</span></h2>
+  <div class="two">
+    <div class="card" style="border-top:4px solid var(--em)"><h3>Objective</h3><p style="font-size:15px;margin-top:5px"><b style="color:var(--em)">Куда движемся</b> — качественная, амбициозная, вдохновляющая цель проекта на квартал.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3>Key Results</h3><p style="font-size:15px;margin-top:5px"><b style="color:var(--em)">Как измерим</b> — 2–4 измеримых результата. Достигли их → Objective выполнен.</p></div>
+  </div>
+  <div class="value"><span>Внутри OKR — <b>образ результата</b>: количественный (цифры) + качественный (что именно построено). И у проекта всегда <b>один ответственный-лидер.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>OKR</span></div>
+</section>
+
+<!-- 19 · АНАТОМИЯ OKR -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Анатомия на примере</span>
+  <h2 style="margin:10px 0 12px">Как выглядит заполненный OKR</h2>
+  <div class="tiers">
+    <div class="tier" style="border-left-color:var(--em)"><div class="tl">Objective<span>куда</span></div><div class="tv"><b>Превратить продуктовый каскад из случайности в систему и поднять средний чек.</b> Лидер: коммерческий директор</div></div>
+    <div class="tier"><div class="tl">KR 1<span>измеримо</span></div><div class="tv">Доля звонков, где сначала предлагают дорогой тариф: <b>5% → 80%</b></div></div>
+    <div class="tier"><div class="tl">KR 2<span>измеримо</span></div><div class="tv">Средний чек: <b>85к → 150к ₽</b></div></div>
+    <div class="tier"><div class="tl">KR 3<span>качественно</span></div><div class="tv">Регламент каскада описан, команда аттестована, метрика в модели ежедневно</div></div>
+  </div>
+  <div class="value"><span>Objective вдохновляет и задаёт направление, Key Results <b>измеримы и амбициозны.</b> KR — это результаты, а не список задач.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Пример OKR</span></div>
+</section>
+
+<!-- 20 · ИЗ ДРАЙВЕРОВ В OKR -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Мост к дебагу и ресёрчу</span>
+  <h2 style="margin:10px 0 14px">Из драйверов — в <span class="hl">2–3 OKR</span></h2>
+  <div class="loop" style="margin-top:4px">
+    <div class="lnode"><b>Дебаг</b><span>горлышки</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Ресёрч</b><span>лучшие практики</span></div><span class="arr">→</span>
+    <div class="lnode"><b>ICE</b><span>приоритизация</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>2–3 OKR</b><span>проекты квартала</span></div>
+  </div>
+  <p class="lead" style="margin:20px 0 0;font-size:18px">Вы уже нашли узкие места (дебаг) и практики их расшивки (ресёрч), приоритизировали через ICE. <b style="color:var(--em)">Топ-ставки становятся вашими OKR</b> — не 210 гипотез, а фокус на главном.</p>
+  <div class="value"><span>OKR — это не «придумать цели с потолка», а <b>упаковать уже провалидированные драйверы</b> в проекты с образом результата.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Драйверы → OKR</span></div>
+</section>
+
+<!-- 21 · ПРАВИЛО 70 -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Амбиция</span>
+  <h2 style="margin:10px 0 14px">70% выполнения — это <span class="hl">норма</span>, 100% не бывает</h2>
+  <div class="two">
+    <div class="stats" style="flex-direction:column;gap:12px">
+      <div class="stat"><div class="k">Реальное выполнение OKR</div><div class="v gd">~70%</div><div class="k" style="margin-top:3px">за 10 лет практики — это хороший результат</div></div>
+      <div class="stat"><div class="k">100% всех OKR у всей команды</div><div class="v rd">не бывает</div><div class="k" style="margin-top:3px">и это нормально — всегда кто-то зафакапит</div></div>
+    </div>
+    <div>
+      <p class="lead" style="font-size:18px">Если выполнили 100% — как и в предиктивной модели, это <b style="color:var(--em)">не хорошо</b>: значит, не заложили амбицию, не оставили гэпа для роста.</p>
+      <div class="okbox" style="margin-top:14px;padding:12px 16px">OKR — амбициозны (stretch). KPI — реалистичны (целимся в 100%). В этом их разница.</div>
+    </div>
+  </div>
+  <div class="value"><span>Проект реализовали быстрее квартала? Не сидим — <b>запускаем следующий цикл OKR.</b> Система не останавливается.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Правило 70%</span></div>
+</section>
+
+<!-- 22 · ОДИН ЛИДЕР -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Ответственность</span>
+  <h2 style="margin:10px 0 14px">Один проект — <span class="hl">один ответственный-лидер</span></h2>
+  <p class="lead" style="margin-bottom:16px;font-size:18px">У каждого OKR-проекта — конкретная фамилия лидера. Именно он оркеструет вокруг себя рабочую группу и отвечает за образ результата.</p>
+  <div class="grid g3">
+    <div class="card"><span class="icon">👤</span><h3 style="font-size:16px">Фамилия напротив проекта</h3><p>Не «команда отвечает», а конкретный управленец лидирует</p></div>
+    <div class="card"><span class="icon">🎯</span><h3 style="font-size:16px">Драйвер роста в зоне</h3><p>За каждым лидером — драйвер, который он развивает весь квартал</p></div>
+    <div class="card" style="border-top:3px solid var(--gold)"><span class="icon">⚖️</span><h3 style="font-size:16px">Основа перформанса</h3><p>По этим проектам квартально оценивается его результат</p></div>
+  </div>
+  <div class="value"><span>Это тот самый принцип из аналитики: <b>метрика оживает, только когда у неё есть один владелец.</b> С проектами — так же.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Один лидер</span></div>
+</section>
+
+<!-- 23 · КАК ПИСАТЬ OBJECTIVE -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Принципы · Objective</span>
+  <h2 style="margin:10px 0 14px">Как писать <span class="hl">Objective</span></h2>
+  <div class="two">
+    <ul class="bl check" style="gap:11px">
+      <li><b>Качественный и вдохновляющий</b> — задаёт направление, а не цифру</li>
+      <li><b>Амбициозный</b> — за него стоит бороться, он тянет вперёд</li>
+      <li><b>Один фокус</b> — одна ясная цель, а не «и то, и это»</li>
+      <li><b>Привязан к OGSM</b> — вытекает из стратегии года</li>
+    </ul>
+    <div class="card">
+      <div class="tag" style="margin-bottom:8px">Формула</div>
+      <p style="font-size:16px;line-height:1.5"><b style="color:var(--em)">[Глагол действия] + [что меняем] + [зачем/куда].</b></p>
+      <p style="font-size:15px;color:var(--muted);margin-top:10px">«Превратить продуктовый каскад из случайности в управляемую систему и поднять средний чек».</p>
+    </div>
+  </div>
+  <div class="value"><span>Хороший Objective читается как <b>вызов, а не задача.</b> Если звучит скучно — он не будет драйвить квартал.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Objective</span></div>
+</section>
+
+<!-- 24 · КАК ПИСАТЬ KR -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Принципы · Key Results</span>
+  <h2 style="margin:10px 0 14px">Как писать <span class="hl">Key Results</span></h2>
+  <div class="two">
+    <ul class="bl check" style="gap:11px">
+      <li><b>Измеримы</b> — из состояния «было → стало», всегда цифра</li>
+      <li><b>Это результаты, а не задачи</b> — «CR 5%→9%», а не «провести 10 тренингов»</li>
+      <li><b>Амбициозны</b> — stretch, а не «точно сделаем»</li>
+      <li><b>2–4 на Objective</b> — если 8, значит нет фокуса</li>
+    </ul>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <div class="tag" style="margin-bottom:8px">Результат vs задача</div>
+      <p style="font-size:15px;line-height:1.5"><b style="color:var(--green)">✓ Результат:</b> «средний чек 85к → 150к»</p>
+      <p style="font-size:15px;line-height:1.5;margin-top:8px"><b style="color:var(--red)">✕ Задача:</b> «переписать скрипты, обучить отдел»</p>
+      <p style="font-size:13.5px;color:var(--muted);margin-top:9px">Задачи — это то, ЧТО делаем ради KR. Они живут в трекере проектов, не в OKR.</p>
+    </div>
+  </div>
+  <div class="value"><span>KR берём <b>из предиктивной модели</b> — это опережающие показатели, на которые вы и так влияете операционкой.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Key Results</span></div>
+</section>
+
+<!-- 25 · ЧЕК-ЛИСТ OKR -->
+<section class="slide">
+  <span class="kicker">Блок 4 · ✅ Чек-лист</span>
+  <h2 style="margin:10px 0 14px">Чек-лист качественного OKR</h2>
+  <div class="two">
+    <ul class="bl check" style="gap:11px">
+      <li>Objective вдохновляет и вытекает из OGSM</li>
+      <li>Есть один ответственный-лидер (фамилия)</li>
+      <li>2–4 Key Results, все измеримы</li>
+      <li>KR — результаты, а не список задач</li>
+    </ul>
+    <ul class="bl check" style="gap:11px">
+      <li>KR амбициозны (норма выполнения ~70%)</li>
+      <li>У вас всего 2–3 OKR на квартал, а не 8</li>
+      <li>Есть образ результата (кол-во + качество)</li>
+      <li>Приземлён в мотивацию/бонусы</li>
+    </ul>
+  </div>
+  <div class="value"><span>Прогоните каждый свой OKR по этому списку — а лучше через <b>AI-челленджер</b> (через 2 слайда).</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Чек-лист OKR</span></div>
+</section>
+
+<!-- 26 · ОШИБКИ OKR -->
+<section class="slide">
+  <span class="kicker">Блок 4 · Как НЕ надо</span>
+  <h2 style="margin:10px 0 14px">Типовые ошибки OKR</h2>
+  <ul class="bl cross" style="gap:12px">
+    <li><b>KR = задачи</b> — «сделать сайт», «нанять 3 менеджеров» вместо измеримого результата</li>
+    <li><b>Слишком много OKR</b> — 6–8 проектов на квартал → нет фокуса, всё провисает</li>
+    <li><b>Не привязаны к OGSM</b> — проекты сами по себе, стратегия сама по себе</li>
+    <li><b>Нет владельца</b> — «отвечает отдел» → не сдвинется</li>
+    <li><b>Реалистичные, без амбиции</b> — легко сделать 100% → нет роста (это KPI, не OKR)</li>
+    <li><b>Не связаны с бонусами</b> → становятся необязательными, «если что — не сделаем»</li>
+  </ul>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Ошибки OKR</span></div>
+</section>
+
+<!-- 27 · ДОКАЗАТЕЛЬНЫЙ ПОДХОД -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 5 · Как выбрать ручки</span>
+  <div class="spacer"></div>
+  <p class="quote">Ставки выбираем <span class="gold">на доказательствах</span>, а не на «мне кажется».</p>
+  <p class="lead" style="margin-top:22px;max-width:960px">Прежде чем ставить проект в OKR, нужно доказать, что эта ручка вообще двигает результат — <b style="color:#fff">через бенчмарк и расчёт</b>. Осознание «здесь мы отстаём, и этому есть доказательства» сильнее любой гипотезы в тысячу раз.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Доказательный подход</span></div>
+</section>
+
+<!-- 28 · ШАГ 2 МОДЕЛИ -->
+<section class="slide">
+  <span class="kicker">Блок 5 · Возврат к предиктивной модели</span>
+  <h2 style="margin:10px 0 12px">Шаг 2 из 8: <span class="hl">выбор ручек на бенчмарках</span></h2>
+  <p class="lead" style="margin-bottom:14px;font-size:18px">Помните 8 этапов построения предиктивной модели? Шаг 2 — как выбирать, какие ручки крутить. Возвращаемся к нему: OKR берём именно из этого фильтра.</p>
+  <div class="grid g3">
+    <div class="card"><span class="icon">📊</span><h3 style="font-size:16px">Разложить метрику</h3><p>Дерево от выручки до опережающих показателей — где ручки</p></div>
+    <div class="card"><span class="icon">🎯</span><h3 style="font-size:16px">Сравнить с бенчмарком</h3><p>Где мы ниже рынка/лучших практик — там потенциал (доказательство)</p></div>
+    <div class="card" style="border-top:3px solid var(--gold)"><span class="icon">💰</span><h3 style="font-size:16px">Оценить вес в деньгах</h3><p>Сколько принесёт подтягивание ручки к бенчмарку</p></div>
+  </div>
+  <div class="value"><span>Ручка достойна OKR, только если можно ответить: <b>«за счёт чего она двигает результат и сколько это в деньгах».</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 2 модели</span></div>
+</section>
+
+<!-- 29 · ДВОЙНОЙ ФИЛЬТР -->
+<section class="slide">
+  <span class="kicker">Блок 5 · От 200 гипотез — к 10</span>
+  <h2 style="margin:10px 0 14px">Двойной фильтр приоритизации</h2>
+  <div class="loop" style="margin-top:6px">
+    <div class="lnode" style="min-width:150px"><b>200 гипотез</b><span>после стратсессии</span></div><span class="arr">→</span>
+    <div class="lnode" style="min-width:170px"><b>Фильтр «Шаг 2»</b><span>есть бенчмарк + вес в деньгах?</span></div><span class="arr">→</span>
+    <div class="lnode" style="min-width:150px"><b>Ранжирование ICE</b><span>Impact × Confidence × Ease</span></div><span class="arr">→</span>
+    <div class="lnode hot" style="min-width:150px"><b>Топ-10 → OKR</b><span>ставки квартала</span></div>
+  </div>
+  <p class="lead" style="margin:22px 0 0;font-size:18px">Сначала <b style="color:var(--em)">отсекаем недоказанное</b> (нет бенчмарка/веса — на парковку), потом <b style="color:var(--em)">ранжируем оставшееся по ICE</b>. Наверху — то, что идёт в OKR.</p>
+  <div class="value"><span>Так «210 гипотез» превращаются в <b>управляемые 10 ставок</b> — не по интуиции, а по доказательствам и весу.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Двойной фильтр</span></div>
+</section>
+
+<!-- 30 · ICE КАЛЬКУЛЯТОР -->
+<section class="slide">
+  <span class="kicker">Блок 5 · Готовый фреймворк</span>
+  <h2 style="margin:10px 0 12px">ICE-калькулятор гипотез</h2>
+  <table>
+    <thead><tr><th>Гипотеза (расшивка ручки)</th><th>Impact, ₽/год</th><th>I</th><th>C</th><th>E</th><th>ICE</th><th>Приоритет</th></tr></thead>
+    <tbody>
+      <tr><td>Продуктовый каскад 5%→80%</td><td><b>+120 млн</b></td><td>9</td><td>7</td><td>6</td><td><b>378</b></td><td>🥇 в OKR</td></tr>
+      <tr><td>Дожим базы недозакрытых</td><td>+40 млн</td><td>7</td><td>8</td><td>8</td><td><b>448</b></td><td>🥇 в OKR</td></tr>
+      <tr><td>Новый канал: вебинары</td><td>+30 млн</td><td>6</td><td>4</td><td>4</td><td>96</td><td>парковка</td></tr>
+      <tr><td>Редизайн лендинга</td><td>+8 млн</td><td>3</td><td>6</td><td>7</td><td>126</td><td>позже</td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span><b>ICE = I × C × E</b> (каждое 1–10): Impact — влияние, Confidence — уверенность/доказательства, Ease — лёгкость. Подставляете гипотезы → сортируете по баллу. <b>Готовый калькулятор дам в домашке.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>ICE</span></div>
+</section>
+
+<!-- 31 · ПРОГНОЗ 3 СЦЕНАРИЯ -->
+<section class="slide">
+  <span class="kicker">Блок 5 · Вес гипотезы в деньгах</span>
+  <h2 style="margin:10px 0 14px">Прогноз влияния — <span class="hl">3 сценария</span></h2>
+  <p class="lead" style="margin-bottom:14px;font-size:18px">По каждой топ-гипотезе строим матмодель: сколько денег принесёт. Три сценария снимают спор «а вдруг не сработает».</p>
+  <div class="stats">
+    <div class="stat" style="border-top:3px solid var(--red)"><div class="k">Пессимистичный</div><div class="v rd">+45 млн</div><div class="k" style="margin-top:3px">каскад доходит до 50%</div></div>
+    <div class="stat" style="border-top:3px solid var(--gold)"><div class="k">Реалистичный</div><div class="v gd">+90 млн</div><div class="k" style="margin-top:3px">каскад до 80%, чек +40%</div></div>
+    <div class="stat" style="border-top:3px solid var(--green)"><div class="k">Максимальный</div><div class="v gr">+120 млн</div><div class="k" style="margin-top:3px">каскад 90% + апсейл</div></div>
+  </div>
+  <div class="value"><span>Прогноз в деньгах — это и есть <b>вес гипотезы</b>. Он идёт в столбец Impact калькулятора ICE и в Goals/Measures OGSM.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>3 сценария</span></div>
+</section>
+
+<!-- 32 · CLAUDE СЧЁТЧИК -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 5 · Claude как счётчик</span>
+  <h2 style="margin:8px 0 12px">Не умеешь считать сам — <span class="gold">дай цифры Claude</span></h2>
+  <div class="term" style="font-size:13px">
+<span class="c"># вставь в чат Claude / второй мозг</span>
+Построй математический прогноз по гипотезе: <span class="ph">[описание ручки]</span>.
+Текущие данные: <span class="ph">[метрики, объёмы, конверсии, чек, цикл]</span>.
+Дай три сценария — ниже ожиданий / реалистичный / максимальный,
+с расчётом прироста выручки и прибыли за год. Задай уточняющие
+вопросы, если данных не хватает. Потом зачелленджи свои расчёты:
+где ты мог ошибиться? Верни таблицу «сценарий → дельта ₽».</div>
+  <div class="value"><span>Claude хорошо прогнозирует, <b>если давать ему цифры.</b> Он посчитает вес, разложит на 3 сценария и приоритизирует выбранные гипотезы — за 10–15 минут вместо дней.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Claude-счётчик</span></div>
+</section>
+
+<!-- 33 · AI ЧЕЛЛЕНДЖЕР -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 5 · Инструмент</span>
+  <h2 style="margin:8px 0 12px">🤖 AI-челленджер ваших OKR</h2>
+  <div class="term" style="font-size:13px">
+<span class="c"># проверь свои OKR по принципам</span>
+Ты — строгий OKR-коуч. Проверь мой OKR по принципам:
+Objective — качественный, амбициозный, вдохновляющий, из OGSM?
+Key Results — измеримы, это результаты (не задачи), амбициозны, 2–4 шт?
+Мой OKR:
+Objective: <span class="ph">[...]</span>
+KR: <span class="ph">[...]</span>
+По каждому пункту дай вердикт ✓/✕, объясни и предложи
+переформулировку. В конце — оценка 1–10 и что исправить первым.</div>
+  <div class="value"><span>Прогоните каждый черновой OKR через этот промпт — он поймает «KR = задача», размытый Objective и отсутствие амбиции. <b>Готовый файл дам в домашке.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>AI-челленджер</span></div>
+</section>
+
+<!-- 34 · КАСКАД OGSM->OKR -->
+<section class="slide">
+  <span class="kicker">Блок 6 · Как OGSM дружит с OKR</span>
+  <h2 style="margin:10px 0 12px">Вертикальный каскад: <span class="hl">компания → отдел → человек</span></h2>
+  <div class="tiers">
+    <div class="tier" style="border-left-color:var(--em)"><div class="tl">OGSM<span>компания · год</span></div><div class="tv"><b>Strategy:</b> рост среднего чека через продуктовый каскад · <b>Measure:</b> доля дорогого тарифа</div></div>
+    <div class="tier" style="border-left-color:var(--gold)"><div class="tl">OKR отдела<span>продажи · квартал</span></div><div class="tv"><b>Objective:</b> сделать каскад системой · <b>KR:</b> доля дорогого тарифа 5%→80%, чек 85к→150к</div></div>
+    <div class="tier" style="border-left-color:var(--green)"><div class="tl">OKR человека<span>РОП · квартал</span></div><div class="tv"><b>Objective:</b> перестроить работу команды под каскад · <b>KR:</b> 100% менеджеров аттестованы, метрика в модели ежедневно</div></div>
+  </div>
+  <div class="value"><span>Каждый уровень <b>выводится из предыдущего.</b> Так стратегия компании доходит до конкретного действия конкретного человека — и наоборот, видно, как его проект тянет к годовой цели.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Вертикальный каскад</span></div>
+</section>
+
+<!-- 35 · СКВОЗНОЙ ПРИМЕР -->
+<section class="slide">
+  <span class="kicker">Блок 6 · Сквозной пример</span>
+  <h2 style="margin:10px 0 12px">Одна цель — сверху донизу</h2>
+  <table>
+    <thead><tr><th>Уровень</th><th>Формулировка</th><th>Ответственный</th></tr></thead>
+    <tbody>
+      <tr><td><b>OGSM (год)</b></td><td>Выручка ×1,8 за счёт роста чека и удержания базы</td><td>Первое лицо</td></tr>
+      <tr><td><b>OKR продаж</b></td><td>Каскад как система: доля дорогого тарифа 5%→80%</td><td>Комдир</td></tr>
+      <tr><td><b>OKR маркетинга</b></td><td>Трафик под премиум-сегмент: доля целевых лидов +25%</td><td>Дир. маркетинга</td></tr>
+      <tr><td><b>OKR РОПа</b></td><td>Команда перестроена: 100% аттестованы, скрипт внедрён</td><td>РОП</td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>Видно <b>выравнивание</b>: все проекты тянут к одной годовой цели, но каждый — свой кусок, со своим владельцем и метрикой.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сквозной пример</span></div>
+</section>
+
+<!-- 36 · OKR ЭТО ЦИКЛ -->
+<section class="slide slide--img" style="padding:42px 54px 40px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px"><span class="tag">Блок 6 · Главный сдвиг</span><h2 style="font-size:31px">OKR — это цикл, а не разовая активность</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:19px;margin-bottom:14px">OKR не делается один раз под стратсессию. Это <b style="color:var(--em)">повторяющийся квартальный цикл</b>, который встаёт в вашу управленческую рамку навсегда.</p>
+      <ul class="bl" style="gap:9px">
+        <li>Проект сделали быстрее → запускаем следующий</li>
+        <li>Квартал закрыли → ретро, выводы, новый набор OKR</li>
+        <li>Ежемесячно — корректируем по ходу</li>
+      </ul>
+    </div>
+    <div class="miro"><img src="gen/cycle.png" alt="цикл OKR"></div>
+  </div>
+  <div class="value"><span>Именно поэтому <b>PDP и performance review у нас квартальные</b> — они привязаны к циклу OKR. Система крутится непрерывно.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Цикл</span></div>
+</section>
+
+<!-- 37 · ВЛОЖЕННЫЕ РИТМЫ -->
+<section class="slide">
+  <span class="kicker">Блок 6 · Ритмы</span>
+  <h2 style="margin:10px 0 14px">Вложенные горизонты планирования</h2>
+  <div class="grid g4">
+    <div class="card" style="border-top:4px solid var(--em)"><h3 style="font-size:17px">Год</h3><p><b style="color:var(--em)">OGSM</b> — стратегическая карта. Пересматриваем раз в год</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3 style="font-size:17px">Квартал</h3><p><b style="color:var(--em)">OKR</b> — проекты. Новый набор каждый квартал</p></div>
+    <div class="card" style="border-top:4px solid var(--gold-2)"><h3 style="font-size:17px">Месяц</h3><p><b style="color:var(--em)">Ретроспектива</b> — корректируем OKR по ходу</p></div>
+    <div class="card" style="border-top:4px solid var(--green)"><h3 style="font-size:17px">Неделя</h3><p><b style="color:var(--em)">Спринты</b> — задачи в трекере проектов, светофор</p></div>
+  </div>
+  <div class="value"><span>Плюс <b>ежедневно</b> — KPI в предиктивной модели, и <b>1-on-1</b> раз в неделю/две. Все ритмы вложены друг в друга и связаны.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Ритмы</span></div>
+</section>
+
+<!-- 38 · ЕЖЕМЕСЯЧНАЯ РЕТРО -->
+<section class="slide">
+  <span class="kicker">Блок 6 · Ретроспектива</span>
+  <h2 style="margin:10px 0 14px">Ежемесячная ретроспектива — <span class="hl">зачем</span></h2>
+  <div class="two">
+    <div>
+      <p class="lead" style="font-size:18px">Квартал — это долго, чтобы ждать финала. Раз в месяц собираемся и смотрим: где OKR идёт по плану, где буксует, что скорректировать.</p>
+      <div class="okbox" style="margin-top:14px;padding:12px 16px">Ретро — это не «отчитаться», а <b>управлять на ранней стадии</b>: поймать проблему, пока квартал ещё можно спасти.</div>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:8px">Что даёт ретро</h3>
+      <ul class="bl" style="gap:8px">
+        <li>Ранние сигналы отклонения OKR</li>
+        <li>Перераспределение ресурса на проседающее</li>
+        <li>Фиксация «что сработало» → в плейбуки</li>
+        <li>Материал для квартального perf review</li>
+      </ul>
+    </div>
+  </div>
+  <div class="value"><span>Ретро замыкает цикл: <b>OKR → месяц работы → ретро → корректировка → следующий месяц.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Ретро · зачем</span></div>
+</section>
+
+<!-- 39 · ФРЕЙМВОРК РЕТРО -->
+<section class="slide">
+  <span class="kicker">Блок 6 · Фреймворк ретро</span>
+  <h2 style="margin:10px 0 12px">Как проводим ретроспективу — по шагам</h2>
+  <div class="steps">
+    <div class="step"><div class="sn">1</div><div><div class="st">Статус OKR по светофору</div><div class="sd">Каждый лидер: 🟢 в графике · 🟡 риск · 🔴 буксует. За 30 секунд видно общую картину.</div></div></div>
+    <div class="step"><div class="sn">2</div><div><div class="st">Разбор красных зон (дебаг)</div><div class="sd">По каждому 🔴 — почему отклонились и что забираем. Не эмоции, а факторный анализ.</div></div></div>
+    <div class="step"><div class="sn">3</div><div><div class="st">Что сработало → закрепляем</div><div class="sd">Аномально зелёное — как масштабировать и зафиксировать в плейбук.</div></div></div>
+    <div class="step"><div class="sn">4</div><div><div class="st">Коммиты на следующий месяц</div><div class="sd">Конкретные корректировки и задачи в трекер. «Не записано = не сделано».</div></div></div>
+  </div>
+  <div class="value"><span>Даю вам <b>готовый фреймворк ретро</b> (файл) — по нему проводите встречу за 45–60 минут без «душной корпорации».</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Фреймворк ретро</span></div>
+</section>
+
+<!-- 40 · OKR <-> PERFORMANCE -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 7 · Связь с перформансом</span>
+  <h2 style="margin:10px 0 16px">OKR ↔ Performance: полный цикл</h2>
+  <div class="loop">
+    <div class="lnode"><b>OKR-проекты</b><span>образ результата</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Бонусы</b><span>мотивация</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>Perf Review</b><span>итоги квартала</span></div><span class="arr">→</span>
+    <div class="lnode"><b>PDP</b><span>план развития</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Калибровка</b><span>1-on-1</span></div>
+  </div>
+  <p class="lead" style="margin:22px 0 0;font-size:18px">Это ключевая мысль модуля: <b style="color:#fff">OKR — это не только про цели, это про оценку людей.</b> Проекты, которые лидирует управленец, становятся основой его квартального перформанса.</p>
+  <div class="value"><span>Цикл замкнут: сначала OKR (проекты и зоны) → потом perf review (что получилось, каких навыков не хватило) → PDP → калибровка на 1-on-1.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>OKR ↔ перформанс</span></div>
+</section>
+
+<!-- 41 · OKR В БОНУСЫ -->
+<section class="slide">
+  <span class="kicker">Блок 7 · Мотивация</span>
+  <h2 style="margin:10px 0 14px">Почему OKR <span class="hl">всегда</span> связан с бонусами</h2>
+  <div class="two">
+    <div>
+      <p class="lead" style="font-size:18px">Внутри проекта — образ результата с количественным и качественным итогом. Он <b style="color:var(--em)">приземляется в мотивацию.</b></p>
+      <div class="warnbox" style="margin-top:14px;padding:12px 16px">Если этого не сделать — OKR становятся необязательными: «если что, можно не сделать». А это то, что двигает вас к годовым результатам.</div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <h3 style="margin-bottom:6px">Как это выглядит</h3>
+      <p style="font-size:15px;line-height:1.5">Пример из практики: не выполнил показатели по проекту → обнуляется до <b style="color:var(--em)">50% квартального бонуса</b>. Появляется реальное ощущение влияния на метрику.</p>
+    </div>
+  </div>
+  <div class="value"><span>Полезное давление — не «детский сад», а <b>прозрачная связь результата проекта и дохода.</b> Это и делает OKR рабочими.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>OKR → бонусы</span></div>
+</section>
+
+<!-- 42 · PERF REVIEW SCORECARD -->
+<section class="slide">
+  <span class="kicker">Блок 7 · Performance Review</span>
+  <h2 style="margin:8px 0 10px">Оценка перформанса на базе OKR</h2>
+  <div class="two" style="grid-template-columns:1.1fr 1fr;align-items:center">
+    <div>
+      <p style="font-size:15.5px;line-height:1.5;margin-bottom:10px">По итогам квартала сводим по каждому управленцу: <b style="color:var(--em)">результат по OKR</b> (что сделал) × <b style="color:var(--em)">потенциал/навыки</b> (как рос). Получаем позицию в матрице 9-box.</p>
+      <ul class="bl" style="gap:7px;font-size:15px">
+        <li>🟢 Высокий результат + потенциал → растим, даём больше</li>
+        <li>🟡 Средний → калибруем через PDP</li>
+        <li>🔴 Низкий + не калибруется → тяжёлый разговор</li>
+      </ul>
+    </div>
+    <div>
+      <div class="axis" style="text-align:center;margin-bottom:5px">Результат по OKR →</div>
+      <div class="box9">
+        <div class="cell y"><b>Дилемма</b>потенциал есть, результата нет</div>
+        <div class="cell g"><b>Сильный</b>растёт, тянет</div>
+        <div class="cell g"><b>Звезда</b>даём больше зон</div>
+        <div class="cell r"><b>Вопрос</b>буксует</div>
+        <div class="cell y"><b>Ядро</b>стабильный</div>
+        <div class="cell g"><b>Профи</b>надёжный результат</div>
+        <div class="cell r"><b>Риск</b>не тянет, не растёт</div>
+        <div class="cell r"><b>Слабый</b>PDP или замена</div>
+        <div class="cell y"><b>Эксперт</b>результат без роста</div>
+      </div>
+    </div>
+  </div>
+  <div class="value"><span>Шаблон scorecard (9-box / 270°) <b>адаптируем под нас</b> — дам готовый файл в домашке.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>9-box</span></div>
+</section>
+
+<!-- 43 · PDP И КАЛИБРОВКА -->
+<section class="slide">
+  <span class="kicker">Блок 7 · Развитие</span>
+  <h2 style="margin:10px 0 14px">От Perf Review — к <span class="hl">PDP и калибровке</span></h2>
+  <div class="grid g3">
+    <div class="card"><span class="num">1</span><h3 style="font-size:16px">Perf Review (квартал)</h3><p>Что получилось по OKR, каких навыков не хватило</p></div>
+    <div class="card"><span class="num">2</span><h3 style="font-size:16px">PDP (квартал)</h3><p>Персональный план развития под выявленные пробелы</p></div>
+    <div class="card" style="border-top:3px solid var(--gold)"><span class="num">3</span><h3 style="font-size:16px">Калибровка (1-on-1)</h3><p>Еженедельно/раз в две недели: что получается, какие нужны адвайзеры</p></div>
+  </div>
+  <div class="value"><span>Это тот же цикл, что мы вводили на первой встрече (диагностика навыков → PDP). Теперь он <b>привязан к OKR</b>: сначала проекты, потом оценка, потом развитие.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>PDP · калибровка</span></div>
+</section>
+
+<!-- 44 · OKR = ОРГСТРУКТУРА -->
+<section class="slide slide--img" style="padding:42px 54px 40px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:6px"><span class="tag">Блок 7 · Бонус</span><h2 style="font-size:31px">OKR — фундамент оргструктуры и найма</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:18px;margin-bottom:12px">Когда видны все проекты и их владельцы, всплывает <b style="color:var(--em)">ресурсное планирование</b>: где не хватает капасити.</p>
+      <ul class="bl" style="gap:9px">
+        <li>Видно, кто объективно не вытянет объём → сигнал к найму</li>
+        <li>Видно, где проектов больше, чем людей → приоритизация</li>
+        <li>Это забота о команде, а не только про цифры</li>
+      </ul>
+    </div>
+    <div class="miro"><img src="gen/growth.png" alt="рост"></div>
+  </div>
+  <div class="value"><span>OKR отвечает на запрос «прозрачная оргструктура и понимание, на какие педали жать» — <b>оргструктура строится из проектов.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Оргструктура</span></div>
+</section>
+
+<!-- 45 · ТРЕКЕР -->
+<section class="slide">
+  <span class="kicker">Блок 8 · Инструмент · Трекер</span>
+  <h2 style="margin:8px 0 10px">Трекер недельных проектов</h2>
+  <div class="mock">
+    <div class="mh"><div class="mt">Проекты команды <span class="mut">— слева проекты, справа недельные ключевые задачи</span></div><div class="mu">светофор по неделям</div></div>
+    <table class="trk">
+      <thead><tr><th>Проект (OKR)</th><th>Лидер</th><th>W1</th><th>W2</th><th>W3</th><th>W4</th><th>W5</th><th>W6</th></tr></thead>
+      <tbody>
+        <tr><td>Продуктовый каскад 5%→80%</td><td>Комдир</td><td><span class="dot dg"></span></td><td><span class="dot dg"></span></td><td><span class="dot dy"></span></td><td><span class="dot dg"></span></td><td><span class="dot dn"></span></td><td><span class="dot dn"></span></td></tr>
+        <tr><td>Дожим базы недозакрытых</td><td>РОП</td><td><span class="dot dg"></span></td><td><span class="dot dy"></span></td><td><span class="dot dr"></span></td><td><span class="dot dy"></span></td><td><span class="dot dn"></span></td><td><span class="dot dn"></span></td></tr>
+        <tr><td>Трафик под премиум-сегмент</td><td>Маркетинг</td><td><span class="dot dg"></span></td><td><span class="dot dg"></span></td><td><span class="dot dg"></span></td><td><span class="dot dg"></span></td><td><span class="dot dn"></span></td><td><span class="dot dn"></span></td></tr>
+        <tr><td>Аттестация команды по скрипту</td><td>РОП</td><td><span class="dot dy"></span></td><td><span class="dot dr"></span></td><td><span class="dot dy"></span></td><td><span class="dot dg"></span></td><td><span class="dot dn"></span></td><td><span class="dot dn"></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="value"><span>Слева — <b>проекты (ваши OKR)</b>, справа — ключевые задачи недели, помеченные светофором 🟢🟡🔴. За 10 секунд видно, где буксует.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Трекер</span></div>
+</section>
+
+<!-- 46 · КАК ПОЛЬЗОВАТЬСЯ ТРЕКЕРОМ -->
+<section class="slide">
+  <span class="kicker">Блок 8 · Как пользоваться</span>
+  <h2 style="margin:10px 0 12px">Недельный цикл в трекере</h2>
+  <div class="steps">
+    <div class="step"><div class="sn">1</div><div><div class="st">Приземляем OKR в проекты</div><div class="sd">Каждый OKR = строка. Один проект — один лидер.</div></div></div>
+    <div class="step"><div class="sn">2</div><div><div class="st">Ставим ключевые задачи недели</div><div class="sd">Что именно двигает KR на этой неделе — 1–3 задачи на проект, не больше.</div></div></div>
+    <div class="step"><div class="sn">3</div><div><div class="st">Помечаем светофором</div><div class="sd">В конце недели: 🟢 сделано · 🟡 частично · 🔴 сорвано. Честно.</div></div></div>
+    <div class="step"><div class="sn">4</div><div><div class="st">Красное → в ретро и дебаг</div><div class="sd">Проседания уходят на месячную ретроспективу и разбор.</div></div></div>
+  </div>
+  <div class="value"><span>Трекер связывает <b>квартальные OKR с еженедельными спринтами.</b> «Не записано = не сделано» — дисциплина без душной корпорации.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Недельный цикл</span></div>
+</section>
+
+<!-- 47 · ДАШБОРД -->
+<section class="slide">
+  <span class="kicker">Блок 8 · Инструмент · Дашборд</span>
+  <h2 style="margin:8px 0 10px">Проектный дашборд поверх трекера</h2>
+  <div class="mock">
+    <div class="mh"><div class="mt">Дашборд проектов <span class="mut">— статистика без слома формата трекера</span></div><div class="mu">квартал Q1</div></div>
+    <div class="mkpis" style="margin-bottom:12px">
+      <div class="mkpi"><div class="k">Активных проектов</div><div class="v">12</div></div>
+      <div class="mkpi"><div class="k">Задач за неделю</div><div class="v">38</div></div>
+      <div class="mkpi"><div class="k">% выполнено</div><div class="v gr">74%</div></div>
+      <div class="mkpi"><div class="k">Доведено до результата</div><div class="v gd">9</div></div>
+    </div>
+    <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:#7fa394;margin-bottom:4px">Выполнение задач по неделям</div>
+    <div class="bars"><div class="b" style="height:40%"></div><div class="b" style="height:55%"></div><div class="b" style="height:48%"></div><div class="b on" style="height:74%"></div><div class="b" style="height:62%"></div><div class="b" style="height:70%"></div></div>
+  </div>
+  <div class="value"><span>Надстраиваем над трекером дашборд: сколько проектов активно, задач выполнено, <b>сколько доведено до результата</b> — не ломая структуру трекера. Соберу вам это в один файл.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Дашборд</span></div>
+</section>
+
+<!-- 48 · ЕДИНЫЙ СТЕК -->
+<section class="slide slide--dark">
+  <span class="kicker">Блок 8 · Как всё связано</span>
+  <h2 style="margin:10px 0 16px">Единый стек внедрения</h2>
+  <div class="loop">
+    <div class="lnode"><b>Тетрадь стратсессии</b><span>OGSM + OKR</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Трекер проектов</b><span>недельные задачи</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Дашборд</b><span>статистика</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Ретро</b><span>месяц</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>Perf Review</b><span>квартал</span></div>
+  </div>
+  <p class="lead" style="margin:22px 0 0;font-size:18px">Одна связанная система: стратегия превращается в проекты, проекты — в недельные задачи, задачи — в статистику, статистика — в ретро и оценку людей. <b style="color:#fff">Круг замыкается и запускается снова.</b></p>
+  <div class="value"><span>Всё это — <b>ваша квартальная операционная система роста.</b> Не набор разрозненных таблиц, а единый цикл.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Единый стек</span></div>
+</section>
+
+<!-- 49 · ДОМАШКА -->
+<section class="slide">
+  <span class="kicker">Практика · домашнее задание</span>
+  <h2 style="margin:10px 0 14px">Запускаем подготовку к стратсессии</h2>
+  <div class="grid g2" style="gap:10px 30px">
+    <ul class="bl" style="gap:9px">
+      <li><b>Сделай копию рабочей тетради</b> (вкладки 0–8)</li>
+      <li><b>Заполни свой столбец:</b> паспорт отдела, итоги года с цифрами, метрики + глоссарий</li>
+      <li><b>Карта процесса AS-IS</b> + топ-5 горлышек с масштабом потерь</li>
+    </ul>
+    <ul class="bl" style="gap:9px">
+      <li><b>Черновик OGSM</b> (первое лицо) — Objective → Goals → Strategies → Measures</li>
+      <li><b>Черновик Q1-OKR</b> отдела — 2–3 проекта, привязанных к OGSM</li>
+      <li><b>Прогони OKR через AI-челленджер</b> и ICE-калькулятор</li>
+    </ul>
+  </div>
+  <div class="okbox" style="margin-top:14px"><b>Правила:</b> каждый заполняет только свой столбец · качество важнее скорости (лучше меньше, но с цифрами) · нет данных — пиши «нет данных» и откуда взять. Даю: рабочую тетрадь, ICE-калькулятор, AI-челленджер OKR, фреймворк ретро, трекер+дашборд, scorecard.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Домашка</span></div>
+</section>
+
+<!-- 50 · ЧТО ПРИНЕСТИ -->
+<section class="slide">
+  <span class="kicker">Практика · сдача</span>
+  <h2 style="margin:10px 0 14px">Что принести на разбор</h2>
+  <div class="two">
+    <ul class="bl check" style="gap:11px">
+      <li>Заполненные вкладки 1–5 своего отдела (с цифрами)</li>
+      <li>Черновик OGSM компании</li>
+      <li>2–3 черновых Q1-OKR с образом результата</li>
+    </ul>
+    <ul class="bl check" style="gap:11px">
+      <li>ICE-таблица топ-гипотез с прогнозом в деньгах</li>
+      <li>Один проект заведён в трекер с задачами недели</li>
+      <li>Вопросы на разбор со мной (запись через календарь)</li>
+    </ul>
+  </div>
+  <div class="warnbox" style="margin-top:16px"><b>Дедлайн — 3 недели, по неделям</b> (тетрадь построена под этот темп). Мы не бежим спринт, мы бежим марафон: лучше меньше, но качественно и с цифрами. Забронируйте время в календаре сразу.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сдача · дедлайны</span></div>
+</section>
+
+<!-- 51 · ФИНАЛ -->
+<section class="slide slide--dark slide--title">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.6;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <img class="heroimg" src="assets/hero-bg.png" alt="" style="filter:saturate(.9)">
+  <span class="kicker">Итог модуля</span>
+  <h1 style="font-size:56px;margin-top:14px">OKR — ваша квартальная<br><span class="gold">операционная система роста</span></h1>
+  <p class="lead" style="margin-top:20px;max-width:720px">Стратегия → проекты, которые вы лидируете → недельные спринты → ретро → оценка перформанса → развитие. Не разовая активность под стратсессию, а цикл, который крутится и двигает результат каждый квартал.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>OGSM &amp; OKR</span></div>
+</section>
+
+</div>
+
+<div id="bar"></div>
+<div id="count"></div>
+<div class="hint">← →  ·  Space  ·  F — полный экран</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+const bar=document.getElementById('bar'), count=document.getElementById('count');
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));bar.style.width=((i+1)/slides.length*100)+'%';count.textContent=(i+1)+' / '+slides.length;}
+function next(){show(i+1)} function prev(){show(i-1)}
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}else if(e.key==='Home'){show(0)}else if(e.key==='End'){show(slides.length-1)}else if(e.key==='f'||e.key==='F'){document.documentElement.requestFullscreen?.()}});
+document.getElementById('stage').addEventListener('click',e=>{const r=document.getElementById('stage').getBoundingClientRect();(e.clientX-r.left)/r.width>0.5?next():prev();});
+function fit(){const s=Math.min(window.innerWidth/1280, window.innerHeight/720);document.getElementById('stage').style.transform=`translate(-50%,-50%) scale(${s})`;}
+window.addEventListener('resize',fit);
+const startAt=parseInt(location.hash.replace('#',''),10);
+fit(); show(Number.isFinite(startAt)&&startAt>0?startAt-1:0);
+</script>
+</body>
+</html>
