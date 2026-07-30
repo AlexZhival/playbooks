@@ -68,7 +68,7 @@ b,strong{font-weight:800}
 .value::before{content:"СМЫСЛ";font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:3px}
 .slide--dark .value{background:rgba(199,154,69,.15);color:rgba(239,233,218,.9)}
 .slide--dark .value b{color:#fff}
-.demomark{margin-top:12px;display:inline-flex;align-items:center;gap:9px;background:rgba(176,130,46,.13);border:1.6px dashed var(--gold);border-radius:12px;padding:9px 15px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--gold-h);font-weight:700}
+.keymark{position:absolute;top:18px;right:22px;z-index:6;display:inline-flex;align-items:center;gap:6px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:800;padding:6px 13px;border-radius:20px;box-shadow:0 6px 16px -6px rgba(176,130,46,.6)} .demomark{margin-top:12px;display:inline-flex;align-items:center;gap:9px;background:rgba(176,130,46,.13);border:1.6px dashed var(--gold);border-radius:12px;padding:9px 15px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--gold-h);font-weight:700}
 .demomark b{font-family:var(--sans);color:var(--em);font-weight:800;letter-spacing:0}
 .slide--dark .demomark{color:var(--gold-2);background:rgba(199,154,69,.16);border-color:var(--gold-2)}
 .slide--dark .demomark b{color:#fff}
@@ -189,6 +189,7 @@ td b{color:var(--em)}
 
 <!-- 2 · THESIS -->
 <section class="slide slide--dark">
+  <span class="keymark">★ Ключевой слайд</span>
   <svg class="bfield" preserveAspectRatio="none" style="-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
   <span class="kicker">Главный тезис модуля</span>
   <div class="spacer"></div>
@@ -325,6 +326,7 @@ td b{color:var(--em)}
 
 <!-- 10 · СРАВНЕНИЕ -->
 <section class="slide">
+  <span class="keymark">★ Ключевой слайд</span>
   <span class="kicker">Блок 2 · Когда что использовать</span>
   <h2 style="margin:10px 0 12px">OGSM / OKR / KPI — в чём разница</h2>
   <table>
@@ -450,6 +452,7 @@ td b{color:var(--em)}
 
 <!-- МЕТАФОРА · Метафора · OKR = маяк -->
 <section class="slide">
+  <span class="keymark">★ Ключевой слайд</span>
   <span class="kicker">Метафора · Что такое OKR</span>
   <h2 style="margin:8px 0 10px">OKR — это <span class="hl">маяк</span>, а не инструкция</h2>
   <div style="display:grid;grid-template-columns:1.03fr .97fr;gap:30px;align-items:center;flex:1">
@@ -505,6 +508,7 @@ td b{color:var(--em)}
 
 <!-- 21 · ПРАВИЛО 70 -->
 <section class="slide">
+  <span class="keymark">★ Ключевой слайд</span>
   <span class="kicker">Блок 4 · Амбиция</span>
   <h2 style="margin:10px 0 14px">70% выполнения — это <span class="hl">норма</span>, 100% не бывает</h2>
   <div class="two">
@@ -669,6 +673,7 @@ td b{color:var(--em)}
 
 <!-- 29 · ДВОЙНОЙ ФИЛЬТР -->
 <section class="slide">
+  <span class="keymark">★ Ключевой слайд</span>
   <span class="kicker">Блок 5 · От 200 гипотез — к 10</span>
   <h2 style="margin:10px 0 14px">Двойной фильтр приоритизации</h2>
   <div class="loop" style="margin-top:6px">
@@ -795,6 +800,7 @@ KR: <span class="ph">[...]</span>
 
 <!-- МЕТАФОРА · Метафора · OKR = пульс -->
 <section class="slide">
+  <span class="keymark">★ Ключевой слайд</span>
   <span class="kicker">Метафора · Главный сдвиг</span>
   <h2 style="margin:8px 0 10px">OKR — это <span class="hl">пульс</span>, а не документ</h2>
   <div style="display:grid;grid-template-columns:1.03fr .97fr;gap:30px;align-items:center;flex:1">
@@ -879,6 +885,7 @@ KR: <span class="ph">[...]</span>
 
 <!-- 40 · OKR <-> PERFORMANCE -->
 <section class="slide slide--dark">
+  <span class="keymark">★ Ключевой слайд</span>
   <span class="kicker">Блок 7 · Связь с перформансом</span>
   <h2 style="margin:10px 0 16px">OKR ↔ Performance: полный цикл</h2>
   <div class="loop">
@@ -1048,41 +1055,40 @@ KR: <span class="ph">[...]</span>
 <!-- 49 · ДОМАШКА -->
 <section class="slide">
   <span class="kicker">Практика · домашнее задание</span>
-  <h2 style="margin:10px 0 14px">Запускаем подготовку к стратсессии</h2>
+  <h2 style="margin:10px 0 14px">Собери свои OKR на квартал</h2>
+  <p class="lead" style="font-size:18px;margin-bottom:14px">Не «нарисуй цели», а выйди с точными OKR на своих горлышках. 4 шага:</p>
   <div class="grid g2" style="gap:10px 30px">
     <ul class="bl" style="gap:9px">
-      <li><b>Сделай копию рабочей тетради</b> (вкладки 0–8)</li>
-      <li><b>Заполни свой столбец:</b> паспорт отдела, итоги года с цифрами, метрики + глоссарий</li>
-      <li><b>Карта процесса AS-IS</b> + топ-5 горлышек с масштабом потерь</li>
+      <li><b>1. Оттолкнись от горлышек</b> - цель по прибыли + горлышки из Дебага + цифры воронки</li>
+      <li><b>2. Собери OKR</b> - через второй мозг (кто настроил) или по мастер-промпту в claude.ai</li>
     </ul>
     <ul class="bl" style="gap:9px">
-      <li><b>Черновик OGSM</b> (первое лицо) — Objective → Goals → Strategies → Measures</li>
-      <li><b>Черновик Q1-OKR</b> отдела — 2–3 проекта, привязанных к OGSM</li>
-      <li><b>Прогони OKR через AI-челленджер</b> и ICE-калькулятор</li>
+      <li><b>3. Сверься с чек-листами</b> - OGSM и OKR, как составлен каждый пункт</li>
+      <li><b>4. Почелленджь</b> - прогони через AI-челленджер, доведи каждый пункт до 🟢</li>
     </ul>
   </div>
-  <div class="okbox" style="margin-top:14px"><b>Правила:</b> каждый заполняет только свой столбец · качество важнее скорости (лучше меньше, но с цифрами) · нет данных — пиши «нет данных» и откуда взять. Даю: рабочую тетрадь, ICE-калькулятор, AI-челленджер OKR, фреймворк ретро, трекер+дашборд, scorecard.</div>
-  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Домашка</span></div>
+  <div class="okbox" style="margin-top:14px"><b>Формула:</b> Objective (1 зона, «Достичь X через Y при Z») → 2-3 Key Results (измеримый результат с источником данных) → недельные спринты. Все материалы, промпты, чек-листы и шаблон - в домашке (ссылка в чате потока).</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Домашка · часть 1</span></div>
 </section>
 
 <!-- 50 · ЧТО ПРИНЕСТИ -->
 <section class="slide">
-  <span class="kicker">Практика · сдача</span>
-  <h2 style="margin:10px 0 14px">Что принести на разбор</h2>
+  <span class="kicker">Практика · оживи и сдай</span>
+  <h2 style="margin:10px 0 14px">Оживи OKR через второй мозг</h2>
   <div class="two">
-    <ul class="bl check" style="gap:11px">
-      <li>Заполненные вкладки 1–5 своего отдела (с цифрами)</li>
-      <li>Черновик OGSM компании</li>
-      <li>2–3 черновых Q1-OKR с образом результата</li>
+    <ul class="bl" style="gap:11px">
+      <li><b>Разложи по неделям</b> - спринты в шаблоне, дашборд (% + светофор) собирается сам</li>
+      <li><b>Подключи ко второму мозгу</b> - таблица по Sheets API (read-only), как в координации</li>
+      <li><b>Бот отвечает вживую</b> - «статус по OKR», «где красная зона»</li>
     </ul>
     <ul class="bl check" style="gap:11px">
-      <li>ICE-таблица топ-гипотез с прогнозом в деньгах</li>
-      <li>Один проект заведён в трекер с задачами недели</li>
-      <li>Вопросы на разбор со мной (запись через календарь)</li>
+      <li><b>Сдать:</b> ссылка на заполненный OKR + работающий дашборд</li>
+      <li>Скрин AI-челленджера - все пункты доведены до 🟢</li>
+      <li>Скрин из бота: второй мозг отвечает по твоим OKR</li>
     </ul>
   </div>
-  <div class="warnbox" style="margin-top:16px"><b>Дедлайн — 3 недели, по неделям</b> (тетрадь построена под этот темп). Мы не бежим спринт, мы бежим марафон: лучше меньше, но качественно и с цифрами. Забронируйте время в календаре сразу.</div>
-  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Сдача · дедлайны</span></div>
+  <div class="warnbox" style="margin-top:16px"><b>Не идеально с первого раза.</b> Собери черновик за час, прогони через чек-листы и AI-челленджер, докрути. 3 сильные цели на твоих реальных горлышках - это и есть результат домашки.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Домашка · часть 2</span></div>
 </section>
 
 <!-- 51 · ФИНАЛ -->
