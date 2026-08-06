@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · Драйверы роста — AAARRR-стратегия под чистую прибыль</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --bg-alt:#EBE5D7; --card:#FCFAF4;
+  --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --dark-ink:#EFE9DA;
+  --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0c0f0d;overflow:hidden;font-family:var(--sans)}
+#stage{position:absolute;top:50%;left:50%;width:1280px;height:720px;transform:translate(-50%,-50%);transform-origin:center center;background:var(--bg);box-shadow:0 30px 90px -20px rgba(0,0,0,.7)}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;padding:44px 62px 38px;color:var(--ink);flex-direction:column}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.17em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+h1{font-family:var(--serif);font-weight:900;font-size:56px;line-height:1.02;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:35px;line-height:1.06;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:21px;line-height:1.15}
+.lead{font-size:20px;line-height:1.45;color:var(--muted);font-weight:500}
+p{font-size:17px;line-height:1.5}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 2px}
+.gold{color:var(--gold-h)}
+b,strong{font-weight:800}
+.spacer{flex:1}
+.foot{margin-top:auto;padding-top:11px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.foot .brand{display:flex;align-items:center;gap:9px;font-weight:600}
+.foot .brand img{height:16px;opacity:.92}
+.slide--dark .foot{color:rgba(239,233,218,.6)}
+.slide--dark .foot .brand img{filter:brightness(0) invert(1);opacity:.85}
+.slide--dark{background:var(--em);color:var(--dark-ink)}
+.slide--dark h1,.slide--dark h2,.slide--dark h3{color:#fff}
+.slide--dark .lead{color:rgba(239,233,218,.82)}
+.slide--dark .kicker{color:var(--gold-2)}
+.bfield{position:absolute;inset:0;z-index:0;width:1280px;height:720px;pointer-events:none}
+.slide>*{position:relative;z-index:1}
+.slide>svg.bfield{position:absolute;z-index:0}
+.slide--title{justify-content:center;overflow:hidden}
+.slide--title .heroimg{position:absolute;right:24px;top:50%;transform:translateY(-50%);height:576px;opacity:1;z-index:0;pointer-events:none;filter:drop-shadow(0 14px 22px rgba(0,0,0,.14))}
+.bobc{position:absolute;top:14px;right:34px;height:116px;width:auto;z-index:6;pointer-events:none;filter:drop-shadow(0 6px 9px rgba(0,0,0,.15))}
+.bobwrap{display:flex;align-items:center;justify-content:center;height:100%}
+.bobwrap img{width:100%;max-height:456px;object-fit:contain;filter:drop-shadow(0 12px 18px rgba(0,0,0,.13))}
+.slide--title.slide--dark .heroimg{height:640px;opacity:.9}
+.slide--title h1{font-size:58px;max-width:760px}
+.tpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#F4F1EA;font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 15px;border-radius:30px;font-weight:600}
+.tpill.gold{background:transparent;border:1.5px solid var(--gold);color:var(--gold-h)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.slide--dark .card{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.card h3{margin-bottom:6px}.card p{font-size:14.5px;color:var(--muted);line-height:1.4}
+.slide--dark .card p{color:rgba(239,233,218,.72)}
+.num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:17px;margin-bottom:10px;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.icon{font-size:24px;margin-bottom:6px;display:block}
+.value{margin-top:12px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:11px 17px;font-size:15px;line-height:1.4}
+.value b{color:var(--em)}
+.value::before{content:"СМЫСЛ";font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:3px}
+.slide--dark .value{background:rgba(199,154,69,.15);color:rgba(239,233,218,.9)}
+.slide--dark .value b{color:#fff}
+.value.tip::before{content:"ЛАЙФХАК";color:var(--green)}
+.value.tip{border-left-color:var(--green);background:rgba(62,142,94,.1)}
+.demomark{margin-top:12px;display:inline-flex;align-items:center;gap:9px;background:rgba(176,130,46,.13);border:1.6px dashed var(--gold);border-radius:12px;padding:9px 15px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--gold-h);font-weight:700}
+.demomark b{font-family:var(--sans);color:var(--em);font-weight:800;letter-spacing:0}
+.slide--dark .demomark{color:var(--gold-2);background:rgba(199,154,69,.16);border-color:var(--gold-2)}
+.slide--dark .demomark b{color:#fff}
+.bl{list-style:none;display:flex;flex-direction:column;gap:10px}
+.bl li{position:relative;padding-left:23px;font-size:17px;line-height:1.4}
+.bl li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.bl.sm li{font-size:14.5px;line-height:1.35}
+.bl.sm li::before{top:6px;width:6px;height:6px}
+.bl.check li::before{content:"✓";top:0;left:0;width:auto;height:auto;background:none;color:var(--green);font-weight:800;font-size:17px;border-radius:0}
+.bl.cross li::before{content:"✕";top:0;left:0;width:auto;height:auto;background:none;color:var(--red);font-weight:800;font-size:16px;border-radius:0}
+.slide--dark .bl li{color:rgba(239,233,218,.9)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--gold-h);text-align:left;padding:8px 10px;border-bottom:2px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.3;color:var(--ink)}
+tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+td b{color:var(--em)}
+.slide--dark th{color:var(--gold-2);border-bottom-color:rgba(199,154,69,.4)}
+.slide--dark td{color:rgba(239,233,218,.92);border-bottom-color:rgba(255,255,255,.12)}
+.slide--dark td b{color:#fff}.slide--dark tr:nth-child(even) td{background:rgba(255,255,255,.05)}
+.quote{font-family:var(--serif);font-weight:700;font-size:40px;line-height:1.18;letter-spacing:-.4px;max-width:1010px}
+.quote .gold{color:var(--gold-2)}
+.flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:9px 16px;font-weight:700;font-size:15px}
+.chip.on{background:rgba(199,154,69,.22);border-color:var(--gold)}
+.slide--dark .chip{background:rgba(255,255,255,.07);border-color:rgba(199,154,69,.3);color:#fff}
+.arr{color:var(--gold);font-weight:800;font-size:19px}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#BE8E34,#C79A45);z-index:50;transition:width .3s}
+#count{position:absolute;right:16px;bottom:13px;z-index:50;font-family:var(--mono);font-size:12px;color:#8a8d86;letter-spacing:.1em}
+.hint{position:fixed;left:50%;bottom:9px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:#555;letter-spacing:.1em;z-index:60;opacity:.5}
+.tag{display:inline-block;background:rgba(176,130,46,.13);color:var(--gold-h);border:1px solid rgba(176,130,46,.35);border-radius:20px;padding:4px 11px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.agenda{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.agitem{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 15px}
+.agitem .t{font-family:var(--mono);font-size:12px;color:var(--gold-h);font-weight:700;width:26px;flex:0 0 26px}
+.agitem h3{font-size:15.5px}
+.warnbox{background:rgba(178,59,46,.08);border:1.5px solid rgba(178,59,46,.4);border-radius:14px;padding:15px 19px}
+.okbox{background:rgba(62,142,94,.09);border:1.5px solid rgba(62,142,94,.4);border-radius:14px;padding:15px 19px}
+.stats{display:flex;gap:12px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+.slide--dark .stat{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1.1;margin-top:4px;color:var(--em)}
+.slide--dark .stat .v{color:#fff} .stat .v.gd{color:var(--gold-h)} .stat .v.rd{color:var(--red)} .stat .v.gr{color:var(--green)}
+.slide--dark .stat .v.gd{color:var(--gold-2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pill-lg{display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:5px 11px;border-radius:20px;margin-bottom:7px}
+.pill-red{background:rgba(178,59,46,.12);color:var(--red)}.pill-green{background:rgba(62,142,94,.14);color:var(--green)}
+.term{background:#0f2018;border:1px solid #2a4c3e;border-radius:14px;padding:16px 18px;font-family:var(--mono);font-size:13px;line-height:1.5;color:#d3e6da;white-space:pre-wrap;box-shadow:0 20px 50px -30px rgba(0,0,0,.6)}
+.term .c{color:#7fa394}.term .ph{color:var(--gold-2);font-weight:700}
+.plabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:800;margin:6px 0}
+.imgacc{display:grid;grid-template-columns:1fr 360px;gap:24px;flex:1;min-height:0;align-items:center}
+.miro{background:#F7F3E9;border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:0 18px 46px -26px rgba(0,0,0,.4)}
+.miro img{width:100%;height:100%;object-fit:cover}
+.loop{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.lnode{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 15px;text-align:center;min-width:112px}
+.lnode b{display:block;font-family:var(--serif);font-size:15px;color:var(--em)}.lnode span{font-size:11px;color:var(--muted)}
+.lnode.hot{border:1.5px solid var(--gold);background:rgba(199,154,69,.16)}
+.slide--dark .lnode{background:rgba(255,255,255,.06);border-color:rgba(199,154,69,.3)}.slide--dark .lnode b{color:#fff}.slide--dark .lnode span{color:rgba(239,233,218,.65)}
+.tiers{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+.tier{display:grid;grid-template-columns:158px 1fr;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:11px 16px}
+.tier .tl{font-family:var(--serif);font-weight:800;font-size:16px;color:var(--em)}
+.tier .tl span{display:block;font-family:var(--mono);font-size:10px;color:var(--gold-h);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.tier .tv{font-size:14px;color:var(--muted);line-height:1.38}
+.tier .tv b{color:var(--ink)}
+.steps{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.step{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 15px}
+.step .sn{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:14px;display:grid;place-items:center}
+.step .st{font-family:var(--serif);font-weight:700;font-size:15px;color:var(--em)}
+.step .sd{font-size:13px;color:var(--muted);line-height:1.35}
+.stageband{display:flex;align-items:stretch;gap:0;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.stageband .sb{flex:1;padding:9px 6px;text-align:center;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.03em;color:var(--muted);background:var(--card);border-right:1px solid var(--line)}
+.stageband .sb:last-child{border-right:none}
+.stageband .sb.on{background:rgba(199,154,69,.22);color:var(--gold-h)}
+.stageband .sb b{display:block;font-family:var(--serif);font-size:14px;color:var(--em);margin-bottom:1px}
+.svc{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.svc span{background:var(--card);border:1px solid var(--line);border-radius:7px;padding:5px 9px;font-size:12.5px;font-weight:600;color:var(--em)}
+.svc span i{font-style:normal;color:var(--gold-h);font-size:10px;font-family:var(--mono);margin-left:4px}
+.led{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px}
+.led .lc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;text-align:center}
+.led .lc .p{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold-h);font-weight:700}
+.led .lc .b{font-family:var(--serif);font-weight:800;font-size:15px;color:var(--em);margin:4px 0 3px}
+.led .lc .d{font-size:11.5px;color:var(--muted);line-height:1.3}
+.led .lc.up{border:1.5px solid var(--gold);background:rgba(199,154,69,.1)}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;font-family:var(--mono);font-size:15px;line-height:1.7;color:var(--ink)}
+.calc .r{color:var(--gold-h);font-weight:700}.calc b{color:var(--em);font-family:var(--sans)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="p-va" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(20,58,45,.42)">A</text><text x="47" y="64" font-size="34" fill="rgba(20,58,45,.42)">A</text></g></pattern>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text><text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text></g></pattern>
+</defs></svg>
+<div id="stage">
+
+<!-- 1 · TITLE -->
+<section class="slide slide--title active">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.45;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 46%);mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 46%)"><rect width="100%" height="100%" fill="url(#p-va)"/></svg>
+  <img class="heroimg" src="gen/bob/cut/t_title.png" alt="">
+  <div style="display:flex;gap:10px;margin-bottom:22px">
+    <span class="tpill">● Практикум A-Players</span>
+    <span class="tpill gold">Модуль · Драйверы роста</span>
+  </div>
+  <h1>Драйверы роста:<br>AAARRR-стратегия под <span class="hl">чистую прибыль</span></h1>
+  <p class="lead" style="margin-top:20px;max-width:600px">Как с <b style="color:var(--em)">наименьшими усилиями и максимально быстро</b> влиять на прибыль: найти узкое место, выкрутить одну ручку и собрать под неё рабочий артефакт — за вечер, с ИИ и плейбуками.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png" alt="A-Players">Практикум A-Players</span><span>Драйверы роста · AAARRR</span></div>
+</section>
+
+<!-- 2 · THESIS -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/s2_choose.png" alt="">
+  <svg class="bfield" preserveAspectRatio="none" style="-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Главный тезис модуля</span>
+  <div class="spacer"></div>
+  <p class="quote">Не нужно чинить всё сразу. Нужно найти <span class="gold">одну недокрученную ручку</span> — и выкрутить её.</p>
+  <p class="lead" style="margin-top:24px;max-width:980px">Компания растёт не тогда, когда команда «делает больше», а когда фокус стоит на <b style="color:#fff">том рычаге, где сегодня узкое место</b>. Это самый дешёвый и быстрый способ повлиять на чистую прибыль. AAARRR — карта, на которой видно все ручки и видно, какую крутить первой.</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Одна ручка &gt; всё сразу</span></div>
+</section>
+
+<!-- 3 · WHERE IN PROGRAM -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Где мы в программе</span>
+  <h2 style="margin:10px 0 16px">От моделей и узких мест — к <span class="hl">драйверам роста</span></h2>
+  <div class="loop">
+    <div class="lnode"><b>Модели</b><span>предиктив</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Координация</b><span>ритмы</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Дебаг</b><span>горлышки</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>Драйверы</b><span>AAARRR-стратегия</span></div><span class="arr">→</span>
+    <div class="lnode"><b>OKR</b><span>квартальные проекты</span></div>
+  </div>
+  <div class="two" style="margin-top:22px">
+    <div class="card"><h3>Это не новая тема с нуля</h3><p style="font-size:15px;margin-top:5px">Предиктивную модель и узкие места вы уже собрали. Сегодня — превращаем их в <b style="color:var(--em)">стратегию роста</b>: какие ручки крутим и на сколько денег.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3>Итог уходит в OKR</h3><p style="font-size:15px;margin-top:5px">Выбранные драйверы становятся <b style="color:var(--em)">квартальными проектами</b> с ответственным и математикой. Не разовая активность.</p></div>
+  </div>
+  <div class="value"><span>Модуль строится вокруг <b>рабочей тетради «Драйверы роста»</b> — сегодня разбираем методологию, домой уходите её заполнять.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Где мы</span></div>
+</section>
+
+<!-- 4 · AGENDA -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">С чем вы выйдете</span>
+  <h2 style="margin:10px 0 16px">Маршрут воркшопа</h2>
+  <div class="agenda">
+    <div class="agitem"><span class="t">1</span><h3>Драйверы роста и 4 метрики Джея Абрахама</h3></div>
+    <div class="agitem"><span class="t">2</span><h3>AAARRR — карта пути клиента (6 этапов)</h3></div>
+    <div class="agitem"><span class="t">3</span><h3>Разбор каждого этапа: рычаги, лайфхаки, сервисы</h3></div>
+    <div class="agitem"><span class="t">4</span><h3>⚡ Живая сборка артефакта: Revenue</h3></div>
+    <div class="agitem"><span class="t">5</span><h3>Как выбрать драйвер: бенчмарк · ICE · математика</h3></div>
+    <div class="agitem"><span class="t">6</span><h3>Технология и работа с Claude + плейбуками</h3></div>
+    <div class="agitem"><span class="t">7</span><h3>Сборка стратегии → OKR квартала</h3></div>
+    <div class="agitem"><span class="t">8</span><h3>Домашка: своя AAARRR-стратегия</h3></div>
+  </div>
+  <div class="value"><span><b>Образ результата встречи:</b> вы понимаете, где ваше узкое место, и видите, как за один вечер собрать под него <b>артефакт с математикой в рублях</b>.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Маршрут</span></div>
+</section>
+
+<!-- 5 · РОСТ ВСЛЕПУЮ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/s5_chaos.png" alt="">
+  <span class="kicker">Блок 1 · Боль</span>
+  <h2 style="margin:10px 0 14px">Рост вслепую = <span class="hl">масштабирование хаоса</span></h2>
+  <div class="two">
+    <div>
+      <p class="lead" style="font-size:19px;margin-bottom:14px">«Когда ты идёшь без выстроенной управленческой рамки масштабировать хоть что-то — ты масштабируешь только <b style="color:var(--em)">кассовые разрывы и хаос</b>.»</p>
+      <p style="font-size:16px">Без карты драйверов усилия распыляются: команда «делает много», а прибыль не двигается. Деньги льют в трафик, когда течёт на этапе удержания. Крутят чек, когда узкое место в конверсии.</p>
+    </div>
+    <div class="warnbox">
+      <h3 style="font-size:17px;margin-bottom:8px">Симптомы роста вслепую</h3>
+      <ul class="bl cross" style="gap:8px">
+        <li>Много активностей — мало результата</li>
+        <li>«Давайте ещё лидов» при дырявой воронке</li>
+        <li>Никто не назначен ответственным за метрику</li>
+        <li>Гипотезы не посчитаны в деньгах</li>
+      </ul>
+    </div>
+  </div>
+  <div class="value"><span>Цель модуля — <b>минимум трудозатрат → максимум влияния на чистую прибыль.</b> А для этого нужно точно знать, какую ручку крутить.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Боль</span></div>
+</section>
+
+<!-- 6 · 4 МЕТРИКИ АБРАХАМА -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 1 · Язык драйверов</span><h2 style="font-size:31px">4 метрики Джея Абрахама</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:18px;margin-bottom:12px">Это <b style="color:var(--em)">«педали газа» бизнеса</b>. Влияя на любую из них — растёшь быстрее. Как жмёшь на каждую педаль, так и растёшь.</p>
+      <div class="led">
+        <div class="lc"><div class="p">Педаль 1</div><div class="b">Лиды</div><div class="d">Объём привлечения</div></div>
+        <div class="lc"><div class="p">Педаль 2</div><div class="b">Конверсия</div><div class="d">Лид → продажа</div></div>
+        <div class="lc"><div class="p">Педаль 3</div><div class="b">Средний чек</div><div class="d">Денег в сделке</div></div>
+        <div class="lc"><div class="p">Педаль 4</div><div class="b">Частота / LTV</div><div class="d">Повторные покупки</div></div>
+      </div>
+      <div class="value" style="margin-top:14px"><span>Проверь каждую: <b>есть ли человек, который сегодня на неё влияет?</b> Если нет — ты этой педалью не управляешь.</span></div>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/s6_pedals.png" alt=""></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Педали газа</span></div>
+</section>
+
+<!-- 7 · ИНТУИЦИЯ 10 vs 90 -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <span class="kicker">Блок 1 · Почему без драйверов не растёшь</span>
+  <h2 style="margin:10px 0 16px">Интуиция даёт 10%. Фокус — <span class="hl">90%</span></h2>
+  <div class="two" style="align-items:center">
+    <div>
+      <p class="lead" style="font-size:19px">«Влияние, когда идёт интуиция — это 10%. А когда построен фокус и есть развёрнутые драйверы влияния — это сразу <b style="color:var(--em)">90% влияния</b>.»</p>
+      <p style="font-size:16px;margin-top:14px">Драйвер — это не «работать усерднее». Это <b style="color:var(--em)">явно названная ручка</b>, метрика при ней, ответственный и цель. Тогда ей можно управлять.</p>
+    </div>
+    <div class="stats" style="flex-direction:column;gap:12px">
+      <div class="stat"><div class="k">Управление на интуиции</div><div class="v rd">10%</div><div class="k" style="margin-top:3px">влияния на результат</div></div>
+      <div class="stat" style="border:1.5px solid var(--gold)"><div class="k">Управление через драйверы</div><div class="v gr">90%</div><div class="k" style="margin-top:3px">влияния на результат</div></div>
+    </div>
+  </div>
+  <div class="value"><span>Оговорка: не в каждой бизнес-модели можно влиять на все 4 педали. Идеал — где влияешь на каждую; в реальности часто на 2–3. <b>Задача — найти управляемые.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Фокус &gt; интуиция</span></div>
+</section>
+
+<!-- 8 · КЕЙС 600 МЛН -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/s8_money.png" alt="">
+  <span class="kicker">Блок 1 · Сила одной ручки</span>
+  <h2 style="margin:10px 0 16px">600 млн за год — на <span class="gold">одной педали</span></h2>
+  <div class="two" style="align-items:center">
+    <div>
+      <p class="lead" style="font-size:19px">Компания сделала <b style="color:#fff">600 млн ₽ за год</b> — без роста бюджета на маркетинг и без роста команды. Единственный рычаг — <b style="color:#fff">средний чек через управление долей тарифов.</b></p>
+      <p style="font-size:16px;margin-top:14px;color:rgba(239,233,218,.82)">Есть дорогой / средний / минимальный тариф. Если не фокусировать команду, какой продаём в первую очередь — средний чек падает, а с ним выручка. Сфокусировали — выросли.</p>
+    </div>
+    <div class="stats" style="flex-direction:column;gap:12px">
+      <div class="stat"><div class="k">Рычаг</div><div class="v">Средний чек</div><div class="k" style="margin-top:3px">доля дорогих тарифов</div></div>
+      <div class="stat"><div class="k">Прибавка к бюджету и команде</div><div class="v gd">0 ₽</div><div class="k" style="margin-top:3px">выкрутили то, что уже было</div></div>
+    </div>
+  </div>
+  <div class="value"><span>Вот что значит «недокрученная ручка»: деньги <b>уже лежали в бизнесе</b>, их доставали не новым трафиком, а фокусом на одной метрике.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Кейс · средний чек</span></div>
+</section>
+
+<!-- 9 · AAARRR КАРТА -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 2 · Карта территории</span><h2 style="font-size:31px">AAARRR — путь клиента целиком</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:18px;margin-bottom:12px">«Пиратский маркетинг» Дэйва МакКлюра — <b style="color:var(--em)">360°-стратегия</b>, которая разбивает весь путь клиента на 6 этапов. У каждого — своя метрика и своя ручка роста.</p>
+      <div class="stageband" style="margin-bottom:10px">
+        <div class="sb on"><b>A</b>wareness</div>
+        <div class="sb on"><b>A</b>cquisition</div>
+        <div class="sb on"><b>A</b>ctivation</div>
+        <div class="sb"><b>R</b>etention</div>
+        <div class="sb"><b>R</b>evenue</div>
+        <div class="sb"><b>R</b>eferral</div>
+      </div>
+      <p style="font-size:15.5px">Узнал → пришёл → активировался → остался → заплатил больше → привёл других. Все 4 педали Абрахама живут <b style="color:var(--em)">внутри этих этапов</b>.</p>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/s9_map.png" alt=""></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>6 этапов</span></div>
+</section>
+
+<!-- 10 · СПРАВА НАЛЕВО / ДЫРЯВОЕ ВЕДРО -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 2 · Порядок приоритета</span><h2 style="font-size:31px">Сначала затыкаем дно</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:18px;margin-bottom:12px">Читаем воронку <b style="color:var(--em)">справа налево</b>. Лить трафик в дырявое ведро дороже, чем заткнуть дно. Сначала Retention / Revenue / Referral — потом Acquisition / Awareness.</p>
+      <div class="okbox" style="padding:12px 16px">
+        <ul class="bl check" style="gap:7px">
+          <li><b>Retention</b> — удержание в 5–7 раз дешевле привлечения</li>
+          <li><b>Revenue</b> — больше денег с клиента, которого уже привёл</li>
+          <li><b>Referral</b> — нулевой CAC, клиенты приводят клиентов</li>
+        </ul>
+      </div>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/t_bucket.png" alt=""></div>
+  </div>
+  <div class="value"><span>Правило приоритета: качай тот этап справа, где самый большой запас роста. <b>Остальные — на поддержку.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Дырявое ведро</span></div>
+</section>
+
+<!-- 11 · 3 ВОРОНКИ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Блок 2 · Как это работает на практике</span>
+  <h2 style="margin:10px 0 14px">3 воронки, которые собирают AAARRR</h2>
+  <div class="grid g3">
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">1</span><h3>Охватная</h3><p style="margin-top:5px">Первые касания, лидген. <b style="color:var(--em)">Awareness + Acquisition.</b> Задача — попасть в поле зрения и привести.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">2</span><h3>Прогрева («парник»)</h3><p style="margin-top:5px">Борьба за внимание. Чат-бот, CRM, рассылки. <b style="color:var(--em)">Activation.</b> Довести до первой ценности.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">3</span><h3>Обратная</h3><p style="margin-top:5px">Возврат, апселл, рекомендации. <b style="color:var(--em)">Retention + Revenue + Referral.</b> Больше денег и новых клиентов.</p></div>
+  </div>
+  <div class="value"><span>Бенчмарк: холодному лиду нужно <b>~21 касание</b> (21–27, до 30 в высокий сезон), чтобы дойти до оплаты. Одним звонком не продаётся — работают все три воронки вместе.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>3 воронки · 21 касание</span></div>
+</section>
+
+<!-- 12 · AWARENESS · анатомия -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/aw_awareness.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px"><span class="tag">Этап 1 / 6</span><h2 style="font-size:30px">📣 Awareness — узнаваемость</h2></div>
+  <p class="lead" style="font-size:17px;margin-bottom:12px">Миссия: чтобы ЦА знала о тебе и приходила <b style="color:var(--em)">сама с готовым запросом</b> — без холодного убеждения.</p>
+  <div class="two">
+    <div>
+      <div class="stat" style="margin-bottom:10px"><div class="k">North Star</div><div class="v" style="font-size:22px">Входящий спрос</div><div class="k" style="margin-top:3px">сколько пришли сами, потому что знали</div></div>
+      <p class="plabel">Ключевые KPI</p>
+      <div class="svc"><span>Охват в целевых каналах</span><span>Брендовые запросы</span><span>% «уже знал о вас»</span><span>Engagement Rate</span></div>
+    </div>
+    <div>
+      <p class="plabel">Топ-рычаги</p>
+      <ul class="bl sm"><li><b>Личный бренд основателя</b> — главный недооценённый канал в B2B/экспертке</li><li><b>Выступления со встроенной механикой</b> — диагностика по QR, один CTA</li><li><b>PR без бюджета</b> — Pressfeed, гостевые статьи, подкасты как гость</li><li><b>Контент по «правилу 2 часов»</b> — 40% экспертный / 30% обучающий / 20% соц.док / 10% личное</li></ul>
+    </div>
+  </div>
+  <div class="warnbox" style="margin-top:12px;padding:10px 16px"><b>Типовая ошибка:</b> продавать в лоб на холодную (нужно 80% ценность / 20% CTA) и распылять 5 каналов на 3/10 вместо одного на 10/10.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Awareness · анатомия</span></div>
+</section>
+
+<!-- 13 · AWARENESS · лайфхаки+сервисы+кейс -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/aw_awareness.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px"><span class="tag">Этап 1 · Лайфхаки и сервисы</span><h2 style="font-size:26px">Awareness на практике</h2></div>
+  <div class="two">
+    <div>
+      <p class="plabel">Лайфхаки</p>
+      <ul class="bl sm"><li>Выступление с диагностикой по QR даёт <b>25–35% зала в заявки</b> против 2–5%</li><li>Перед покупкой на 50К+ человек должен «потребить» ~2 часа твоего контента</li><li>Один ответственный за охват — как за KPI («делают все = не делает никто»)</li></ul>
+      <p class="plabel" style="margin-top:12px">Сервисы</p>
+      <div class="svc"><span>TGStat <i>аналитика ТГ</i></span><span>LiveDune</span><span>Yandex Wordstat <i>бренд-спрос</i></span><span>Pressfeed <i>PR</i></span><span>vidIQ <i>YouTube</i></span><span>Popsters</span></div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="tag" style="margin-bottom:6px">Кейс · консалтинг / эксперт</span>
+      <p style="font-size:14.5px;line-height:1.45">Лучшие лиды (чек 400К) приходят с офлайн-конференций. Вместо 5 соцсетей эксперт выкручивает 2 канала: <b style="color:var(--em)">20+ выступлений в год</b> с диагностикой по QR + Telegram с разборами кейсов (3–4 поста/нед).</p>
+      <div class="okbox" style="margin-top:10px;padding:10px 14px;font-size:13.5px">Итог за квартал: с зала на 200 человек — <b>30–50 тёплых лидов</b>, брендовые запросы в Wordstat <b>+15% MoM</b>.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Awareness · практика</span></div>
+</section>
+
+<!-- 14 · ACQUISITION · анатомия -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/aq_acquisition.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px"><span class="tag">Этап 2 / 6</span><h2 style="font-size:30px">🎯 Acquisition — привлечение</h2></div>
+  <p class="lead" style="font-size:17px;margin-bottom:12px">Миссия: получать не просто лидов, а <b style="color:var(--em)">квалифицированных</b> — с предсказуемой стоимостью и качеством.</p>
+  <div class="two">
+    <div>
+      <div class="stat" style="margin-bottom:10px"><div class="k">North Star</div><div class="v" style="font-size:22px">Квал. лиды / мес</div><div class="k" style="margin-top:3px">MQL / SQL</div></div>
+      <p class="plabel">Юнит-экономика (ориентир)</p>
+      <div class="svc"><span>CPL &lt; LTV × 0,10</span><span>CAC &lt; LTV × 0,25</span><span>Payback ≤ 3 мес</span><span>ROAS &gt; 300%</span></div>
+    </div>
+    <div>
+      <p class="plabel">Топ-рычаги</p>
+      <ul class="bl sm"><li><b>Партнёрские каналы — приоритет №1</b>: «отходы» чужих бизнесов, сообщества (конвертят в 2–4 раза лучше)</li><li><b>Лид-магнит</b>: диагностика/тест (конв. 25–40%), чек-лист, экспресс-аудит</li><li><b>Платный трафик — только для масштабирования</b> уже проверенной связки</li><li><b>SLA скорости</b>: горячий лид — до 5 минут</li></ul>
+    </div>
+  </div>
+  <div class="warnbox" style="margin-top:12px;padding:10px 16px"><b>Типовая ошибка:</b> запуск рекламы без проверенной воронки, один оффер на все JTBD-сегменты и оценка канала слишком рано (нужно 4–6 недель и 3 итерации).</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Acquisition · анатомия</span></div>
+</section>
+
+<!-- 15 · ACQUISITION · практика -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/aq_acquisition.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px"><span class="tag">Этап 2 · Лайфхаки и сервисы</span><h2 style="font-size:26px">Acquisition на практике</h2></div>
+  <div class="two">
+    <div>
+      <p class="plabel">Лайфхаки</p>
+      <ul class="bl sm"><li>Партнёрский лид ≈ «отход» чужого бизнеса: HR-агентство отказало кандидату → ты продал обучение</li><li>Горячий лид через 30 минут конвертит в 2–3 раза хуже — ставь дежурство</li><li>Ретаргетинг возвращает в 3–5 раз дешевле нового лида</li></ul>
+      <p class="plabel" style="margin-top:12px">Сервисы</p>
+      <div class="svc"><span>Marquiz <i>квизы</i></span><span>Roistat / Calltouch <i>сквозная</i></span><span>Яндекс.Директ</span><span>VK Реклама</span><span>Telegram Ads</span><span>Telega.in <i>посевы</i></span><span>Admitad <i>CPA</i></span></div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="tag" style="margin-bottom:6px">Кейс · сервис медсестёр на дом</span>
+      <p style="font-size:14.5px;line-height:1.45">Вместо дорогого таргета — партнёрство с <b style="color:var(--em)">8 клиниками и 2 гериатрическими центрами</b> по CPA 1 500 ₽ за оформленную заявку: направляют выписанных пациентов на послеоперационный уход.</p>
+      <div class="okbox" style="margin-top:10px;padding:10px 14px;font-size:13.5px">Из 200 заявок/мес конверсия <b>35% против 12%</b> у платного трафика, CPL ниже в 3 раза, обработка каждой — за 5 минут.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Acquisition · практика</span></div>
+</section>
+
+<!-- 16 · ACTIVATION · анатомия -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/ac_activation.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px"><span class="tag">Этап 3 / 6</span><h2 style="font-size:30px">⚡ Activation — активация + КЭВ</h2></div>
+  <p class="lead" style="font-size:17px;margin-bottom:12px">Миссия: провести лида через <b style="color:var(--em)">aha-момент</b> и довести до первой покупки. Здесь ломается большинство воронок: «лиды есть, а продаж нет».</p>
+  <div class="two">
+    <div>
+      <div class="stat" style="margin-bottom:10px"><div class="k">North Star</div><div class="v" style="font-size:22px">Activation Rate</div><div class="k" style="margin-top:3px">дошли до aha-момента</div></div>
+      <p class="plabel">КЭВ — ключевой этап воронки (чек 30К+)</p>
+      <div class="svc"><span>Контакт 3–5 мин</span><span>Диагностика 10–15</span><span>Демо / aha 15–20</span><span>Оффер + возражения</span></div>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px">70% времени говорит клиент. Конверсия: базовый 10–20% → максимальный <b style="color:var(--em)">35–50%+</b></p>
+    </div>
+    <div>
+      <p class="plabel">Топ-рычаги</p>
+      <ul class="bl sm"><li><b>Найти aha-момент</b> кастдевом 10–15 лучших клиентов и сократить Time to Value вдвое</li><li><b>3 параллельные воронки</b>: охват + прогрев + конвертер (КЭВ)</li><li><b>Борьба с no-show</b>: 3 напоминания (24ч / 2ч / 15 мин) снижают срыв с 30–50% до 10–15%</li><li><b>Прогревающая цепочка 7+ касаний</b> по дням</li></ul>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Activation · анатомия</span></div>
+</section>
+
+<!-- 17 · ACTIVATION · практика -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/ac_activation.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px"><span class="tag">Этап 3 · Лайфхаки и сервисы</span><h2 style="font-size:26px">Activation на практике</h2></div>
+  <div class="two">
+    <div>
+      <p class="plabel">Лайфхаки</p>
+      <ul class="bl sm"><li>Вопрос для кастдева: «в какой момент вы поняли, что точно будете работать с нами?» — это и есть aha</li><li>КЭВ должен быть <b>ранним</b>: горячий лид остывает, если встреча через неделю</li><li>Follow-up-резюме встречи в течение 15 минут повышает конверсию</li></ul>
+      <p class="plabel" style="margin-top:12px">Сервисы</p>
+      <div class="svc"><span>AmoCRM / Bitrix24</span><span>SaleBot / BotHelp <i>напоминания</i></span><span>YClients / Calendly <i>слоты</i></span><span>Zoom</span></div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="tag" style="margin-bottom:6px">Кейс · IT-компания (B2B SaaS)</span>
+      <p style="font-size:14.5px;line-height:1.45">Кастдев показал: клиенты «загораются», когда система за 20 минут импортирует их реальные остатки и показывает <b style="color:var(--em)">первую сводку расхождений</b> — вот aha. Демо переверстали, чтобы дойти до неё на встрече (Time to Value с 4 дней → 25 минут) + 3 напоминания.</p>
+      <div class="okbox" style="margin-top:10px;padding:10px 14px;font-size:13.5px">No-show <b>40% → 14%</b>, конверсия «демо → оплата» <b>18% → 31%</b>.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Activation · практика</span></div>
+</section>
+
+<!-- 18 · RETENTION · анатомия -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/re_retention.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px"><span class="tag">Этап 4 / 6</span><h2 style="font-size:30px">🔄 Retention — удержание</h2></div>
+  <p class="lead" style="font-size:17px;margin-bottom:12px">Миссия: чтобы клиент <b style="color:var(--em)">хотел остаться сам</b> — покупал снова, больше и приводил других.</p>
+  <div class="two">
+    <div>
+      <div class="stat" style="margin-bottom:10px"><div class="k">North Star</div><div class="v" style="font-size:22px">NRR</div><div class="k" style="margin-top:3px">Net Revenue Retention</div></div>
+      <p class="plabel">Экономика удержания</p>
+      <ul class="bl sm"><li>Привлечение нового в <b>5–7 раз дороже</b> удержания</li><li>Retention +5% → прибыль <b>+25–95%</b></li><li>Продать существующему: 60–70% vs 5–20% новому</li></ul>
+    </div>
+    <div>
+      <p class="plabel">Топ-рычаги</p>
+      <ul class="bl sm"><li><b>Customer Journey Map</b>: найти «момент максимального счастья» и «точку риска»</li><li><b>Health Score</b> 🟢🟡🔴 по сигналам (падение активности, молчание 5–7 дней)</li><li><b>Правило «не &gt;2 недель без касания»</b>: ценность, check-in, QBR, renewal</li><li><b>NPS с реакцией</b> на каждый ответ + win-back через 60–90 дней</li></ul>
+    </div>
+  </div>
+  <div class="warnbox" style="margin-top:12px;padding:10px 16px"><b>Типовая ошибка:</b> «дырявое ведро» — весь фокус на привлечении; реактивность (ждём «я ухожу»); собирают NPS, но не реагируют.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Retention · анатомия</span></div>
+</section>
+
+<!-- 19 · RETENTION · практика -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/re_retention.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px"><span class="tag">Этап 4 · Лайфхаки и сервисы</span><h2 style="font-size:26px">Retention на практике</h2></div>
+  <div class="two">
+    <div>
+      <p class="plabel">Лайфхаки</p>
+      <ul class="bl sm"><li>Продукт удержания может быть <b>некоммерческим</b>: пятничный дайджест, привычка-касание</li><li>Health Score — светофор по клиенту: реагируй ДО оттока, а не после</li><li>Upsell/cross-sell — только ПОСЛЕ первого результата клиента</li></ul>
+      <p class="plabel" style="margin-top:12px">Сервисы</p>
+      <div class="svc"><span>Mindbox / SendPulse <i>цепочки</i></span><span>Testograf <i>NPS</i></span><span>AmoCRM <i>health</i></span><span>Telegram <i>комьюнити</i></span></div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="tag" style="margin-bottom:6px">Кейс · бизнес-клуб (членство)</span>
+      <p style="font-size:14.5px;line-height:1.45">Клуб на 300 участников (членство 120К/год) видит churn на продлении <b style="color:var(--em)">30%</b>. Вводят Health Score: не был на встречах 3 недели и молчит в чате → куратор звонит за 24ч. + онбординг первых 90 дней (знакомство с 5 «нужными» людьми) + разговор о продлении за 45 дней.</p>
+      <div class="okbox" style="margin-top:10px;padding:10px 14px;font-size:13.5px">Churn <b>30% → 18%</b>. Уйти = потерять связи, а не только контент.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Retention · практика</span></div>
+</section>
+
+<!-- 20 · REVENUE · анатомия -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/rv_revenue.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px"><span class="tag">Этап 5 / 6</span><h2 style="font-size:30px">💰 Revenue — монетизация</h2></div>
+  <p class="lead" style="font-size:17px;margin-bottom:12px">Миссия: зарабатывать с одного клиента больше — <b style="color:var(--em)">без привлечения новых лидов</b>. Самый прямой рычаг на чистую прибыль.</p>
+  <div class="two">
+    <div>
+      <div class="stat" style="margin-bottom:10px"><div class="k">North Star</div><div class="v" style="font-size:22px">ARPU</div><div class="k" style="margin-top:3px">ARPU ×2 = выручка ×2 без новых лидов</div></div>
+      <p class="plabel">Топ-рычаги</p>
+      <ul class="bl sm"><li><b>Продуктовая лестница</b>: трипваер → core → upsell → High-Ticket</li><li><b>High-Ticket</b> (чек ×3–10): 5–15% базы готовы платить больше</li><li><b>Good-Better-Best</b>: 70% берут средний тариф, 20% верхний</li></ul>
+    </div>
+    <div>
+      <p class="plabel">Психология цены</p>
+      <ul class="bl sm"><li>Конкретная цифра (97 000 вместо 100 000)</li><li>Цена через потери и через ROI</li><li>Декомпозиция (833 ₽ в день)</li></ul>
+      <div class="value" style="margin-top:10px"><span>Формула потенциала: <b>продажи × доля × (новый чек − старый чек)</b></span></div>
+    </div>
+  </div>
+  <div class="warnbox" style="margin-top:10px;padding:9px 16px"><b>Типовая ошибка:</b> один продукт — одна цена для всех; нет High-Ticket; цены не менялись год; продукты конкурируют между собой.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Revenue · анатомия</span></div>
+</section>
+
+<!-- 21 · REVENUE · практика -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/rv_revenue.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px"><span class="tag">Этап 5 · Лайфхаки и сервисы</span><h2 style="font-size:26px">Revenue на практике</h2></div>
+  <div class="two">
+    <div>
+      <p class="plabel">Лайфхаки</p>
+      <ul class="bl sm"><li>High-Ticket тестируется за 2 недели: оффер на 1 экране → 3–5 лучшим клиентам; купил хотя бы 1 → масштабируй</li><li>Апселл в момент оплаты (карта уже в руках) конвертит лучше всего</li><li>РБК «Магазин исследований» + JTBD в Claude → гипотезы монетизации</li></ul>
+      <p class="plabel" style="margin-top:12px">Сервисы</p>
+      <div class="svc"><span>ЮKassa / Продамус <i>оплата</i></span><span>«Долями» <i>рассрочка</i></span><span>Google Sheets + Claude <i>юнит-эк.</i></span><span>РБК Исследования</span></div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="tag" style="margin-bottom:6px">Кейс · розница (товары для дома)</span>
+      <p style="font-size:14.5px;line-height:1.45">Средний чек 3 200 ₽, всё транзакционно. Строят лестницу: <b style="color:var(--em)">bundle «набор для кухни» на кассе</b> (−15%), cross-sell аксессуаров, годовая клубная подписка на доставку как ценовой якорь «Premium».</p>
+      <div class="okbox" style="margin-top:10px;padding:10px 14px;font-size:13.5px">1 200 чеков/мес × 20% берут bundle × (+900 ₽) = <b>+216 000 ₽/мес</b> без единого нового покупателя.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Revenue · практика</span></div>
+</section>
+
+<!-- 22 · REFERRAL · анатомия -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/rf_referral.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:8px"><span class="tag">Этап 6 / 6</span><h2 style="font-size:30px">🤝 Referral — рекомендации</h2></div>
+  <p class="lead" style="font-size:17px;margin-bottom:12px">Миссия: превратить довольных клиентов в источник новых — с <b style="color:var(--em)">нулевым CAC</b>.</p>
+  <div class="two">
+    <div>
+      <div class="stat" style="margin-bottom:10px"><div class="k">North Star</div><div class="v" style="font-size:22px">Referral Revenue %</div><div class="k" style="margin-top:3px">доля выручки от рефералов</div></div>
+      <p class="plabel">Экономика реферала</p>
+      <ul class="bl sm"><li>CAC в <b>3–5 раз ниже</b> платных каналов</li><li>Конверсия в 3–4 раза выше холодного</li><li>Retention +37%, LTV +16–25%</li></ul>
+      <p style="font-size:13px;color:var(--muted);margin-top:6px">Яндекс.Практикум: <b style="color:var(--em)">53% продаж</b> — через рефералов.</p>
+    </div>
+    <div>
+      <p class="plabel">Топ-рычаги</p>
+      <ul class="bl sm"><li><b>«Момент максимального счастья»</b> — просить в пике эмоции, а не когда удобно тебе</li><li><b>Двусторонняя награда</b> — и рефереру, и приглашённому; объясняется за 10 секунд</li><li><b>WOW-механики без программы</b> — нейро-фото, именной сертификат, публичный кейс</li><li><b>Автотриггеры</b>: NPS 9–10 → авто-ссылка; выплата за 48ч</li></ul>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Referral · анатомия</span></div>
+</section>
+
+<!-- 23 · REFERRAL · практика -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/rf_referral.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:14px;margin-bottom:10px"><span class="tag">Этап 6 · Лайфхаки и сервисы</span><h2 style="font-size:26px">Referral на практике</h2></div>
+  <div class="two">
+    <div>
+      <p class="plabel">Лайфхаки</p>
+      <ul class="bl sm"><li>Найди момент счастья кастдевом: «когда в работе с нами тебе было лучше всего?»</li><li>WOW-артефакт (нейро-портрет в момент результата) поднимает конверсию в отзыв+реферал <b>до 50%</b></li><li>Кейсы с цифрами и именами — топливо для рекомендаций</li></ul>
+      <p class="plabel" style="margin-top:12px">Сервисы</p>
+      <div class="svc"><span>Яндекс Карты / Flamp / 2GIS <i>отзывы</i></span><span>Kandinsky / Midjourney <i>VPN</i></span><span>Frisbuy / Mindbox <i>реф-механики</i></span></div>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <span class="tag" style="margin-bottom:6px">Кейс · сервис медсестёр (referral)</span>
+      <p style="font-size:14.5px;line-height:1.45">Момент счастья — когда пациент восстановился и семья впервые спокойно спит. Координатор шлёт: <b style="color:var(--em)">«Рады, что маме лучше! Порекомендуете — знакомому первый визит −20%, а вам 2 000 ₽ на баланс»</b> + кейс с именем медсестры. Выплата за 48ч.</p>
+      <div class="okbox" style="margin-top:10px;padding:10px 14px;font-size:13.5px">Referral Rate этого сегмента <b>&gt;15%</b>, CAC в 4 раза ниже клиник-партнёров.</div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Referral · практика</span></div>
+</section>
+
+<!-- 24 · РУЧКА ТРЕБОВАТЕЛЬНОСТИ -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Сквозной принцип всех этапов</span>
+  <h2 style="margin:10px 0 8px">«Выкрутить ручку» = <span class="gold">поднять планку</span>, а не начать с нуля</h2>
+  <p class="lead" style="font-size:17px;margin-bottom:14px">На каждом этапе есть 3 уровня требовательности. Рост — это переход на следующий уровень того, что уже работает.</p>
+  <div class="grid g3">
+    <div class="card"><span class="pill-lg pill-red">Базовый</span><h3 style="font-size:18px">Конверсия КЭВ 10–20%</h3><p style="margin-top:5px">Встреча идёт «как получится», без структуры и подготовки</p></div>
+    <div class="card" style="border-color:var(--gold-2)"><span class="pill-lg" style="background:rgba(201,149,43,.2);color:var(--gold-2)">Продвинутый</span><h3 style="font-size:18px">Конверсия 25–35%</h3><p style="margin-top:5px">Есть структура КЭВ, напоминания, follow-up, сегментация</p></div>
+    <div class="card" style="border:1.5px solid var(--gold)"><span class="pill-lg pill-green">Максимальный</span><h3 style="font-size:18px">Конверсия 35–50%+</h3><p style="margin-top:5px">Aha до оффера, кастдев-настройка, разбор записей, ОКК</p></div>
+  </div>
+  <div class="value"><span>Смотри на свою метрику и спрашивай: <b>я на каком уровне и что нужно, чтобы перейти на следующий?</b> Это и есть докрутка ручки.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>3 уровня требовательности</span></div>
+</section>
+
+<!-- 25 · ЖИВАЯ СБОРКА · интро -->
+<section class="slide slide--dark slide--title">
+  <img class="bobc" src="gen/bob/cut/s25_build.png" alt="">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 22%,transparent 52%);mask-image:linear-gradient(90deg,#000 0%,#000 22%,transparent 52%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="tag" style="background:rgba(199,154,69,.16);border-color:var(--gold-2);color:var(--gold-2);align-self:flex-start">⚡ Живая сборка артефакта</span>
+  <h1 style="font-size:50px;margin-top:16px">Собираем Revenue-стратегию<br><span class="gold">прямо сейчас</span></h1>
+  <p class="lead" style="margin-top:18px;max-width:760px">Берём выдуманный, но конкретный кейс — <b style="color:#fff">сервис медсестёр на дом «Забота»</b> — и на глазах превращаем предиктивную модель + плейбук + Claude в артефакт с математикой в рублях.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Живая сборка · Revenue</span></div>
+</section>
+
+<!-- 26 · ЖИВАЯ СБОРКА · узкое место -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/s25_build.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 1 — где узкое место</span>
+  <h2 style="margin:10px 0 12px">Читаем предиктивную модель «Заботы»</h2>
+  <div class="two">
+    <div>
+      <div class="stats" style="flex-direction:column;gap:10px">
+        <div class="stat"><div class="k">Активных клиентов / мес</div><div class="v">250</div></div>
+        <div class="stat"><div class="k">Средний чек визита × визитов</div><div class="v">2 500 ₽ × 3</div><div class="k" style="margin-top:3px">ARPU ≈ 7 500 ₽ · выручка ≈ 1,87 млн ₽/мес</div></div>
+      </div>
+    </div>
+    <div>
+      <p class="plabel">Что показывает модель</p>
+      <ul class="bl sm"><li>Awareness/Acquisition — партнёрство с клиниками уже работает, лиды есть</li><li>Activation — конверсия в первый визит нормальная</li><li class="" style="color:var(--red)"><b>Revenue — всё разовое: нет лестницы, нет High-Ticket, ARPU низкий</b></li></ul>
+      <div class="warnbox" style="margin-top:12px;padding:11px 15px"><b>Узкое место — Revenue.</b> Клиентов приводим и активируем, но зарабатываем с каждого мало. Именно здесь лежат «недокрученные» деньги.</div>
+    </div>
+  </div>
+  <div class="demomark">🎯 <b>Решение группы:</b> качаем Revenue — самый дешёвый рычаг на прибыль (без нового трафика).</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 1 · узкое место</span></div>
+</section>
+
+<!-- 27 · ЖИВАЯ СБОРКА · вход -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 2 — что кладём на вход</span>
+  <h2 style="margin:10px 0 12px">Топливо у вас <span class="hl">уже собрано</span></h2>
+  <p class="lead" style="font-size:17px;margin-bottom:14px">Всё, что вы делали в прошлых модулях, теперь становится входом для стратегии. Ничего собирать заново.</p>
+  <div class="grid g3">
+    <div class="card"><span class="icon">📊</span><h3 style="font-size:16px">Предиктивная модель</h3><p>Текущий чек, частота, LTV — «точка А» в цифрах</p></div>
+    <div class="card"><span class="icon">🎯</span><h3 style="font-size:16px">Узкое место в ₽</h3><p>Revenue: сколько денег лежит в недокрученной ручке</p></div>
+    <div class="card"><span class="icon">🧩</span><h3 style="font-size:16px">JTBD-сегменты</h3><p>Что клиент «нанимает» сделать: семьи после операции, патронаж пожилых, клиники</p></div>
+    <div class="card"><span class="icon">📚</span><h3 style="font-size:16px">Отраслевое исследование</h3><p>РБК «Магазин исследований» — рынок ухода, цены, ниши</p></div>
+    <div class="card"><span class="icon">📗</span><h3 style="font-size:16px">Плейбук Revenue</h3><p>Продуктовая матрица, High-Ticket, ценообразование</p></div>
+    <div class="card" style="border:1.5px solid var(--gold)"><span class="icon">🤖</span><h3 style="font-size:16px">Claude</h3><p>Собирает всё это в стратегию под конкретный бизнес</p></div>
+  </div>
+  <div class="value"><span>Качество стратегии на выходе = качество опорных материалов на входе. <b>Без них Claude даст шаблон, а не вашу стратегию.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 2 · вход</span></div>
+</section>
+
+<!-- 28 · ЖИВАЯ СБОРКА · промпт -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 3 — мастер-промпт</span>
+  <h2 style="margin:10px 0 12px">Один промпт — вся стратегия этапа</h2>
+  <div class="term"><span class="c"># РОЛЬ</span>
+Ты — коммерческий директор по монетизации. Ты растил ARPU в 2–3 раза
+в сервисных и B2B-бизнесах, глубоко понимаешь JTBD и продуктовые матрицы.
+
+<span class="c"># ЧТО Я ЗАГРУЖАЮ</span>
+→ Предиктивную модель «Заботы» (чек, частота, LTV, выручка)
+→ JTBD-сегменты · отраслевое исследование по рынку ухода
+→ Плейбук Revenue
+
+<span class="c"># ЗАДАЧА</span>
+1. Собери <span class="ph">продуктовую лестницу</span>: трипваер → core → upsell → High-Ticket
+2. Для каждого сегмента — своя «работа» и свой продукт (B2C семьи / патронаж / B2B клиники)
+3. Предложи <span class="ph">3 гипотезы роста ARPU</span> с механикой и ценой
+4. Посчитай <span class="ph">юнит-экономику</span> каждой: прирост ₽/мес и ₽/год
+5. Дай <span class="ph">эксперимент на 2 недели</span> с метрикой успеха</div>
+  <div class="value"><span>Тот же паттерн — <b>роль → входы → задача</b> — работает для любого из 6 этапов. Промпты уже лежат в рабочей тетради.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 3 · промпт</span></div>
+</section>
+
+<!-- 29 · ЖИВАЯ СБОРКА · вывод claude -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 4 — что выдал Claude</span>
+  <h2 style="margin:10px 0 12px">Продуктовая лестница «Заботы»</h2>
+  <div class="tiers">
+    <div class="tier"><div class="tl">Трипваер<span>вход</span></div><div class="tv"><b>Разовый визит медсестры</b> — 2 500 ₽. Точка входа, знакомство с сервисом.</div></div>
+    <div class="tier"><div class="tl">Core<span>основа</span></div><div class="tv"><b>Пакет послеоперационного ухода</b> — 10 визитов за 21 000 ₽ (вместо 25 000 поштучно). JTBD: семья, выписали после операции.</div></div>
+    <div class="tier"><div class="tl">Upsell / подписка<span>частота</span></div><div class="tv"><b>Абонемент патронажа пожилых</b> — 8 визитов/мес, 18 000 ₽/мес. JTBD: дети пожилых родителей, нужен регулярный присмотр.</div></div>
+    <div class="tier" style="border-left-color:var(--em)"><div class="tl">High-Ticket<span>B2B</span></div><div class="tv"><b>Корпоративный контракт с клиникой</b> — ретейнер 150 000 ₽/мес на сопровождение выписанных пациентов.</div></div>
+  </div>
+  <div class="value"><span>Одна «работа» — один продукт. Из <b>разового визита</b> выросла лестница, которая закрывает и B2C, и B2B.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 4 · вывод</span></div>
+</section>
+
+<!-- 30 · ЖИВАЯ СБОРКА · юнит-экономика -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/s8_money.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 5 — юнит-экономика вживую</span>
+  <h2 style="margin:10px 0 12px">Считаем прирост в <span class="gold">рублях</span></h2>
+  <p class="lead" style="font-size:16px;margin-bottom:12px">Берём только гипотезу №1 (пакет ухода) — самую быструю — и считаем эффект теста на 2 недели.</p>
+  <div class="calc">
+<b>Формула:</b> клиентов × доля берут пакет × (чек пакета − текущий ARPU)
+<span class="r">250</span> клиентов × <span class="r">30%</span> × ( <span class="r">21 000 ₽</span> − <span class="r">7 500 ₽</span> )
+= 75 клиентов × 13 500 ₽ = <b style="font-size:19px;color:#fff">+1 012 500 ₽ / мес</b>  →  <b style="color:var(--gold-2)">≈ +12 млн ₽ / год</b></div>
+  <div class="stats" style="margin-top:14px">
+    <div class="stat"><div class="k">Было — выручка</div><div class="v">1,87 млн</div><div class="k">₽/мес</div></div>
+    <div class="stat"><div class="k">Стало (гипотеза 1)</div><div class="v gr">≈ 2,9 млн</div><div class="k">₽/мес</div></div>
+    <div class="stat"><div class="k">Новый трафик</div><div class="v gd">0 ₽</div><div class="k">та же база клиентов</div></div>
+  </div>
+  <div class="value"><span>Гипотеза перестала быть «идеей» — она <b>стоит +1 млн ₽/мес</b>. И это одна из трёх; абонемент и B2B-контракт добавят ещё.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 5 · юнит-экономика</span></div>
+</section>
+
+<!-- 31 · ЖИВАЯ СБОРКА · ICE→OKR -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 6 — приоритет и запуск</span>
+  <h2 style="margin:10px 0 12px">ICE → строка в тетради → OKR</h2>
+  <table>
+    <thead><tr><th>Гипотеза</th><th>Impact</th><th>Confidence</th><th>Easy</th><th>ICE</th><th>Решение</th></tr></thead>
+    <tbody>
+      <tr><td><b>Пакет послеоперац. ухода</b></td><td>9</td><td>8</td><td>8</td><td><b>25</b></td><td>🟢 Тест на 2 недели</td></tr>
+      <tr><td>Абонемент патронажа</td><td>8</td><td>6</td><td>6</td><td>20</td><td>🟡 Следующий</td></tr>
+      <tr><td>Корп. контракт с клиникой (B2B)</td><td>9</td><td>5</td><td>4</td><td>18</td><td>🟡 Q2, длинный цикл</td></tr>
+    </tbody>
+  </table>
+  <div class="two" style="margin-top:14px">
+    <div class="okbox" style="padding:11px 15px"><b>Первый тест (2 недели):</b> собрать оффер пакета на 1 экране, обучить координаторов предлагать при выписке, замерить долю берущих.</div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3 style="font-size:15px">→ Уходит в OKR квартала</h3><p style="margin-top:4px"><b style="color:var(--em)">O:</b> вырастить ARPU без нового трафика. <b style="color:var(--em)">KR:</b> доля пакетов 30%, +1 млн ₽/мес. Ответственный — руководитель сервиса.</p></div>
+  </div>
+  <div class="demomark">✅ <b>Артефакт готов:</b> лестница + математика + приоритет + первый тест — за одну сессию.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 6 · ICE → OKR</span></div>
+</section>
+
+<!-- 32 · БЕНЧМАРК -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <span class="kicker">Блок 5 · Как выбрать драйвер доказательно</span>
+  <h2 style="margin:10px 0 14px">Бенчмарк вместо <span class="hl">ощущений</span></h2>
+  <p class="lead" style="font-size:18px;margin-bottom:14px">Какой этап качать — решают не «мне кажется», а разрыв с нормой. Сравни свою воронку с бенчмарками ниши: где отстаёшь сильнее всего — там главная ручка.</p>
+  <div class="two">
+    <div class="card"><h3 style="font-size:17px">Как получить бенчмарк</h3><ul class="bl sm" style="margin-top:6px"><li>Спросить Claude про нормы конверсий/CPL/retention в нише</li><li>Отраслевые исследования (РБК, отчёты рынка)</li><li>Свои исторические данные — динамика по этапам</li></ul></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3 style="font-size:17px">Что ищем</h3><ul class="bl sm" style="margin-top:6px"><li>Этап с <b>самым большим запасом</b> роста в деньгах</li><li>Не «где плохо вообще», а «где докрутка даст больше ₽»</li><li>Один-два этапа в фокус, остальные — на поддержку</li></ul></div>
+  </div>
+  <div class="value"><span>Это и есть «наименьшие трудозатраты»: не чиним всё, а <b>бьём в один разрыв</b>, где деньги ближе всего.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Бенчмарк</span></div>
+</section>
+
+<!-- 33 · ПОТЕНЦИАЛ В РУБЛЯХ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <span class="kicker">Блок 5 · Шаг 1 тетради</span>
+  <h2 style="margin:10px 0 12px">Считаем потенциал каждой ручки в <span class="hl">рублях</span></h2>
+  <table>
+    <thead><tr><th>Текущий драйвер</th><th>Метрика Абрахама</th><th>Факт</th><th>Реальная цель</th><th>Потенциал ₽/мес</th></tr></thead>
+    <tbody>
+      <tr><td>Конверсия лид → продажа</td><td>Конверсия</td><td>3%</td><td>7%</td><td><b>+3 000 000</b></td></tr>
+      <tr><td>Средний чек</td><td>Средний чек</td><td>90 000</td><td>145 000</td><td><b>+5 500 000</b></td></tr>
+      <tr><td>Лидогенерация</td><td>Лиды</td><td>800</td><td>1 200</td><td><b>+1 800 000</b></td></tr>
+      <tr><td>LTV / повторные</td><td>LTV</td><td>100 000</td><td>150 000</td><td><b>+2 500 000</b></td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>Как только каждая ручка <b>оцифрована в деньгах</b> — сразу видно, какую крутить первой. Здесь это средний чек: +5,5 млн против +1,8 млн у лидов.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Потенциал в рублях</span></div>
+</section>
+
+<!-- 34 · СНАЧАЛА РАБОТАЮЩЕЕ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Блок 5 · Порядок гипотез</span>
+  <h2 style="margin:10px 0 16px">Сначала масштабируем <span class="hl">работающее</span></h2>
+  <div class="two" style="align-items:center">
+    <div>
+      <p class="lead" style="font-size:19px">«Сначала думаешь, за счёт чего масштабировать <b style="color:var(--em)">текущие драйверы</b>, и только потом — потенциальные. Сначала мы учимся увеличивать продажи в том, что уже приносит деньги.»</p>
+    </div>
+    <div>
+      <div class="okbox" style="margin-bottom:10px;padding:12px 16px"><b>1. Текущие драйверы</b><br><span style="font-size:14px;color:var(--muted)">То, что уже работает → докручиваем ручку. Быстро, дёшево, предсказуемо.</span></div>
+      <div class="card" style="padding:12px 16px"><b>2. Новые драйверы</b><br><span style="font-size:14px;color:var(--muted)">Новые гипотезы/каналы → тестируем и масштабируем. Дольше и рискованнее.</span></div>
+    </div>
+  </div>
+  <div class="value"><span>Это прямой путь к цели «минимум усилий — максимум прибыли»: <b>докрутить существующее почти всегда дешевле</b>, чем строить новое.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Работающее → новое</span></div>
+</section>
+
+<!-- 35 · ICE -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <span class="kicker">Блок 5 · Шаг 8 тетради</span>
+  <h2 style="margin:10px 0 12px">ICE — из десятков гипотез выбираем <span class="hl">3–5</span></h2>
+  <div class="two">
+    <div>
+      <p style="font-size:16px;margin-bottom:10px">Все гипотезы со всех этапов AAARRR собираем в одну таблицу и ранжируем:</p>
+      <div class="tiers">
+        <div class="tier" style="grid-template-columns:60px 1fr"><div class="tl">I<span>impact</span></div><div class="tv">Насколько влияет на выручку/цель? <b>10 = миллионы</b></div></div>
+        <div class="tier" style="grid-template-columns:60px 1fr"><div class="tl">C<span>conf.</span></div><div class="tv">Насколько уверен, что сработает?</div></div>
+        <div class="tier" style="grid-template-columns:60px 1fr"><div class="tl">E<span>easy</span></div><div class="tv">Насколько легко и быстро запустить?</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="stat" style="margin-bottom:12px"><div class="k">Собираем гипотез</div><div class="v">15–20</div><div class="k" style="margin-top:3px">со всех 6 этапов</div></div>
+      <div class="stat" style="border:1.5px solid var(--gold)"><div class="k">Берём в работу</div><div class="v gr">3–5</div><div class="k" style="margin-top:3px">топ по ICE-скору</div></div>
+    </div>
+  </div>
+  <div class="value"><span>ICE отсекает «красивые, но неподъёмные» идеи и «лёгкие, но бесполезные». Остаётся то, во что <b>реально идём</b>.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>ICE-приоритизация</span></div>
+</section>
+
+<!-- 36 · МАТЕМАТИКА -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/s8_money.png" alt="">
+  <span class="kicker">Блок 5 · Шаг 9 тетради</span>
+  <h2 style="margin:10px 0 12px">Математика гипотез — каждая в <span class="gold">рублях</span></h2>
+  <table>
+    <thead><tr><th>Драйвер</th><th>Формула</th><th>Пример</th></tr></thead>
+    <tbody>
+      <tr><td><b>Рост конверсии</b></td><td>(нов% − тек%) × лидов × чек</td><td>(7%−3%) × 1000 × 75 000 = <b>3,0 млн/мес</b></td></tr>
+      <tr><td><b>Рост чека</b></td><td>(нов − тек) × продаж/мес</td><td>(145 000 − 90 000) × 100 = <b>5,5 млн/мес</b></td></tr>
+      <tr><td><b>Рост лидов</b></td><td>(нов − тек) × конв% × чек</td><td>(1200 − 800) × 5% × 90 000 = <b>1,8 млн/мес</b></td></tr>
+      <tr><td><b>Рост LTV</b></td><td>(нов − тек) × новых клиентов</td><td>(150 000 − 100 000) × 50 = <b>2,5 млн/мес</b></td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>Математику считает Claude — <b>ваша задача проверить и скорректировать цифры</b>. На выходе: гипотеза → метрика → дельта ₽/мес и ₽/год.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Математика гипотез</span></div>
+</section>
+
+<!-- 37 · ТЕХНОЛОГИЯ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 6 · Технология</span><h2 style="font-size:30px">Мы собираем технологию компании</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:18px;margin-bottom:12px">«Мы создаём <b style="color:var(--em)">технологию, по которой работает наша компания</b>». Как в McDonald's: весь путь клиента разбит на пронумерованные узлы, за каждым — плейбук.</p>
+      <p style="font-size:15.5px">«Эффект Икеи»: детские рисунки-инструкции, по которым понятно, как собирать. Так же надо <b style="color:var(--em)">оцифровать коммерцию</b> — чтобы результат не зависел от «звёздного» сотрудника.</p>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/s37_tech.png" alt=""></div>
+  </div>
+  <div class="value"><span>AAARRR-стратегия — это и есть технология роста: <b>каждый этап описан, у каждого владелец, метрика и плейбук.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Технология</span></div>
+</section>
+
+<!-- 38 · CLAUDE + ПЛЕЙБУКИ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Блок 6 · Как работать с ИИ</span>
+  <h2 style="margin:10px 0 12px">Claude + плейбуки этапов = стратегия под ваш бизнес</h2>
+  <div class="grid g3">
+    <div class="card" style="border-top:4px solid var(--em)"><span class="num">1</span><h3 style="font-size:17px">Роль</h3><p style="margin-top:5px">Задаём Claude экспертную персону: «бренд-стратег 15 лет», «директор по монетизации» — под этап.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">2</span><h3 style="font-size:17px">Входы</h3><p style="margin-top:5px">Бриф, JTBD, ToV, конкуренты, предиктивная модель + <b style="color:var(--em)">плейбук этапа</b>.</p></div>
+    <div class="card" style="border-top:4px solid var(--green)"><span class="num">3</span><h3 style="font-size:17px">Выход</h3><p style="margin-top:5px">North Star + KPI, тактики/каналы, эксперимент на 2 недели, юнит-экономика, строка в таблице.</p></div>
+  </div>
+  <div class="value"><span>По каждому из 6 этапов — <b>свой мастер-промпт в тетради</b>. Не пишете с нуля: копируете, грузите материалы, проверяете вывод.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Claude + плейбуки</span></div>
+</section>
+
+<!-- 39 · БЫСТРЫЙ СТАРТ ЗА ВЕЧЕР -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Блок 6 · Алгоритм</span>
+  <h2 style="margin:10px 0 12px">Быстрый старт за вечер (~2 часа)</h2>
+  <div class="steps">
+    <div class="step"><span class="sn">1</span><div><div class="st">Собрать цифры по воронке · 30 мин</div><div class="sd">За месяц: охват, лиды+CPL, конверсия, % повторных, чек+LTV, % приведших</div></div></div>
+    <div class="step"><span class="sn">2</span><div><div class="st">Сравнить с бенчмарками · 20 мин</div><div class="sd">Спросить Claude про нормы ниши — где отстаёшь сильнее всего</div></div></div>
+    <div class="step"><span class="sn">3</span><div><div class="st">Выбрать ОДИН этап · 10 мин</div><div class="sd">Самый большой запас роста справа налево; остальные — на поддержку</div></div></div>
+    <div class="step"><span class="sn">4</span><div><div class="st">Промпт из плейбука · 40 мин</div><div class="sd">Claude генерит стратегию, действия, метрики, эксперимент на 2 недели</div></div></div>
+    <div class="step"><span class="sn">5</span><div><div class="st">Заполнить таблицу и запустить · 20 мин</div><div class="sd">North Star, KPI, ответственный, первые 3–5 действий, дата замера</div></div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>За вечер</span></div>
+</section>
+
+<!-- 40 · МОСТИК К МОДЕЛИ ОП -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Блок 6 · Куда это приземляется</span>
+  <h2 style="margin:10px 0 12px">Драйверы живут в <span class="hl">модели отдела продаж</span></h2>
+  <p class="lead" style="font-size:17px;margin-bottom:12px">Метрики каждого этапа AAARRR должны отражаться в предиктивной модели и модели ОП — иначе драйвером нельзя управлять ежедневно.</p>
+  <div class="two">
+    <div class="card"><h3 style="font-size:16px">Что приземляем</h3><ul class="bl sm" style="margin-top:6px"><li>Опережающие: звонки, наговор, дозвон</li><li>Воронка: лиды → квал → КЭВ → оплата</li><li>Средний чек через долю тарифов</li></ul></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3 style="font-size:16px">Детали — в модуле «Арсенал продавца»</h3><ul class="bl sm" style="margin-top:6px"><li>Интерфейс контроля менеджеров (M1/M2/M3)</li><li>Скрипты, регламент дозвона, ОКК</li><li>Боевой план и нормирование</li></ul></div>
+  </div>
+  <div class="value"><span>Сегодня — <b>какие ручки крутим и на сколько денег</b>. В следующем модуле — <b>чем именно их крутит отдел продаж</b>.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Мостик · модель ОП</span></div>
+</section>
+
+<!-- 41 · ИТОГОВЫЙ СЛАЙД СТРАТЕГИИ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 7 · Шаг 10 тетради</span><h2 style="font-size:29px">Один экран, который вы защищаете</h2></div>
+  <div class="imgacc" style="grid-template-columns:1fr 320px">
+    <div>
+      <div class="tiers">
+        <div class="tier" style="border-left-color:var(--em)"><div class="tl">Цель<span>SMART</span></div><div class="tv">Выручка/прибыль, срок, разрыв (GAP)</div></div>
+        <div class="tier"><div class="tl">Текущие драйверы<span>докрутка</span></div><div class="tv">Что уже работает + потенциал ₽/мес + ответственный</div></div>
+        <div class="tier"><div class="tl">Новые драйверы<span>гипотезы</span></div><div class="tv">Этап AAARRR, прогноз ₽/мес, ICE, первый тест</div></div>
+        <div class="tier" style="border-left-color:var(--green)"><div class="tl">Математика<span>итог</span></div><div class="tv">Совокупный потенциал ₽/мес и ₽/год</div></div>
+      </div>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/s41_present.png" alt=""></div>
+  </div>
+  <div class="value"><span>Всё сходится в одну картину: <b>цель → драйверы → математика → приоритеты → ответственные.</b> Это и есть ваша коммерческая стратегия.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Итоговый слайд</span></div>
+</section>
+
+<!-- 42 · ДРАЙВЕРЫ → OKR -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Блок 7 · Сшивка</span>
+  <h2 style="margin:10px 0 14px">Драйверы становятся <span class="gold">квартальными проектами</span></h2>
+  <div class="loop" style="margin:8px 0 16px">
+    <div class="lnode"><b>Узкое место</b><span>в ₽</span></div><span class="arr">→</span>
+    <div class="lnode"><b>Гипотезы</b><span>по этапам</span></div><span class="arr">→</span>
+    <div class="lnode"><b>ICE + матем.</b><span>топ 3–5</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>OKR квартала</b><span>проект + владелец</span></div>
+  </div>
+  <p class="lead" style="font-size:17px;max-width:960px">Каждый выбранный драйвер = <b style="color:#fff">Objective + Key Results</b> с ответственным. Не разовая стратсессия, а проект, который человек лидирует и по которому оценивается его перформанс.</p>
+  <div class="value"><span>Так замыкается система: <b>драйверы роста → OKR → перформанс.</b> Именно поэтому этот модуль стоит перед квартальным циклом.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Драйверы → OKR</span></div>
+</section>
+
+<!-- 43 · ДОМАШКА -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">Домашнее задание</span>
+  <h2 style="margin:10px 0 12px">Собери свою <span class="hl">AAARRR-стратегию</span></h2>
+  <p class="lead" style="font-size:18px;margin-bottom:14px">Главный результат модуля — заполненная рабочая тетрадь «Драйверы роста». Проходишь Шаги 0→10 последовательно, на выходе — стратегия с математикой в рублях.</p>
+  <div class="two">
+    <div class="okbox" style="padding:13px 17px">
+      <h3 style="font-size:16px;margin-bottom:7px">Что сдаёшь</h3>
+      <ul class="bl check" style="gap:7px"><li>Оцифрованная AAARRR-воронка (факты по этапам)</li><li>Текущие драйверы с потенциалом в ₽/мес</li><li>ICE-таблица + математика топ-гипотез</li><li>Итоговый слайд стратегии (Шаг 10)</li></ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <h3 style="font-size:16px;margin-bottom:7px">Рабочая тетрадь</h3>
+      <p style="font-size:14.5px">Копируешь себе и заполняешь. Внутри — промпты для Claude и плейбуки по каждому этапу.</p>
+      <div style="margin-top:10px;background:var(--em);border-radius:10px;padding:11px 14px"><a href="https://docs.google.com/spreadsheets/d/1ju--qVZb60OBfUsiFCQyRSd6Thhq70EmXYEM3Q5t3wg/edit?gid=942929426#gid=942929426" style="color:#fff;font-weight:700;font-size:14px;text-decoration:none;word-break:break-all">📗 Рабочая тетрадь «Драйверы роста» →</a></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Домашка</span></div>
+</section>
+
+<!-- 44 · ЧТО НУЖНО НА ВХОДЕ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Домашка · Шаг 0 — чеклист готовности</span>
+  <h2 style="margin:10px 0 12px">Без опорных материалов — <span class="hl">шаблон, а не стратегия</span></h2>
+  <div class="grid g4">
+    <div class="card"><span class="icon">📋</span><h3 style="font-size:15px">Бриф компании</h3><p>Опросник, надиктован и обработан</p></div>
+    <div class="card"><span class="icon">🧩</span><h3 style="font-size:15px">JTBD-сегменты</h3><p>По «работам», не по демографии</p></div>
+    <div class="card"><span class="icon">⭐</span><h3 style="font-size:15px">Core-сегменты</h3><p>1–3 с максимальным потенциалом</p></div>
+    <div class="card"><span class="icon">⚔️</span><h3 style="font-size:15px">Конкуренты + отстройка</h3><p>Где сильны они, где вы</p></div>
+    <div class="card"><span class="icon">🎙️</span><h3 style="font-size:15px">Tone of Voice</h3><p>Как говорим с клиентом</p></div>
+    <div class="card"><span class="icon">🧭</span><h3 style="font-size:15px">Позиционирование</h3><p>Кто мы, для кого, почему мы</p></div>
+    <div class="card"><span class="icon">📊</span><h3 style="font-size:15px">Предиктивная модель</h3><p>План-факт по метрикам</p></div>
+    <div class="card" style="border:1.5px solid var(--gold)"><span class="icon">🎯</span><h3 style="font-size:15px">Узкие места в ₽</h3><p>ТОП-3 с влиянием на выручку</p></div>
+  </div>
+  <div class="value"><span>Часть из этого — <b>наследие прошлых модулей</b> (JTBD, упаковка, модель). Сейчас всё это работает как топливо для стратегии.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Шаг 0 · вход</span></div>
+</section>
+
+<!-- 45 · МАРШРУТ ТЕТРАДИ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">Домашка · навигация по тетради</span>
+  <h2 style="margin:10px 0 10px">Пошаговый маршрут: Шаг 0 → 10</h2>
+  <div class="two">
+    <div>
+      <div class="steps">
+        <div class="step" style="padding:8px 14px"><span class="sn">0</span><div><div class="st" style="font-size:14px">Чеклист готовности</div></div></div>
+        <div class="step" style="padding:8px 14px"><span class="sn">1</span><div><div class="st" style="font-size:14px">Анализ текущих драйверов (потенциал в ₽)</div></div></div>
+        <div class="step" style="padding:8px 14px"><span class="sn">2</span><div><div class="st" style="font-size:14px">Стратегия по 6 этапам AAARRR (2→7)</div></div></div>
+      </div>
+    </div>
+    <div>
+      <div class="steps">
+        <div class="step" style="padding:8px 14px"><span class="sn">8</span><div><div class="st" style="font-size:14px">ICE-приоритизация всех гипотез</div></div></div>
+        <div class="step" style="padding:8px 14px"><span class="sn">9</span><div><div class="st" style="font-size:14px">Математика гипотез (в рублях)</div></div></div>
+        <div class="step" style="padding:8px 14px;border:1.5px solid var(--gold)"><span class="sn">10</span><div><div class="st" style="font-size:14px">Итоговая стратегия — слайд защиты</div></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="value"><span>На каждом шаге тетрадь говорит: <b>что делаем · что грузим в Claude · что получаем на выходе.</b> Проходишь последовательно — не заблудишься.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Маршрут тетради</span></div>
+</section>
+
+<!-- 46 · КРИТЕРИИ + ЗАЩИТА -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Домашка · критерии готовности</span>
+  <h2 style="margin:10px 0 14px">Что значит «сделано хорошо»</h2>
+  <div class="two">
+    <div class="okbox" style="padding:14px 18px">
+      <h3 style="font-size:16px;margin-bottom:8px">Критерии</h3>
+      <ul class="bl check" style="gap:8px"><li>Каждая ручка посчитана в <b>рублях</b>, не «примерно»</li><li>Выбраны <b>3–5</b> драйверов по ICE, а не 20</li><li>У каждого — метрика, ответственный, первый тест на 2 недели</li><li>Итоговый слайд собран в один экран</li></ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <h3 style="font-size:16px;margin-bottom:8px">Формат защиты</h3>
+      <p style="font-size:14.5px;line-height:1.45">Защищаешь стратегию на личной встрече — по <b style="color:var(--em)">итоговому слайду (Шаг 10)</b>. Не презентация ради презентации: показываешь узкое место, выбранные драйверы и математику.</p>
+      <div class="value" style="margin-top:10px"><span>Лучше <b>меньше, но с цифрами</b>, чем красиво и без денег.</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Критерии · защита</span></div>
+</section>
+
+<!-- 47 · ФИНАЛ -->
+<section class="slide slide--dark slide--title">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.6;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <img class="heroimg" src="gen/bob/cut/s47_win.png" alt="">
+  <span class="kicker">Итог модуля</span>
+  <h1 style="font-size:54px;margin-top:14px">Найди одну ручку —<br><span class="gold">и выкрути её сегодня</span></h1>
+  <p class="lead" style="margin-top:20px;max-width:720px">Не чинить всё сразу. Найти узкое место, посчитать его в рублях, собрать под него артефакт за вечер и запустить тест на 2 недели. Так растёт чистая прибыль — с наименьшими усилиями.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Драйверы роста · AAARRR</span></div>
+</section>
+
+</div>
+
+<div id="bar"></div>
+<div id="count"></div>
+<div class="hint">← →  ·  Space  ·  F — полный экран</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+const bar=document.getElementById('bar'), count=document.getElementById('count');
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));bar.style.width=((i+1)/slides.length*100)+'%';count.textContent=(i+1)+' / '+slides.length;}
+function next(){show(i+1)} function prev(){show(i-1)}
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}else if(e.key==='Home'){show(0)}else if(e.key==='End'){show(slides.length-1)}else if(e.key==='f'||e.key==='F'){document.documentElement.requestFullscreen?.()}});
+document.getElementById('stage').addEventListener('click',e=>{const r=document.getElementById('stage').getBoundingClientRect();(e.clientX-r.left)/r.width>0.5?next():prev();});
+function fit(){const s=Math.min(window.innerWidth/1280, window.innerHeight/720);document.getElementById('stage').style.transform=`translate(-50%,-50%) scale(${s})`;}
+window.addEventListener('resize',fit);
+const startAt=parseInt(location.hash.replace('#',''),10);
+fit(); show(Number.isFinite(startAt)&&startAt>0?startAt-1:0);
+</script>
+</body>
+</html>

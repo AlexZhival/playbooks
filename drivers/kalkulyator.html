@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · Калькулятор недокрученных ручек</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --card:#FCFAF4;
+  --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --dark-ink:#EFE9DA;
+  --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-2);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5vw,48px);line-height:1.05;letter-spacing:-.5px;color:#fff}
+.gold{color:var(--gold-h)}
+b,strong{font-weight:800}
+/* hero */
+.hero{background:var(--em);color:var(--dark-ink);padding:44px 0 40px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 20%,rgba(199,154,69,.16),transparent 45%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero p{color:rgba(239,233,218,.82);font-size:17px;max-width:640px;margin-top:14px;font-weight:500}
+.badges{display:flex;gap:9px;margin-bottom:18px;flex-wrap:wrap}
+.badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold-2)}
+.badge.solid{background:#F4F1EA;color:var(--em);border-color:transparent}
+main{padding:34px 0 60px}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px}
+.panel h2{font-family:var(--serif);font-weight:800;font-size:22px;color:var(--em);margin-bottom:4px}
+.panel .sub{font-size:13.5px;color:var(--muted);margin-bottom:18px}
+/* input rows */
+.mrow{display:grid;grid-template-columns:1fr;gap:7px;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.mrow:last-child{border-bottom:none}
+.mrow .ml{display:flex;align-items:center;gap:9px}
+.mrow .ml .e{font-size:19px}
+.mrow .ml .name{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--em)}
+.mrow .ml .pedal{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-h);font-weight:700;background:rgba(176,130,46,.12);padding:3px 8px;border-radius:20px;margin-left:auto}
+.fields{display:grid;grid-template-columns:1fr 26px 1fr;gap:8px;align-items:center}
+.field{position:relative}
+.field label{position:absolute;top:6px;left:12px;font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+.field.f-tgt label{color:var(--green)}
+.field input{width:100%;padding:20px 12px 8px;border:1.5px solid var(--line);border-radius:10px;font-family:var(--sans);font-weight:700;font-size:16px;color:var(--ink);background:var(--bg);outline:none;transition:border-color .15s}
+.field input:focus{border-color:var(--gold)}
+.field.f-tgt input{background:rgba(62,142,94,.07);border-color:rgba(62,142,94,.35)}
+.field.f-tgt input:focus{border-color:var(--green)}
+.arrow{text-align:center;color:var(--gold);font-weight:800;font-size:17px}
+.unit{position:absolute;right:12px;bottom:9px;font-size:12px;color:var(--muted);font-weight:600;pointer-events:none}
+.derived{margin-top:16px;background:var(--bg-2);border-radius:11px;padding:11px 15px;font-size:13.5px;color:var(--muted);display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.derived b{color:var(--em)}
+/* results */
+.res{display:flex;flex-direction:column;gap:11px}
+.rc{background:var(--bg);border:1px solid var(--line);border-radius:13px;padding:14px 17px;display:flex;align-items:center;gap:14px;transition:all .2s}
+.rc .rbar{flex:0 0 6px;align-self:stretch;border-radius:6px;background:var(--line)}
+.rc .rname{font-family:var(--serif);font-weight:700;font-size:15.5px;color:var(--em);min-width:118px}
+.rc .rname span{display:block;font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.rc .rval{margin-left:auto;text-align:right}
+.rc .rval .m{font-family:var(--serif);font-weight:800;font-size:22px;color:var(--em);line-height:1}
+.rc .rval .y{font-size:12px;color:var(--muted);font-weight:600;margin-top:3px}
+.rc.top{border:1.6px solid var(--gold);background:rgba(199,154,69,.1);box-shadow:0 12px 26px -16px rgba(176,130,46,.6)}
+.rc.top .rbar{background:linear-gradient(180deg,#C79A45,#A87C24)}
+.rc.top .rval .m{color:var(--gold-h)}
+.rc.zero{opacity:.5}
+.crown{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold-h);font-weight:800;display:none}
+.rc.top .crown{display:block;margin-top:3px}
+.total{margin-top:18px;background:var(--em);border-radius:15px;padding:20px 24px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.total .tl{font-family:var(--serif);font-weight:700;font-size:16px}
+.total .tl span{display:block;font-family:var(--mono);font-size:11px;color:var(--gold-2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+.total .tv{text-align:right}
+.total .tv .m{font-family:var(--serif);font-weight:900;font-size:34px;line-height:1;color:var(--gold-2)}
+.total .tv .y{font-size:13px;color:rgba(239,233,218,.8);margin-top:4px}
+.note{margin-top:16px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:12px 16px;font-size:13.5px;line-height:1.45}
+.note::before{content:"КАК ЧИТАТЬ";font-family:var(--mono);font-size:9px;letter-spacing:.08em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:3px}
+.note b{color:var(--em)}
+.actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
+.btn{font-family:var(--sans);font-weight:700;font-size:14px;padding:11px 18px;border-radius:10px;border:1.5px solid var(--line);background:var(--card);color:var(--em);cursor:pointer;transition:border-color .15s}
+.btn:hover{border-color:var(--gold)}
+.btn.p{background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;border-color:transparent}
+footer{background:var(--em);color:rgba(239,233,218,.7);padding:26px 0;font-family:var(--mono);font-size:12px;letter-spacing:.05em}
+footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+footer img{height:18px;filter:brightness(0) invert(1);opacity:.85}
+footer .l{display:flex;align-items:center;gap:10px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge solid">● Практикум A-Players</span>
+      <span class="badge">Драйверы роста</span>
+    </div>
+    <span class="kicker" style="margin-bottom:12px">Вбей 8 цифр — увидишь, где лежат деньги</span>
+    <h1>Калькулятор недокрученных ручек</h1>
+    <p>Введи текущий факт и реалистичную цель по каждой из 4 педалей Абрахама. Калькулятор сразу покажет, <b style="color:#fff">сколько рублей в месяц лежит в каждой недокрученной ручке</b> — и подсветит главную.</p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap layout">
+
+    <!-- INPUTS -->
+    <div class="panel">
+      <h2>Твои цифры</h2>
+      <div class="sub">Факт — как сейчас. Цель — реалистично, а не «мечта».</div>
+
+      <div class="mrow">
+        <div class="ml"><span class="e">🎯</span><span class="name">Лиды в месяц</span><span class="pedal">Педаль · лиды</span></div>
+        <div class="fields">
+          <div class="field"><label>Факт</label><input id="L" type="number" value="800"><span class="unit">шт</span></div>
+          <div class="arrow">→</div>
+          <div class="field f-tgt"><label>Цель</label><input id="L2" type="number" value="1200"><span class="unit">шт</span></div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="ml"><span class="e">⚡</span><span class="name">Конверсия в продажу</span><span class="pedal">Педаль · конверсия</span></div>
+        <div class="fields">
+          <div class="field"><label>Факт</label><input id="C" type="number" value="3" step="0.1"><span class="unit">%</span></div>
+          <div class="arrow">→</div>
+          <div class="field f-tgt"><label>Цель</label><input id="C2" type="number" value="7" step="0.1"><span class="unit">%</span></div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="ml"><span class="e">💰</span><span class="name">Средний чек</span><span class="pedal">Педаль · чек</span></div>
+        <div class="fields">
+          <div class="field"><label>Факт</label><input id="A" type="number" value="90000"><span class="unit">₽</span></div>
+          <div class="arrow">→</div>
+          <div class="field f-tgt"><label>Цель</label><input id="A2" type="number" value="145000"><span class="unit">₽</span></div>
+        </div>
+      </div>
+
+      <div class="mrow">
+        <div class="ml"><span class="e">🔄</span><span class="name">LTV (доход с клиента)</span><span class="pedal">Педаль · LTV</span></div>
+        <div class="fields">
+          <div class="field"><label>Факт</label><input id="V" type="number" value="100000"><span class="unit">₽</span></div>
+          <div class="arrow">→</div>
+          <div class="field f-tgt"><label>Цель</label><input id="V2" type="number" value="150000"><span class="unit">₽</span></div>
+        </div>
+      </div>
+
+      <div class="derived">
+        <span>Продаж в месяц (факт): <b id="dSales">—</b></span>
+        <span>Выручка по чеку: <b id="dRev">—</b> ₽/мес</span>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="panel">
+      <h2>Сколько лежит в ручках</h2>
+      <div class="sub">Потенциал при докрутке до реалистичной цели.</div>
+      <div class="res" id="res"></div>
+      <div class="total">
+        <div class="tl">Совокупный потенциал<span>если докрутить всё</span></div>
+        <div class="tv"><div class="m" id="totM">—</div><div class="y" id="totY">— ₽/год</div></div>
+      </div>
+      <div class="note"><span>Это не прогноз выручки, а <b>верхняя граница</b> — сколько денег «спрятано» в каждой ручке. Бери в фокус <b>одну-две самые жирные</b>, а не все сразу.</span></div>
+      <div class="actions">
+        <button class="btn p" onclick="reset()">Сбросить на пример</button>
+        <button class="btn" onclick="zeroAll()">Очистить под себя</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="l"><img src="assets/logo-aplayers.png" alt="A-Players"> ПРАКТИКУМ A-PLAYERS</span>
+    <span>Драйверы роста · 4 педали Джея Абрахама</span>
+  </div>
+</footer>
+
+<script>
+const ids=['L','L2','C','C2','A','A2','V','V2'];
+const num=id=>{const v=parseFloat(document.getElementById(id).value);return isFinite(v)?v:0;};
+const fmt=n=>{n=Math.round(n);return n.toLocaleString('ru-RU').replace(/,/g,' ');};
+function money(n){ // compact ₽/мес for big numbers
+  if(Math.abs(n)>=1e6) return (n/1e6).toLocaleString('ru-RU',{maximumFractionDigits:2})+' млн';
+  return fmt(n);
+}
+function calc(){
+  const L=num('L'),L2=num('L2'),C=num('C'),C2=num('C2'),A=num('A'),A2=num('A2'),V=num('V'),V2=num('V2');
+  const sales=L*C/100;          // продаж/мес (факт)
+  document.getElementById('dSales').textContent=fmt(sales);
+  document.getElementById('dRev').textContent=money(sales*A);
+  // потенциалы, ₽/мес
+  const pC=Math.max(0,(C2-C)/100*L*A);        // рост конверсии
+  const pA=Math.max(0,(A2-A)*sales);          // рост чека
+  const pL=Math.max(0,(L2-L)*C/100*A);        // рост лидов
+  const pV=Math.max(0,(V2-V)*sales);          // рост LTV (нов.клиентов≈продаж/мес)
+  const rows=[
+    {n:'Конверсия',s:'лид → продажа',v:pC},
+    {n:'Средний чек',s:'денег в сделке',v:pA},
+    {n:'Лиды',s:'объём привлечения',v:pL},
+    {n:'LTV / повторные',s:'доход с клиента',v:pV},
+  ];
+  const max=Math.max(...rows.map(r=>r.v),1);
+  const total=rows.reduce((s,r)=>s+r.v,0);
+  const el=document.getElementById('res');el.innerHTML='';
+  rows.sort((a,b)=>b.v-a.v).forEach((r,i)=>{
+    const top=r.v>0&&i===0, zero=r.v<=0;
+    const h=Math.max(6,Math.round(r.v/max*100));
+    el.insertAdjacentHTML('beforeend',
+      `<div class="rc ${top?'top':''} ${zero?'zero':''}">
+        <div class="rbar" style="min-height:${h}%;background:${top?'':'linear-gradient(180deg,#8FA396,#5A6C60)'}"></div>
+        <div class="rname">${r.n}<span>${r.s}</span></div>
+        <div class="rval"><div class="m">${r.v>0?'+ '+money(r.v):'—'} ${r.v>0?'₽/мес':''}</div>
+          <div class="y">${r.v>0?'+ '+money(r.v*12)+' ₽/год':'нет разрыва'}</div>
+          <div class="crown">🎯 главная ручка</div></div>
+      </div>`);
+  });
+  document.getElementById('totM').textContent='+ '+money(total)+' ₽/мес';
+  document.getElementById('totY').textContent='+ '+money(total*12)+' ₽/год';
+}
+function reset(){const d={L:800,L2:1200,C:3,C2:7,A:90000,A2:145000,V:100000,V2:150000};ids.forEach(k=>document.getElementById(k).value=d[k]);calc();}
+function zeroAll(){ids.forEach(k=>document.getElementById(k).value='');['dSales','dRev'].forEach(k=>document.getElementById(k).textContent='—');calc();}
+ids.forEach(id=>document.getElementById(id).addEventListener('input',calc));
+calc();
+</script>
+</body>
+</html>

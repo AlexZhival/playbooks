@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · Драйвер-ресёрчер (Claude Project)</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --card:#FCFAF4;
+  --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --dark-ink:#EFE9DA;
+  --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019; --green:#3E8E5E; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(32px,5.5vw,52px);line-height:1.04;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(24px,4vw,34px);line-height:1.08;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+.gold{color:var(--gold-h)} b,strong{font-weight:800} .em{color:var(--em)}
+/* hero */
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:64px 0 56px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 25%,rgba(199,154,69,.17),transparent 46%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:800px}
+.hero .lead{font-size:clamp(17px,2.4vw,20px);color:rgba(239,233,218,.85);max-width:680px;margin-top:18px;font-weight:500}
+.hero .kicker{color:var(--gold-2)}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}
+.badge{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;padding:8px 14px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold-2)}
+.badge.solid{background:#F4F1EA;color:var(--em);border-color:transparent}
+section{padding:50px 0}
+section.alt{background:var(--bg-2)}
+.eyebrow{margin-bottom:14px}
+.lead{font-size:19px;color:var(--muted);font-weight:500}
+.grid{display:grid;gap:16px;margin-top:24px}
+.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:760px){.g3{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+.card .ic{font-size:26px;display:block;margin-bottom:8px}
+.card h3{margin-bottom:6px}
+.card p{font-size:14.5px;color:var(--muted)}
+/* setup steps */
+.road{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.rstep{display:grid;grid-template-columns:50px 1fr;gap:18px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px}
+.rstep .n{width:42px;height:42px;border-radius:11px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:19px;display:grid;place-items:center;box-shadow:0 8px 18px -8px rgba(176,130,46,.6)}
+.rstep h3{font-size:18px;margin-bottom:5px}
+.rstep p{font-size:15px;color:var(--muted)}
+.rstep code{font-family:var(--mono);font-size:13px;background:var(--bg-2);padding:2px 7px;border-radius:6px;color:var(--em)}
+.files{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.file{font-family:var(--mono);font-size:12.5px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 11px;color:var(--em);font-weight:600}
+/* prompt blocks */
+.prompt{background:#0f2018;border:1px solid #2a4c3e;border-radius:16px;overflow:hidden;margin-top:20px;box-shadow:0 24px 60px -34px rgba(0,0,0,.6)}
+.prompt .ph{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid #24463a;background:#0c1a14}
+.prompt .ph .t{font-family:var(--serif);font-weight:700;font-size:17px;color:#fff}
+.prompt .ph .t span{display:block;font-family:var(--mono);font-size:11px;color:#7fa394;font-weight:400;text-transform:none;letter-spacing:0;margin-top:2px}
+.prompt .ph .cp{margin-left:auto;font-family:var(--sans);font-weight:700;font-size:13px;color:#19120A;background:linear-gradient(180deg,#C79A45,#A87C24);border:none;border-radius:9px;padding:9px 15px;cursor:pointer;transition:transform .12s;white-space:nowrap}
+.prompt .ph .cp:hover{transform:translateY(-1px)}
+.prompt .ph .cp.ok{background:#4ea96f;color:#08130d}
+.prompt pre{margin:0;padding:20px;font-family:var(--mono);font-size:13px;line-height:1.62;color:#d3e6da;white-space:pre-wrap;max-height:420px;overflow:auto}
+.prompt pre .c{color:#7fa394}
+.prompt pre .ph2{color:var(--gold-2);font-weight:700}
+.value{margin-top:22px;display:flex;gap:12px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:15px 20px;font-size:16px}
+.value b{color:var(--em)}
+.value::before{content:"СМЫСЛ";font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:3px}
+.warn{background:rgba(178,59,46,.07);border:1.5px solid rgba(178,59,46,.35);border-radius:14px;padding:15px 19px;margin-top:22px;font-size:15.5px}
+.instr{background:var(--em);color:#fff;border-radius:16px;padding:22px 26px;margin-top:24px}
+.instr h3{color:#fff;margin-bottom:8px}
+.instr pre{margin-top:12px;background:rgba(0,0,0,.22);border-radius:11px;padding:16px 18px;font-family:var(--mono);font-size:12.5px;line-height:1.55;color:rgba(239,233,218,.9);white-space:pre-wrap;max-height:260px;overflow:auto}
+.instr .cp{margin-top:14px;font-weight:700;font-size:13.5px;color:#19120A;background:#F4F1EA;border:none;border-radius:9px;padding:10px 16px;cursor:pointer}
+.instr .cp.ok{background:#8fd6a6}
+footer{background:var(--em);color:rgba(239,233,218,.7);padding:32px 0;font-family:var(--mono);font-size:12.5px;letter-spacing:.05em}
+footer .wrap{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+footer img{height:20px;filter:brightness(0) invert(1);opacity:.85}
+footer .l{display:flex;align-items:center;gap:11px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge solid">● Практикум A-Players</span>
+      <span class="badge">Драйверы роста</span>
+      <span class="badge">Claude Project</span>
+    </div>
+    <span class="kicker" style="margin-bottom:14px">Твой ИИ-коммерческий директор</span>
+    <h1>Драйвер-ресёрчер</h1>
+    <p class="lead">Готовая конфигурация Claude Project: загружаешь опорные материалы + плейбуки один раз — и дальше он собирает AAARRR-стратегию под твою нишу, считает потенциал в рублях и челленджит твои гипотезы. Не платформа — «второй мозг» под драйверы роста.</p>
+  </div>
+</header>
+
+<!-- ЗАЧЕМ -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Что это даёт</span>
+    <h2>Одна загрузка → вся стратегия</h2>
+    <div class="grid g3">
+      <div class="card"><span class="ic">📦</span><h3>Плейбуки внутри</h3><p>6 этапов AAARRR уже в знаниях проекта — не прикладываешь каждый раз.</p></div>
+      <div class="card"><span class="ic">🔬</span><h3>Ресёрч под нишу</h3><p>Учитывает твою предиктивную модель, JTBD и контекст, а не общие советы.</p></div>
+      <div class="card"><span class="ic">💰</span><h3>Считает деньги</h3><p>Каждая гипотеза — с математикой в ₽/мес и приоритетом по ICE.</p></div>
+      <div class="card"><span class="ic">🥊</span><h3>Челленджит</h3><p>По выбранному этапу пресёт-тестит твою логику, а не только генерит.</p></div>
+      <div class="card"><span class="ic">🧾</span><h3>Готовый слайд</h3><p>На выходе — итоговый экран стратегии (Шаг 10 тетради).</p></div>
+      <div class="card"><span class="ic">⚡</span><h3>Ноль разработки</h3><p>Это конфиг + промпты. Настраивается за 5 минут, работает сразу.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- КАК СОБРАТЬ -->
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Настройка · 3 шага</span>
+    <h2>Как собрать проект</h2>
+    <div class="road">
+      <div class="rstep"><div class="n">1</div><div><h3>Создай проект</h3><p>Открой <b class="em">claude.ai → Projects → Create project</b>. Назови <code>Драйвер-ресёрчер — своя компания</code>. В поле <b class="em">Project instructions</b> вставь инструкции проекта (ниже, кнопка «Копировать»).</p></div></div>
+      <div class="rstep"><div class="n">2</div><div><h3>Загрузи знания</h3><p>Перетащи в раздел знаний проекта плейбуки (методология) + свой контекст (персонализация):</p>
+        <div class="files"><span class="file">📗 Плейбук AAARRR</span><span class="file">ЭТАП 1–6 (Awareness…Referral)</span><span class="file">📊 Предиктивная модель</span><span class="file">🧩 JTBD</span><span class="file">📝 Бриф · ToV · Конкуренты</span><span class="file">🎯 Узкие места в ₽</span></div>
+        <p style="margin-top:10px;font-size:13.5px">Плейбуки лежат в папке модуля «Примеры материалов ранее записанных». Свой контекст — из рабочей тетради и калькулятора.</p></div></div>
+      <div class="rstep"><div class="n">3</div><div><h3>Запускай сценарии</h3><p>Вставляй в чат проекта два промпта ниже: сначала <b class="em">Оркестратор</b> (вся стратегия за заход), потом <b class="em">Челленджер</b> по этапу с узким местом.</p></div></div>
+    </div>
+
+    <div class="instr">
+      <h3>⚙️ Инструкции проекта (Project instructions)</h3>
+      <p style="color:rgba(239,233,218,.82);font-size:14.5px">Вставь целиком в поле «Project instructions» при создании проекта.</p>
+      <pre id="pInstr">Ты — опытный коммерческий директор и growth-стратег с 15+ годами опыта масштабирования бизнесов в услугах, консалтинге, EdTech, e-commerce и B2B. Твоя задача — помогать строить и проверять стратегию драйверов роста по методологии AAARRR (пиратский маркетинг) и 4 метрикам Джея Абрахама.
+
+ЧТО В ЗНАНИЯХ ПРОЕКТА:
+— Плейбуки по 6 этапам AAARRR — твоя методология, всегда опирайся на них.
+— Контекст компании: предиктивная модель, JTBD, бриф, ToV, конкуренты, узкие места — всегда используй именно эти данные.
+
+ГЛАВНЫЕ ПРИНЦИПЫ:
+1. Считай в рублях. Любая гипотеза — с оценкой влияния в ₽/мес и ₽/год, показывай формулу.
+2. Не чинить всё сразу. Указывай узкое место, фокусируй на 1–2 этапах с наибольшим потенциалом в деньгах. Читай воронку справа налево.
+3. Сначала работающее, потом новое: сперва докрутка текущих драйверов, потом новые гипотезы.
+4. Опирайся на их цифры, не выдумывай метрики. Не хватает данных — спроси.
+5. Приоритизация через ICE (Impact × Confidence × Easy, 1–10) → оставляй 3–5 гипотез.
+6. Каждая гипотеза = эксперимент на 2 недели с метрикой, ответственным и датой замера.
+7. Честность про доступ инструментов из РФ: помечай RU / VPN / бесплатно.
+
+ФОРМУЛЫ:
+— Рост конверсии: (нов% − тек%) × лидов/мес × чек
+— Рост чека: (нов − тек) × продаж/мес
+— Рост лидов: (нов − тек) × конв% × чек
+— Рост LTV: (нов − тек) × новых клиентов/мес
+
+СТИЛЬ: по-деловому, таблицы и списки. North Star + KPI на этап, конкретные каналы. В конце ответа — один вопрос, двигающий к следующему шагу.
+
+НЕ ДЕЛАЙ: универсальную стратегию без привязки к их модели и JTBD; 20 гипотез вместо приоритизированных; завышенные прогнозы.</pre>
+      <button class="cp" onclick="copyEl('pInstr',this)">Копировать инструкции</button>
+    </div>
+  </div>
+</section>
+
+<!-- ПРОМПТ 1 -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Сценарий 1</span>
+    <h2>Оркестратор AAARRR</h2>
+    <p class="lead" style="margin-top:12px;max-width:800px">Один заход: ресёрч ниши → диагностика узкого места → стратегия по 6 этапам → ICE → математика → итоговый слайд.</p>
+    <div class="prompt">
+      <div class="ph"><div class="t">Промпт 1 · Оркестратор<span>вставь в чат проекта</span></div><button class="cp" onclick="copyEl('p1',this)">Копировать</button></div>
+      <pre id="p1">Прогони мою компанию через полный цикл AAARRR-стратегии. Работай по шагам, не пропускай. Опирайся на плейбуки и мой контекст из знаний проекта. Все цифры бери из моей предиктивной модели; чего не хватает — спрашивай, не выдумывай.
+
+<span class="c">ШАГ A. Ресёрч ниши.</span> Как в моей нише растут лучшие игроки, какие бенчмарки по каждому этапу AAARRR (конверсии, CPL, retention, чек, referral rate). Где я предположительно отстаю от нормы.
+
+<span class="c">ШАГ B. Диагностика узкого места.</span> На основе моей модели определи главное узкое место и почему. Посчитай потенциал каждой из 4 ручек (лиды / конверсия / чек / LTV) в ₽/мес по формулам. Отсортируй по деньгам.
+
+<span class="c">ШАГ C. Стратегия по 6 этапам.</span> Для каждого этапа (Awareness → Referral): миссия, North Star, 3–6 KPI, топ-3 рычага под мой бизнес и JTBD, 1 типовая ошибка, которую я скорее всего совершаю. Сначала — как докрутить то, что уже работает.
+
+<span class="c">ШАГ D. Гипотезы + ICE.</span> Собери 12–18 гипотез со всех этапов в таблицу, оцени по ICE (1–10), отсортируй, оставь топ-5.
+
+<span class="c">ШАГ E. Математика.</span> Для топ-5: гипотеза → метрика → текущее → прогноз → дельта ₽/мес и ₽/год → формула → уверенность (1–10).
+
+<span class="c">ШАГ F. Итоговый слайд (Шаг 10 тетради).</span> Один экран: Цель → Текущие драйверы (докрутка, с потенциалом) → Новые драйверы (топ-3 с математикой и тестом на 2 недели) → Совокупный потенциал ₽/мес и ₽/год → Ответственные.
+
+В конце спроси: с какого этапа начать и по какому запустить глубокий челлендж.</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ПРОМПТ 2 -->
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Сценарий 2</span>
+    <h2>Челленджер этапа</h2>
+    <p class="lead" style="margin-top:12px;max-width:820px">Генерация ≠ проверка. Берёт ОДИН этап (твоё узкое место) и жёстко пресёт-тестит гипотезы — находит дыры и заставляет обострить.</p>
+    <div class="prompt">
+      <div class="ph"><div class="t">Промпт 2 · Челленджер<span>подставь свой этап и гипотезы</span></div><button class="cp" onclick="copyEl('p2',this)">Копировать</button></div>
+      <pre id="p2">Переключись в режим жёсткого челленджера. Ты — скептичный коммерческий директор, который видел сотни стратегий и по умолчанию не верит цифрам, пока их не докажут. Цель — не похвалить, а найти, где я обманываю себя.
+
+Этап на разбор: <span class="ph2">&lt;Awareness / Acquisition / Activation / Retention / Revenue / Referral&gt;</span>
+
+Мои гипотезы по этому этапу:
+1. <span class="ph2">&lt;гипотеза 1 + ожидаемый эффект&gt;</span>
+2. <span class="ph2">&lt;гипотеза 2 + ожидаемый эффект&gt;</span>
+3. <span class="ph2">&lt;гипотеза 3 + ожидаемый эффект&gt;</span>
+
+Прогони каждую через фильтры, будь конкретным:
+1. Атака на цифру. Реалистичен ли прогноз? На каком допущении держится? Пересчитай пессимистичный сценарий.
+2. Атака на причину. Точно ли это узкое место, а не симптом другого этапа?
+3. Атака на ресурс. Сколько реально стоит времени/денег/людей? Не переоценил ли «Easy» в ICE?
+4. Атака на доказательство. Чем подтверждается? Есть данные/бенчмарк/кастдев — или это вера?
+5. Дешевле и быстрее. Есть ли способ получить тот же результат меньшими усилиями?
+
+Затем: отметь, какие гипотезы НЕ переживают челлендж и почему. Для выживших — дай обострённую версию: как усилить, что замерить, какой минимальный тест на 2 недели докажет/опровергнет её за 14 дней. Заверши одним самым неудобным вопросом.
+
+Не смягчай.</pre>
+    </div>
+    <div class="value"><span>Челленджить нужно <b>только один этап</b> — тот, где узкое место. Челлендж по всем шести = шум и усталость.</span></div>
+  </div>
+</section>
+
+<!-- ЛОГИКА + ВАЖНО -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Как это связано с тетрадью</span>
+    <h2>Проект = рабочая тетрадь, только с ИИ-помощником</h2>
+    <p class="lead" style="margin-top:12px;max-width:820px">Проект повторяет шаги тетради «Драйверы роста» (0→10). Разница: тетрадь заполняешь руками, а проект помогает генерить и проверять. <b class="em">Финальные цифры всегда проверяешь сам</b> — ИИ считает, ты валидируешь.</p>
+    <div class="warn"><b>Без загруженного контекста на выходе будет шаблон, а не твоя стратегия.</b> Сначала собери опорные материалы (Шаг 0 тетради). И помни: Claude требует VPN для доступа из РФ.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="l"><img src="assets/logo-aplayers.png" alt="A-Players"> ПРАКТИКУМ A-PLAYERS</span>
+    <span>Драйвер-ресёрчер · Claude Project</span>
+  </div>
+</footer>
+
+<script>
+function copyEl(id,btn){
+  const el=document.getElementById(id);
+  const text=el.innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const old=btn.textContent;btn.textContent='✓ Скопировано';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent=old;btn.classList.remove('ok');},1800);
+  }).catch(()=>{
+    const r=document.createRange();r.selectNodeContents(el);
+    const s=window.getSelection();s.removeAllRanges();s.addRange(r);
+    try{document.execCommand('copy');btn.textContent='✓ Скопировано';btn.classList.add('ok');setTimeout(()=>{btn.textContent='Копировать';btn.classList.remove('ok');},1800);}catch(e){}
+    s.removeAllRanges();
+  });
+}
+</script>
+</body>
+</html>
