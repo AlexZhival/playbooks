@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-тренажёр ролевок · собери под свой скрипт · A-Players</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4F1EA; --bg2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056;
+    --line:#DCD4C2; --em:#143A2D; --gold:#B0822E; --gold-h:#977019; --gold2:#C79A45;
+    --green:#3E8E5E; --red:#B23B2E;
+    --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1120px;margin:0 auto;padding:22px 20px 70px}
+  a{color:var(--gold-h)}
+  h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:-.01em;margin:0}
+  .muted{color:var(--muted)}.em{color:var(--em)}.mono{font-variant-numeric:tabular-nums}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .logo{width:38px;height:38px;border-radius:9px;background:var(--em);color:#F4EFE2;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px}
+  .brand .t{font-family:var(--serif);font-weight:700;font-size:15px}
+  .brand .s{font-size:12.5px;color:var(--muted)}
+  .navbtns{margin-left:auto;display:flex;gap:8px}
+  .navbtns .btn{padding:8px 12px;font-size:12.5px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 0 #fff inset,0 10px 30px rgba(20,32,27,.05)}
+  .hero{padding:24px 28px;border-radius:16px 16px 0 0;background:linear-gradient(180deg,#173a2c,#143a2d);color:#EFEAD9}
+  .hero h1{color:#F6F2E6;font-size:25px;line-height:1.16}
+  .hero p{color:#CBD3C4;margin:.5rem 0 0;max-width:74ch;font-size:14.5px}
+  .hero .kick{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);font-weight:700}
+  .body{padding:24px 28px 28px}
+
+  .btn{font-family:var(--sans);font-weight:700;font-size:14px;border-radius:11px;padding:11px 17px;cursor:pointer;border:1.5px solid transparent;transition:.12s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+  .btn.primary{background:var(--gold);color:#1c1403;border-color:var(--gold-h)}
+  .btn.primary:hover{background:var(--gold-h);color:#fff}
+  .btn.ghost{background:#fff;border-color:var(--line);color:var(--ink)}
+  .btn.ghost:hover{border-color:var(--em)}
+  .btn.dark{background:var(--em);color:#F1ECDD}.btn.dark:hover{background:#0f2c22}
+  .btn.sm{padding:8px 12px;font-size:13px}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+
+  .field{margin-bottom:18px}
+  .lab{font-weight:700;font-size:13.5px;margin-bottom:8px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .lab .hint{font-weight:500;color:var(--muted);font-size:12px}
+  input[type=text],input[type=password],textarea,select{font-family:var(--sans);font-size:14px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+  textarea{resize:vertical;line-height:1.5}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--em);box-shadow:0 0 0 3px rgba(20,58,45,.08)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .two{display:grid;gap:16px}
+  @media(min-width:780px){.two{grid-template-columns:1fr 1fr}}
+  .note{font-size:12.5px;color:var(--muted)}
+  hr.soft{border:none;border-top:1px solid var(--line);margin:22px 0}
+
+  /* products */
+  .prod{border:1px solid var(--line);border-radius:13px;padding:14px 16px;margin-bottom:12px;background:#fff;position:relative}
+  .prod .del{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1}
+  .prod .del:hover{color:var(--red)}
+  .prod .pgrid{display:grid;gap:10px}
+  @media(min-width:640px){.prod .pgrid{grid-template-columns:1fr 150px}}
+  .prod .pn{font-weight:700;font-size:13px;margin-bottom:5px;color:var(--em)}
+
+  /* choices */
+  .choices{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:11px;padding:9px 13px;cursor:pointer;font-size:13.5px;font-weight:600;transition:.12s;user-select:none}
+  .chip small{display:block;font-weight:500;color:var(--muted);font-size:11.5px;margin-top:2px;max-width:32ch}
+  .chip:hover{border-color:var(--gold2)}
+  .chip.on{border-color:var(--em);background:#F0F4EE;box-shadow:0 0 0 3px rgba(20,58,45,.08)}
+  .chip.on::after{content:"✓";float:right;color:var(--em);font-weight:800;margin-left:8px}
+  .pchip.on::after{content:""}
+
+  /* trainer */
+  #trainer,#report,#start,#progress{display:none}
+  .tbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .persona{display:flex;align-items:center;gap:12px;min-width:0}
+  .avatar{width:44px;height:44px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--serif);font-weight:700;color:#fff;font-size:17px;background:var(--em)}
+  .persona .nm{font-family:var(--serif);font-weight:700;font-size:15px;line-height:1.15}
+  .persona .rl{font-size:12.5px;color:var(--muted);max-width:52ch}
+  .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 9px;background:#EFE9D9;color:var(--em);border:1px solid var(--line)}
+  .tag.d{background:#F3E7DE;color:#8a4b1e}.tag.seg{background:#EAF1E8;color:var(--green)}.tag.prod{background:#F6EFDD;color:var(--gold-h)}
+  .tbtns{display:flex;gap:8px;flex-wrap:wrap}
+
+  .chatwrap{display:grid;grid-template-columns:1fr}
+  @media(min-width:900px){.chatwrap{grid-template-columns:1fr 240px}}
+  .log{padding:18px;min-height:50vh;max-height:62vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+  .msg{max-width:80%;padding:11px 14px;border-radius:14px;font-size:14.5px;white-space:pre-wrap;word-wrap:break-word;animation:pop .18s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .msg.client{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px}
+  .msg.mgr{align-self:flex-end;background:var(--em);color:#F1ECDD;border-bottom-right-radius:5px}
+  .msg .who{font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;opacity:.6;margin-bottom:3px}
+  .msg.mgr .who{color:var(--gold2)}
+  .typing{align-self:flex-start;display:flex;gap:4px;padding:12px 15px;background:#fff;border:1px solid var(--line);border-radius:14px}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.5;animation:bl 1s infinite}
+  .typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+  @keyframes bl{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:.9;transform:translateY(-3px)}}
+  .side{border-left:1px solid var(--line);padding:16px;background:#FBF8F0}
+  @media(max-width:899px){.side{border-left:none;border-top:1px solid var(--line)}}
+  .side h3{font-size:12.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--em);margin-bottom:10px}
+  .route{list-style:none;padding:0;margin:0;counter-reset:r;font-size:12.5px}
+  .route li{padding:5px 0 5px 24px;position:relative;border-bottom:1px dashed var(--line)}
+  .route li:before{counter-increment:r;content:counter(r);position:absolute;left:0;top:5px;width:17px;height:17px;border-radius:50%;background:#EFE9D9;color:var(--em);font-weight:800;font-size:10.5px;display:grid;place-items:center}
+  .side .tip{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.45}
+  .inputbar{display:flex;gap:10px;align-items:flex-end;padding:14px 16px;border-top:1px solid var(--line)}
+  .mic{width:52px;height:52px;flex:none;border-radius:50%;border:1.5px solid var(--line);background:#fff;cursor:pointer;display:grid;place-items:center;transition:.12s}
+  .mic svg{width:22px;height:22px}.mic:hover{border-color:var(--em)}
+  .mic.live{background:var(--red);border-color:var(--red);animation:mic 1.2s infinite}.mic.live svg{color:#fff}
+  @keyframes mic{0%{box-shadow:0 0 0 0 rgba(178,59,46,.45)}70%{box-shadow:0 0 0 12px rgba(178,59,46,0)}100%{box-shadow:0 0 0 0 rgba(178,59,46,0)}}
+  textarea#say{min-height:52px;max-height:140px}
+  .send{height:52px}
+  .voicehint{font-size:11.5px;color:var(--muted);padding:0 16px 12px}
+  .voicetoggle{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer}
+
+  /* report */
+  .rhead{padding:24px 28px;border-radius:16px 16px 0 0;background:linear-gradient(180deg,#173a2c,#143a2d);color:#EFEAD9}
+  .scorebig{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+  .scorebig .num{font-family:var(--serif);font-size:52px;font-weight:700;color:#F6F2E6;line-height:1}
+  .scorebig .num small{font-size:22px;color:var(--gold2)}
+  .verdict{font-family:var(--serif);font-size:18px;margin-top:6px}
+  .verdict.win{color:#8ee0a6}.verdict.warm{color:var(--gold2)}.verdict.loss{color:#f0a79c}
+  .rgrid{display:grid;gap:24px}
+  @media(min-width:820px){.rgrid{grid-template-columns:1fr 1fr}}
+  .crit{margin-bottom:12px}
+  .crit .cl{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:600;margin-bottom:4px}
+  .crit .cl .pts{font-weight:800;color:var(--muted)}
+  .bar{height:8px;border-radius:6px;background:#EDE7D8;overflow:hidden}.bar>i{display:block;height:100%;border-radius:6px}
+  .crit .cm{font-size:12.5px;color:var(--muted);margin-top:5px}
+  .blocks{display:flex;flex-direction:column;gap:8px}
+  .blk{display:flex;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:13px}
+  .blk .ic{flex:none;font-weight:800}.blk.ok .ic{color:var(--green)}.blk.warn .ic{color:var(--gold)}.blk.miss .ic{color:var(--red)}
+  .blk .bt{font-weight:700}
+  .lists h3{font-size:14px;margin:14px 0 8px}.lists ul{margin:0;padding-left:18px;font-size:13.5px}.lists li{margin:5px 0}
+  .lists .good li::marker{color:var(--green)}.lists .grow li::marker{color:var(--gold)}
+  .recs{margin-top:6px}
+  .rec{background:#fff;border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 10px 10px 0;padding:11px 14px;margin-bottom:10px;font-size:13.5px}
+  .rec .say{margin-top:6px;font-style:italic;color:var(--em);background:#F0F4EE;border-radius:8px;padding:7px 10px;font-size:13px}
+  .focus{margin-top:16px;background:#F0F4EE;border:1px solid #d6e2d2;border-radius:12px;padding:14px 16px;font-size:13.5px}
+  .focus b{color:var(--em)}
+  .prog{margin-top:14px;background:#FBF6EC;border:1px solid var(--line);border-radius:12px;padding:13px 16px;font-size:13.5px}
+
+  /* progress screen */
+  .jrow{display:flex;gap:14px;align-items:center;justify-content:space-between;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:9px;flex-wrap:wrap}
+  .jrow .jl{min-width:0}
+  .jrow .jd{font-size:12px;color:var(--muted)}
+  .jrow .jsc{font-family:var(--serif);font-weight:700;font-size:20px}
+  .spark{display:flex;align-items:flex-end;gap:5px;height:60px;margin:6px 0 4px}
+  .spark i{width:16px;border-radius:3px 3px 0 0;background:var(--em);opacity:.85}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 16px;border-radius:11px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:50;max-width:90vw;display:none}
+  .spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .empty{text-align:center;color:var(--muted);font-size:14px;padding:30px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">AP</div>
+    <div>
+      <div class="t">A-Players · AI-тренажёр ролевок</div>
+      <div class="s">Собери под свой скрипт · клиент из твоей ЦА · развивающая обратная связь</div>
+    </div>
+    <div class="navbtns">
+      <button class="btn ghost sm" id="navProgress">📈 Прогресс</button>
+      <button class="btn ghost sm" id="navSetup">⚙ Настройка</button>
+    </div>
+  </div>
+
+  <!-- ================= SETUP / CONFIG ================= -->
+  <section id="setup" class="panel">
+    <div class="hero">
+      <div class="kick">Шаг 1 · Настрой тренажёр под себя</div>
+      <h1>Загрузи свой продукт, свою ЦА и свой скрипт — и тренируйся на живом клиенте</h1>
+      <p>Один раз опиши, <b>что</b> ты продаёшь и <b>кому</b>. Дальше AI будет играть клиента из твоей целевой аудитории, а после каждой ролевки — давать развивающий разбор по твоему скрипту, рекомендации и отслеживать твой прогресс. Всё хранится только в этом браузере.</p>
+    </div>
+    <div class="body">
+
+      <div style="background:#F0F4EE;border:1px solid #d6e2d2;border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:13.5px">
+        <b class="em">Как настроить (2–5 минут):</b> заполни 4 блока — <b>продукты</b>, <b>портрет клиента</b>, <b>базу материалов</b> и <b>свой скрипт</b>. Чем больше реальной фактуры вставишь (бриф, сегменты, отстройку, кейсы, возражения, готовый скрипт) — тем правдоподобнее клиент и точнее разбор. Можно вставлять текстом или прикреплять файлы. Всё сохраняется в этом браузере — настраиваешь один раз.
+      </div>
+
+      <div class="field">
+        <div class="lab">Компания / направление <span class="hint">1 строка — как ты представляешься клиенту</span></div>
+        <input id="cfgCompany" type="text" placeholder="Напр.: агентство перформанс-маркетинга «Рост»">
+      </div>
+
+      <div class="field">
+        <div class="lab">Твои продукты <span class="hint">то, что ты продаёшь; перед ролевкой выберешь, какой продаёшь сейчас</span></div>
+        <div id="prodList"></div>
+        <button class="btn ghost sm" id="addProd">＋ Добавить продукт</button>
+      </div>
+
+      <div class="field">
+        <div class="lab">Портрет клиента (ЦА) <span class="hint">кто твой идеальный клиент — кратко</span></div>
+        <textarea id="cfgIcp" rows="4" placeholder="Роль/должность, сфера, размер бизнеса, ситуация, ключевые боли, что важно, чего боится.&#10;Напр.: собственники малого e-com (оборот 3–15 млн/мес), сами тянут маркетинг, сливают бюджет на рекламу, обжигались на подрядчиках."></textarea>
+      </div>
+
+      <div class="field">
+        <div class="lab">База материалов о продукте и аудитории <span class="hint">это делает клиента живым — вставь свою фактуру</span></div>
+        <textarea id="cfgMaterials" rows="8" placeholder="Вставь сюда всё, что знаешь про продукт, рынок и клиента: бриф компании, JTBD-сегменты, отстройку / 5 отличий, позиционирование, tone of voice, кейсы и отзывы, цены, данные о воронке, типичные возражения.&#10;Чем больше реальной фактуры — тем реалистичнее собеседник и точнее оценка."></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn ghost sm" id="attMat">📎 Прикрепить файлы</button>
+          <span class="note">.txt / .md / .json / .csv — или просто вставь текстом ⤴</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="lab">Твой готовый скрипт <span class="hint">по нему оценивается ролевка</span></div>
+        <textarea id="cfgScript" rows="8" placeholder="Вставь свой собранный скрипт: 9 блоков (приветствие → контакт → программирование → квалификация → выявление болей → презентация ХПВ → предзакрытие → отработка возражений → закрытие), ключевые фразы, банк возражений, версии под сегменты.&#10;Если оставить пустым — разбор пойдёт по общей методологии высококонверсионного скрипта."></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn ghost sm" id="attScript">📎 Прикрепить файл скрипта</button>
+          <span class="note">Excel / Google-таблицу — скопируй текстом сюда</span>
+        </div>
+      </div>
+      <input type="file" id="fileMat" accept=".txt,.md,.json,.csv,text/*" multiple style="display:none">
+      <input type="file" id="fileScript" accept=".txt,.md,.json,.csv,text/*" multiple style="display:none">
+
+      <hr class="soft">
+
+      <div class="two">
+        <div class="field">
+          <div class="lab">Ключ Claude API <span class="hint">хранится только в этом браузере</span></div>
+          <div class="row">
+            <input id="apikey" type="password" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" style="flex:1;min-width:220px">
+            <select id="model" style="width:auto">
+              <option value="claude-opus-5">Opus 5 — умнее</option>
+              <option value="claude-sonnet-5">Sonnet 5 — быстрее</option>
+              <option value="claude-haiku-4-5">Haiku 4.5 — самый быстрый</option>
+            </select>
+          </div>
+          <div class="note" style="margin-top:7px">Ключ: <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a>. Голос работает лучше в Chrome.</div>
+        </div>
+        <div class="field">
+          <div class="lab">Импорт / экспорт настроек <span class="hint">можно сгенерировать конфиг вторым мозгом и вставить</span></div>
+          <div class="row">
+            <button class="btn ghost sm" id="importCfg">📥 Вставить конфиг (JSON)</button>
+            <button class="btn ghost sm" id="exportCfg">📤 Скопировать конфиг</button>
+          </div>
+          <div class="note" style="margin-top:7px">Формат: <span class="mono">{company, icp, script, products:[{name, offer, price, value, objections}]}</span></div>
+        </div>
+      </div>
+
+      <div id="ready" style="margin:20px 0 4px;font-size:13px"></div>
+
+      <div class="row" style="margin-top:14px;gap:14px">
+        <button id="saveCfg" class="btn dark">💾 Сохранить настройку</button>
+        <button id="toStart" class="btn primary">Дальше — к ролевке →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= START A ROLEPLAY ================= -->
+  <section id="start" class="panel">
+    <div class="hero">
+      <div class="kick">Шаг 2 · Собери клиента для ролевки</div>
+      <h1>Кому и что продаёшь в этот раз</h1>
+      <p>Выбери продукт и настрой собеседника — AI сгенерирует конкретного человека из твоей ЦА и начнёт разговор голосом.</p>
+    </div>
+    <div class="body">
+      <div class="field">
+        <div class="lab">Какой продукт продаёшь</div>
+        <div class="choices" id="prodPick"></div>
+      </div>
+      <div class="two">
+        <div>
+          <div class="field">
+            <div class="lab">Тип воронки <span class="hint">откуда пришёл клиент</span></div>
+            <div class="choices" data-group="funnel">
+              <div class="chip on" data-val="inbound">Входящая заявка<small>оставил заявку, ждёт разговор</small></div>
+              <div class="chip" data-val="referral">По рекомендации<small>привёл знакомый — доверие выше</small></div>
+              <div class="chip" data-val="outbound">Исходящий / холодный<small>не ждал звонка, «кто это»</small></div>
+              <div class="chip" data-val="webinar">С вебинара / контента<small>слышал, но скептичен</small></div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="lab">Психотип клиента (DISC)</div>
+            <div class="choices" data-group="disc">
+              <div class="chip on" data-val="D">D · Доминант<small>напорист, про результат и цифры</small></div>
+              <div class="chip" data-val="I">I · Инициативный<small>эмоционален, ловит FOMO</small></div>
+              <div class="chip" data-val="S">S · Постоянный<small>осторожен, «надо подумать»</small></div>
+              <div class="chip" data-val="C">C · Тщательный<small>аналитик, требует доказательств</small></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="field">
+            <div class="lab">Сегмент — «температура»</div>
+            <div class="choices" data-group="seg">
+              <div class="chip on" data-val="A">A · Горячий<small>осознаёт проблему, мало возражений</small></div>
+              <div class="chip" data-val="B">B · Тёплый<small>интересно, но надо убедить</small></div>
+              <div class="chip" data-val="C">C · Холодный<small>скептичен, легко сливается</small></div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="lab">Сложность</div>
+            <div class="choices" data-group="diff">
+              <div class="chip on" data-val="norm">Обычная</div>
+              <div class="chip" data-val="hard">Жёсткая<small>больше возражений и давления</small></div>
+            </div>
+          </div>
+          <label class="voicetoggle" style="margin-top:6px"><input type="checkbox" id="voiceOn" checked> Озвучивать ответы клиента голосом</label>
+        </div>
+      </div>
+      <div class="row" style="margin-top:18px;gap:12px">
+        <button id="genStart" class="btn primary">▶ Сгенерировать клиента и начать</button>
+        <button id="backCfg" class="btn ghost">← Настройка</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TRAINER ================= -->
+  <section id="trainer" class="panel">
+    <div class="tbar">
+      <div class="persona">
+        <div class="avatar" id="pAvatar">К</div>
+        <div style="min-width:0">
+          <div class="nm" id="pName">Клиент</div>
+          <div class="rl" id="pRole">—</div>
+        </div>
+      </div>
+      <div class="tags" id="pTags"></div>
+      <div class="tbtns">
+        <button id="finish" class="btn dark">✔ Завершить и получить разбор</button>
+        <button id="reset" class="btn ghost sm">↺ Заново</button>
+      </div>
+    </div>
+    <div class="chatwrap">
+      <div>
+        <div class="log" id="log"></div>
+        <div class="inputbar">
+          <button id="mic" class="mic" title="Говорить (распознавание речи)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          </button>
+          <textarea id="say" rows="1" placeholder="Реплика менеджера — напиши или нажми микрофон…"></textarea>
+          <button id="send" class="btn primary send">Отправить</button>
+        </div>
+        <div class="voicehint" id="voicehint"></div>
+      </div>
+      <aside class="side">
+        <h3>Этапы скрипта</h3>
+        <ol class="route" id="routeList"></ol>
+        <div class="tip">Веди инициативу. Сначала боль — потом ценность (ХПВ). Возражение: присоединись → отработай → закрой на действие. После цены — держи паузу.</div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= REPORT ================= -->
+  <section id="report" class="panel">
+    <div class="rhead">
+      <div class="scorebig"><div class="num" id="rNum">—</div><div>
+        <div class="verdict" id="rVerdict">—</div>
+        <div id="rOne" style="color:#cbd3c4;font-size:14px;margin-top:2px"></div>
+      </div></div>
+    </div>
+    <div class="body">
+      <div class="rgrid">
+        <div>
+          <h3 style="font-size:15px;margin-bottom:12px">Оценка по критериям</h3>
+          <div id="rCrit"></div>
+          <div class="prog" id="rProg" style="display:none"></div>
+        </div>
+        <div>
+          <h3 style="font-size:15px;margin-bottom:12px">Прохождение этапов</h3>
+          <div class="blocks" id="rBlocks"></div>
+          <div class="lists">
+            <div class="good"><h3>Что сработало</h3><ul id="rGood"></ul></div>
+            <div class="grow"><h3>Зоны роста</h3><ul id="rGrow"></ul></div>
+          </div>
+        </div>
+      </div>
+      <h3 style="font-size:15px;margin:22px 0 10px">Рекомендации — как усилить</h3>
+      <div class="recs" id="rRecs"></div>
+      <div class="focus" id="rFocus"></div>
+      <div class="row" style="margin-top:22px">
+        <button id="dl" class="btn primary">⬇ Скачать разбор файлом</button>
+        <button id="copyRep" class="btn ghost">📋 Скопировать</button>
+        <button id="again" class="btn dark">↻ Новая ролевка</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PROGRESS ================= -->
+  <section id="progress" class="panel">
+    <div class="hero">
+      <div class="kick">Мой прогресс</div>
+      <h1>История ролевок и динамика</h1>
+      <p>Каждая завершённая ролевка сохраняется здесь. Следующий разбор учитывает прошлые — видно, что ты подтянул, а что проседает из раза в раз.</p>
+    </div>
+    <div class="body">
+      <div id="progBody"></div>
+      <div class="row" style="margin-top:18px">
+        <button id="progNew" class="btn primary">▶ Новая ролевка</button>
+        <button id="progClear" class="btn ghost sm">Очистить историю</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   A-Players · Самонастраиваемый AI-тренажёр ролевок
+   ===================================================================== */
+const API_URL="https://api.anthropic.com/v1/messages";
+const LS={key:"ap_role_key",model:"ap_role_model",cfg:"ap_role_cfg",journal:"ap_role_journal",voice:"ap_role_voice"};
+const $=id=>document.getElementById(id);
+function toast(t,ms=3200){const el=$("toast");el.innerHTML=t;el.style.display="block";clearTimeout(el._t);el._t=setTimeout(()=>el.style.display="none",ms);}
+function esc(s){return String(s==null?"":s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function clip(s,n){s=(s||"").trim();return s.length>n?s.slice(0,n)+"\n…(материалы обрезаны для скорости)":s;}
+
+/* ---------- статические словари ---------- */
+const DISC={
+  D:{label:"D · Доминант",note:"Напорист, ценишь время и результат. Говоришь коротко и по делу, можешь перебить, требуешь конкретики и цифр, не терпишь «воды». Возражения прямые и жёсткие («что конкретно я получу и за что деньги»). Убеждён — решаешь быстро."},
+  I:{label:"I · Инициативный",note:"Эмоциональный, разговорчивый, любишь истории и примеры, легко загораешься, но можешь скользить по поверхности. Возражения мягкие, боишься упустить возможность (работает FOMO). Решаешь на подъёме — но можешь остыть, тебя надо закрепить конкретикой."},
+  S:{label:"S · Постоянный",note:"Спокойный, доброжелательный, осторожный. Ценишь отношения, надёжность, гарантии, не любишь давление. Долго думаешь, любимые фразы — «надо подумать», «надо посоветоваться». Нужна безопасность и отзывы. Решаешь медленно."},
+  C:{label:"C · Тщательный",note:"Аналитик. Задаёшь много уточняющих вопросов, требуешь данных, логики и доказательств, скептичен к «продажным» фразам и общим словам. Возражения по фактам («докажите, на чём цифры, где кейсы»). Решаешь, когда всё сходится."}
+};
+const SEG={
+  A:{label:"A · Горячий",note:"Ты осознаёшь проблему и мотивирован её решить, готов вкладываться. Возражений немного. При грамотной работе менеджера реально довести до «да».",close:"Ты в целом настроен — при хорошей работе дойти до согласия реально."},
+  B:{label:"B · Тёплый",note:"Тебе интересно, но ты не горишь. Надо раскачать через осознание проблемы и ценность. Поднимаешь типовые возражения (дорого, надо подумать).",close:"Тебя надо убедить — просто так «да» не говори. Согласишься, только если ценность прожита и возражения закрыты."},
+  C:{label:"C · Холодный",note:"Ты «просто узнаю / из любопытства», защищаешься, скептичен, много возражений, легко сворачиваешь разговор. Отвечаешь суховато.",close:"До согласия довести очень трудно. Чаще финал — «пришлите инфо, подумаю». Купишь только при по-настоящему сильной работе."}
+};
+const FUNNEL={
+  inbound:{label:"Входящая заявка",note:"Ты сам оставил заявку и ждёшь разговор. Открыт, но насторожен к тому, что тебе будут продавать.",opener:"Да, здравствуйте! Я оставлял заявку, жду вашего звонка. Слушаю."},
+  referral:{label:"По рекомендации",note:"Тебя порекомендовал знакомый/коллега. Доверие выше, стартуешь теплее.",opener:"Здравствуйте! Да, мне вас порекомендовали, говорили — стоит пообщаться. Слушаю."},
+  outbound:{label:"Исходящий / холодный",note:"Ты не ждал этого звонка. Первые секунды — настороженность («кто это, откуда номер»). Если менеджер быстро не даст внятную причину и ценность — можешь свернуть разговор.",opener:"Алло, да… слушаю. А это по какому вопросу?"},
+  webinar:{label:"С вебинара / контента",note:"Ты слышал про компанию (вебинар/контент), интерес есть, но видел много обещаний — держишь скепсис.",opener:"Здравствуйте, да. Я после вашего материала контакт оставлял. Ну давайте, что предлагаете."}
+};
+
+/* ---------- состояние ---------- */
+let cfg={company:"",icp:"",materials:"",script:"",products:[]};
+let S={funnel:"inbound",disc:"D",seg:"A",diff:"norm",prodIdx:0};
+let persona=null, history=[], systemPrompt="", busy=false, lastReport=null;
+
+/* ---------- загрузка/сохранение конфига ---------- */
+function loadCfg(){
+  try{const c=JSON.parse(localStorage.getItem(LS.cfg)||"null"); if(c) cfg=Object.assign(cfg,c);}catch(_){}
+  if(!cfg.products||!cfg.products.length) cfg.products=[{name:"",offer:"",price:"",value:"",objections:""}];
+  $("cfgCompany").value=cfg.company||"";
+  $("cfgIcp").value=cfg.icp||"";
+  $("cfgMaterials").value=cfg.materials||"";
+  $("cfgScript").value=cfg.script||"";
+  renderProds();
+  $("apikey").value=localStorage.getItem(LS.key)||"";
+  $("model").value=localStorage.getItem(LS.model)||"claude-opus-5";
+  $("voiceOn").checked=localStorage.getItem(LS.voice)!=="0";
+  ["cfgCompany","cfgIcp","cfgMaterials","cfgScript","apikey"].forEach(id=>$(id).addEventListener("input",readiness));
+  $("prodList").addEventListener("input",readiness);
+  readiness();
+}
+function collectCfg(){
+  cfg.company=$("cfgCompany").value.trim();
+  cfg.icp=$("cfgIcp").value.trim();
+  cfg.materials=$("cfgMaterials").value.trim();
+  cfg.script=$("cfgScript").value.trim();
+  cfg.products=[...document.querySelectorAll("#prodList .prod")].map(el=>({
+    name:el.querySelector('[data-f=name]').value.trim(),
+    offer:el.querySelector('[data-f=offer]').value.trim(),
+    price:el.querySelector('[data-f=price]').value.trim(),
+    value:el.querySelector('[data-f=value]').value.trim(),
+    objections:el.querySelector('[data-f=objections]').value.trim()
+  })).filter(p=>p.name||p.offer);
+  if(!cfg.products.length) cfg.products=[{name:"",offer:"",price:"",value:"",objections:""}];
+}
+function saveCfg(){collectCfg();localStorage.setItem(LS.cfg,JSON.stringify(cfg));localStorage.setItem(LS.key,$("apikey").value.trim());localStorage.setItem(LS.model,$("model").value);toast("Настройка сохранена ✓");}
+function prodCard(p){
+  const d=document.createElement("div");d.className="prod";
+  d.innerHTML=
+    '<button class="del" title="Удалить">✕</button>'+
+    '<div class="pgrid">'+
+      '<div><div class="pn">Название продукта</div><input data-f="name" type="text" placeholder="Напр.: Ведение таргета под ключ" value="'+esc(p.name)+'"></div>'+
+      '<div><div class="pn">Цена</div><input data-f="price" type="text" placeholder="напр. 90 000 ₽/мес" value="'+esc(p.price)+'"></div>'+
+    '</div>'+
+    '<div style="margin-top:9px"><div class="pn">Короткий оффер / что это</div><input data-f="offer" type="text" placeholder="что клиент получает, суть предложения" value="'+esc(p.offer)+'"></div>'+
+    '<div class="pgrid" style="margin-top:9px">'+
+      '<div><div class="pn">Ключевая ценность / результат</div><input data-f="value" type="text" placeholder="ради какого результата покупают" value="'+esc(p.value)+'"></div>'+
+      '<div><div class="pn">Частые возражения</div><input data-f="objections" type="text" placeholder="дорого; нет времени; был плохой опыт" value="'+esc(p.objections)+'"></div>'+
+    '</div>';
+  d.querySelector(".del").onclick=()=>{if(document.querySelectorAll("#prodList .prod").length>1)d.remove();else toast("Оставь хотя бы один продукт");};
+  return d;
+}
+function renderProds(){const l=$("prodList");l.innerHTML="";cfg.products.forEach(p=>l.appendChild(prodCard(p)));}
+$("addProd").onclick=()=>{$("prodList").appendChild(prodCard({name:"",offer:"",price:"",value:"",objections:""}));};
+$("saveCfg").onclick=saveCfg;
+$("model").addEventListener("change",()=>localStorage.setItem(LS.model,$("model").value));
+$("voiceOn").addEventListener("change",()=>localStorage.setItem(LS.voice,$("voiceOn").checked?"1":"0"));
+
+$("exportCfg").onclick=()=>{collectCfg();const j=JSON.stringify({company:cfg.company,icp:cfg.icp,materials:cfg.materials,script:cfg.script,products:cfg.products},null,2);navigator.clipboard.writeText(j).then(()=>toast("Конфиг скопирован в буфер ✓"),()=>{prompt("Скопируй конфиг:",j);});};
+$("importCfg").onclick=()=>{const raw=prompt("Вставь конфиг (JSON):");if(!raw)return;try{let t=raw.trim().replace(/^```(json)?/i,"").replace(/```$/,"");const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a>=0)t=t.slice(a,b+1);const c=JSON.parse(t);cfg=Object.assign({company:"",icp:"",materials:"",script:"",products:[]},c);loadCfgIntoForm();toast("Конфиг загружен ✓ — проверь, добавь материалы/скрипт и сохрани");}catch(e){toast("Не получилось разобрать JSON");}};
+function loadCfgIntoForm(){$("cfgCompany").value=cfg.company||"";$("cfgIcp").value=cfg.icp||"";$("cfgMaterials").value=cfg.materials||"";$("cfgScript").value=cfg.script||"";if(!cfg.products||!cfg.products.length)cfg.products=[{name:"",offer:"",price:"",value:"",objections:""}];renderProds();readiness();}
+
+/* прикрепление файлов в базу материалов / скрипт */
+function readFilesInto(files,ta){let done=0,add="";const arr=[...files];arr.forEach(f=>{const r=new FileReader();r.onload=()=>{add+="\n\n===== "+f.name+" =====\n"+r.result;if(++done===arr.length){ta.value=(ta.value.trim()+add).trim();readiness();toast("Файлы добавлены ✓");}};r.onerror=()=>{if(++done===arr.length){ta.value=(ta.value.trim()+add).trim();readiness();}};r.readAsText(f);});}
+$("attMat").onclick=()=>$("fileMat").click();
+$("fileMat").onchange=e=>{if(e.target.files.length)readFilesInto(e.target.files,$("cfgMaterials"));e.target.value="";};
+$("attScript").onclick=()=>$("fileScript").click();
+$("fileScript").onchange=e=>{if(e.target.files.length)readFilesInto(e.target.files,$("cfgScript"));e.target.value="";};
+
+/* индикатор готовности настройки */
+function readiness(){
+  const val=id=>($(id)?$(id).value.trim():"");
+  const prodOk=[...document.querySelectorAll('#prodList .prod input[data-f=name]')].some(i=>i.value.trim());
+  const items=[["Продукт",prodOk],["Портрет клиента",val("cfgIcp").length>20],["База материалов",val("cfgMaterials").length>80],["Скрипт",val("cfgScript").length>60],["Ключ API",val("apikey").length>10]];
+  const box=$("ready");if(!box)return;
+  box.innerHTML='<b>Готовность:</b> '+items.map(([n,ok])=>'<span style="display:inline-block;margin:0 12px 6px 0;color:'+(ok?'var(--green)':'var(--muted)')+'">'+(ok?'✓':'○')+' '+n+'</span>').join('');
+  const weak=[];if(!items[2][1])weak.push("базу материалов");if(!items[3][1])weak.push("свой скрипт");
+  if(weak.length)box.innerHTML+='<div class="note" style="margin-top:4px;color:var(--gold-h)">⚠ Без «'+weak.join('» и «')+'» клиент и оценка будут слабыми — добавь свою фактуру для реальной отработки.</div>';
+}
+
+/* ---------- навигация экранов ---------- */
+function show(id){["setup","start","trainer","report","progress"].forEach(s=>$(s).style.display=s===id?"block":"none");window.scrollTo({top:0,behavior:"smooth"});}
+$("navSetup").onclick=()=>show("setup");
+$("navProgress").onclick=()=>{renderProgress();show("progress");};
+$("backCfg").onclick=()=>show("setup");
+$("progNew").onclick=()=>{fillProdPick();show("start");};
+$("toStart").onclick=()=>{
+  collectCfg();
+  if(!$("apikey").value.trim()){toast("Вставь ключ Claude API");$("apikey").focus();return;}
+  if(!cfg.products.some(p=>p.name||p.offer)){toast("Добавь хотя бы один продукт");return;}
+  saveCfg();fillProdPick();show("start");
+};
+
+/* выбор чипов */
+document.querySelectorAll('.choices[data-group]').forEach(grp=>{
+  grp.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;grp.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');S[grp.dataset.group]=c.dataset.val;});
+});
+function fillProdPick(){
+  const box=$("prodPick");box.innerHTML="";
+  cfg.products.filter(p=>p.name||p.offer).forEach((p,i)=>{
+    const c=document.createElement("div");c.className="chip pchip"+(i===S.prodIdx?" on":"");c.dataset.i=i;
+    c.innerHTML=esc(p.name||("Продукт "+(i+1)))+(p.price?'<small>'+esc(p.price)+'</small>':'');
+    c.onclick=()=>{box.querySelectorAll(".chip").forEach(x=>x.classList.remove("on"));c.classList.add("on");S.prodIdx=i;};
+    box.appendChild(c);
+  });
+  if(S.prodIdx>=cfg.products.length)S.prodIdx=0;
+}
+
+/* =====================================================================
+   Claude
+   ===================================================================== */
+async function callClaude({system,messages,max_tokens,effort}){
+  const key=($("apikey").value||"").trim();if(!key)throw new Error("no-key");
+  const model=$("model").value;
+  const body={model,max_tokens,system:[{type:"text",text:system,cache_control:{type:"ephemeral"}}],messages};
+  if(effort&&(model==="claude-opus-5"||model==="claude-sonnet-5"))body.output_config={effort};
+  const res=await fetch(API_URL,{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok||data.type==="error"){const m=(data.error&&data.error.message)||("HTTP "+res.status);const e=new Error(m);e.status=res.status;e.etype=data.error&&data.error.type;throw e;}
+  if(data.stop_reason==="refusal")throw new Error("Модель отклонила запрос (refusal).");
+  return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+}
+function errText(e){
+  if(e.message==="no-key")return "Не указан ключ Claude API — вернись в настройку и вставь ключ.";
+  if(e.status===401||e.etype==="authentication_error")return "Неверный ключ Claude API (401).";
+  if(e.status===429)return "Слишком много запросов (429). Подожди пару секунд.";
+  if(e.status===400)return "Запрос отклонён (400): "+e.message;
+  if(/Failed to fetch|NetworkError/i.test(e.message))return "Нет соединения с api.anthropic.com. Открой файл в Chrome и проверь интернет.";
+  return e.message||"Ошибка.";
+}
+function parseJSON(s){let t=s.trim().replace(/^```(json)?/i,"").replace(/```$/,"").trim();const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a>=0&&b>a)t=t.slice(a,b+1);return JSON.parse(t);}
+
+/* ---------- журнал / прогресс ---------- */
+function getJournal(){try{return JSON.parse(localStorage.getItem(LS.journal)||"[]");}catch(_){return[];}}
+function saveJournal(j){localStorage.setItem(LS.journal,JSON.stringify(j.slice(-40)));}
+function historySummary(){
+  const j=getJournal();if(!j.length)return "";
+  return j.slice(-3).map((s,i)=>`Ролевка ${j.length-Math.min(3,j.length)+i+1}: продукт «${s.product}», балл ${s.score}/100. Зоны роста: ${(s.growthTop||[]).join("; ")||"—"}.`).join("\n");
+}
+function weakZones(){const j=getJournal();const z=[];j.slice(-3).forEach(s=>(s.growthTop||[]).forEach(g=>z.push(g)));return z.slice(0,4);}
+
+/* =====================================================================
+   Промпт клиента + генерация персонажа
+   ===================================================================== */
+function curProduct(){return cfg.products.filter(p=>p.name||p.offer)[S.prodIdx]||cfg.products[0];}
+function productLine(p){
+  return [p.name?("«"+p.name+"»"):"продукт",p.offer?("— "+p.offer):"",p.price?("Цена: "+p.price+"."):"",p.value?("Ключевая ценность: "+p.value+"."):""].filter(Boolean).join(" ");
+}
+async function generatePersona(){
+  const p=curProduct(), d=DISC[S.disc], sg=SEG[S.seg], fn=FUNNEL[S.funnel];
+  const sys="Ты придумываешь ОДНОГО конкретного правдоподобного потенциального клиента для ролевого тренажёра продаж. Верни СТРОГО валидный JSON и ничего больше: {\"name\":\"имя\",\"role\":\"1 фраза: кто он и где работает/чем занимается\",\"situation\":\"1-2 фразы: текущая ситуация и что его беспокоит\",\"pains\":[\"боль1\",\"боль2\"],\"objectionStyle\":\"1 фраза: как он обычно возражает\"}. Реалистично, по-русски, без выдуманных брендов.";
+  const usr="ЦЕЛЕВАЯ АУДИТОРИЯ компании «"+(cfg.company||"—")+"»: "+(cfg.icp||"(не задана — придумай типичного клиента для продукта)")+
+    "\nПРОДУКТ, который будут продавать: "+productLine(p)+
+    (cfg.materials?("\nМАТЕРИАЛЫ КОМПАНИИ (для реализма персонажа): "+clip(cfg.materials,2500)):"")+
+    "\nПсихотип клиента: "+d.label+". Температура интереса: "+sg.label+". Придумай человека, которому этот продукт потенциально релевантен.";
+  try{
+    const raw=await callClaude({system:sys,messages:[{role:"user",content:usr}],max_tokens:500,effort:"low"});
+    const j=parseJSON(raw);
+    if(j&&j.name)return j;
+  }catch(_){}
+  return {name:"Клиент",role:(cfg.icp||"представитель вашей ЦА").slice(0,80),situation:"Изучает решение своей задачи.",pains:[],objectionStyle:"сомневается в цене и результате"};
+}
+function buildClientSystem(){
+  const p=curProduct(), d=DISC[S.disc], sg=SEG[S.seg], fn=FUNNEL[S.funnel];
+  const wz=weakZones();
+  const L=[
+"Ты играешь роль потенциального КЛИЕНТА в тренажёре для менеджера по продажам. С тобой общается МЕНЕДЖЕР ПО ПРОДАЖАМ (его роль отыгрывает обучающийся). Ты — живой человек из целевой аудитории компании, а НЕ ИИ-ассистент.",
+"",
+"## Компания менеджера и что тебе продают",
+"Компания: "+(cfg.company||"(без названия)")+".",
+"Продукт этого разговора: "+productLine(p)+(p.objections?(" Типичные возражения к нему: "+p.objections+"."):""),
+"",
+"## Кто ты (из ЦА)",
+(cfg.icp?("Профиль аудитории: "+cfg.icp):"Ты типичный клиент для этого продукта."),
+"Конкретно ты: "+persona.name+" — "+persona.role+". "+persona.situation+(persona.pains&&persona.pains.length?(" Что болит: "+persona.pains.join("; ")+"."):"")+" Твоя манера возражать: "+(persona.objectionStyle||"по ситуации")+".",
+(cfg.materials?("\n## Фактура о продукте, компании и рынке (твоё фоновое знание)\nНиже — материалы компании продавца. Используй их как реалистичное знание о продукте, ценах, отстройке, кейсах и типичных возражениях в этой нише — чтобы реагировать правдоподобно, задавать уместные вопросы и возражать по делу. НЕ пересказывай это продавцу и НЕ подсказывай ему: ты покупатель, а не эксперт по их продукту.\n"+clip(cfg.materials,6000)):""),
+"",
+"## Твой психотип (DISC) — "+d.label, d.note,
+"## Твоя «температура» — сегмент "+sg.label, sg.note,
+"## Как ты попал на разговор — "+fn.label, fn.note,
+(S.diff==="hard"?"## Режим: жёсткий клиент\nТы придирчивее обычного: больше возражений, перебиваешь, требуешь доказательств, легко уходишь в «мне надо подумать». Не хамишь, но спуску не даёшь.":""),
+"",
+"## Как себя вести",
+"1. Отвечай ЖИВО и КОРОТКО, как в реальном разговоре — обычно 1–3 предложения. Разговорный русский, эмоции и паузы уместны. Никаких списков и канцелярита.",
+"2. Ты НЕ знаешь скрипта менеджера и НЕ помогаешь ему. Не подсказывай, не оценивай его, не выходи из роли, никогда не упоминай, что это тренажёр или что ты ИИ. Выдавай ТОЛЬКО реплику клиента — без ремарок в скобках и описания действий.",
+"3. Раскрывайся ПОСТЕПЕННО — отвечай на конкретные вопросы менеджера в рамках своего персонажа, не вываливай всё сразу.",
+"4. Реагируй на то, что РЕАЛЬНО делает менеджер:",
+"   • Держится уверенно, устанавливает контакт, задаёт вопросы про твою ситуацию → теплеешь, отвечаешь охотнее.",
+"   • Мямлит, оправдывается, сразу «впаривает» без выявления потребности → закрываешься, отвечаешь суше, можешь спросить «а к чему это» или свернуть.",
+"   • Выявляет твою боль и связывает продукт именно с ней (а не перечисляет фичи) → тебе становится интересно.",
+"   • Даёт общие обещания без конкретики/доказательств → сомневаешься (особенно если ты C-тип или холодный).",
+"5. Возражения поднимай ЕСТЕСТВЕННО и в своём стиле — по одному, там где логично, а не списком: дорого / нет времени / надо подумать / надо посоветоваться / не уверен в результате / был плохой опыт / а чем вы лучше других / у нас и так нормально. Опирайся на типичные возражения к продукту (выше).",
+"6. Если менеджер спросит про готовность (напр. «по шкале 1–10») — назови ЧЕСТНУЮ цифру исходя из того, насколько он тебя убедил.",
+"7. РЕШЕНИЕ О ПОКУПКЕ. Ты соглашаешься (купить / оставить оплату / договориться о следующем шаге-сделке) ТОЛЬКО если одновременно: (а) менеджер вскрыл твою реальную потребность и показал ценность именно под неё; (б) отработал твои возражения и довёл тебя до готовности; (в) уверенно назвал условия и позвал к конкретному шагу. Если что-то не сделано — НЕ соглашайся: тормози, бери паузу, вежливо сворачивай. "+sg.close,
+"8. Будь РЕАЛИСТИЧНЫМ представителем своего типа и температуры — не искусственно лёгким и не специально вредным. Твоя правдоподобная реакция и есть тренажёр."
+  ];
+  if(wz.length) L.push("","## Тренировочный акцент (не раскрывай это)\nУ этого менеджера в прошлых ролевках проседало: "+wz.join("; ")+". Веди себя естественно, но НЕ облегчай эти моменты — создавай ситуации, где именно эти навыки проверяются.");
+  L.push("","Начинай и оставайся в роли. Отвечай только репликами от лица "+persona.name+".");
+  return L.filter(x=>x!=="").join("\n");
+}
+
+/* =====================================================================
+   Голос
+   ===================================================================== */
+let ruVoice=null;
+function loadVoices(){const vs=window.speechSynthesis?speechSynthesis.getVoices():[];const ru=vs.filter(v=>(v.lang||"").toLowerCase().startsWith("ru"));if(ru.length){ruVoice={all:ru,fem:ru.find(v=>/milena|alena|katya|female|женск/i.test(v.name)),male:ru.find(v=>/yuri|pavel|male|мужск/i.test(v.name)),def:ru[0]};}}
+if(window.speechSynthesis){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function femaleName(n){return /(а|я|ь)$/i.test((n||"").trim().split(/\s+/)[0]||"")&&!/(павел|никита|илья|фома|лука)$/i.test(n);}
+function speak(text){
+  if(!$("voiceOn").checked||!window.speechSynthesis)return;
+  try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang="ru-RU";u.rate=1.03;
+    if(ruVoice){const she=persona&&femaleName(persona.name);u.voice=(she?ruVoice.fem:ruVoice.male)||ruVoice.def;}
+    speechSynthesis.speak(u);}catch(_){}
+}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null,listening=false;
+function initSTT(){
+  const vh=$("voicehint");
+  if(!SR){$("mic").style.display="none";vh.textContent="🎤 Голосовой ввод не поддерживается этим браузером — используй Chrome или печатай.";return;}
+  vh.innerHTML="🎤 Нажми микрофон и говори — реплика отправится сама."+(window.speechSynthesis?" Ответ клиента озвучится.":"");
+  if(rec)return;
+  rec=new SR();rec.lang="ru-RU";rec.interimResults=true;rec.continuous=false;rec.maxAlternatives=1;
+  let finalText="";
+  rec.onstart=()=>{listening=true;$("mic").classList.add("live");finalText="";};
+  rec.onerror=e=>{if(e.error==="not-allowed")toast("Нет доступа к микрофону — разреши его в браузере.");};
+  rec.onresult=e=>{let interim="";for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)finalText+=r[0].transcript;else interim+=r[0].transcript;}$("say").value=(finalText+" "+interim).trim();autoGrow($("say"));};
+  rec.onend=()=>{listening=false;$("mic").classList.remove("live");if($("say").value.trim())send();};
+}
+$("mic").addEventListener("click",()=>{if(!rec)return;if(listening){rec.stop();return;}if(window.speechSynthesis)speechSynthesis.cancel();try{rec.start();}catch(_){}});
+
+/* =====================================================================
+   Чат
+   ===================================================================== */
+const log=$("log");
+function autoGrow(t){t.style.height="auto";t.style.height=Math.min(t.scrollHeight,140)+"px";}
+$("say").addEventListener("input",()=>autoGrow($("say")));
+$("say").addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}});
+$("send").addEventListener("click",send);
+function addMsg(role,text){const d=document.createElement("div");d.className="msg "+(role==="mgr"?"mgr":"client");d.innerHTML='<div class="who">'+(role==="mgr"?"Ты · менеджер":esc(persona.name)+" · клиент")+'</div>'+esc(text);log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function showTyping(){const d=document.createElement("div");d.className="typing";d.id="typing";d.innerHTML='<i></i><i></i><i></i>';log.appendChild(d);log.scrollTop=log.scrollHeight;}
+function hideTyping(){const t=$("typing");if(t)t.remove();}
+async function send(){
+  if(busy)return;const t=$("say").value.trim();if(!t)return;
+  $("say").value="";autoGrow($("say"));addMsg("mgr",t);history.push({role:"user",content:t});
+  busy=true;$("send").disabled=true;showTyping();
+  try{
+    const reply=await callClaude({system:systemPrompt,messages:history,max_tokens:700,effort:"low"});
+    hideTyping();const clean=reply||"…";addMsg("client",clean);history.push({role:"assistant",content:clean});speak(clean);
+  }catch(e){hideTyping();const d=document.createElement("div");d.className="msg client";d.style.borderColor="var(--red)";d.innerHTML='<div class="who" style="color:var(--red)">Ошибка</div>'+esc(errText(e));log.appendChild(d);log.scrollTop=log.scrollHeight;}
+  finally{busy=false;$("send").disabled=false;$("say").focus();}
+}
+
+/* ---------- боковой маршрут ---------- */
+const DEFAULT_STAGES=["Приветствие","Установление контакта","Программирование","Квалификация","Выявление болей","Презентация ХПВ (под боль)","Предзакрытие","Отработка возражений","Закрытие + CTA"];
+function stageList(){
+  // если пользователь вставил свой скрипт с нумерованными пунктами — попробуем вытащить их
+  const lines=(cfg.script||"").split(/\n+/).map(s=>s.replace(/^\s*(\d+[\).\s]|[-•—*]\s*)/,"").trim()).filter(s=>s.length>2&&s.length<70);
+  if(lines.length>=4&&lines.length<=14)return lines;
+  return DEFAULT_STAGES;
+}
+function renderRoute(){const el=$("routeList");el.innerHTML="";stageList().forEach(s=>{const li=document.createElement("li");li.textContent=s;el.appendChild(li);});}
+
+/* =====================================================================
+   Старт ролевки
+   ===================================================================== */
+$("genStart").addEventListener("click",startRoleplay);
+async function startRoleplay(){
+  collectCfg();
+  if(!$("apikey").value.trim()){toast("Вставь ключ Claude API в настройке");show("setup");return;}
+  const btn=$("genStart");btn.disabled=true;btn.innerHTML='<span class="spin"></span>Генерирую клиента…';
+  try{persona=await generatePersona();}catch(e){toast(errText(e),5000);btn.disabled=false;btn.textContent="▶ Сгенерировать клиента и начать";return;}
+  btn.disabled=false;btn.textContent="▶ Сгенерировать клиента и начать";
+  systemPrompt=buildClientSystem();history=[];log.innerHTML="";
+  const p=curProduct();
+  $("pAvatar").textContent=(persona.name||"К")[0];
+  $("pName").textContent=persona.name;
+  $("pRole").textContent=(persona.role||"")+(p.name?(" · продаёшь: "+p.name):"");
+  $("pTags").innerHTML='<span class="tag prod">'+esc(p.name||"продукт")+'</span><span class="tag">'+FUNNEL[S.funnel].label+'</span><span class="tag d">'+DISC[S.disc].label+'</span><span class="tag seg">'+SEG[S.seg].label+'</span>';
+  renderRoute();show("trainer");initSTT();
+  const opener=FUNNEL[S.funnel].opener;
+  setTimeout(()=>{addMsg("client",opener);history.push({role:"assistant",content:opener});speak(opener);$("say").focus();},250);
+}
+$("reset").addEventListener("click",()=>{if(window.speechSynthesis)speechSynthesis.cancel();if(rec&&listening)try{rec.stop()}catch(_){}startRoleplay();});
+$("again").addEventListener("click",()=>{fillProdPick();show("start");});
+
+/* =====================================================================
+   Разбор
+   ===================================================================== */
+function buildScoringSystem(){
+  const p=curProduct();
+  return [
+"Ты — старший тренер по продажам. По стенограмме оцени ролевую продажу, которую менеджер провёл с ИИ-клиентом. Оценивай ТОЛЬКО действия МЕНЕДЖЕРА, а не клиента. Будь строгим, но конструктивным и предметным — ссылайся на то, что реально произошло в диалоге. Разбор должен быть РАЗВИВАЮЩИМ: не только оценка, но и конкретные рекомендации с примерами фраз.",
+"",
+"КОНТЕКСТ. Компания: "+(cfg.company||"—")+". Продавали: "+productLine(p)+".",
+(cfg.icp?("Целевая аудитория: "+cfg.icp):""),
+(cfg.materials?("МАТЕРИАЛЫ КОМПАНИИ (фактура — для оценки достоверности и уместности реплик менеджера):\n"+clip(cfg.materials,9000)):""),
+(cfg.script?("СКРИПТ/ЭТАПЫ МЕНЕДЖЕРА (главный эталон — оценивай в т.ч. следование ему):\n"+clip(cfg.script,12000)):"У менеджера нет заданного скрипта — оценивай по общей методологии высококонверсионного скрипта."),
+"",
+"МЕТОДОЛОГИЯ (высококонверсионный скрипт): приветствие → установление контакта → программирование → квалификация → выявление болей (боль→усиление→надежда→решение) → презентация ХПВ (характеристика→потребность→выгода, связать с болью) → предзакрытие (проверка готовности) → отработка возражений (присоединение→комплимент→локализация→отработка→капитан очевидность; довести до готовности) → закрытие (CTA, продуктовый+финансовый каскад, пауза после цены). Продаёт не перечисление фич, а закрытая боль. Ошибки-убийцы: нет установления контакта, не выявил потребность, презентация фичами без связи с болью, спор с клиентом, скидка на первом возражении, цена без предзакрытия, заполнил паузу после цены, потерял инициативу.",
+"",
+"Оцени по критериям (сумма ровно 100). Балл 0..max по фактам диалога:",
+"1. Контакт и рамка (доверие, инициатива, не позиция просящего) — max 10",
+"2. Программирование разговора (задал формат/цель) — max 8",
+"3. Квалификация и выявление болей (вопросы, слушал, вскрыл настоящую боль) — max 16",
+"4. Презентация ХПВ — связал продукт с ЕГО болью, а не перечислял фичи — max 16",
+"5. Отработка возражений (присоединение→логика→действие, довёл до готовности) — max 16",
+"6. Предзакрытие (проверка готовности перед ценой) — max 8",
+"7. Закрытие и CTA (позвал к конкретному действию, пауза после цены, не слил) — max 10",
+"8. Управление диалогом (инициатива, темп, вопросы vs монолог) — max 8",
+"9. Следование своему скрипту / методологии — max 8",
+"Итого max = 100. Если этап в диалоге просто не дошли — ставь низкий балл и отметь это, не выдумывай.",
+"",
+(historySummary()?("ИСТОРИЯ ПРОШЛЫХ РОЛЕВОК этого менеджера (для оценки динамики):\n"+historySummary()+"\nВ поле progressNote отметь, что подтянулось, а что проседает из раза в раз."):""),
+"",
+"Верни СТРОГО ОДИН валидный JSON и больше ничего (без markdown вокруг):",
+'{',
+'  "totalScore": <int 0..100>,',
+'  "sale": "win" | "warm" | "loss",',
+'  "verdict": "<короткий вердикт, напр. «Сделка состоялась бы» / «Клиент остался тёплым» / «Сделка потеряна»>",',
+'  "oneLine": "<одно предложение — суть итога>",',
+'  "criteria": [ {"name":"<критерий>","max":<int>,"score":<int>,"comment":"<1 предложение по фактам>"}, ... 9 штук ],',
+'  "blocks": [ {"title":"<этап>","status":"ok"|"warn"|"miss","note":"<кратко что было/чего не хватило>"}, ... по этапам методологии ],',
+'  "strengths": ["<что сработало>", ...],',
+'  "growth": ["<зона роста, коротко>", ... 3-5 штук],',
+'  "recommendations": [ {"title":"<что усилить>","how":"<как именно сделать>","say":"<пример удачной фразы/вопроса>"}, ... 3-5 штук ],',
+'  "progressNote": "<динамика vs прошлые ролевки; пусто если истории нет>",',
+'  "nextFocus": "<1-2 предложения: главный фокус на следующую ролевку>"',
+'}',
+"Всё — на русском."
+  ].filter(x=>x!=="").join("\n");
+}
+function transcriptText(){return history.map(m=>(m.role==="user"?"МЕНЕДЖЕР: ":"КЛИЕНТ: ")+m.content).join("\n");}
+$("finish").addEventListener("click",doFinish);
+async function doFinish(){
+  if(busy)return;
+  if(history.filter(m=>m.role==="user").length<2){toast("Проведи хотя бы небольшую продажу, потом жми «Завершить».");return;}
+  if(window.speechSynthesis)speechSynthesis.cancel();if(rec&&listening)try{rec.stop()}catch(_){}
+  busy=true;const btn=$("finish");btn.disabled=true;btn.innerHTML='<span class="spin"></span>Анализирую диалог…';
+  const p=curProduct();
+  const ctx="Параметры: продукт=«"+(p.name||"—")+"»; воронка="+FUNNEL[S.funnel].label+"; DISC="+DISC[S.disc].label+"; сегмент="+SEG[S.seg].label+"; клиент="+persona.name+".";
+  try{
+    const raw=await callClaude({system:buildScoringSystem(),messages:[{role:"user",content:ctx+"\n\nСТЕНОГРАММА:\n"+transcriptText()}],max_tokens:6000,effort:"high"});
+    const rep=parseJSON(raw);
+    lastReport={rep,product:p.name||"—",ts:Date.now()};
+    // журнал
+    const j=getJournal();j.push({ts:lastReport.ts,product:lastReport.product,score:rep.totalScore,sale:rep.sale,growthTop:(rep.growth||[]).slice(0,2),settings:{funnel:S.funnel,disc:S.disc,seg:S.seg}});saveJournal(j);
+    renderReport(rep);
+  }catch(e){
+    if(e instanceof SyntaxError)toast("Не удалось разобрать разбор — попробуй «Завершить» ещё раз.");
+    else toast(errText(e),5000);
+  }finally{busy=false;btn.disabled=false;btn.textContent="✔ Завершить и получить разбор";}
+}
+function barColor(r){return r>=0.8?"var(--green)":r>=0.5?"var(--gold)":"var(--red)";}
+function renderReport(r){
+  $("rNum").innerHTML=(r.totalScore??"—")+'<small>/100</small>';
+  const v=$("rVerdict");v.textContent=r.verdict||"";v.className="verdict "+(r.sale==="win"?"win":r.sale==="warm"?"warm":"loss");
+  $("rOne").textContent=r.oneLine||"";
+  const c=$("rCrit");c.innerHTML="";(r.criteria||[]).forEach(x=>{const ratio=x.max?Math.max(0,Math.min(1,x.score/x.max)):0;const el=document.createElement("div");el.className="crit";el.innerHTML='<div class="cl"><span>'+esc(x.name)+'</span><span class="pts mono">'+(x.score??0)+'/'+(x.max??0)+'</span></div><div class="bar"><i style="width:'+(ratio*100)+'%;background:'+barColor(ratio)+'"></i></div>'+(x.comment?'<div class="cm">'+esc(x.comment)+'</div>':'');c.appendChild(el);});
+  const pr=$("rProg");if(r.progressNote&&r.progressNote.trim()){pr.style.display="block";pr.innerHTML="📈 <b>Динамика:</b> "+esc(r.progressNote);}else pr.style.display="none";
+  const b=$("rBlocks");b.innerHTML="";(r.blocks||[]).forEach(x=>{const ic=x.status==="ok"?"✓":x.status==="warn"?"~":"✕";const el=document.createElement("div");el.className="blk "+(x.status||"warn");el.innerHTML='<span class="ic">'+ic+'</span><span><span class="bt">'+esc(x.title)+'</span> — '+esc(x.note||"")+'</span>';b.appendChild(el);});
+  const g=$("rGood");g.innerHTML="";(r.strengths||[]).forEach(t=>{const li=document.createElement("li");li.textContent=t;g.appendChild(li);});
+  const gr=$("rGrow");gr.innerHTML="";(r.growth||[]).forEach(t=>{const li=document.createElement("li");li.textContent=t;gr.appendChild(li);});
+  const rc=$("rRecs");rc.innerHTML="";(r.recommendations||[]).forEach(x=>{const el=document.createElement("div");el.className="rec";el.innerHTML='<b>'+esc(x.title)+'</b><div style="margin-top:3px">'+esc(x.how)+'</div>'+(x.say?'<div class="say">💬 «'+esc(x.say)+'»</div>':'');rc.appendChild(el);});
+  $("rFocus").innerHTML='<b>Фокус на следующую ролевку:</b> '+esc(r.nextFocus||"");
+  show("report");
+}
+
+/* ---------- экспорт файла ---------- */
+$("dl").addEventListener("click",()=>{if(!lastReport)return;const html=reportHTML(lastReport);const blob=new Blob([html],{type:"text/html;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;const d=new Date(lastReport.ts);a.download="Разбор ролевки "+d.toISOString().slice(0,10)+" — "+(lastReport.product||"")+".html";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);});
+$("copyRep").addEventListener("click",()=>{if(!lastReport)return;navigator.clipboard.writeText(reportText(lastReport)).then(()=>toast("Разбор скопирован ✓"),()=>toast("Не удалось скопировать"));});
+function reportText(o){const r=o.rep;let s="РАЗБОР РОЛЕВОЙ ПРОДАЖИ — "+new Date(o.ts).toLocaleString("ru-RU")+"\nПродукт: "+o.product+"\nБалл: "+r.totalScore+"/100 · "+(r.verdict||"")+"\n"+(r.oneLine||"")+"\n\nКРИТЕРИИ:\n";
+  (r.criteria||[]).forEach(x=>s+="• "+x.name+": "+x.score+"/"+x.max+" — "+(x.comment||"")+"\n");
+  s+="\nЭТАПЫ:\n";(r.blocks||[]).forEach(x=>s+="• ["+(x.status||"")+"] "+x.title+" — "+(x.note||"")+"\n");
+  s+="\nЧТО СРАБОТАЛО:\n"+(r.strengths||[]).map(t=>"• "+t).join("\n");
+  s+="\n\nЗОНЫ РОСТА:\n"+(r.growth||[]).map(t=>"• "+t).join("\n");
+  s+="\n\nРЕКОМЕНДАЦИИ:\n"+(r.recommendations||[]).map(x=>"• "+x.title+": "+x.how+(x.say?(" | Пример: «"+x.say+"»"):"")).join("\n");
+  if(r.progressNote)s+="\n\nДИНАМИКА: "+r.progressNote;
+  s+="\n\nФОКУС ДАЛЬШЕ: "+(r.nextFocus||"");
+  return s;}
+function reportHTML(o){const r=o.rep;const crit=(r.criteria||[]).map(x=>{const ratio=x.max?Math.round(x.score/x.max*100):0;const col=ratio>=80?"#3E8E5E":ratio>=50?"#B0822E":"#B23B2E";return '<div style="margin:0 0 12px"><div style="display:flex;justify-content:space-between;font-weight:600;font-size:14px"><span>'+esc(x.name)+'</span><span>'+x.score+'/'+x.max+'</span></div><div style="height:8px;background:#EDE7D8;border-radius:6px;overflow:hidden"><i style="display:block;height:100%;width:'+ratio+'%;background:'+col+'"></i></div><div style="font-size:12.5px;color:#5A6056;margin-top:4px">'+esc(x.comment||"")+'</div></div>';}).join("");
+  const blocks=(r.blocks||[]).map(x=>{const ic=x.status==="ok"?"✓":x.status==="warn"?"~":"✕";const col=x.status==="ok"?"#3E8E5E":x.status==="warn"?"#B0822E":"#B23B2E";return '<div style="border:1px solid #DCD4C2;border-radius:10px;padding:9px 12px;margin-bottom:7px;font-size:13px"><b style="color:'+col+'">'+ic+'</b> <b>'+esc(x.title)+'</b> — '+esc(x.note||"")+'</div>';}).join("");
+  const recs=(r.recommendations||[]).map(x=>'<div style="border:1px solid #DCD4C2;border-left:3px solid #B0822E;border-radius:0 10px 10px 0;padding:11px 14px;margin-bottom:10px;font-size:13.5px"><b>'+esc(x.title)+'</b><div style="margin-top:3px">'+esc(x.how)+'</div>'+(x.say?'<div style="margin-top:6px;font-style:italic;color:#143A2D;background:#F0F4EE;border-radius:8px;padding:7px 10px">💬 «'+esc(x.say)+'»</div>':'')+'</div>').join("");
+  const li=arr=>(arr||[]).map(t=>'<li>'+esc(t)+'</li>').join("");
+  return '<!doctype html><html lang="ru"><head><meta charset="utf-8"><title>Разбор ролевки</title><style>body{font-family:Manrope,system-ui,sans-serif;color:#16201B;background:#F4F1EA;max-width:820px;margin:0 auto;padding:30px 22px;line-height:1.5}h1,h2{font-family:"Roboto Slab",Georgia,serif}h1{font-size:26px}h2{font-size:17px;margin:24px 0 10px;color:#143A2D}.head{background:#143A2D;color:#EFEAD9;border-radius:14px;padding:20px 24px;margin-bottom:22px}.big{font-size:44px;font-family:"Roboto Slab",serif;font-weight:700;color:#F6F2E6}ul{padding-left:18px}.focus{background:#F0F4EE;border:1px solid #d6e2d2;border-radius:12px;padding:14px 16px;margin-top:16px}</style></head><body>'+
+    '<div class="head"><div style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#C79A45;font-weight:700">A-Players · разбор ролевой продажи</div><div class="big">'+(r.totalScore??"—")+'<span style="font-size:22px;color:#C79A45">/100</span></div><div style="font-size:18px;font-family:\'Roboto Slab\',serif">'+esc(r.verdict||"")+'</div><div style="color:#cbd3c4;font-size:14px;margin-top:4px">'+esc(r.oneLine||"")+'</div><div style="color:#a9b3a4;font-size:12.5px;margin-top:10px">'+new Date(o.ts).toLocaleString("ru-RU")+' · продукт: '+esc(o.product||"")+'</div></div>'+
+    '<h2>Оценка по критериям</h2>'+crit+
+    (r.progressNote?'<div style="background:#FBF6EC;border:1px solid #DCD4C2;border-radius:12px;padding:12px 15px;font-size:13.5px;margin:14px 0">📈 <b>Динамика:</b> '+esc(r.progressNote)+'</div>':'')+
+    '<h2>Прохождение этапов</h2>'+blocks+
+    '<h2>Что сработало</h2><ul>'+li(r.strengths)+'</ul>'+
+    '<h2>Зоны роста</h2><ul>'+li(r.growth)+'</ul>'+
+    '<h2>Рекомендации — как усилить</h2>'+recs+
+    '<div class="focus"><b>Фокус на следующую ролевку:</b> '+esc(r.nextFocus||"")+'</div>'+
+    '</body></html>';
+}
+
+/* =====================================================================
+   Прогресс
+   ===================================================================== */
+function renderProgress(){
+  const j=getJournal();const box=$("progBody");
+  if(!j.length){box.innerHTML='<div class="empty">Пока нет завершённых ролевок. Проведи первую — и здесь появится история и динамика.</div>';return;}
+  const scores=j.slice(-14).map(s=>s.score||0);const mx=Math.max(100,...scores);
+  let spark='<div class="spark">'+scores.map(v=>'<i style="height:'+Math.max(6,v/mx*60)+'px" title="'+v+'/100"></i>').join("")+'</div>';
+  const avg=Math.round(j.reduce((a,s)=>a+(s.score||0),0)/j.length);
+  let rows=j.slice().reverse().map(s=>{const d=new Date(s.ts);const col=s.sale==="win"?"var(--green)":s.sale==="warm"?"var(--gold-h)":"var(--red)";return '<div class="jrow"><div class="jl"><div style="font-weight:700">'+esc(s.product||"—")+'</div><div class="jd">'+d.toLocaleString("ru-RU")+' · '+(s.settings?(DISC[s.settings.disc]?DISC[s.settings.disc].label:"")+' · '+(SEG[s.settings.seg]?SEG[s.settings.seg].label:""):"")+'</div>'+((s.growthTop&&s.growthTop.length)?'<div class="jd" style="margin-top:3px">Зона роста: '+esc(s.growthTop.join("; "))+'</div>':'')+'</div><div class="jsc" style="color:'+col+'">'+(s.score??"—")+'</div></div>';}).join("");
+  box.innerHTML='<div class="row" style="gap:24px;align-items:flex-end;margin-bottom:14px"><div><div class="jd">Ролевок пройдено</div><div style="font-family:var(--serif);font-weight:700;font-size:28px">'+j.length+'</div></div><div><div class="jd">Средний балл</div><div style="font-family:var(--serif);font-weight:700;font-size:28px">'+avg+'</div></div><div style="flex:1"><div class="jd">Последние баллы</div>'+spark+'</div></div>'+rows;
+}
+$("progClear").onclick=()=>{if(confirm("Очистить всю историю ролевок?")){localStorage.removeItem(LS.journal);renderProgress();toast("История очищена");}};
+
+/* ---------- init ---------- */
+loadCfg();
+$("apikey").addEventListener("change",()=>localStorage.setItem(LS.key,$("apikey").value.trim()));
+show("setup");
+</script>
+</body>
+</html>

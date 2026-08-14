@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A-Players · Высококонверсионные скрипты — упаковка этапа Activation</title>
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA; --bg-2:#EFE9D9; --bg-alt:#EBE5D7; --card:#FCFAF4;
+  --ink:#16201B; --muted:#5A6056; --line:#DCD4C2; --line-soft:#E6DECE;
+  --em:#143A2D; --em-2:#1C4C3B; --dark-ink:#EFE9DA;
+  --gold:#B0822E; --gold-2:#C79A45; --gold-h:#977019;
+  --green:#3E8E5E; --amber:#C9952B; --red:#B23B2E;
+  --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif; --mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0c0f0d;overflow:hidden;font-family:var(--sans)}
+#stage{position:absolute;top:50%;left:50%;width:1280px;height:720px;transform:translate(-50%,-50%);transform-origin:center center;background:var(--bg);box-shadow:0 30px 90px -20px rgba(0,0,0,.7)}
+.slide{position:absolute;inset:0;display:none;overflow:hidden;padding:44px 62px 38px;color:var(--ink);flex-direction:column}
+.slide.active{display:flex;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.17em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+h1{font-family:var(--serif);font-weight:900;font-size:56px;line-height:1.02;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:35px;line-height:1.06;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:21px;line-height:1.15}
+.lead{font-size:20px;line-height:1.45;color:var(--muted);font-weight:500}
+p{font-size:17px;line-height:1.5}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 2px}
+.gold{color:var(--gold-h)}
+b,strong{font-weight:800}
+.spacer{flex:1}
+.foot{margin-top:auto;padding-top:11px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.foot .brand{display:flex;align-items:center;gap:9px;font-weight:600}
+.foot .brand img{height:16px;opacity:.92}
+.slide--dark .foot{color:rgba(239,233,218,.6)}
+.slide--dark .foot .brand img{filter:brightness(0) invert(1);opacity:.85}
+.slide--dark{background:var(--em);color:var(--dark-ink)}
+.slide--dark h1,.slide--dark h2,.slide--dark h3{color:#fff}
+.slide--dark .lead{color:rgba(239,233,218,.82)}
+.slide--dark .kicker{color:var(--gold-2)}
+.bfield{position:absolute;inset:0;z-index:0;width:1280px;height:720px;pointer-events:none}
+.slide>*{position:relative;z-index:1}
+.slide>svg.bfield{position:absolute;z-index:0}
+.slide--title{justify-content:center;overflow:hidden}
+.slide--title .heroimg{position:absolute;right:24px;top:50%;transform:translateY(-50%);height:566px;opacity:1;z-index:0;pointer-events:none;filter:drop-shadow(0 14px 22px rgba(0,0,0,.16))}
+.slide--title h1{font-size:56px;max-width:730px}
+.tpill{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#F4F1EA;font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;padding:9px 15px;border-radius:30px;font-weight:600}
+.tpill.gold{background:transparent;border:1.5px solid var(--gold);color:var(--gold-h)}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.slide--dark .card{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.card h3{margin-bottom:6px}.card p{font-size:14.5px;color:var(--muted);line-height:1.4}
+.slide--dark .card p{color:rgba(239,233,218,.72)}
+.num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:9px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:17px;margin-bottom:10px;box-shadow:0 8px 18px -7px rgba(176,130,46,.6)}
+.icon{font-size:24px;margin-bottom:6px;display:block}
+.value{margin-top:12px;display:flex;gap:11px;align-items:baseline;background:rgba(176,130,46,.1);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:11px 17px;font-size:15px;line-height:1.4}
+.value b{color:var(--em)}
+.value::before{content:"СМЫСЛ";font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--gold-h);font-weight:800;flex:0 0 auto;padding-top:3px}
+.slide--dark .value{background:rgba(199,154,69,.15);color:rgba(239,233,218,.9)}
+.slide--dark .value b{color:#fff}
+.value.tip::before{content:"ЛАЙФХАК";color:var(--green)}
+.value.tip{border-left-color:var(--green);background:rgba(62,142,94,.1)}
+.demomark{margin-top:12px;display:inline-flex;align-items:center;gap:9px;background:rgba(176,130,46,.13);border:1.6px dashed var(--gold);border-radius:12px;padding:9px 15px;font-family:var(--mono);font-size:12.5px;letter-spacing:.02em;color:var(--gold-h);font-weight:700}
+.demomark b{font-family:var(--sans);color:var(--em);font-weight:800;letter-spacing:0}
+.slide--dark .demomark{color:var(--gold-2);background:rgba(199,154,69,.16);border-color:var(--gold-2)}
+.slide--dark .demomark b{color:#fff}
+.bl{list-style:none;display:flex;flex-direction:column;gap:10px}
+.bl li{position:relative;padding-left:23px;font-size:17px;line-height:1.4}
+.bl li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.bl.sm li{font-size:14.5px;line-height:1.35}
+.bl.sm li::before{top:6px;width:6px;height:6px}
+.bl.check li::before{content:"✓";top:0;left:0;width:auto;height:auto;background:none;color:var(--green);font-weight:800;font-size:17px;border-radius:0}
+.bl.cross li::before{content:"✕";top:0;left:0;width:auto;height:auto;background:none;color:var(--red);font-weight:800;font-size:16px;border-radius:0}
+.slide--dark .bl li{color:rgba(239,233,218,.9)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{font-family:var(--mono);text-transform:uppercase;letter-spacing:.05em;font-size:11px;color:var(--gold-h);text-align:left;padding:8px 10px;border-bottom:2px solid var(--line)}
+td{padding:8px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top;line-height:1.3;color:var(--ink)}
+tr:nth-child(even) td{background:rgba(255,255,255,.45)}
+td b{color:var(--em)}
+.slide--dark th{color:var(--gold-2);border-bottom-color:rgba(199,154,69,.4)}
+.slide--dark td{color:rgba(239,233,218,.92);border-bottom-color:rgba(255,255,255,.12)}
+.slide--dark td b{color:#fff}.slide--dark tr:nth-child(even) td{background:rgba(255,255,255,.05)}
+.quote{font-family:var(--serif);font-weight:700;font-size:38px;line-height:1.18;letter-spacing:-.4px;max-width:1010px}
+.quote .gold{color:var(--gold-2)}
+.flow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:30px;padding:9px 16px;font-weight:700;font-size:15px}
+.chip.on{background:rgba(199,154,69,.22);border-color:var(--gold)}
+.slide--dark .chip{background:rgba(255,255,255,.07);border-color:rgba(199,154,69,.3);color:#fff}
+.arr{color:var(--gold);font-weight:800;font-size:19px}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,#BE8E34,#C79A45);z-index:50;transition:width .3s}
+#count{position:absolute;right:16px;bottom:13px;z-index:50;font-family:var(--mono);font-size:12px;color:#8a8d86;letter-spacing:.1em}
+.hint{position:fixed;left:50%;bottom:9px;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:#555;letter-spacing:.1em;z-index:60;opacity:.5}
+.tag{display:inline-block;background:rgba(176,130,46,.13);color:var(--gold-h);border:1px solid rgba(176,130,46,.35);border-radius:20px;padding:4px 11px;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.agenda{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+.agitem{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 15px}
+.agitem .t{font-family:var(--mono);font-size:12px;color:var(--gold-h);font-weight:700;width:26px;flex:0 0 26px}
+.agitem h3{font-size:15.5px}
+.warnbox{background:rgba(178,59,46,.08);border:1.5px solid rgba(178,59,46,.4);border-radius:14px;padding:15px 19px}
+.okbox{background:rgba(62,142,94,.09);border:1.5px solid rgba(62,142,94,.4);border-radius:14px;padding:15px 19px}
+.stats{display:flex;gap:12px}
+.stat{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+.slide--dark .stat{background:rgba(255,255,255,.05);border-color:rgba(199,154,69,.28)}
+.stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1.1;margin-top:4px;color:var(--em)}
+.slide--dark .stat .v{color:#fff} .stat .v.gd{color:var(--gold-h)} .stat .v.rd{color:var(--red)} .stat .v.gr{color:var(--green)}
+.slide--dark .stat .v.gd{color:var(--gold-2)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.pill-lg{display:inline-block;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:5px 11px;border-radius:20px;margin-bottom:7px}
+.pill-red{background:rgba(178,59,46,.12);color:var(--red)}.pill-green{background:rgba(62,142,94,.14);color:var(--green)}
+.term{background:#0f2018;border:1px solid #2a4c3e;border-radius:14px;padding:16px 18px;font-family:var(--mono);font-size:13px;line-height:1.5;color:#d3e6da;white-space:pre-wrap;box-shadow:0 20px 50px -30px rgba(0,0,0,.6)}
+.term .c{color:#7fa394}.term .ph{color:var(--gold-2);font-weight:700}
+.plabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:800;margin:6px 0}
+.imgacc{display:grid;grid-template-columns:1fr 360px;gap:24px;flex:1;min-height:0;align-items:center}
+.imgacc.shotcol{grid-template-columns:1fr 520px;align-items:stretch}
+.bobwrap{display:flex;align-items:center;justify-content:center;height:100%}
+.bobwrap img{width:100%;max-height:456px;object-fit:contain;filter:drop-shadow(0 12px 18px rgba(0,0,0,.13))}
+.bobc{position:absolute;top:14px;right:34px;height:116px;width:auto;z-index:6;pointer-events:none;filter:drop-shadow(0 6px 9px rgba(0,0,0,.15))}
+.shot{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 16px 42px -24px rgba(0,0,0,.45);display:flex;flex-direction:column;height:100%;min-height:0}
+.shot img{width:100%;flex:1;min-height:0;object-fit:contain;display:block;background:#fff}
+.shotcap{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:6px 11px;border-top:1px solid var(--line-soft);background:var(--card);flex:0 0 auto}
+.gallery{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0}
+.gallery .shot img{max-height:none}
+.loop{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.lnode{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 15px;text-align:center;min-width:110px}
+.lnode b{display:block;font-family:var(--serif);font-size:15px;color:var(--em)}.lnode span{font-size:11px;color:var(--muted)}
+.lnode.hot{border:1.5px solid var(--gold);background:rgba(199,154,69,.16)}
+.slide--dark .lnode{background:rgba(255,255,255,.06);border-color:rgba(199,154,69,.3)}.slide--dark .lnode b{color:#fff}.slide--dark .lnode span{color:rgba(239,233,218,.65)}
+.tiers{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.tier{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:10px 16px}
+.tier .tl{font-family:var(--serif);font-weight:800;font-size:15px;color:var(--em)}
+.tier .tl span{display:block;font-family:var(--mono);font-size:10px;color:var(--gold-h);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.tier .tv{font-size:13.5px;color:var(--muted);line-height:1.38}
+.tier .tv b{color:var(--ink)}
+.steps{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.step{display:flex;gap:13px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 15px}
+.step .sn{flex:0 0 auto;width:28px;height:28px;border-radius:8px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:14px;display:grid;place-items:center}
+.step .st{font-family:var(--serif);font-weight:700;font-size:15px;color:var(--em)}
+.step .sd{font-size:13px;color:var(--muted);line-height:1.35}
+.disc{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px}
+.disc .dc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;border-top:4px solid var(--gold)}
+.disc .dc .l{font-family:var(--serif);font-weight:800;font-size:16px;color:var(--em)}
+.disc .dc .n{font-family:var(--mono);font-size:10px;color:var(--gold-h);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-bottom:5px}
+.disc .dc p{font-size:12.5px;color:var(--muted);line-height:1.32}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <pattern id="p-va" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(20,58,45,.42)">A</text><text x="47" y="64" font-size="34" fill="rgba(20,58,45,.42)">A</text></g></pattern>
+  <pattern id="p-va-d" width="62" height="66" patternUnits="userSpaceOnUse"><g font-family="'Roboto Slab',serif" font-weight="900" text-anchor="middle"><text x="16" y="34" font-size="34" fill="rgba(199,154,69,.55)">A</text><text x="47" y="64" font-size="34" fill="rgba(199,154,69,.55)">A</text></g></pattern>
+</defs></svg>
+<div id="stage">
+
+<!-- 1 · TITLE -->
+<section class="slide slide--title active">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.45;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 46%);mask-image:linear-gradient(90deg,#000 0%,#000 18%,transparent 46%)"><rect width="100%" height="100%" fill="url(#p-va)"/></svg>
+  <img class="heroimg" src="gen/bob/cut/bob_phone.png" alt="">
+  <div style="display:flex;gap:10px;margin-bottom:22px">
+    <span class="tpill">● Практикум A-Players</span>
+    <span class="tpill gold">Модуль · Скрипты + Activation</span>
+  </div>
+  <h1>Высококонверсионные скрипты<br>и упаковка этапа <span class="hl">Activation</span></h1>
+  <p class="lead" style="margin-top:20px;max-width:600px">Как из пути клиента (CJM) собрать <b style="color:var(--em)">продающий скрипт в 3 версиях</b> и упаковать арсенал продавца, который можно отдать менеджерам — а не «красивый документ на полку».</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png" alt="A-Players">Практикум A-Players</span><span>Скрипты · Activation</span></div>
+</section>
+
+<!-- 2 · WHERE IN PROGRAM -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Где мы в программе</span>
+  <h2 style="margin:10px 0 16px">Приземляем стратегию на <span class="hl">голос компании</span></h2>
+  <div class="loop">
+    <div class="lnode"><b>AAARRR</b><span>стратегия роста</span></div><span class="arr">→</span>
+    <div class="lnode"><b>CJM</b><span>карта пути</span></div><span class="arr">→</span>
+    <div class="lnode hot"><b>Скрипт</b><span>инструмент продажи</span></div><span class="arr">→</span>
+    <div class="lnode"><b>ОКК</b><span>контроль качества</span></div>
+  </div>
+  <div class="two" style="margin-top:22px">
+    <div class="card"><h3>Фокус — этап Activation</h3><p style="font-size:15px;margin-top:5px">В Драйверах нашли, где узкое место. Сегодня <b style="color:var(--em)">качаем Activation</b>: доводим лида до первой покупки через скрипт.</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3>Цепочка</h3><p style="font-size:15px;margin-top:5px">Стратегия AAARRR → карта CJM → <b style="color:var(--em)">скрипт</b> → отдел контроля качества. ОКК развернём в отдельном модуле.</p></div>
+  </div>
+  <div class="value"><span>Скрипт — это не текст на бумажке, а <b>приземление всей стратегии на конкретную фразу менеджера.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Где мы</span></div>
+</section>
+
+<!-- 3 · AGENDA -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">С чем вы выйдете</span>
+  <h2 style="margin:10px 0 16px">Маршрут воркшопа</h2>
+  <div class="agenda">
+    <div class="agitem"><span class="t">1</span><h3>Почему 9 из 10 скриптов не продают</h3></div>
+    <div class="agitem"><span class="t">2</span><h3>CJM — карта пути и точки провала</h3></div>
+    <div class="agitem"><span class="t">3</span><h3>Анатомия скрипта: 9 блоков</h3></div>
+    <div class="agitem"><span class="t">4</span><h3>ABC-сегменты · DISC · Crystal</h3></div>
+    <div class="agitem"><span class="t">5</span><h3>ХПВ · ключевые фразы · возражения · каскады</h3></div>
+    <div class="agitem"><span class="t">6</span><h3>⚡ Живая сборка блока + нейролевка</h3></div>
+    <div class="agitem"><span class="t">7</span><h3>Арсенал продавца: что туда входит</h3></div>
+    <div class="agitem"><span class="t">8</span><h3>Инструменты + домашка</h3></div>
+  </div>
+  <div class="value"><span><b>Образ результата:</b> рабочий скрипт в 3 версиях (горячий/тёплый/холодный) + DISC-шпаргалка + начатый арсенал, готовый к передаче менеджерам.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Маршрут</span></div>
+</section>
+
+<!-- 4 · THESIS -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/aw_awareness.png" alt="">
+  <svg class="bfield" preserveAspectRatio="none" style="-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 45%);mask-image:linear-gradient(270deg,#000 0%,transparent 45%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="kicker">Главный тезис модуля</span>
+  <div class="spacer"></div>
+  <p class="quote">Отдел продаж — это <span class="gold">голос компании</span>. А скрипт — часть продукта.</p>
+  <p class="lead" style="margin-top:24px;max-width:960px">«Не может быть такого, чтобы скрипт написал какой-то один человек — это всегда будет очень плохо». Сильный скрипт собирается из <b style="color:#fff">стратегии, JTBD и данных</b>, продаётся команде и обучается — а не «прочитайте и используйте».</p>
+  <div class="spacer"></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Скрипт = продукт</span></div>
+</section>
+
+<!-- 5 · 5 ПРОБЛЕМ СКРИПТОВ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 1 · Боль</span><h2 style="font-size:31px">Почему скрипты не продают</h2></div>
+  <div class="imgacc">
+    <div>
+      <ul class="bl cross" style="gap:10px">
+        <li><b>Один скрипт на всё</b> — на все сегменты и этапы (а нужно 3–5)</li>
+        <li><b>Пишет только отдел продаж</b> — без продукта, маркетинга, фаундера</li>
+        <li><b>Нет контроля</b> ключевых элементов и метрик скрипта</li>
+        <li><b>Обновляется раз в полгода</b> — а рынок меняется быстрее</li>
+        <li><b>Не анализируют лучших</b> — практики топ-менеджеров не собраны</li>
+      </ul>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/bob_badscript.png" alt=""></div>
+  </div>
+  <div class="value"><span>Самый отрезвляющий тест — <b>послушать свои звонки или запустить тайного покупателя.</b> «Это очень больно» — и это точка роста.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>5 проблем</span></div>
+</section>
+
+<!-- 6 · РАМКА / РАЗРЫВ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/s2_choose.png" alt="">
+  <span class="kicker">Блок 1 · Смысловая рамка</span>
+  <h2 style="margin:10px 0 14px">Скрипт продаёт не текст, а <span class="hl">РАЗРЫВ</span></h2>
+  <div class="two">
+    <div>
+      <p class="lead" style="font-size:18px">Задача скрипта — сделать осязаемым разрыв между <b style="color:var(--em)">точкой А</b> (где клиент сейчас) и <b style="color:var(--em)">точкой Б</b> (где хочет быть), и показать ваш продукт как самый быстрый мост.</p>
+      <p style="font-size:16px;margin-top:12px">Без рамки любой скрипт — вода. Рамка ставит продавца в позицию силы: <b style="color:var(--em)">не просим и не предлагаем</b> — помогаем клиенту увидеть его же выгоду.</p>
+    </div>
+    <div class="okbox">
+      <h3 style="font-size:16px;margin-bottom:8px">4 правила рамки</h3>
+      <ul class="bl check" style="gap:7px">
+        <li>Твёрдая позиция (эксперт, не проситель)</li>
+        <li>Не просим / не предлагаем — открываем ценность</li>
+        <li>Осознаём ценность своего продукта</li>
+        <li>Твёрдость в каждом слове</li>
+      </ul>
+    </div>
+  </div>
+  <div class="value"><span>Рамка — фундамент. Дальше 9 блоков скрипта только <b>усиливают и доказывают</b> этот разрыв.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Рамка · разрыв</span></div>
+</section>
+
+<!-- 7 · ЧТО ТАКОЕ CJM -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/bob_cjm.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 2 · CJM</span><h2 style="font-size:30px">Карта пути клиента</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <p class="lead" style="font-size:17px;margin-bottom:10px">CJM — визуальная схема всех точек касания: осознание → рассмотрение → решение → покупка → удержание. По каждому этапу фиксируем:</p>
+      <div class="svc" style="display:flex;flex-wrap:wrap;gap:7px"><span style="background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-weight:600;font-size:13.5px">Действия клиента</span><span style="background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-weight:600;font-size:13.5px">Мысли</span><span style="background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-weight:600;font-size:13.5px">Эмоции (−2…+2)</span><span style="background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-weight:600;font-size:13.5px">Точка контакта</span><span style="background:var(--card);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-weight:600;font-size:13.5px">Горлышко / возможность</span></div>
+      <div class="value" style="margin-top:14px"><span>«Я не видел ни разу CJM, у которого <b>нечего было бы улучшить</b>».</span></div>
+    </div>
+    <div class="shot"><img src="img/cjm-def.png" alt="CJM определение"><div class="shotcap">CJM · 5 этапов и что фиксируем</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>CJM</span></div>
+</section>
+
+<!-- 8 · ЭМОЦ КРИВАЯ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 2 · Точки провала</span><h2 style="font-size:30px">Эмоциональная кривая</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <p class="lead" style="font-size:17px">Там, где ожидание клиента не совпало с реальностью — <b style="color:var(--em)">«дофаминовая яма»</b>. Каждый провал кривой = место, где вы теряете клиента и деньги.</p>
+      <p style="font-size:15.5px;margin-top:12px">Кейс: B2B, чек 60–200 млн ₽ — на CJM пресейла нашли негатив в неожиданной точке (туалет). Устранили микропровалы (музыка, чай, десерты) → сделка.</p>
+    </div>
+    <div class="shot"><img src="img/cjm-emotion.png" alt="эмоциональная кривая"><div class="shotcap">Пример · кривая удовлетворённости по этапам</div></div>
+  </div>
+  <div class="value"><span>Скрипт «расшивает» провалы кривой: где клиент «несчастлив» — там нужен блок скрипта, кейс или «орден».</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Эмоц. кривая</span></div>
+</section>
+
+<!-- 9 · ГАЛЕРЕЯ CJM -->
+<section class="slide" style="padding:40px 54px 36px">
+  <img class="bobc" src="gen/bob/cut/bob_cjm.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:10px"><span class="tag">Блок 2 · Примеры</span><h2 style="font-size:29px">Как выглядит заполненный CJM</h2></div>
+  <div class="gallery">
+    <div class="shot"><img src="img/cjm-bank.png" alt="CJM банк B2B"><div class="shotcap">B2B · банковский продукт (длинный цикл)</div></div>
+    <div class="shot"><img src="img/cjm-b2c.png" alt="CJM B2C"><div class="shotcap">B2C · товар массового спроса (короткий цикл)</div></div>
+  </div>
+  <div class="value"><span>Глубина карты зависит от цикла: B2B — детально по пресейлу; B2C — короткий эмоциональный цикл. <b>Оба строятся в Claude за минуты.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Галерея CJM</span></div>
+</section>
+
+<!-- 10 · CJM 0 РУБЛЕЙ -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/s8_money.png" alt="">
+  <span class="kicker">Блок 2 · Экономика</span>
+  <h2 style="margin:10px 0 16px">Раньше 5–8 млн ₽. Сейчас — <span class="gold">0 ₽</span></h2>
+  <div class="two" style="align-items:center">
+    <div>
+      <p class="lead" style="font-size:19px">В 2017 команда из 10 человек проектировала CJM для авиакомпаний за <b style="color:#fff">5–6–8 млн ₽</b>. Сегодня это делает <b style="color:#fff">Claude за 0 ₽</b> — «всё, что требуется, это компетентность».</p>
+    </div>
+    <div class="stats" style="flex-direction:column;gap:12px">
+      <div class="stat"><div class="k">Было (агентство, 2017)</div><div class="v">5–8 млн ₽</div></div>
+      <div class="stat" style="border:1.5px solid var(--gold)"><div class="k">Сейчас (Claude + вы)</div><div class="v gd">0 ₽</div></div>
+    </div>
+  </div>
+  <div class="value"><span>Инструмент перестал быть привилегией корпораций. <b>Барьер теперь — не деньги, а насмотренность.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>CJM · 0 ₽</span></div>
+</section>
+
+<!-- 11 · CJM ↔ AAARRR -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/bob_cjm.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 2 · Связка</span><h2 style="font-size:29px">CJM → скрипт → ОКК</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <p class="lead" style="font-size:17px;margin-bottom:10px">Накладываем стратегию AAARRR на карту: где активировать продукт №1, upsell, cross-sell, рефералку — и где <b style="color:var(--em)">не предлагать</b>, потому что половины аудитории уже нет.</p>
+      <p style="font-size:15.5px"><b style="color:var(--em)">CJM</b> даёт карту → <b style="color:var(--em)">скрипт</b> — инструкцию → <b style="color:var(--em)">ОКК</b> проверяет исполнение. Одна связка, три уровня.</p>
+    </div>
+    <div class="shot"><img src="img/cjm-chain.png" alt="CJM → скрипт → ОКК"><div class="shotcap">Связка + адаптация B2B / B2C</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>CJM ↔ AAARRR</span></div>
+</section>
+
+<!-- 12 · 9 БЛОКОВ ОБЗОР -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 3 · Анатомия</span><h2 style="font-size:29px">9 блоков высококонверсионного скрипта</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <ol style="list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px 16px;counter-reset:s">
+        <li style="font-size:14px;padding:5px 0;counter-increment:s;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">1</b> Приветствие</li>
+        <li style="font-size:14px;padding:5px 0;counter-increment:s;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">2</b> Установление контакта</li>
+        <li style="font-size:14px;padding:5px 0;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">3</b> Программирование</li>
+        <li style="font-size:14px;padding:5px 0;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">4</b> Квалификация</li>
+        <li style="font-size:14px;padding:5px 0;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">5</b> Выявление болей</li>
+        <li style="font-size:14px;padding:5px 0;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">6</b> Презентация (ХПВ)</li>
+        <li style="font-size:14px;padding:5px 0;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">7</b> Предзакрытие</li>
+        <li style="font-size:14px;padding:5px 0;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">8</b> Отработка возражений</li>
+        <li style="font-size:14px;padding:5px 0;position:relative;padding-left:24px"><b style="color:var(--gold-h);position:absolute;left:0">9</b> Закрытие</li>
+      </ol>
+      <div class="value" style="margin-top:12px"><span>Каждый блок — теория + промпт в тетради. Разберём ключевые.</span></div>
+    </div>
+    <div class="shot"><img src="img/script-checklist.png" alt="чек-лист скрипта"><div class="shotcap">Реальный чек-лист контроля звонка по этапам</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>9 блоков</span></div>
+</section>
+
+<!-- 13 · БЛОКИ 1-3 -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/bob_phone.png" alt="">
+  <span class="kicker">Блок 3 · Первые секунды</span>
+  <h2 style="margin:10px 0 14px">Приветствие · Контакт · <span class="hl">Программирование</span></h2>
+  <div class="grid g3">
+    <div class="card"><span class="num">1–2</span><h3 style="font-size:17px">Контакт решает</h3><p>Иногда «офис продаёт». Кейс: питчдек на $20 млн едва не слили, потому что не установили контакт — «они меня не слушали».</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">3</span><h3 style="font-size:17px">Программирование</h3><p>Задаёшь клиенту, что сейчас будет происходить. Не спрограммировал — клиент «сам напридумывал, не в вашу пользу».</p></div>
+    <div class="card"><span class="icon">🎯</span><h3 style="font-size:17px">Якорь</h3><p>Фраза-якорь «в любом случае мы с вами договоримся» + опережающая фраза про цену заранее.</p></div>
+  </div>
+  <div class="value"><span>Эти блоки кажутся «мелочью», но в дорогих сделках <b>«каждая деталь важна, как молитва».</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Блоки 1–3</span></div>
+</section>
+
+<!-- 14 · КВАЛИФИКАЦИЯ ABC -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/bob_temp.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 4 · Квалификация</span><h2 style="font-size:29px">ABC — сегментация по температуре</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <div class="tiers">
+        <div class="tier" style="border-left-color:var(--red)"><div class="tl">A · Горячий<span>конв. 70–90%</span></div><div class="tv">Цель + потребность + деньги + <b>срочность</b>. Задача — закрыть здесь и сейчас.</div></div>
+        <div class="tier" style="border-left-color:var(--amber)"><div class="tl">B · Тёплый<span>нет срочности</span></div><div class="tv">Создать срочность через <b>FOMO</b> — не только скидкой, а продуктом (бандлы).</div></div>
+        <div class="tier"><div class="tl">C · Холодный<span>догреть</span></div><div class="tv">Не закрывать в этом звонке — <b>догреть</b> альтернативным касанием.</div></div>
+      </div>
+      <div class="value tip" style="margin-top:12px"><span>Квалифицируй <b>косвенно</b>: не «есть ли деньги», а «проходили ли платные курсы?».</span></div>
+    </div>
+    <div class="shot"><img src="img/qual-abc.png" alt="регламент квалификации"><div class="shotcap">Готовый регламент квалификации A/B/C/D/E</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>ABC</span></div>
+</section>
+
+<!-- 15 · КОНВЕРСИОННОЕ ОКНО -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <span class="kicker">Блок 4 · Конверсионное окно</span>
+  <h2 style="margin:10px 0 14px">Лид остывает — <span class="hl">управляем по дням</span></h2>
+  <div class="two" style="align-items:center">
+    <div>
+      <p class="lead" style="font-size:18px">Конверсия когорты падает со временем. Поэтому цель ставится по дням, а недожатое запускает <b style="color:var(--em)">воронку дожима</b>.</p>
+      <p style="font-size:15.5px;margin-top:12px">Недожать 2 п.п. по C-лидам = «несколько миллионов потеряли». Без сегментации и контроля <b style="color:var(--em)">отдел продаж уже теряет деньги.</b></p>
+    </div>
+    <div class="stats" style="flex-direction:column;gap:10px">
+      <div class="stat"><div class="k">Цель к 3-му дню</div><div class="v">45%</div></div>
+      <div class="stat"><div class="k">Цель к 8-му дню</div><div class="v">55%</div></div>
+      <div class="stat" style="border:1.5px solid var(--gold)"><div class="k">Цель к 14-му дню</div><div class="v gd">80%</div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Конв. окно</span></div>
+</section>
+
+<!-- 16 · DISC -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/bob_disc.png" alt="">
+  <span class="kicker">Блок 4 · DISC — 4 психотипа</span>
+  <h2 style="margin:10px 0 12px">Один оффер — <span class="hl">четыре разных голоса</span></h2>
+  <div class="disc">
+    <div class="dc"><div class="l">D · Доминант</div><div class="n">Цифры · факты</div><p>Лидирует, перебивает. Сжато, измеримо, без воды. «Диалог как ринг».</p></div>
+    <div class="dc"><div class="l">I · Инициативный</div><div class="n">Идеи · эмоции</div><p>Сам продаёт, фонтанирует. Дать пространство, мягко вернуть в структуру.</p></div>
+    <div class="dc"><div class="l">S · Постоянный</div><div class="n">Безопасность</div><p>Тяжело решает. Гарантии, кейсы, «безболезненный шаг».</p></div>
+    <div class="dc"><div class="l">C · Тщательный</div><div class="n">Детали · логика</div><p>Тысяча вопросов. Отстройка, таблицы, развёрнутые аргументы.</p></div>
+  </div>
+  <div class="value"><span>Ошибка сегмента → <b>«в два раза себе срежешь конверсию».</b> Особенно в премиуме — «не дай боже на всех смотреть одинаково».</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>DISC</span></div>
+</section>
+
+<!-- 17 · CRYSTAL -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/bob_disc.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 4 · DISC на практике</span><h2 style="font-size:28px">Crystal → речевые модули</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <p class="lead" style="font-size:16.5px;margin-bottom:10px"><b style="color:var(--em)">Crystal</b> сканирует профиль (LinkedIn) → выдаёт DISC-тип + плейбук продажи. Дальше: профиль + КП + Claude → адаптация речевых модулей под тип.</p>
+      <p style="font-size:15px">Тип <b style="color:var(--em)">D (Captain)</b> буквально диктует скрипт: сразу к сути, пропустить small talk, говорить выгодой в цифрах, дать итоговую цену, поставить дедлайн.</p>
+      <div class="value tip" style="margin-top:12px"><span>Кейс: рассылки, сегментированные по DISC → метрики <b>×2,5.</b></span></div>
+    </div>
+    <div class="shot"><img src="img/crystal.png" alt="Crystal DISC профиль"><div class="shotcap">Реальный DISC-профиль клиента (Crystal Knows)</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Crystal</span></div>
+</section>
+
+<!-- 18 · ВЫЯВЛЕНИЕ БОЛЕЙ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <span class="kicker">Блок 5 · Выявление болей</span>
+  <h2 style="margin:10px 0 16px">Pain → More Pain → Hope → <span class="hl">Solution</span></h2>
+  <div class="grid g4">
+    <div class="card"><span class="num">1</span><h3 style="font-size:16px">Pain</h3><p>Открывающий вопрос — вскрываем боль</p></div>
+    <div class="card"><span class="num">2</span><h3 style="font-size:16px">More Pain</h3><p>Углубляем — что будет, если не решить</p></div>
+    <div class="card"><span class="num">3</span><h3 style="font-size:16px">Hope</h3><p>Вопрос про идеальное решение</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">4</span><h3 style="font-size:16px">Solution</h3><p>Мостик к презентации под потребность</p></div>
+  </div>
+  <div class="value"><span>Вопросы заранее строят <b>мостики к ХПВ</b>: «И это как раз то, о чём вы говорили…». Всё генерится из JTBD в Claude.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Боли</span></div>
+</section>
+
+<!-- 19 · ХПВ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Блок 6 · Презентация</span>
+  <h2 style="margin:10px 0 14px">ХПВ: не характеристиками, а <span class="hl">выгодой</span></h2>
+  <div class="tiers">
+    <div class="tier" style="border-left-color:var(--em)"><div class="tl">Характеристика<span>факт</span></div><div class="tv">«Продукт идёт 4 месяца»</div></div>
+    <div class="tier"><div class="tl">Потребность<span>мостик</span></div><div class="tv">«Это как раз ускоренный трек трансформации, который вы хотели»</div></div>
+    <div class="tier" style="border-left-color:var(--green)"><div class="tl">Выгода<span>результат</span></div><div class="tv">«За 4 месяца получите то, что другие за 2 года не успевают — и знания останутся навсегда»</div></div>
+  </div>
+  <div class="value"><span>«Нет ничего хуже, чем презентовать продукт характеристиками». Каждый блок презентации — <b>по формуле ХПВ.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>ХПВ</span></div>
+</section>
+
+<!-- 20 · КЛЮЧЕВЫЕ ФРАЗЫ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/bob_medals.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 6 · Ключевые фразы</span><h2 style="font-size:28px">«Ордена», которые нельзя не сказать</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <p class="lead" style="font-size:16.5px;margin-bottom:10px">Топ-10–15 фактов/побед/цифр о продукте и бренде. «Мы за них заплатили зарплатами и достижениями — <b style="color:var(--em)">а почему-то про это не говорим</b>».</p>
+      <p style="font-size:15px"><b style="color:var(--em)">Метод генерации:</b> из USP + отстройки + Sales Points + побед → топ-15 фраз, размечаем по DISC и по этапам скрипта.</p>
+      <div class="value" style="margin-top:12px"><span>Проверка фаундеру: назови топ-10 фраз, которые клиент — «преступление» не услышать.</span></div>
+    </div>
+    <div class="shot"><img src="img/prompt-keyphrases.png" alt="промпт ключевые фразы"><div class="shotcap">Промпт-конструктор ключевых фраз</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Ключевые фразы</span></div>
+</section>
+
+<!-- 21 · ПРЕДЗАКРЫТИЕ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Блок 7 · Предзакрытие</span>
+  <h2 style="margin:10px 0 16px">Вопрос по шкале <span class="hl">10/10</span></h2>
+  <div class="grid g3">
+    <div class="card" style="border-top:4px solid var(--green)"><span class="icon">🟢</span><h3 style="font-size:17px">9–10</h3><p>Идём дальше — к цене и закрытию</p></div>
+    <div class="card" style="border-top:4px solid var(--amber)"><span class="icon">🟡</span><h3 style="font-size:17px">7–8</h3><p>Копаем: чего не хватило до 10? Не проваливаемся в цену</p></div>
+    <div class="card" style="border-top:4px solid var(--red)"><span class="icon">🔴</span><h3 style="font-size:17px">&lt; 7</h3><p>Возвращаемся к болям/презентации — рано о деньгах</p></div>
+  </div>
+  <div class="value"><span>«Насколько по 10-балльной шкале вам показалось подходящим то, что я рассказал?» — <b>ни в коем случае не проваливаемся до цены</b>, пока не 9+.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Предзакрытие</span></div>
+</section>
+
+<!-- 22 · ВОЗРАЖЕНИЯ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/bob_shield.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 8 · Возражения</span><h2 style="font-size:27px">Отработать до того, как возникли</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <p class="lead" style="font-size:16px;margin-bottom:10px">«Мастерство — отрабатывать возражения <b style="color:var(--em)">до того, как они возникли</b>»: вслух даёшь решение ещё до формулировки.</p>
+      <p class="plabel">5-шаговый алгоритм</p>
+      <ul class="bl sm"><li>Присоединение → Комплимент → Локализация → Отработка → «Капитан очевидность»</li><li>Техника <b>«Искренность»</b> для «я подумаю»</li><li>Реестр топ-10 возражений (истинное/ложное · этап)</li></ul>
+    </div>
+    <div class="shot"><img src="img/refusal-table.png" alt="причины отказов"><div class="shotcap">Живой справочник причин отказов (CRM)</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Возражения</span></div>
+</section>
+
+<!-- 23 · ЗАКРЫТИЕ / КАСКАДЫ -->
+<section class="slide" style="padding:40px 54px 36px">
+  <img class="bobc" src="gen/bob/cut/s8_money.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:10px"><span class="tag">Блок 9 · Закрытие</span><h2 style="font-size:28px">Продуктовый + финансовый каскад</h2></div>
+  <div class="gallery">
+    <div class="shot"><img src="img/prompt-prodcascade.png" alt="продуктовый каскад"><div class="shotcap">Продуктовый каскад — рост среднего чека</div></div>
+    <div class="shot"><img src="img/prompt-fincascade.png" alt="финансовый каскад"><div class="shotcap">Финансовый каскад — варианты оплаты</div></div>
+  </div>
+  <div class="value"><span>На закрытии работают два рычага: <b>каскад продуктов</b> (чек) и <b>каскад оплат</b> (конверсия) + реферальный крючок. Правило: <b>после цены — тишина.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Каскады</span></div>
+</section>
+
+<!-- 24 · 3 ВЕРСИИ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/bob_temp.png" alt="">
+  <span class="kicker">Блок 4 · Сборка версий</span>
+  <h2 style="margin:10px 0 12px">3 версии одного скрипта</h2>
+  <table>
+    <thead><tr><th>Параметр</th><th>A · Горячий</th><th>B · Тёплый</th><th>C · Холодный</th></tr></thead>
+    <tbody>
+      <tr><td><b>Длина</b></td><td>5–10 мин</td><td>15–25 мин</td><td>20–30 мин</td></tr>
+      <tr><td><b>Фокус</b></td><td>Усилить закрытие</td><td>Полный + FOMO</td><td>Без закрытия</td></tr>
+      <tr><td><b>Цель звонка</b></td><td>Выставить счёт</td><td>Создать срочность</td><td>Перейти к касанию</td></tr>
+      <tr><td><b>Ключевой блок</b></td><td>Цена + CTA</td><td>Каскад + FOMO</td><td>Догрев / доступ «пощупать»</td></tr>
+    </tbody>
+  </table>
+  <div class="value"><span>Это не «три ярлыка на одном тексте», а <b>разные цели и разная механика</b> под температуру лида.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>3 версии</span></div>
+</section>
+
+<!-- 25 · ЭТАЛОН СКРИПТА -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/bob_phone.png" alt="">
+  <span class="kicker">Блок 4 · Эталон целиком</span>
+  <h2 style="margin:10px 0 12px">Сквозной скрипт — <span class="hl">2 такта, 10 блоков</span></h2>
+  <div class="two">
+    <div class="card" style="border-top:4px solid var(--em)"><h3 style="font-size:16px">Такт 1 · Консультация (~25–30 мин)</h3><ul class="bl sm" style="margin-top:6px"><li>Приветствие + позиционирование</li><li>Программирование</li><li>Запрос + потребности + КВАЛ</li><li>Диагностика (ABCDE)</li><li>Разбор → <b>осознание разрыва (WOW-пик)</b></li></ul></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><h3 style="font-size:16px">Такт 2 · Презентация (~30 мин)</h3><ul class="bl sm" style="margin-top:6px"><li>Питч под разрывы <b>(сначала согласие на питч!)</b></li><li>Возражения до 10/10</li><li>Цена + FOMO + CTA</li><li>Доставка разбора + фолоуап</li></ul></div>
+  </div>
+  <div class="value"><span>Два «шлагбаума», которые нельзя проскакивать: <b>согласие на питч</b> перед презентацией и <b>шкала 10/10</b> перед ценой.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Эталон скрипта</span></div>
+</section>
+
+<!-- 26 · МЕТРИКИ СКРИПТА -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/p_think.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 4 · Контроль</span><h2 style="font-size:28px">Внутри скрипта есть метрики</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <p class="lead" style="font-size:16px;margin-bottom:10px">Скрипт можно и нужно <b style="color:var(--em)">замерять</b> — это чек-лист качества звонка и мост к следующему модулю (ОКК на ИИ).</p>
+      <ul class="bl sm check"><li>Произнесены ли ключевые фразы</li><li>Задан ли вопрос-мостик к ХПВ</li><li>Проставлен ли сегмент + DISC</li><li>Был ли вопрос по 10-балльной шкале</li><li>Пройдены ли оба «шлагбаума»</li></ul>
+    </div>
+    <div class="shot"><img src="img/prompt-critical.png" alt="критические ошибки"><div class="shotcap">Промпт «Критические ошибки звонка»</div></div>
+  </div>
+  <div class="value"><span>100% звонков через речевую аналитику → <b>отдел контроля качества на ИИ</b> — разворачиваем в отдельном модуле.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Метрики → ОКК</span></div>
+</section>
+
+<!-- 27 · ЖИВАЯ СБОРКА ИНТРО -->
+<section class="slide slide--dark slide--title">
+  <img class="bobc" src="gen/bob/cut/s25_build.png" alt="">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.5;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 22%,transparent 52%);mask-image:linear-gradient(90deg,#000 0%,#000 22%,transparent 52%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <span class="tag" style="background:rgba(199,154,69,.16);border-color:var(--gold-2);color:var(--gold-2);align-self:flex-start">⚡ Живая сборка</span>
+  <h1 style="font-size:48px;margin-top:16px">Собираем блок скрипта<br><span class="gold">прямо сейчас</span></h1>
+  <p class="lead" style="margin-top:18px;max-width:720px">Берём одну воронку, за 15 минут собираем блок <b style="color:#fff">презентации (ХПВ) + ключевые фразы</b> из CJM/JTBD через Claude — и тут же прогоняем через нейролевку.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Живая сборка</span></div>
+</section>
+
+<!-- 28 · ВХОД -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 1 — вход</span>
+  <h2 style="margin:10px 0 12px">Топливо у вас <span class="hl">уже собрано</span></h2>
+  <p class="lead" style="font-size:17px;margin-bottom:14px">Опорные материалы из прошлых модулей становятся входом для скрипта. Ничего собирать заново.</p>
+  <div class="grid g4">
+    <div class="card"><span class="icon">🗺️</span><h3 style="font-size:15px">CJM + AAARRR</h3><p>Узкие места и окна</p></div>
+    <div class="card"><span class="icon">🧩</span><h3 style="font-size:15px">JTBD-сегменты</h3><p>Боли, язык клиента</p></div>
+    <div class="card"><span class="icon">⚔️</span><h3 style="font-size:15px">Отстройка + USP</h3><p>Чем сильнее конкурентов</p></div>
+    <div class="card"><span class="icon">🎙️</span><h3 style="font-size:15px">ToV + кейсы</h3><p>Как говорим, чем доказываем</p></div>
+  </div>
+  <div class="value"><span>Качество скрипта = качество опорных материалов. <b>Без них Claude даст воду, а не ваш скрипт.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Вход</span></div>
+</section>
+
+<!-- 29 · МАСТЕР-ПРОМПТ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Живая сборка · Шаг 2</span><h2 style="font-size:28px">Промпт под блок скрипта</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <div class="term" style="font-size:12px"><span class="c"># РОЛЬ</span>
+Ты — старший тренер по продажам, 15+ лет, high-ticket.
+
+<span class="c"># ВХОД (из знаний)</span>
+→ CJM + AAARRR · JTBD · отстройка · ToV · кейсы
+
+<span class="c"># ЗАДАЧА — блок «Презентация (ХПВ)»</span>
+1. 5–7 блоков по формуле <span class="ph">Характеристика → Потребность → Выгода</span>
+2. Мостик «И это как раз то, о чём вы говорили…»
+3. Вплети <span class="ph">топ-10 ключевых фраз</span> («ордена»)
+4. <span class="ph">Опережающие возражения</span> прямо в презентацию
+5. Адаптации под D / I / S / C</div>
+    </div>
+    <div class="shot"><img src="img/prompt-board.png" alt="доска промптов"><div class="shotcap">Вся система промптов (обзор)</div></div>
+  </div>
+  <div class="value"><span>Тот же паттерн — <b>роль → входы → задача</b> — работает для всех 9 блоков. Промпты уже в тетради.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Мастер-промпт</span></div>
+</section>
+
+<!-- 30 · ВЫВОД CLAUDE -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/ac_activation.png" alt="">
+  <span class="kicker">Живая сборка · Шаг 3 — что выдал Claude</span>
+  <h2 style="margin:10px 0 12px">Готовый блок презентации</h2>
+  <div class="tiers">
+    <div class="tier"><div class="tl">ХПВ-блок 1<span>формат</span></div><div class="tv"><b>Х:</b> «Программа 4 месяца» → <b>П:</b> «ускоренный трек, который вы искали» → <b>В:</b> «результат за 4 мес вместо 2 лет»</div></div>
+    <div class="tier" style="border-left-color:var(--gold-2)"><div class="tl">Ключевая фраза<span>«орден»</span></div><div class="tv">«113 плейбуков и 500+ управленцев уже прошли этот путь» — вплетено в блок</div></div>
+    <div class="tier" style="border-left-color:var(--em)"><div class="tl">Опережающее<span>возражение</span></div><div class="tv">«Возможно, думаете, что 4 месяца — долго. На деле это самый быстрый мост…»</div></div>
+  </div>
+  <div class="demomark">✅ <b>За 15 минут:</b> блок презентации + ордена + опережающие возражения + 4 DISC-адаптации.</div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Вывод Claude</span></div>
+</section>
+
+<!-- 31 · НЕЙРОЛЕВКА -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Живая сборка · Шаг 4</span><h2 style="font-size:29px">Нейролевка: Claude играет клиента</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:17px;margin-bottom:12px">Прогоняем скрипт через <b style="color:var(--em)">AI-тренажёр</b>: Claude отыгрывает скептичного клиента нужного DISC-типа, а потом даёт обратную связь.</p>
+      <ul class="bl sm"><li>Оценка по 9 этапам, 0–100%</li><li>Где «просел» — конкретные блоки</li><li>3 рекомендации, что усилить</li><li>Повтор до автоматизма — без выгорания тренера</li></ul>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/bob_roleplay.png" alt=""></div>
+  </div>
+  <div class="value"><span>Вау-момент: <b>«мой скрипт уже продаёт»</b> — проверено роболевкой в тот же день.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Нейролевка</span></div>
+</section>
+
+<!-- 32 · ЧТО ТАКОЕ АРСЕНАЛ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 5 · Упаковка</span><h2 style="font-size:29px">Арсенал продавца — 6 слоёв</h2></div>
+  <div class="imgacc">
+    <div>
+      <div class="tiers">
+        <div class="tier"><div class="tl">1 · Рамка<span>смысл</span></div><div class="tv">Позиционирование + «продаём разрыв»</div></div>
+        <div class="tier"><div class="tl">2 · Скрипт<span>3 версии</span></div><div class="tv">10 блоков + квал + возражения + каскады</div></div>
+        <div class="tier"><div class="tl">3 · Инструмент<span>диагностика</span></div><div class="tv">ABCDE, карта навыков, денежный разрыв</div></div>
+        <div class="tier"><div class="tl">4 · Обучение<span>+ аттестация</span></div><div class="tv">Методичка, онбординг, ролевки</div></div>
+        <div class="tier"><div class="tl">5 · Касания<span>регламент</span></div><div class="tv">Дозвон + постсейл-прогрев</div></div>
+        <div class="tier" style="border-left-color:var(--em)"><div class="tl">6 · Библиотека<span>прогрев</span></div><div class="tv">Кейсы, гайды, видео под боли</div></div>
+      </div>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/bob_arsenal.png" alt=""></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>6 слоёв арсенала</span></div>
+</section>
+
+<!-- 33 · MVP vs РАСШИРЕННЫЙ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/bob_arsenal.png" alt="">
+  <span class="kicker">Блок 5 · Приоритет</span>
+  <h2 style="margin:10px 0 14px">Минимальный арсенал vs расширенный</h2>
+  <div class="two">
+    <div class="okbox">
+      <h3 style="font-size:16px;margin-bottom:7px">🟢 MVP — собери обязательно</h3>
+      <ul class="bl check" style="gap:6px"><li>Смысловая рамка</li><li>Скрипт: 10 блоков + 3 версии</li><li>Квал-вопросы (записывать дословно)</li><li>Банк возражений + каскады</li><li>Детальный разбор блоков (как произносить)</li><li>Мини-регламент касаний + 3–5 кейсов</li></ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <h3 style="font-size:16px;margin-bottom:7px">🔵 Расширенный — дальше</h3>
+      <ul class="bl sm" style="gap:6px"><li>Инструмент-диагностика (serverless + LLM)</li><li>Денежный слой (разрыв в рублях)</li><li>Полная система обучения + аттестация</li><li>Авто-прогрев (бот + cron) + дашборд</li><li>Сайт-арсенал с копи-скриптами</li></ul>
+    </div>
+  </div>
+  <div class="value"><span>Правило: каждый вопрос и материал <b>заранее «предзашит» в следующий шаг продажи</b> (принцип «зачем спрашиваем / как используем»).</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>MVP vs расширенный</span></div>
+</section>
+
+<!-- 34 · РЕГЛАМЕНТ КАСАНИЙ -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Блок 5 · Касания</span><h2 style="font-size:28px">Регламент дозвона и прогрева</h2></div>
+  <div class="imgacc shotcol">
+    <div>
+      <ul class="bl sm"><li>Первый звонок — <b>до 5 минут</b> после заявки</li><li>Дни 1–5: ~9–10 звонков + ~5 сообщений, мультиканал</li><li>Постсейл: 5 касаний (0 / +1 / +3 / +7 / +14)</li><li>Правило <b>5–7 касаний</b> до Lost</li></ul>
+      <div class="value tip" style="margin-top:12px"><span>Механика «<b>копировать скрипт</b>»: под каждый материал — готовый текст сообщения, менеджер не сочиняет.</span></div>
+    </div>
+    <div class="shot"><img src="img/implement-checklist.png" alt="чек-лист внедрения"><div class="shotcap">Чек-лист внедрения: обучение → контроль</div></div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Касания</span></div>
+</section>
+
+<!-- 35 · ОБУЧЕНИЕ + АТТЕСТАЦИЯ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Блок 5 · Воспроизводимость</span>
+  <h2 style="margin:10px 0 14px">Скрипт живёт только в <span class="hl">обучении</span></h2>
+  <div class="grid g3">
+    <div class="card"><span class="num">1</span><h3 style="font-size:16px">Онбординг ~2 недели</h3><p>Контекст → скрипт+инструмент+CRM → наблюдение эталонов → ролевки → под супервизией → сам+QA</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">2</span><h3 style="font-size:16px">Калибровки + ролевки</h3><p>Разбор блоков, прослушка эталонов, ≥5 ролевых игр</p></div>
+    <div class="card"><span class="num">3</span><h3 style="font-size:16px">Аттестация</h3><p>Теория ≥90% · ролевая по чек-листу (100 баллов, порог 80) · 10 боевых звонков</p></div>
+  </div>
+  <div class="value"><span>Иначе скрипт «отравляется команде под предлогом — прочитайте и используйте». <b>Скрипт продаётся и обучается команде.</b></span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Обучение · аттестация</span></div>
+</section>
+
+<!-- 36 · ЭТАЛОН АРСЕНАЛА -->
+<section class="slide slide--dark">
+  <img class="bobc" src="gen/bob/cut/bob_arsenal.png" alt="">
+  <span class="kicker">Блок 5 · Живой образец</span>
+  <h2 style="margin:10px 0 14px">Как собран <span class="gold">реальный арсенал</span></h2>
+  <p class="lead" style="font-size:17px;margin-bottom:14px">Арсенал карьерной консультации A-Players — на одной странице для команды:</p>
+  <div class="grid g3">
+    <div class="card"><span class="icon">📋</span><h3 style="font-size:16px">Регламент</h3><p>Вход для команды: правила, каденция дозвона, что фиксировать</p></div>
+    <div class="card"><span class="icon">🧰</span><h3 style="font-size:16px">Хаб материалов</h3><p>11 карточек с кнопкой «Копировать» — кейсы, гайды, подкаст</p></div>
+    <div class="card"><span class="icon">🏆</span><h3 style="font-size:16px">Кейсы</h3><p>Карточки «роль от → роль к» под скрин для клиента</p></div>
+  </div>
+  <div class="value"><span>Принцип: <b>материал + готовый скрипт + в какую боль бьёт.</b> Клиенту — только нужные материалы, не весь склад.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Эталон арсенала</span></div>
+</section>
+
+<!-- 37 · ИНСТРУМЕНТ ТРЕНАЖЁР -->
+<section class="slide slide--img" style="padding:42px 54px 38px">
+  <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:8px"><span class="tag">Инструменты</span><h2 style="font-size:29px">🥊 AI-тренажёр скриптов</h2></div>
+  <div class="imgacc">
+    <div>
+      <p class="lead" style="font-size:17px;margin-bottom:12px">Claude отыгрывает клиента и <b style="color:var(--em)">гоняет менеджера по скрипту до автоматизма</b> — без выгорания тренера.</p>
+      <ul class="bl sm"><li>Выбираешь сегмент (A/B/C) и DISC-тип клиента</li><li>Проходишь звонок в ролях</li><li>Оценка по 9 этапам + слабые блоки + 3 совета</li><li>Повторяешь, пока не «зелёный»</li></ul>
+    </div>
+    <div class="bobwrap"><img src="gen/bob/cut/bob_roleplay.png" alt=""></div>
+  </div>
+  <div class="value"><span>Тренажёр = мост к отделу контроля качества: те же критерии, по которым потом ИИ слушает 100% звонков.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>AI-тренажёр</span></div>
+</section>
+
+<!-- 38 · ИНСТРУМЕНТ СБОРЩИК -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/s25_build.png" alt="">
+  <span class="kicker">Инструменты</span>
+  <h2 style="margin:10px 0 12px">🤖 Скрипт-сборщик (Claude Project)</h2>
+  <div class="grid g3">
+    <div class="card" style="border-top:4px solid var(--em)"><span class="num">1</span><h3 style="font-size:17px">Плейбуки внутри</h3><p>CJM, ABC/DISC, ХПВ, возражения, каскады — уже в знаниях проекта</p></div>
+    <div class="card" style="border-top:4px solid var(--gold)"><span class="num">2</span><h3 style="font-size:17px">20 промптов тетради</h3><p>От CJM до сборки — по порядку, в одном чате</p></div>
+    <div class="card" style="border-top:4px solid var(--green)"><span class="num">3</span><h3 style="font-size:17px">Собирает и челленджит</h3><p>Генерит блоки скрипта из твоего контекста и проверяет их</p></div>
+  </div>
+  <div class="value"><span>Загружаешь опорные материалы один раз → получаешь <b>скрипт под свою нишу</b>, а не пишешь с нуля.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Скрипт-сборщик</span></div>
+</section>
+
+<!-- 39 · ДОМАШКА -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">Домашнее задание</span>
+  <h2 style="margin:10px 0 12px">Собери свой <span class="hl">продающий скрипт</span></h2>
+  <p class="lead" style="font-size:18px;margin-bottom:14px">Главный результат — заполненная рабочая тетрадь: CJM → AAARRR → 9 блоков → сборка → защита. 26 шагов, ~20 промптов, 3–6 часов.</p>
+  <div class="two">
+    <div class="okbox" style="padding:13px 17px">
+      <h3 style="font-size:16px;margin-bottom:7px">Что сдаёшь</h3>
+      <ul class="bl check" style="gap:7px"><li>CJM с прорисованными точками роста</li><li>AAARRR-разбор + топ-3 горлышка</li><li>Скрипт в 3 версиях (горячий/тёплый/холодный)</li><li>DISC-шпаргалка + готовность защитить</li></ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <h3 style="font-size:16px;margin-bottom:7px">Рабочая тетрадь</h3>
+      <p style="font-size:14.5px">Копируешь себе. Внутри — 26 шагов, промпты и чек-листы. Работай в одном чате с Claude.</p>
+      <div style="margin-top:10px;background:var(--em);border-radius:10px;padding:11px 14px"><a href="https://docs.google.com/spreadsheets/d/1FwfNw1sZuKA7Cstd-bXM1B7oALfxReOB_w-6SyltOOU/edit?usp=sharing" style="color:#fff;font-weight:700;font-size:14px;text-decoration:none">📗 Тетрадь «CJM + AAARRR + Скрипт» →</a></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Домашка</span></div>
+</section>
+
+<!-- 40 · МАРШРУТ ТЕТРАДИ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_point.png" alt="">
+  <span class="kicker">Домашка · маршрут тетради</span>
+  <h2 style="margin:10px 0 10px">26 шагов · 7 этапов</h2>
+  <div class="two">
+    <div class="steps">
+      <div class="step" style="padding:8px 14px"><span class="sn">0</span><div><div class="st" style="font-size:14px">Старт — 10 опорных материалов + системный промпт</div></div></div>
+      <div class="step" style="padding:8px 14px"><span class="sn">1</span><div><div class="st" style="font-size:14px">CJM — карта пути (промпт №2)</div></div></div>
+      <div class="step" style="padding:8px 14px"><span class="sn">2</span><div><div class="st" style="font-size:14px">CJM + AAARRR — горлышки и окна (№4)</div></div></div>
+      <div class="step" style="padding:8px 14px"><span class="sn">3</span><div><div class="st" style="font-size:14px">Подготовка: ABC · DISC · ордена · ХПВ · каскады · возражения (№6–11)</div></div></div>
+    </div>
+    <div class="steps">
+      <div class="step" style="padding:8px 14px"><span class="sn">4</span><div><div class="st" style="font-size:14px">Скрипт по 9 блокам (№12–20)</div></div></div>
+      <div class="step" style="padding:8px 14px"><span class="sn">5</span><div><div class="st" style="font-size:14px">Сборка + 3 версии + 3 теста качества (№21)</div></div></div>
+      <div class="step" style="padding:8px 14px;border:1.5px solid var(--gold)"><span class="sn">6</span><div><div class="st" style="font-size:14px">Защита + нейролевка (№25)</div></div></div>
+      <div class="step" style="padding:8px 14px"><span class="sn">7</span><div><div class="st" style="font-size:14px">Финальный чек-лист (~50 пунктов)</div></div></div>
+    </div>
+  </div>
+  <div class="value"><span>На каждом шаге тетрадь говорит: <b>что делаем · что грузим в Claude · что получаем.</b> Всё в одном чате — промпты опираются друг на друга.</span></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Маршрут</span></div>
+</section>
+
+<!-- 41 · ЧТО НА ВХОДЕ -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_book.png" alt="">
+  <span class="kicker">Домашка · Шаг 0</span>
+  <h2 style="margin:10px 0 12px">10 опорных материалов на входе</h2>
+  <div class="grid g4" style="gap:10px">
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Бриф компании</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">JTBD-сегментация</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Core-сегменты</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Конкуренты (топ-10)</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Отстройка (5 отличий)</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Tone of Voice</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Позиционирование</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Продукты + цены</h3></div>
+    <div class="card" style="padding:12px 14px"><h3 style="font-size:14px">Данные о воронке</h3></div>
+    <div class="card" style="padding:12px 14px;border:1.5px solid var(--gold)"><h3 style="font-size:14px">Кейсы + соцдоказ.</h3></div>
+  </div>
+  <div class="note-fallback" style="margin-top:14px;background:rgba(176,130,46,.1);border:1px solid rgba(176,130,46,.35);border-radius:12px;padding:12px 16px;font-size:14.5px">💡 <b style="color:var(--em)">Не готово 3+?</b> Этап 1 не запускай. Вернись ко второму ДЗ, где собирал материалы, или возьми <a href="https://docs.google.com/spreadsheets/d/181XqLUtKN0OwBJIotpg1z7SpcWfhuABp8NT2REPgFhY/edit" style="color:var(--gold-h);font-weight:800">тетрадь сбора опорных материалов →</a></div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Вход · 10 материалов</span></div>
+</section>
+
+<!-- 42 · КРИТЕРИИ + ЗАЩИТА -->
+<section class="slide">
+  <img class="bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+  <span class="kicker">Домашка · критерии</span>
+  <h2 style="margin:10px 0 14px">Что значит «сделано хорошо»</h2>
+  <div class="two">
+    <div class="okbox" style="padding:14px 18px">
+      <h3 style="font-size:16px;margin-bottom:8px">Критерии</h3>
+      <ul class="bl check" style="gap:8px"><li>Не один скрипт, а <b>3 версии</b> под сегменты</li><li>Каждый блок адаптирован под DISC</li><li>Есть ордена, опережающие возражения, каскады</li><li>Прошёл <b>нейролевку</b> ≥ порога</li></ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--gold)">
+      <h3 style="font-size:16px;margin-bottom:8px">Формат защиты</h3>
+      <p style="font-size:14.5px;line-height:1.45">Разбираем связку <b style="color:var(--em)">CJM → горлышки → блоки скрипта</b>, которые их расшивают. Вплоть до живой продажи-демо.</p>
+      <div class="value" style="margin-top:10px"><span>Готовность измеряется не «красивым документом», а <b>пониманием логики.</b></span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Критерии · защита</span></div>
+</section>
+
+<!-- 43 · ФИНАЛ -->
+<section class="slide slide--dark slide--title">
+  <svg class="bfield" preserveAspectRatio="none" style="opacity:.6;-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%);mask-image:linear-gradient(90deg,#000 0%,#000 20%,transparent 50%)"><rect width="100%" height="100%" fill="url(#p-va-d)"/></svg>
+  <img class="heroimg" src="gen/bob/cut/bob_arsenal.png" alt="">
+  <span class="kicker">Итог модуля</span>
+  <h1 style="font-size:52px;margin-top:14px">Скрипт, который<br><span class="gold">продаёт за вас</span></h1>
+  <p class="lead" style="margin-top:20px;max-width:720px">CJM → узкие места → 9 блоков → 3 версии → нейролевка → арсенал. Не «красивый документ», а инструмент, который отдаёшь менеджерам и который воспроизводимо приносит деньги.</p>
+  <div class="foot"><span class="brand"><img src="assets/logo-aplayers.png">Практикум A-Players</span><span>Скрипты · Activation</span></div>
+</section>
+
+</div>
+
+<div id="bar"></div>
+<div id="count"></div>
+<div class="hint">← →  ·  Space  ·  F — полный экран</div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+const bar=document.getElementById('bar'), count=document.getElementById('count');
+function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,k)=>s.classList.toggle('active',k===i));bar.style.width=((i+1)/slides.length*100)+'%';count.textContent=(i+1)+' / '+slides.length;}
+function next(){show(i+1)} function prev(){show(i-1)}
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();next()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev()}else if(e.key==='Home'){show(0)}else if(e.key==='End'){show(slides.length-1)}else if(e.key==='f'||e.key==='F'){document.documentElement.requestFullscreen?.()}});
+document.getElementById('stage').addEventListener('click',e=>{const r=document.getElementById('stage').getBoundingClientRect();(e.clientX-r.left)/r.width>0.5?next():prev();});
+function fit(){const s=Math.min(window.innerWidth/1280, window.innerHeight/720);document.getElementById('stage').style.transform=`translate(-50%,-50%) scale(${s})`;}
+window.addEventListener('resize',fit);
+const startAt=parseInt(location.hash.replace('#',''),10);
+fit(); show(Number.isFinite(startAt)&&startAt>0?startAt-1:0);
+</script>
+</body>
+</html>
