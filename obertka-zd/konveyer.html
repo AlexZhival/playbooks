@@ -1,0 +1,40 @@
+<!doctype html><html lang=ru><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><title>Конвейер обёртки — все слои</title><style>
+:root{--em:#12372A;--em2:#0F2A20;--gold:#B0822E;--bg:#FBF8F1;--card:#fff;--ink:#22302B;--line:#E7E0D2;--muted:#6B756F}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.65 -apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:46px 26px 90px}.brandbar{height:5px;background:linear-gradient(90deg,var(--em),var(--gold));border-radius:6px;margin-bottom:28px}
+h1{font-size:29px;line-height:1.2;color:var(--em2);margin:.2em 0 .3em;font-weight:800}
+h2{font-size:20px;color:var(--em);margin:1.6em 0 .5em;font-weight:800;border-bottom:2px solid var(--line);padding-bottom:6px}
+a{color:var(--gold);font-weight:600}strong{color:var(--em2)}
+blockquote{border-left:4px solid var(--gold);background:#FFF9EE;margin:1em 0;padding:12px 18px;border-radius:0 10px 10px 0;color:#5a4a28}
+.foot{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+.layer{display:flex;gap:16px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin:12px 0;box-shadow:0 2px 10px rgba(0,0,0,.04);text-decoration:none;color:inherit;transition:.15s}
+.layer:hover{border-color:var(--gold);box-shadow:0 8px 22px rgba(176,130,46,.14)}
+.num{flex:0 0 auto;width:46px;height:46px;border-radius:12px;background:var(--em);color:#fff;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center}
+.layer.opt .num{background:#B9B3A4}
+.lt{font-size:18px;font-weight:800;color:var(--em);margin:0 0 2px}
+.ld{font-size:14.5px;color:var(--muted);margin:0}
+.dl{display:inline-block;background:#12372A;color:#fff !important;border-radius:8px;padding:9px 17px;font-size:15px;font-weight:700;text-decoration:none;margin:4px 8px 4px 0}
+.dl:hover{background:#0F2A20}
+</style><script src="gate.js"></script><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"></head><body><div class=wrap><div class=brandbar></div>
+
+<h1>Конвейер обёртки — все слои</h1>
+<p>Каждый слой — отдельная инструкция с промптами и чек-листом. Идём строго по порядку: каждый следующий опирается на предыдущий. Метод любого слоя — <a href="algoritm-ai-domashki.html">Алгоритм AI-домашки</a>.</p>
+<blockquote>Два способа пройти конвейер: <strong>Вариант A</strong> — в Claude&nbsp;Code с готовым <code>CLAUDE.md</code> (ведёт сам); <strong>Вариант B</strong> — вручную по промптам из <a href="https://docs.google.com/spreadsheets/d/181XqLUtKN0OwBJIotpg1z7SpcWfhuABp8NT2REPgFhY/edit?gid=770699372#gid=770699372" target="_blank">рабочей тетради</a>. Подробнее — в <a href="dz-obyortka.html">домашнем задании</a>.</blockquote>
+
+<h2>Слои</h2>
+<a class="layer" href="konveyer-00.html"><div class="num">00</div><div><p class="lt">Как пользоваться конвейером</p><p class="ld">Глоссарий, правила загрузки материалов, 4 базовых промпта (Системный → Основной → Уточняющий → Финальный), мастер-промпт восстановления контекста.</p></div></a>
+<a class="layer" href="konveyer-01.html"><div class="num">01</div><div><p class="lt">Бриф компании</p><p class="ld">Кто мы, что продаём, кому, по чём, цифры. ≈200 вопросов — большинство закроют загруженные материалы; пробелы метятся 🔴 / 🟡.</p></div></a>
+<a class="layer" href="konveyer-02.html"><div class="num">02</div><div><p class="lt">Бриф эксперта</p><p class="ld">Личный бренд основателя — если продвижение идёт через человека, а не только компанию.</p></div></a>
+<a class="layer" href="konveyer-03.html"><div class="num">03</div><div><p class="lt">Конкуренты и отстройка</p><p class="ld">Кто рядом, чем отличаемся, за счёт чего усиливаем оффер. Запускать после готового брифа (+ Deep Research / Research).</p></div></a>
+<a class="layer" href="konveyer-04.html"><div class="num">04</div><div><p class="lt">JTBD, Core-сегменты и Value Proposition</p><p class="ld">Какую «работу» нанимают (функц./эмоц./соц. джобы, граф работ); 3–5 ядровых сегментов по чек-листу из 5 критериев; VPC — справа налево.</p></div></a>
+<a class="layer" href="konveyer-05.html"><div class="num">05</div><div><p class="lt">Tone of Voice и позиционирование</p><p class="ld">Как говорим — свой голос на каждый сегмент/бренд; одна фраза позиционирования.</p></div></a>
+<a class="layer" href="konveyer-07.html"><div class="num">07</div><div><p class="lt">Видение и миссия</p><p class="ld">Куда идём и зачем существуем — активно используется в найме сильных людей.</p></div></a>
+
+<h2>Отдельные модули (в эту домашку не входят)</h2>
+<a class="layer opt" href="konveyer-06.html"><div class="num">06</div><div><p class="lt">Прогрев и контент-план</p><p class="ld">Отдельный модуль — позже.</p></div></a>
+<a class="layer opt" href="konveyer-08.html"><div class="num">08</div><div><p class="lt">Онбординг и Завод A-Players</p><p class="ld">Отдельный большой модуль — не часть сборки обёртки.</p></div></a>
+
+<p style="margin-top:22px"><a class="dl" href="dz-obyortka.html">← К домашнему заданию</a><a class="dl" href="starter-obyortka.zip" download>⬇️ Стартовый набор</a></p>
+
+<div class=foot>A-PLAYERS · Pro Vibe Coding · конвейер обёртки</div>
+</div></body></html>
