@@ -1,0 +1,825 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Отдел контроля качества на AI · A-Players</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4F1EA; --bg2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056;
+    --line:#DCD4C2; --em:#143A2D; --gold:#B0822E; --gold-h:#977019; --gold2:#C79A45;
+    --green:#3E8E5E; --green-d:#2f7a4e; --red:#B23B2E; --amber:#C77A22;
+    --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{font-family:var(--sans);color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.5}
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 20px 70px}
+  a{color:var(--gold-h)}
+  h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:-.01em;margin:0}
+  .muted{color:var(--muted)}.em{color:var(--em)}.mono{font-variant-numeric:tabular-nums}
+  /* top bar */
+  .top{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .logo{width:38px;height:38px;border-radius:9px;background:var(--em);color:#F4EFE2;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:17px}
+  .top .t{font-family:var(--serif);font-weight:700;font-size:15px}
+  .top .s{font-size:12.5px;color:var(--muted)}
+  .nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+  .nav button{font-family:var(--sans);font-weight:700;font-size:13px;border:1.5px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:8px 13px;cursor:pointer;transition:.12s}
+  .nav button:hover{border-color:var(--em)}
+  .nav button.on{background:var(--em);color:#F1ECDD;border-color:var(--em)}
+  .nav button .b{display:inline-block;min-width:18px;padding:0 5px;margin-left:6px;background:var(--red);color:#fff;border-radius:9px;font-size:11px;font-weight:800}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 1px 0 #fff inset,0 10px 30px rgba(20,32,27,.05)}
+  .btn{font-family:var(--sans);font-weight:700;font-size:14px;border-radius:11px;padding:11px 16px;cursor:pointer;border:1.5px solid transparent;transition:.12s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+  .btn.primary{background:var(--gold);color:#1c1403;border-color:var(--gold-h)}.btn.primary:hover{background:var(--gold-h);color:#fff}
+  .btn.dark{background:var(--em);color:#F1ECDD}.btn.dark:hover{background:#0f2c22}
+  .btn.ghost{background:#fff;border-color:var(--line);color:var(--ink)}.btn.ghost:hover{border-color:var(--em)}
+  .btn.sm{padding:8px 12px;font-size:13px}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  input[type=text],input[type=password],textarea,select{font-family:var(--sans);font-size:14px;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;width:100%}
+  textarea{resize:vertical;line-height:1.5}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--em);box-shadow:0 0 0 3px rgba(20,58,45,.08)}
+  .field{margin-bottom:16px}
+  .lab{font-weight:700;font-size:13.5px;margin-bottom:8px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .lab .hint{font-weight:500;color:var(--muted);font-size:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .two{display:grid;gap:16px}@media(min-width:820px){.two{grid-template-columns:1fr 1fr}}
+  .three{display:grid;gap:12px}@media(min-width:720px){.three{grid-template-columns:1fr 1fr 1fr}}
+  .note{font-size:12.5px;color:var(--muted)}
+  hr.soft{border:none;border-top:1px solid var(--line);margin:20px 0}
+  .hero{padding:22px 26px;border-radius:16px 16px 0 0;background:linear-gradient(180deg,#173a2c,#143a2d);color:#EFEAD9}
+  .hero h1{color:#F6F2E6;font-size:23px;line-height:1.16}
+  .hero p{color:#CBD3C4;margin:.4rem 0 0;max-width:78ch;font-size:14px}
+  .hero .kick{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2);font-weight:700}
+  .body{padding:22px 26px 26px}
+  .screen{display:none}.screen.on{display:block}
+
+  /* stat tiles */
+  .stats{display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}
+  @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}}@media(max-width:520px){.stats{grid-template-columns:1fr}}
+  .stat{border-radius:14px;padding:15px 17px;border:1px solid var(--line);position:relative;overflow:hidden}
+  .stat .k{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;opacity:.85}
+  .stat .v{font-family:var(--serif);font-weight:700;font-size:40px;line-height:1;margin-top:8px}
+  .stat .sm2{font-size:12px;font-weight:600;opacity:.8;margin-top:4px}
+  .stat.calls{background:#F1F4F1}.stat.calls .v{color:var(--em)}
+  .stat.risk{background:#FBEFEC;border-color:#e9cfc8}.stat.risk .k{color:var(--red)}.stat.risk .v{color:var(--red)}
+  .stat.score{background:linear-gradient(160deg,#2f7a4e,#3E8E5E);border-color:transparent;color:#fff}.stat.score .k{color:#e7f3ea;opacity:1}.stat.score .v{color:#fff}
+  .stat.idx{background:linear-gradient(160deg,#B0822E,#977019);border-color:transparent;color:#fff}.stat.idx .k{color:#f6ecd6;opacity:1}.stat.idx .v{color:#fff}.stat.idx .sm2{color:#f6ecd6}
+  .tiles{display:grid;gap:11px;grid-template-columns:repeat(6,1fr);margin-top:16px}
+  @media(max-width:900px){.tiles{grid-template-columns:1fr 1fr 1fr}}
+  @media(max-width:520px){.tiles{grid-template-columns:1fr 1fr}}
+  .tile{border-radius:12px;padding:13px 14px;color:#fff;min-height:78px;display:flex;flex-direction:column;justify-content:space-between}
+  .tile .tn{font-size:12px;font-weight:700;line-height:1.15;opacity:.95}
+  .tile .tv{font-family:var(--serif);font-weight:700;font-size:26px}
+  .g-green{background:linear-gradient(160deg,#3E8E5E,#2f7a4e)}
+  .g-gold{background:linear-gradient(160deg,#C79A45,#B0822E)}
+  .g-red{background:linear-gradient(160deg,#C0503f,#B23B2E)}
+  .sub{font-size:13px;font-weight:700;color:var(--em);text-transform:uppercase;letter-spacing:.05em;margin:22px 0 10px;display:flex;align-items:center;gap:8px}
+
+  /* filters */
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .filters select,.filters input{width:auto;min-width:120px;padding:8px 10px;font-size:13px}
+  .filters .cnt{margin-left:auto;font-size:13px;color:var(--muted);font-weight:600}
+
+  /* dynamics */
+  .spark{display:flex;align-items:flex-end;gap:6px;height:80px;padding:6px 0;border-bottom:1px solid var(--line)}
+  .spark .col{flex:1;min-width:6px;border-radius:4px 4px 0 0;background:var(--em);opacity:.85;position:relative}
+  .spark .col:hover{opacity:1}
+
+  /* calls table */
+  .tbl{width:100%;border-collapse:collapse;font-size:13px}
+  .tbl th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;padding:8px 8px;border-bottom:1px solid var(--line)}
+  .tbl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+  .tbl tr:hover td{background:#fbf8f0}
+  .tbl .sc{font-weight:800;font-variant-numeric:tabular-nums}
+  .g{color:var(--green)}.a{color:var(--amber)}.r{color:var(--red)}
+  .risktag{color:var(--red);font-weight:800;font-size:11px}
+  .lnk{color:var(--gold-h);cursor:pointer;font-weight:700}
+  .mtag{display:inline-block;font-size:11px;font-weight:700;background:#EFE9D9;color:var(--em);border-radius:6px;padding:1px 6px;margin-right:5px}
+
+  /* report card */
+  .rc{max-width:820px;margin:0 auto}
+  .rc .head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;padding-bottom:14px;border-bottom:1px solid var(--line)}
+  .rc .head .nm{font-family:var(--serif);font-weight:700;font-size:18px}
+  .rc .head .meta{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .rc .head .acts{display:flex;gap:7px;flex-wrap:wrap}
+  .riskbox{background:#FBEFEC;border:1px solid #e9cfc8;border-radius:12px;padding:14px 16px;margin:16px 0}
+  .riskbox .rt{color:var(--red);font-weight:800;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+  .riskbox .rr{font-weight:700;margin-top:4px}
+  .okbox{background:#EAF1E8;border:1px solid #cfe1cd;border-radius:12px;padding:12px 16px;margin:16px 0;color:var(--green-d);font-weight:700}
+  .blk{margin:16px 0}
+  .blk .bt{font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--em);display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .badge{display:inline-block;font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px;background:#F6EFDD;color:var(--gold-h);border:1px solid var(--line)}
+  .cols2{display:grid;gap:16px}@media(min-width:640px){.cols2{grid-template-columns:1fr 1fr}}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:5px 9px}
+  .chip.err{border-color:#e9cfc8;background:#FBEFEC;color:var(--red)}
+  .chip.crit{background:#B23B2E;color:#fff;border-color:transparent;font-weight:700}
+  .stagerow{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+  .stagerow .sh{width:150px;flex:none}
+  .stagerow .snm{font-weight:700;font-size:13px}
+  .stagerow .ssc{font-family:var(--serif);font-weight:700;font-size:22px}
+  .stagerow .sc-note{font-size:13px}
+  .stagerow .rec{font-size:12.5px;color:var(--muted);font-style:italic;background:#F0F4EE;border-radius:8px;padding:6px 9px;margin-top:5px}
+  .ovbadge{background:var(--gold);color:#1c1403;font-weight:800;border-radius:8px;padding:5px 12px;font-size:15px}
+  .kv{display:flex;gap:8px;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line)}
+  .kv .kk{font-weight:700;min-width:150px;color:var(--em)}
+  .flag-ok{color:var(--green)}.flag-no{color:var(--red)}.flag-part{color:var(--amber)}
+
+  /* dozhim */
+  .funnel{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+  .fstep{flex:1;min-width:140px;border-radius:12px;padding:14px 16px;background:#fff;border:1px solid var(--line)}
+  .fstep .fn{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+  .fstep .fv{font-family:var(--serif);font-weight:700;font-size:30px;color:var(--em)}
+  .dcard{border:1px solid var(--line);border-left:3px solid var(--red);border-radius:0 12px 12px 0;background:#fff;padding:13px 16px;margin-bottom:10px}
+  .dcard .dh{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+  .dcard .who{font-weight:700}
+  .dcard .st{font-size:12px}
+  .dcard select{width:auto;padding:5px 8px;font-size:12px}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 16px;border-radius:11px;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:60;max-width:92vw;display:none}
+  .spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;display:inline-block;animation:sp .7s linear infinite;vertical-align:-2px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .empty{text-align:center;color:var(--muted);font-size:14px;padding:34px 0}
+  pre.tg{white-space:pre-wrap;background:#0f1c17;color:#e7efe9;border-radius:12px;padding:16px 18px;font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.55;max-height:420px;overflow:auto}
+  .modal{position:fixed;inset:0;background:rgba(15,25,20,.55);z-index:70;display:none;align-items:center;justify-content:center;padding:20px}
+  .modal.on{display:flex}
+  .modal .mc{background:var(--card);border-radius:16px;max-width:560px;width:100%;max-height:88vh;overflow:auto;padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo">AP</div>
+    <div>
+      <div class="t">A-Players · Отдел контроля качества на AI</div>
+      <div class="s">Разбор звонков · оценка по этапам · воронка дожима · Telegram-алерты</div>
+    </div>
+    <div class="nav" id="nav">
+      <button data-s="dash" class="on">📊 Дашборд</button>
+      <button data-s="analyze">🎧 Разобрать звонок</button>
+      <button data-s="touches">🗂 Касания / SLA <span class="b" id="touchBadge" style="display:none">0</span></button>
+      <button data-s="dozhim">🔥 Воронка дожима <span class="b" id="dozhimBadge" style="display:none">0</span></button>
+      <button data-s="setup">⚙ Настройка</button>
+    </div>
+  </div>
+
+  <!-- ===================== DASHBOARD ===================== -->
+  <section id="s-dash" class="screen on">
+    <div class="panel"><div class="body">
+      <div class="filters" id="filters">
+        <select id="fManager"><option value="">Все менеджеры</option></select>
+        <select id="fFunnel"><option value="">Все воронки</option></select>
+        <select id="fType"><option value="">Тип звонка</option></select>
+        <select id="fRisk"><option value="">Все звонки</option><option value="risk">Только риски</option><option value="ok">Без риска</option></select>
+        <select id="fScore"><option value="">Любой балл</option><option value="lt50">&lt; 50</option><option value="50-69">50–69</option><option value="ge70">≥ 70</option></select>
+        <span class="cnt" id="fCount">0 звонков</span>
+      </div>
+
+      <div class="stats">
+        <div class="stat idx"><div class="k">🏅 Индекс качества ОКК</div><div class="v" id="stIdx">—</div><div class="sm2" id="stIdxL">0–100 · балл + риски + касания/SLA</div></div>
+        <div class="stat calls"><div class="k">📞 Всего звонков</div><div class="v" id="stCalls">0</div><div class="sm2" id="stCallsL">разобрано</div></div>
+        <div class="stat risk"><div class="k">⚠️ Риски срыва</div><div class="v" id="stRisk">0</div><div class="sm2" id="stRiskL">на дожим</div></div>
+        <div class="stat score"><div class="k">🎯 Средний балл звонков</div><div class="v" id="stScore">—</div><div class="sm2">по 6 этапам</div></div>
+      </div>
+
+      <div class="sub">✓ Качество обработки — средние показатели по этапам</div>
+      <div class="tiles" id="tiles"></div>
+
+      <div class="sub">📈 Динамика общей оценки (по дням)</div>
+      <div class="spark" id="spark"></div>
+      <div class="note" id="sparkNote" style="margin-top:6px"></div>
+
+      <div class="sub">🧮 В предиктивную модель (влияние на деньги)</div>
+      <div class="three" id="predict"></div>
+
+      <div class="sub">👥 Рейтинг менеджеров</div>
+      <div style="overflow-x:auto"><table class="tbl" id="mgrTbl">
+        <thead><tr><th>Менеджер</th><th>Звонков</th><th>Ср. балл</th><th>Риски</th><th>👋</th><th>🔍</th><th>🔥</th><th>🎯</th><th>🛡</th><th>🏁</th><th>Слабое место</th></tr></thead>
+        <tbody id="mgrBody"></tbody>
+      </table></div>
+
+      <div class="sub">📋 Звонки <span id="tblCount" class="muted" style="font-weight:400;text-transform:none;letter-spacing:0;margin-left:6px"></span></div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="callsTbl">
+          <thead><tr>
+            <th>Дата / Менеджер</th><th>Воронка · этап</th><th>Оценка</th>
+            <th>👋</th><th>🔍</th><th>🔥</th><th>🎯</th><th>🛡</th><th>🏁</th>
+            <th>Результат / риск</th><th></th>
+          </tr></thead>
+          <tbody id="callsBody"></tbody>
+        </table>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ===================== ANALYZE ===================== -->
+  <section id="s-analyze" class="screen">
+    <div class="panel">
+      <div class="hero">
+        <div class="kick">Разбор звонка</div>
+        <h1>Вставь транскрипт звонка — ОКК оценит его по нашей методологии</h1>
+        <p>Транскрипт из Zoom / CRM / диктофона-бейджа. AI оценит по 6 этапам, найдёт критические ошибки и риск срыва, даст рекомендации по дожиму и, если нужно, соберёт Telegram-алерт.</p>
+      </div>
+      <div class="body">
+        <div class="two">
+          <div>
+            <div class="field"><div class="lab">Транскрипт звонка</div>
+              <textarea id="aTranscript" rows="14" placeholder="Вставь текст разговора. Желательно с ролями: «Менеджер: …», «Клиент: …».&#10;Если у тебя запись в Zoom — возьми авто-транскрипт Zoom и вставь сюда."></textarea>
+            </div>
+          </div>
+          <div>
+            <div class="two" style="grid-template-columns:1fr 1fr">
+              <div class="field"><div class="lab">Менеджер</div><input id="aManager" type="text" placeholder="ФИО менеджера"></div>
+              <div class="field"><div class="lab">Воронка</div><input id="aFunnel" type="text" placeholder="напр. Продажа / Карьерная консультация"></div>
+              <div class="field"><div class="lab">Тип звонка</div><input id="aType" type="text" placeholder="напр. первичный / повторный / дожим"></div>
+              <div class="field"><div class="lab">Этап сделки</div><input id="aStage" type="text" placeholder="напр. отправлено КП / квалификация"></div>
+              <div class="field"><div class="lab">Психотип клиента (DISC)</div>
+                <select id="aDisc"><option value="">— не задан —</option><option value="D">D · Доминант</option><option value="I">I · Инициативный</option><option value="S">S · Постоянный</option><option value="C">C · Тщательный</option></select>
+              </div>
+              <div class="field"><div class="lab">Сумма сделки</div><input id="aAmount" type="text" placeholder="напр. 300 000 ₽"></div>
+            </div>
+            <div class="field"><div class="lab">Ссылка на сделку (CRM) <span class="hint">необязательно</span></div><input id="aCrm" type="text" placeholder="https://…amocrm.ru/leads/detail/…"></div>
+            <div class="field"><div class="lab">Ссылка на запись звонка <span class="hint">необязательно</span></div><input id="aRec" type="text" placeholder="https://…/record.mp3"></div>
+          </div>
+        </div>
+        <div class="row" style="margin-top:6px;gap:12px">
+          <button id="analyzeBtn" class="btn primary">🎧 Разобрать звонок</button>
+          <button id="fillDemo" class="btn ghost sm">Вставить демо-транскрипт</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- report card -->
+    <div id="reportWrap" class="panel" style="display:none;margin-top:18px"><div class="body"><div class="rc" id="report"></div></div></div>
+  </section>
+
+  <!-- ===================== DOZHIM ===================== -->
+  <section id="s-dozhim" class="screen">
+    <div class="panel"><div class="body">
+      <div class="sub" style="margin-top:0">🔥 Воронка дожима — недожатые сделки, которые нашёл ОКК</div>
+      <div class="funnel" id="funnel"></div>
+      <div id="dozhimList"></div>
+    </div></div>
+  </section>
+
+  <!-- ===================== TOUCHES / SLA (TLT) ===================== -->
+  <section id="s-touches" class="screen">
+    <div class="panel"><div class="body">
+      <div class="sub" style="margin-top:0">🗂 Контроль касаний и SLA — кто недоработан по коммуникациям</div>
+      <div class="note" style="margin:-4px 0 14px">⚠️ Касание = звонок + текстовый комментарий в сделке. Сообщения из мессенджеров (Wazzup) могут не попадать в примечания Amo, поэтому «0 касаний» иногда означает «не зафиксировано», а не «реально не было».</div>
+      <div class="three" id="slaTiles" style="grid-template-columns:repeat(4,1fr)"></div>
+      <div class="filters" style="margin-top:16px">
+        <select id="tStage"><option value="">Все этапы</option></select>
+        <label class="note" style="font-weight:700">Касаний не более
+          <input id="tMax" type="text" value="2" style="width:60px;padding:6px 8px;margin-left:6px">
+        </label>
+        <label class="note" style="font-weight:700;display:flex;align-items:center;gap:5px"><input type="checkbox" id="tOnlyMax"> только с касаний ≤ N</label>
+        <label class="note" style="font-weight:700;display:flex;align-items:center;gap:5px"><input type="checkbox" id="tOpen" checked> только открытые</label>
+        <select id="tSort"><option value="touches">Сортировка: по касаниям ↑</option><option value="days">по дням в воронке ↓</option><option value="sla">по SLA взятия ↓</option></select>
+        <span class="cnt" id="tCount"></span>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl" id="touchTbl">
+          <thead><tr>
+            <th>Клиент</th><th>Воронка</th><th>Этап</th><th>Дата захода</th><th>Дней в воронке</th>
+            <th>Касаний</th><th>Взятие в работу</th><th>Регламент касаний</th><th>SLA этапа</th><th>Последнее касание</th>
+          </tr></thead>
+          <tbody id="touchBody"></tbody>
+        </table>
+      </div>
+    </div></div>
+  </section>
+
+  <!-- ===================== SETUP ===================== -->
+  <section id="s-setup" class="screen">
+    <div class="panel">
+      <div class="hero">
+        <div class="kick">Настройка · один раз</div>
+        <h1>Настрой ОКК под свой бизнес</h1>
+        <p>По этим материалам AI оценивает звонки. Чем точнее методология (скрипт, критические ошибки, ключевые фразы, каскады, причины отказа) — тем точнее оценка. Всё хранится только в этом браузере. По умолчанию заполнено под пример «Карьерная консультация A-Players» — замени на своё.</p>
+      </div>
+      <div class="body">
+        <div class="field"><div class="lab">Бизнес-профиль <span class="hint">сфера, продукт, средний чек, ЦА, tone of voice</span></div>
+          <textarea id="cProfile" rows="4"></textarea></div>
+        <div class="two">
+          <div class="field"><div class="lab">Скрипт / этапы <span class="hint">структура звонка</span></div><textarea id="cScript" rows="7"></textarea></div>
+          <div class="field"><div class="lab">Критические ошибки <span class="hint">с ~90% губят сделку → в воронку дожима</span></div><textarea id="cCritical" rows="7"></textarea></div>
+        </div>
+        <div class="two">
+          <div class="field"><div class="lab">Ключевые фразы <span class="hint">«фразы-убийцы», должны звучать</span></div><textarea id="cPhrases" rows="5"></textarea></div>
+          <div class="field"><div class="lab">Причины отказа <span class="hint">пометь дожимаемые</span></div><textarea id="cRefusals" rows="5"></textarea></div>
+        </div>
+        <div class="two">
+          <div class="field"><div class="lab">Продуктовый каскад</div><textarea id="cProdCascade" rows="4"></textarea></div>
+          <div class="field"><div class="lab">Финансовый каскад <span class="hint">порядок способов оплаты</span></div><textarea id="cFinCascade" rows="4"></textarea></div>
+        </div>
+        <div class="field"><div class="lab">Сегментация / доп. материалы <span class="hint">ABCDE, температуры, DISC-подсказки</span></div><textarea id="cSeg" rows="4"></textarea></div>
+        <hr class="soft">
+        <div class="two">
+          <div class="field"><div class="lab">Ключ Claude API <span class="hint">хранится только в браузере</span></div>
+            <div class="row"><input id="apikey" type="password" placeholder="sk-ant-api03-..." autocomplete="off" spellcheck="false" style="flex:1;min-width:220px">
+              <select id="model" style="width:auto"><option value="claude-opus-5">Opus 5 — точнее</option><option value="claude-sonnet-5">Sonnet 5 — быстрее</option><option value="claude-haiku-4-5">Haiku 4.5 — самый быстрый</option></select></div>
+            <div class="note" style="margin-top:7px">Ключ: <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a>.</div>
+          </div>
+          <div class="field"><div class="lab">Управление</div>
+            <div class="row">
+              <button id="saveCfg" class="btn dark sm">💾 Сохранить</button>
+              <button id="exportCfg" class="btn ghost sm">📤 Экспорт JSON</button>
+              <button id="importCfg" class="btn ghost sm">📥 Импорт JSON</button>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button id="clearCalls" class="btn ghost sm">🗑 Очистить историю звонков</button>
+              <button id="reseed" class="btn ghost sm">↩ Вернуть демо-данные</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+<div class="modal" id="tgModal"><div class="mc">
+  <div class="row" style="justify-content:space-between;margin-bottom:12px"><h3 style="font-size:16px">🚨 Telegram-алерт</h3><button class="btn ghost sm" onclick="document.getElementById('tgModal').classList.remove('on')">Закрыть</button></div>
+  <pre class="tg" id="tgText"></pre>
+  <div class="row" style="margin-top:12px"><button class="btn primary sm" id="tgCopy">📋 Скопировать</button></div>
+</div></div>
+
+<script>
+/* ===================================================================
+   A-Players · Отдел контроля качества на AI
+   =================================================================== */
+const API_URL="https://api.anthropic.com/v1/messages";
+const LS={key:"ap_okk_key",model:"ap_okk_model",cfg:"ap_okk_cfg",calls:"ap_okk_calls",seeded:"ap_okk_seeded",deals:"ap_okk_deals",dealsSeeded:"ap_okk_deals_seeded"};
+const $=id=>document.getElementById(id);
+function toast(t,ms=3000){const e=$("toast");e.innerHTML=t;e.style.display="block";clearTimeout(e._t);e._t=setTimeout(()=>e.style.display="none",ms);}
+function esc(s){return String(s==null?"":s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function clip(s,n){s=(s||"").trim();return s.length>n?s.slice(0,n)+"\n…(обрезано)":s;}
+
+const STAGES=[
+  {key:"greeting",emo:"👋",name:"Приветствие"},
+  {key:"needs",emo:"🔍",name:"Выявление потребности"},
+  {key:"pain",emo:"🔥",name:"Усиление боли"},
+  {key:"present",emo:"🎯",name:"Презентация (ХПВ)"},
+  {key:"objections",emo:"🛡",name:"Отработка возражений"},
+  {key:"closing",emo:"🏁",name:"Закрытие (след. шаг)"}
+];
+function scColor(v){return v>=70?"g":v>=50?"a":"r";}
+function scGrad(v){return v>=70?"g-green":v>=50?"g-gold":"g-red";}
+
+/* ---------- default config (пример: Карьерная консультация A-Players) ---------- */
+const DEFAULT_CFG={
+  profile:"A-Players Recruiting — международное рекрутинговое агентство + Академия. Продукт: Академия A-PLAYERS (доводим управленцев до уровня C-1). Средний чек 300 000 ₽, оплата 50/50. ЦА: наёмные управленцы (РОП, Head of Sales, КД). Формат продажи: карьерная консультация (КК) ~60 мин в Zoom. Tone of Voice: твёрдо, экспертно, из позиции силы, не «продавец курса».",
+  script:"9 этапов: 1) Приветствие + позиционирование агентства; 2) Установление контакта; 3) Программирование (формат, обещание результата); 4) Выявление потребностей + квалификация (цели/доход/барьеры); 5) Усиление боли (осознание разрыва — уровень + денежный разрыв, пауза); 6) Презентация ХПВ (характеристика→потребность→выгода, модули под разрыв + AI-такт); 7) Предзакрытие (шкала 10/10); 8) Отработка возражений (присоединение→логика→действие); 9) Закрытие (цена 300к, 50/50, FOMO, CTA, пауза после цены).",
+  critical:"— Питч без согласия клиента (пропущен шлагбаум).\n— Назвал цену раньше 10/10.\n— Пробежал разрыв без эмоции и паузы (нет WOW).\n— Позиция просящего / оправдывается за звонок.\n— Презентация характеристиками, а не ХПВ под боль.\n— Спор с клиентом / обесценивание.\n— Нет конкретного следующего шага в конце.\n— Не отправил разбор в Telegram (выпал из авто-прогрева).\n(≥1 критическая ошибка = сделка в воронку дожима.)",
+  phrases:"— «Разрыв — +[Z]₽/мес, который вы сейчас недозарабатываете».\n— «Вопрос не дойдёте ли, а сколько месяцев этого разрыва готовы ещё оплачивать».\n— «Александр лично ведёт каждый модуль и разбирает вашу домашку».\n— «Оплата 50/50: 50% на старте, 50% к 5-му занятию».\n— «Вы можете идти по плану сами — или показать, как закрыть быстрее?»",
+  refusals:"Дорого / нет денег (часто ложное — не донесли ценность) → ДОЖИМ.\nНадо подумать → ДОЖИМ.\nНадо посоветоваться → ДОЖИМ.\nНет времени учиться → ДОЖИМ.\nНедозвон после консультации (плохо пообщались) → ДОЖИМ.\nИнтересно другое направление.\nНе сейчас.",
+  prodCascade:"Академия целиком (300к) → 2–3 модуля под конкретный разрыв клиента → AI/вайбкодинг как усилитель. Не читать все 16 модулей.",
+  finCascade:"Приоритет: полная оплата → рассрочка 50/50 (50% старт, 50% к 5-му занятию) → компромисс. Якорная цена сначала без скидки.",
+  seg:"Сегменты по температуре: A горячий / B тёплый / C холодный (+ ABCDE управленца). DISC: D коротко/цифры, I кейсы/эмоции, S безопасно/гарантии, C факты/доказательства. Менеджер должен верно проставить сегмент — ОКК перепроверяет."
+};
+let cfg=Object.assign({},DEFAULT_CFG);
+
+/* ---------- seed demo calls ---------- */
+function daysAgoISO(d){const t=new Date();t.setDate(t.getDate()-d);t.setHours(10+((d*7)%8),(d*13)%60,0,0);return t.toISOString();}
+function mkStages(a){return STAGES.map((s,i)=>({key:s.key,name:s.name,score:a[i],note:""}));}
+function seedCalls(){
+  return [
+   {id:"c1",ts:daysAgoISO(1),manager:"Якшеева Елена",funnel:"Карьерная консультация",callType:"повторный",stage:"отправлено КП",disc:"C",amount:"300 000 ₽",
+    overall:70,risk:true,riskReason:"Не отработано возражение об ответственности, нет чёткого шага по основному продукту.",
+    result:"Клиент взял паузу из-за страха, конкретный шаг не назначен.",summary:"Менеджер актуализировал контекст, но не усилил боль и не назначил следующий шаг.",
+    recommendation:"Связаться в ближайшие 2 часа, усилить боль отсутствия решения и назначить конкретный слот.",
+    strengths:["Вежливость","Знание истории клиента","Быстрая реакция"],errors:["Не назначено время следующего контакта","Слабая реакция на серьёзное опасение клиента"],
+    clientQuestions:["Когда позвонит специалист?"],clientObjections:["Страх ответственности","Дорого"],negative:"Нет",
+    stages:mkStages([100,100,40,80,60,40]),criticalErrors:["Нет конкретного следующего шага"],keyPhrasesMissed:["Денежный разрыв +Z₽/мес"],keyPhrasesSaid:[],
+    productCascade:"частично",financialCascade:"нет",segment:"верно",discAdaptation:"Слишком быстрый темп для C-типа",
+    dozhim:{toDozhim:true,reason:"Возражение не закрыто, нет след. шага",who:"Менеджер",playbook:"Усилить боль + назначить слот"},status:"в работе",
+    devZone:["Структурная презентация решения, а не прайса"],learnRecs:["Модуль «Отработка возражений»"]},
+   {id:"c2",ts:daysAgoISO(1),manager:"Амелина Валерия",funnel:"Продажа",callType:"первичный",stage:"квалификация",disc:"D",amount:"300 000 ₽",
+    overall:38,risk:true,riskReason:"Питч без согласия, цена названа раньше ценности, нет разрыва.",
+    result:"Менеджер взял почту клиента и договорился о письме.",summary:"Слабое выявление, презентация характеристиками, назвал цену рано.",
+    recommendation:"Повторный звонок: сначала выявить боль и показать денежный разрыв, только потом цена.",
+    strengths:["Быстро вышел на ЛПР"],errors:["Цена до ценности","Нет усиления боли","Презентация фичами"],
+    clientQuestions:["Сколько стоит?"],clientObjections:["Дорого"],negative:"Нет",
+    stages:mkStages([60,40,0,20,0,60]),criticalErrors:["Цена раньше 10/10","Питч без согласия","Пробежал разрыв"],keyPhrasesMissed:["Денежный разрыв","Оплата 50/50"],keyPhrasesSaid:[],
+    productCascade:"нет",financialCascade:"нет",segment:"неверно",discAdaptation:"Не подстроился",
+    dozhim:{toDozhim:true,reason:"3 критические ошибки",who:"РОП/Тим-Лид",playbook:"Полный переразбор потребности"},status:"в работе",
+    devZone:["Выявление потребности","ХПВ-презентация"],learnRecs:["Модуль «Скрипты», «Выявление болей»"]},
+   {id:"c3",ts:daysAgoISO(2),manager:"Гвоздухина Екатерина",funnel:"Карьерная консультация",callType:"первичный",stage:"разбор разрыва",disc:"I",amount:"300 000 ₽",
+    overall:76,risk:false,riskReason:"",result:"Клиент прожил разрыв, согласился на питч, взял паузу на сутки.",summary:"Сильный разбор разрыва, хороший питч под боль, возражение по цене отработано частично.",
+    recommendation:"Дожать через кейс выпускника и дедлайн потока.",strengths:["Сильный WOW по деньгам","Диалоговый питч"],errors:["Возражение по цене закрыто не до конца"],
+    clientQuestions:["А есть рассрочка?"],clientObjections:["Надо подумать"],negative:"Нет",
+    stages:mkStages([100,100,80,85,60,70]),criticalErrors:[],keyPhrasesMissed:[],keyPhrasesSaid:["Денежный разрыв","Оплата 50/50"],
+    productCascade:"соблюдён",financialCascade:"частично",segment:"верно",discAdaptation:"Хорошо — кейсы и эмоции для I",
+    dozhim:{toDozhim:true,reason:"«Надо подумать» — тёплый",who:"Менеджер",playbook:"Кейс выпускника + дедлайн"},status:"дожат",
+    devZone:["Доводить возражение до 10/10"],learnRecs:["Модуль «Отработка возражений»"]},
+   {id:"c4",ts:daysAgoISO(3),manager:"Панова Анастасия",funnel:"Продажа",callType:"дожим",stage:"дожим",disc:"S",amount:"300 000 ₽",
+    overall:73,risk:true,riskReason:"Менеджер признал некомпетентность в вопросе клиента.",result:"Договорились созвониться повторно.",summary:"Хороший контакт, но провал в презентации ценности и неуверенность.",
+    recommendation:"Подготовить ответ на технический вопрос, вернуть уверенность.",strengths:["Тёплый контакт","Эмпатия"],errors:["Признал некомпетентность","Слабая презентация выгоды"],
+    clientQuestions:["Как именно поможете?"],clientObjections:["Не уверен в результате"],negative:"Нет",
+    stages:mkStages([100,100,40,85,30,80]),criticalErrors:["Обесценил экспертность"],keyPhrasesMissed:["Александр лично ведёт"],keyPhrasesSaid:[],
+    productCascade:"частично",financialCascade:"соблюдён",segment:"верно",discAdaptation:"Спокойный темп для S — ок",
+    dozhim:{toDozhim:true,reason:"Не уверен в результате",who:"Менеджер",playbook:"Кейсы + гарантии, вернуть экспертность"},status:"в работе",
+    devZone:["Уверенная презентация ценности"],learnRecs:["Модуль «Ключевые фразы»"]},
+   {id:"c5",ts:daysAgoISO(4),manager:"Гвоздухина Екатерина",funnel:"Карьерная консультация",callType:"первичный",stage:"закрытие",disc:"D",amount:"300 000 ₽",
+    overall:88,risk:false,riskReason:"",result:"Внёс предоплату, забронировал место в потоке.",summary:"Эталонный звонок: разрыв прожит, 10/10 достигнут, цена подана уверенно, пауза выдержана.",
+    recommendation:"Отправить договор и подготовительные материалы.",strengths:["Разрыв прожит эмоционально","10/10 перед ценой","Уверенная подача цены и пауза"],errors:[],
+    clientQuestions:["Когда старт потока?"],clientObjections:[],negative:"Нет",
+    stages:mkStages([100,100,90,90,85,90]),criticalErrors:[],keyPhrasesMissed:[],keyPhrasesSaid:["Денежный разрыв","Оплата 50/50","Вы можете сами — или быстрее"],
+    productCascade:"соблюдён",financialCascade:"соблюдён",segment:"верно",discAdaptation:"Коротко и по делу для D — отлично",
+    dozhim:{toDozhim:false,reason:"",who:"",playbook:""},status:"",
+    devZone:[],learnRecs:[]},
+   {id:"c6",ts:daysAgoISO(5),manager:"Сорокина Татьяна",funnel:"Продажа",callType:"первичный",stage:"квалификация",disc:"C",amount:"300 000 ₽",
+    overall:56,risk:true,riskReason:"Слабое выявление, недозвон после первой консультации.",result:"Квалифицировал клиента, выявил базовую потребность.",summary:"Средний звонок, не докрутил боль и не назначил чёткий шаг.",
+    recommendation:"Проверить регламент касаний, вернуть в работу через полезный контент.",strengths:["Базовая квалификация"],errors:["Слабое усиление боли","Нет FOMO"],
+    clientQuestions:["Что входит в программу?"],clientObjections:["Нет времени"],negative:"Нет",
+    stages:mkStages([85,60,20,40,50,70]),criticalErrors:["Недозвон после консультации"],keyPhrasesMissed:["Денежный разрыв"],keyPhrasesSaid:[],
+    productCascade:"частично",financialCascade:"частично",segment:"верно",discAdaptation:"Мало фактов для C",
+    dozhim:{toDozhim:true,reason:"Недозвон после консультации",who:"Менеджер",playbook:"Регламент касаний + полезный контент"},status:"в работе",
+    devZone:["Усиление боли","FOMO"],learnRecs:["Модуль «Выявление болей»"]}
+  ];
+}
+
+/* ---------- storage ---------- */
+function getCalls(){try{return JSON.parse(localStorage.getItem(LS.calls)||"null")||[];}catch(_){return[];}}
+function saveCalls(c){localStorage.setItem(LS.calls,JSON.stringify(c.slice(-200)));}
+function ensureSeed(){ if(localStorage.getItem(LS.seeded)!=="1"){ saveCalls(seedCalls()); localStorage.setItem(LS.seeded,"1"); } }
+function loadCfg(){try{const c=JSON.parse(localStorage.getItem(LS.cfg)||"null");if(c)cfg=Object.assign({},DEFAULT_CFG,c);}catch(_){}
+  $("cProfile").value=cfg.profile||"";$("cScript").value=cfg.script||"";$("cCritical").value=cfg.critical||"";$("cPhrases").value=cfg.phrases||"";
+  $("cRefusals").value=cfg.refusals||"";$("cProdCascade").value=cfg.prodCascade||"";$("cFinCascade").value=cfg.finCascade||"";$("cSeg").value=cfg.seg||"";
+  $("apikey").value=localStorage.getItem(LS.key)||"";$("model").value=localStorage.getItem(LS.model)||"claude-opus-5";}
+function collectCfg(){cfg={profile:$("cProfile").value.trim(),script:$("cScript").value.trim(),critical:$("cCritical").value.trim(),phrases:$("cPhrases").value.trim(),refusals:$("cRefusals").value.trim(),prodCascade:$("cProdCascade").value.trim(),finCascade:$("cFinCascade").value.trim(),seg:$("cSeg").value.trim()};}
+$("saveCfg").onclick=()=>{collectCfg();localStorage.setItem(LS.cfg,JSON.stringify(cfg));localStorage.setItem(LS.key,$("apikey").value.trim());localStorage.setItem(LS.model,$("model").value);toast("Настройка сохранена ✓");};
+$("model").addEventListener("change",()=>localStorage.setItem(LS.model,$("model").value));
+$("apikey").addEventListener("change",()=>localStorage.setItem(LS.key,$("apikey").value.trim()));
+$("exportCfg").onclick=()=>{collectCfg();const j=JSON.stringify(cfg,null,2);navigator.clipboard.writeText(j).then(()=>toast("Конфиг скопирован ✓"),()=>prompt("Конфиг:",j));};
+$("importCfg").onclick=()=>{const r=prompt("Вставь конфиг JSON:");if(!r)return;try{let t=r.trim().replace(/^```(json)?/i,"").replace(/```$/,"");const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a>=0)t=t.slice(a,b+1);cfg=Object.assign({},DEFAULT_CFG,JSON.parse(t));loadCfg();toast("Загружено ✓ — проверь и сохрани");}catch(e){toast("Не удалось разобрать JSON");}};
+$("clearCalls").onclick=()=>{if(confirm("Очистить всю историю звонков?")){saveCalls([]);refreshAll();toast("История очищена");}};
+$("reseed").onclick=()=>{if(confirm("Вернуть демо-данные? Текущая история будет заменена.")){saveCalls(seedCalls());localStorage.setItem(LS.deals,JSON.stringify(seedDeals()));refreshAll();toast("Демо-данные восстановлены");}};
+
+/* ---------- Claude ---------- */
+async function callClaude({system,messages,max_tokens,effort}){
+  const key=($("apikey").value||"").trim();if(!key)throw new Error("no-key");
+  const model=$("model").value;
+  const body={model,max_tokens,system:[{type:"text",text:system,cache_control:{type:"ephemeral"}}],messages};
+  if(effort&&(model==="claude-opus-5"||model==="claude-sonnet-5"))body.output_config={effort};
+  const res=await fetch(API_URL,{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok||data.type==="error"){const m=(data.error&&data.error.message)||("HTTP "+res.status);const e=new Error(m);e.status=res.status;e.etype=data.error&&data.error.type;throw e;}
+  if(data.stop_reason==="refusal")throw new Error("Модель отклонила запрос.");
+  return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+}
+function errText(e){if(e.message==="no-key")return "Не указан ключ Claude API — вкладка «Настройка».";if(e.status===401)return "Неверный ключ Claude API (401).";if(e.status===429)return "Слишком много запросов (429).";if(e.status===400)return "Запрос отклонён (400): "+e.message;if(/Failed to fetch|NetworkError/i.test(e.message))return "Нет связи с api.anthropic.com. Открой в Chrome, проверь интернет.";return e.message||"Ошибка.";}
+function parseJSON(s){let t=s.trim().replace(/^```(json)?/i,"").replace(/```$/,"").trim();const a=t.indexOf("{"),b=t.lastIndexOf("}");if(a>=0&&b>a)t=t.slice(a,b+1);return JSON.parse(t);}
+
+/* ---------- analysis prompt ---------- */
+function buildAnalysisSystem(){
+  return [
+"Ты — AI-аналитик отдела контроля качества A-Players. По транскрипту разбери звонок менеджера с клиентом и оцени ТОЛЬКО работу МЕНЕДЖЕРА (не клиента). Будь строгим, предметным, ссылайся на реальные реплики. Учитывай указанный этап сделки и психотип клиента (DISC) — оценка и рекомендации адаптируются под них. Разбор развивающий: оценка + что и как исправить + рекомендации по дожиму.",
+"",
+"МЕТОДОЛОГИЯ КОМПАНИИ:",
+"Профиль: "+clip(cfg.profile,1500),
+"Скрипт/этапы: "+clip(cfg.script,2000),
+"Критические ошибки (каждая ≈90% губит сделку → сделка в воронку дожима): "+clip(cfg.critical,2000),
+"Ключевые фразы (должны звучать): "+clip(cfg.phrases,1500),
+"Продуктовый каскад: "+clip(cfg.prodCascade,800),
+"Финансовый каскад: "+clip(cfg.finCascade,800),
+"Причины отказа (пометки дожима): "+clip(cfg.refusals,1200),
+"Сегментация/DISC: "+clip(cfg.seg,1200),
+"",
+"ОЦЕНИ по 6 этапам, каждый 0–100: greeting (Приветствие/контакт), needs (Выявление потребности/квалификация), pain (Усиление боли/осознание разрыва), present (Презентация ХПВ — выгоды под боль, не характеристики), objections (Отработка возражений — присоединение→логика→действие), closing (Закрытие/чёткий следующий шаг). Общая оценка overall 0–100 — взвешенная (present, objections, closing весомее).",
+"RISK (риск срыва сделки) = true, если: overall < 60, ИЛИ есть ≥1 критическая ошибка, ИЛИ нет конкретного следующего шага, ИЛИ ключевое возражение не закрыто.",
+"",
+"Верни СТРОГО один валидный JSON и больше ничего:",
+'{',
+'  "overall": <int 0..100>,',
+'  "risk": <true|false>,',
+'  "riskReason": "<если risk — 1 фраза почему; иначе пусто>",',
+'  "callType": "<тип звонка одним словом/фразой>",',
+'  "result": "<итог звонка: чем закончился, 1-2 фразы>",',
+'  "summary": "<резюме разговора 2-4 фразы>",',
+'  "recommendation": "<главное действие в ближайшее время, 1-2 фразы>",',
+'  "strengths": ["<сильная сторона>", ...],',
+'  "errors": ["<ошибка менеджера>", ...],',
+'  "clientQuestions": ["<вопрос клиента>", ...],',
+'  "clientObjections": ["<возражение клиента>", ...],',
+'  "negative": "<Да/Нет + пояснение про негатив клиента>",',
+'  "stages": [ {"key":"greeting","name":"Приветствие","score":<int>,"note":"<оценка и рекомендация 1-2 фразы>"}, ... ровно 6 в порядке greeting,needs,pain,present,objections,closing ],',
+'  "criticalErrors": ["<найденная критическая ошибка>", ...],',
+'  "keyPhrasesSaid": ["<ключевая фраза, которая прозвучала>", ...],',
+'  "keyPhrasesMissed": ["<ключевая фраза, которую НЕ сказали>", ...],',
+'  "productCascade": "соблюдён|частично|нет — <короткая заметка>",',
+'  "financialCascade": "соблюдён|частично|нет — <короткая заметка>",',
+'  "segment": "<оценка корректности сегмента/квалификации>",',
+'  "discAdaptation": "<насколько менеджер подстроился под психотип>",',
+'  "dozhim": {"toDozhim": <true|false>, "reason":"<почему в дожим>", "who":"Менеджер|РОП/Тим-Лид", "playbook":"<как дожимать 1-2 фразы>"},',
+'  "devZone": ["<зона развития менеджера>", ...],',
+'  "learnRecs": ["<что изучить / какой материал>", ...]',
+'}',
+"Всё на русском."
+  ].join("\n");
+}
+function buildAnalysisUser(){
+  const meta=[
+    "Менеджер: "+($("aManager").value.trim()||"—"),
+    "Воронка: "+($("aFunnel").value.trim()||"—"),
+    "Тип звонка: "+($("aType").value.trim()||"—"),
+    "Этап сделки: "+($("aStage").value.trim()||"—"),
+    "Психотип клиента (DISC): "+($("aDisc").value||"не задан"),
+    "Сумма сделки: "+($("aAmount").value.trim()||"—")
+  ].join("\n");
+  return meta+"\n\nТРАНСКРИПТ ЗВОНКА:\n"+$("aTranscript").value.trim();
+}
+
+let busy=false;
+$("analyzeBtn").onclick=analyze;
+function reportStatus(html){$("reportWrap").style.display="block";$("report").innerHTML='<div class="rc">'+html+'</div>';$("reportWrap").scrollIntoView({behavior:"smooth"});}
+async function analyze(){
+  if(busy)return;
+  if(!$("aTranscript").value.trim()){toast("Вставь транскрипт звонка");return;}
+  if(!($("apikey").value||"").trim()){reportStatus('<div class="riskbox"><div class="rt">⚠ Нужен ключ Claude API</div><div class="rr">Открой вкладку «⚙ Настройка», вставь ключ <span class="mono">sk-ant-…</span> и «Сохранить». Ключ: console.anthropic.com → API Keys.</div></div><div style="margin-top:12px"><button class="btn ghost sm" onclick="go(\'setup\')">Открыть настройку</button></div>');return;}
+  collectCfg();
+  const btn=$("analyzeBtn");btn.disabled=true;btn.innerHTML='<span class="spin"></span>Разбираю звонок…';busy=true;
+  reportStatus('<div style="text-align:center;padding:34px 20px;color:var(--muted);font-size:15px">⏳ Разбираю звонок по методологии ОКК…<div class="note" style="margin-top:6px">Обычно 10–30 секунд. Opus точнее, Haiku быстрее (вкладка «Настройка»).</div></div>');
+  try{
+    const raw=await callClaude({system:buildAnalysisSystem(),messages:[{role:"user",content:buildAnalysisUser()}],max_tokens:8000,effort:"medium"});
+    const r=parseJSON(raw);
+    const call={
+      id:"c"+Date.now(),ts:new Date().toISOString(),
+      manager:$("aManager").value.trim()||"Без имени",funnel:$("aFunnel").value.trim()||"—",
+      callType:r.callType||$("aType").value.trim()||"—",stage:$("aStage").value.trim()||"—",
+      disc:$("aDisc").value||"",amount:$("aAmount").value.trim()||"",crm:$("aCrm").value.trim()||"",rec:$("aRec").value.trim()||"",
+      overall:clampN(r.overall),risk:!!r.risk,riskReason:r.riskReason||"",result:r.result||"",summary:r.summary||"",recommendation:r.recommendation||"",
+      strengths:arr(r.strengths),errors:arr(r.errors),clientQuestions:arr(r.clientQuestions),clientObjections:arr(r.clientObjections),negative:r.negative||"—",
+      stages:normStages(r.stages),criticalErrors:arr(r.criticalErrors),keyPhrasesSaid:arr(r.keyPhrasesSaid),keyPhrasesMissed:arr(r.keyPhrasesMissed),
+      productCascade:r.productCascade||"",financialCascade:r.financialCascade||"",segment:r.segment||"",discAdaptation:r.discAdaptation||"",
+      dozhim:r.dozhim||{toDozhim:false},status:(r.dozhim&&r.dozhim.toDozhim)?"в работе":"",devZone:arr(r.devZone),learnRecs:arr(r.learnRecs)
+    };
+    const calls=getCalls();calls.push(call);saveCalls(calls);
+    renderReport(call,true);refreshAll();
+    toast("Звонок разобран ✓");
+  }catch(e){
+    const isSyn=e instanceof SyntaxError;
+    reportStatus('<div class="riskbox"><div class="rt">⚠ Не удалось разобрать</div><div class="rr">'+esc(isSyn?"Модель вернула ответ не в формате JSON.":errText(e))+'</div></div>'+
+      (isSyn?'<div class="note" style="margin-top:8px">Попробуй ещё раз, либо переключи модель на Sonnet/Haiku во вкладке «Настройка».</div>':'')+
+      '<div style="margin-top:12px"><button class="btn primary sm" onclick="analyze()">↻ Повторить</button></div>');
+    toast(errText(e),5000);
+  }
+  finally{busy=false;btn.disabled=false;btn.textContent="🎧 Разобрать звонок";}
+}
+window.analyze=analyze;
+function clampN(v){v=parseInt(v,10);return isNaN(v)?0:Math.max(0,Math.min(100,v));}
+function arr(a){return Array.isArray(a)?a.filter(x=>x&&String(x).trim()):[];}
+function normStages(s){const by={};(Array.isArray(s)?s:[]).forEach(x=>{if(x&&x.key)by[x.key]=x;});return STAGES.map(st=>{const f=by[st.key]||{};return{key:st.key,name:st.name,score:clampN(f.score),note:f.note||""};});}
+
+/* ---------- render report card ---------- */
+function fmtDate(iso){try{const d=new Date(iso);return d.toLocaleDateString("ru-RU")+" "+d.toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"});}catch(_){return iso;}}
+function renderReport(c,scroll){
+  const el=$("report");
+  const stageRows=c.stages.map((s,i)=>{const col=scColor(s.score);const emo=STAGES[i].emo;return '<div class="stagerow"><div class="sh"><div class="snm">'+emo+' '+esc(s.name)+'</div><div class="ssc '+col+'">'+s.score+'<span class="muted" style="font-size:13px">/100</span></div></div><div class="sc-note">'+(s.note?esc(s.note):'—')+'</div></div>';}).join("");
+  const chips=(a,cls)=>a.length?('<div class="chips">'+a.map(x=>'<span class="chip '+(cls||'')+'">'+esc(x)+'</span>').join("")+'</div>'):'<div class="muted" style="font-size:13px">—</div>';
+  const li=a=>a.length?('<ul style="margin:4px 0;padding-left:18px;font-size:13.5px">'+a.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>'):'<div class="muted" style="font-size:13px">—</div>';
+  const flag=v=>{const t=(v||"").toLowerCase();const cls=t.startsWith("соблюд")?"flag-ok":t.startsWith("част")?"flag-part":t.startsWith("нет")?"flag-no":"";return '<span class="'+cls+'">'+esc(v||"—")+'</span>';};
+  el.innerHTML=
+    '<div class="head"><div><div class="nm">'+esc(c.manager)+'</div><div class="meta">'+fmtDate(c.ts)+' · '+esc(c.funnel)+' — '+esc(c.stage)+(c.amount?(' · '+esc(c.amount)):'')+(c.disc?(' · DISC '+esc(c.disc)):'')+'</div></div>'+
+      '<div class="acts">'+(c.crm?'<a class="btn ghost sm" href="'+esc(c.crm)+'" target="_blank" rel="noopener">CRM</a>':'')+(c.rec?'<a class="btn ghost sm" href="'+esc(c.rec)+'" target="_blank" rel="noopener">🎧 Звонок</a>':'')+
+        '<button class="btn dark sm" onclick="showTG(\''+c.id+'\')">🚨 Telegram-алерт</button><button class="btn ghost sm" onclick="dlCard(\''+c.id+'\')">⬇ Скачать</button></div></div>'+
+    (c.risk?('<div class="riskbox"><div class="rt">⚠ Риск срыва сделки <span class="badge" style="background:#fff">Тип: '+esc(c.callType||"—")+'</span></div><div class="rr">'+esc(c.riskReason)+'</div></div>')
+           :('<div class="okbox">✓ Риска срыва нет · тип звонка: '+esc(c.callType||"—")+'</div>'))+
+    '<div class="blk"><div class="bt">🎯 Результат звонка</div>'+esc(c.result||"—")+'</div>'+
+    '<div class="blk"><div class="bt">💡 Рекомендация</div>'+esc(c.recommendation||"—")+'</div>'+
+    '<div class="blk"><div class="bt">📝 Резюме разговора</div>'+esc(c.summary||"—")+'</div>'+
+    '<div class="cols2"><div class="blk"><div class="bt" style="color:var(--green)">👍 Сильные стороны</div>'+chips(c.strengths)+'</div>'+
+      '<div class="blk"><div class="bt" style="color:var(--red)">⚠ Ошибки</div>'+chips(c.errors,"err")+'</div></div>'+
+    (c.criticalErrors.length?('<div class="blk"><div class="bt" style="color:var(--red)">🛑 Критические ошибки</div>'+chips(c.criticalErrors,"crit")+'</div>'):'')+
+    '<div class="cols2"><div class="blk"><div class="bt">❓ Вопросы клиента</div>'+chips(c.clientQuestions)+'</div>'+
+      '<div class="blk"><div class="bt">🧱 Возражения клиента</div>'+chips(c.clientObjections)+'</div></div>'+
+    '<div class="blk"><div class="bt">📊 Оценка этапов продаж <span class="ovbadge" style="margin-left:8px">Оценка: '+c.overall+'/100</span></div>'+stageRows+'</div>'+
+    '<div class="blk"><div class="bt">🧩 Контроль по блокам</div>'+
+      '<div class="kv"><span class="kk">Продуктовый каскад</span>'+flag(c.productCascade)+'</div>'+
+      '<div class="kv"><span class="kk">Финансовый каскад</span>'+flag(c.financialCascade)+'</div>'+
+      '<div class="kv"><span class="kk">Сегмент / квалификация</span><span>'+esc(c.segment||"—")+'</span></div>'+
+      '<div class="kv"><span class="kk">Адаптация под DISC</span><span>'+esc(c.discAdaptation||"—")+'</span></div>'+
+      '<div class="kv"><span class="kk">Ключевые фразы сказаны</span>'+(c.keyPhrasesSaid.length?'<span class="flag-ok">'+esc(c.keyPhrasesSaid.join("; "))+'</span>':'<span class="muted">—</span>')+'</div>'+
+      '<div class="kv"><span class="kk">Ключевые фразы упущены</span>'+(c.keyPhrasesMissed.length?'<span class="flag-no">'+esc(c.keyPhrasesMissed.join("; "))+'</span>':'<span class="muted">—</span>')+'</div>'+
+    '</div>'+
+    (c.dozhim&&c.dozhim.toDozhim?('<div class="blk"><div class="bt" style="color:var(--red)">🔥 В воронку дожима</div><div class="kv"><span class="kk">Причина</span><span>'+esc(c.dozhim.reason||"")+'</span></div><div class="kv"><span class="kk">Кто дожимает</span><span>'+esc(c.dozhim.who||"")+'</span></div><div class="kv"><span class="kk">Как дожимать</span><span>'+esc(c.dozhim.playbook||"")+'</span></div></div>'):'')+
+    '<div class="cols2"><div class="blk"><div class="bt">📈 Зона развития менеджера</div>'+li(c.devZone)+'</div>'+
+      '<div class="blk"><div class="bt">📚 Что изучить</div>'+li(c.learnRecs)+'</div></div>';
+  $("reportWrap").style.display="block";
+  if(scroll)$("reportWrap").scrollIntoView({behavior:"smooth"});
+}
+function findCall(id){return getCalls().find(c=>c.id===id);}
+
+/* ---------- Telegram alert ---------- */
+function tgText(c){
+  const dur=c.duration||"—";
+  const line=STAGES.map((s,i)=>s.emo+(c.stages[i]?c.stages[i].score:0)).join(" · ");
+  return "🚨 РИСК СРЫВА СДЕЛКИ\n\n"+
+    "👤 "+c.manager+" · "+c.funnel+" · "+c.stage+"\n"+
+    "📅 "+fmtDate(c.ts)+(c.amount?(" · "+c.amount):"")+"\n"+
+    (c.crm?("🔗 Сделка: "+c.crm+"\n"):"")+
+    (c.rec?("🎧 Звонок: "+c.rec+"\n"):"")+
+    "\n━━━━━━━━━━━━\n\n"+
+    "⚠️ Почему риск: "+(c.riskReason||"—")+"\n\n"+
+    "💬 Итог: "+(c.result||"—")+"\n\n"+
+    "❌ Ошибки: "+(c.errors.length?c.errors.join(". "):"—")+"\n\n"+
+    "━━━━━━━━━━━━\n\n"+
+    "📊 Оценка: "+c.overall+"\n\n"+
+    line+"\n\n"+
+    "━━━━━━━━━━━━\n\n"+
+    "✅ Что делать:\n"+(c.recommendation||"—")+
+    (c.dozhim&&c.dozhim.playbook?("\n"+c.dozhim.playbook):"");
+}
+window.showTG=function(id){const c=findCall(id);if(!c)return;$("tgText").textContent=tgText(c);$("tgModal").classList.add("on");};
+$("tgCopy").onclick=()=>{navigator.clipboard.writeText($("tgText").textContent).then(()=>toast("Скопировано ✓"),()=>toast("Не удалось"));};
+
+/* ---------- download card ---------- */
+window.dlCard=function(id){const c=findCall(id);if(!c)return;
+  const html=cardHTML(c);const blob=new Blob([html],{type:"text/html;charset=utf-8"});const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download="Карточка звонка — "+c.manager+" "+new Date(c.ts).toISOString().slice(0,10)+".html";document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},400);};
+function cardHTML(c){
+  const rows=c.stages.map((s,i)=>{const col=s.score>=70?"#3E8E5E":s.score>=50?"#B0822E":"#B23B2E";return '<tr><td style="padding:8px;border-bottom:1px solid #eee"><b>'+STAGES[i].emo+' '+esc(s.name)+'</b></td><td style="padding:8px;border-bottom:1px solid #eee;color:'+col+';font-weight:800">'+s.score+'/100</td><td style="padding:8px;border-bottom:1px solid #eee">'+esc(s.note||"")+'</td></tr>';}).join("");
+  return '<!doctype html><meta charset="utf-8"><title>Карточка звонка</title><body style="font-family:Manrope,system-ui,sans-serif;max-width:820px;margin:0 auto;padding:26px;color:#16201B;background:#F4F1EA"><div style="background:#143A2D;color:#EFEAD9;border-radius:14px;padding:18px 22px"><div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#C79A45;font-weight:700">A-Players · Отдел контроля качества</div><h2 style="margin:6px 0 2px">'+esc(c.manager)+' — '+c.overall+'/100</h2><div style="color:#cbd3c4;font-size:13px">'+fmtDate(c.ts)+' · '+esc(c.funnel)+' — '+esc(c.stage)+'</div></div>'+
+    (c.risk?'<p style="background:#FBEFEC;border:1px solid #e9cfc8;border-radius:10px;padding:12px 14px"><b style="color:#B23B2E">⚠ РИСК СРЫВА:</b> '+esc(c.riskReason)+'</p>':'')+
+    '<p><b>Результат:</b> '+esc(c.result)+'</p><p><b>Рекомендация:</b> '+esc(c.recommendation)+'</p><p><b>Резюме:</b> '+esc(c.summary)+'</p>'+
+    '<p><b>Сильные стороны:</b> '+esc(c.strengths.join("; ")||"—")+'</p><p><b>Ошибки:</b> '+esc(c.errors.join("; ")||"—")+'</p>'+
+    (c.criticalErrors.length?'<p><b style="color:#B23B2E">Критические ошибки:</b> '+esc(c.criticalErrors.join("; "))+'</p>':'')+
+    '<h3>Оценка этапов</h3><table style="width:100%;border-collapse:collapse">'+rows+'</table>'+
+    (c.dozhim&&c.dozhim.toDozhim?'<p style="background:#FBF6EC;border:1px solid #DCD4C2;border-radius:10px;padding:12px 14px"><b>🔥 В дожим:</b> '+esc(c.dozhim.reason)+' · кто: '+esc(c.dozhim.who)+' · '+esc(c.dozhim.playbook)+'</p>':'')+
+    '<p><b>Зона развития:</b> '+esc(c.devZone.join("; ")||"—")+'</p><p><b>Что изучить:</b> '+esc(c.learnRecs.join("; ")||"—")+'</p></body>';
+}
+$("fillDemo").onclick=()=>{
+  $("aManager").value="Якшеева Елена";$("aFunnel").value="Продажа";$("aType").value="повторный";$("aStage").value="отправлено КП";$("aDisc").value="C";$("aAmount").value="300 000 ₽";
+  $("aTranscript").value=
+"Менеджер: Анатолий, здравствуйте! Это Елена из компании. Удобно сейчас пару минут?\nКлиент: Да, слушаю.\nМенеджер: Мы с вами в прошлый раз обсуждали декларации на парфюм. Я подготовила по вам предложение.\nКлиент: Да-да. Но я вот думаю… там же уголовная ответственность за контрафакт, а я у оптовиков беру без документов.\nМенеджер: Ну у нас есть гарантия перевыпуска, если что.\nКлиент: Это меня не совсем успокаивает. Я, наверное, пока через Честный Знак попробую с другим поставщиком.\nМенеджер: Хорошо, я тогда передам ваш контакт специалисту по Честному Знаку.\nКлиент: Давайте. По декларациям пока паузу возьму.\nМенеджер: Хорошо, тогда специалист свяжется. До свидания.";
+  toast("Демо-транскрипт вставлен — жми «Разобрать звонок»");
+};
+
+/* ---------- dashboard ---------- */
+function refreshAll(){buildFilters();renderDashboard();renderDozhim();updateDozhimBadge();buildTouchFilters();renderTouches();updateTouchBadge();}
+function currentFilters(){return{m:$("fManager").value,f:$("fFunnel").value,t:$("fType").value,risk:$("fRisk").value,score:$("fScore").value};}
+function applyFilters(calls){const q=currentFilters();return calls.filter(c=>{
+  if(q.m&&c.manager!==q.m)return false;if(q.f&&c.funnel!==q.f)return false;if(q.t&&(c.callType||"")!==q.t)return false;
+  if(q.risk==="risk"&&!c.risk)return false;if(q.risk==="ok"&&c.risk)return false;
+  if(q.score==="lt50"&&!(c.overall<50))return false;if(q.score==="50-69"&&!(c.overall>=50&&c.overall<70))return false;if(q.score==="ge70"&&!(c.overall>=70))return false;
+  return true;});}
+function uniq(a){return [...new Set(a)].filter(Boolean);}
+function buildFilters(){
+  const calls=getCalls();
+  fillSel("fManager",uniq(calls.map(c=>c.manager)),"Все менеджеры");
+  fillSel("fFunnel",uniq(calls.map(c=>c.funnel)),"Все воронки");
+  fillSel("fType",uniq(calls.map(c=>c.callType)),"Тип звонка");
+}
+function fillSel(id,vals,ph){const s=$(id);const cur=s.value;s.innerHTML='<option value="">'+ph+'</option>'+vals.map(v=>'<option>'+esc(v)+'</option>').join("");if(vals.includes(cur))s.value=cur;}
+["fManager","fFunnel","fType","fRisk","fScore"].forEach(id=>$(id).addEventListener("change",renderDashboard));
+function avg(a){return a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):0;}
+function renderDashboard(){
+  const calls=applyFilters(getCalls().slice().sort((a,b)=>new Date(b.ts)-new Date(a.ts)));
+  $("fCount").textContent=calls.length+" звонков";$("tblCount").textContent="показано "+calls.length;
+  $("stCalls").textContent=calls.length;
+  const risks=calls.filter(c=>c.risk).length;$("stRisk").textContent=risks;
+  $("stScore").textContent=calls.length?avg(calls.map(c=>c.overall)):"—";
+  // Индекс качества ОКК (композит: балл + риски + критошибки + регламент касаний)
+  const avgSc=calls.length?avg(calls.map(c=>c.overall)):0;
+  const riskSh=calls.length?risks/calls.length*100:0;
+  const critSh=calls.length?calls.filter(c=>c.criticalErrors&&c.criticalErrors.length).length/calls.length*100:0;
+  const dAll=getDeals();const regOkD=dAll.length?dAll.filter(x=>x.regOk).length/dAll.length*100:0;
+  const idx=calls.length?Math.round(0.55*avgSc+0.20*(100-riskSh)+0.15*(100-critSh)+0.10*regOkD):null;
+  $("stIdx").textContent=idx==null?"—":idx;
+  $("stIdxL").textContent=idx==null?"нет данных":(idx>=75?"хорошо":idx>=55?"средне — есть зоны":"низко — теряем деньги");
+  // 6 tiles
+  const tiles=STAGES.map((st,i)=>{const v=avg(calls.map(c=>c.stages[i]?c.stages[i].score:0));return '<div class="tile '+scGrad(v)+'"><div class="tn">'+st.emo+' '+st.name+'</div><div class="tv">'+(calls.length?v:"—")+'</div></div>';}).join("");
+  $("tiles").innerHTML=tiles;
+  // spark by day (last 10 distinct days)
+  const byDay={};calls.forEach(c=>{const d=new Date(c.ts).toISOString().slice(0,10);(byDay[d]=byDay[d]||[]).push(c.overall);});
+  const days=Object.keys(byDay).sort().slice(-10);
+  $("spark").innerHTML=days.length?days.map(d=>{const v=avg(byDay[d]);const col=v>=70?"var(--green)":v>=50?"var(--gold)":"var(--red)";return '<div class="col" title="'+d+': '+v+'" style="height:'+Math.max(8,v)+'%;background:'+col+'"></div>';}).join(""):'<div class="empty" style="width:100%">нет данных</div>';
+  $("sparkNote").textContent=days.length?("Средняя оценка по дням: "+days.map(d=>avg(byDay[d])).join(" → ")):"";
+  // predictive
+  const n=calls.length||1;
+  const pc=Math.round(calls.filter(c=>/соблюд/i.test(c.productCascade)).length/n*100);
+  const fc=Math.round(calls.filter(c=>/соблюд/i.test(c.financialCascade)).length/n*100);
+  const seg=Math.round(calls.filter(c=>/верно/i.test(c.segment)).length/n*100);
+  const crit=Math.round(calls.filter(c=>c.criticalErrors&&c.criticalErrors.length).length/n*100);
+  const dz=getCalls().filter(c=>c.dozhim&&c.dozhim.toDozhim);
+  const dzDone=dz.filter(c=>c.status==="дожат").length;
+  const dzConv=dz.length?Math.round(dzDone/dz.length*100):0;
+  const pred=[
+    ["Доля продуктового каскада",pc+"%"],["Доля финансового каскада",fc+"%"],["Корректная сегментация",seg+"%"],
+    ["Звонки с критошибками",crit+"%"],["В воронке дожима",dz.length+" сделок"],["Конверсия дожима",dzConv+"%"]
+  ];
+  $("predict").innerHTML=pred.map(([k,v])=>'<div class="panel" style="padding:12px 14px;box-shadow:none"><div class="note" style="font-weight:700;color:var(--em)">'+k+'</div><div style="font-family:var(--serif);font-weight:700;font-size:24px">'+v+'</div></div>').join("");
+  // managers ranking
+  const mgr={};calls.forEach(c=>{(mgr[c.manager]=mgr[c.manager]||[]).push(c);});
+  const mrows=Object.keys(mgr).map(name=>{const cs=mgr[name];const av=avg(cs.map(c=>c.overall));const rk=cs.filter(c=>c.risk).length;
+    const st=STAGES.map((s,i)=>avg(cs.map(c=>c.stages[i]?c.stages[i].score:0)));const wi=st.indexOf(Math.min.apply(null,st));
+    return{name,cnt:cs.length,av,rk,st,weak:STAGES[wi].emo+" "+STAGES[wi].name};}).sort((a,b)=>b.av-a.av);
+  $("mgrBody").innerHTML=mrows.length?mrows.map(r=>'<tr><td><b>'+esc(r.name)+'</b></td><td>'+r.cnt+'</td><td class="sc '+scColor(r.av)+'" style="font-size:15px">'+r.av+'</td><td class="'+(r.rk?'r':'')+'" style="font-weight:700">'+r.rk+'</td>'+r.st.map(v=>'<td class="sc '+scColor(v)+'">'+v+'</td>').join("")+'<td class="r" style="font-size:12px">'+esc(r.weak)+'</td></tr>').join(""):'<tr><td colspan="11" class="empty">—</td></tr>';
+  // table
+  $("callsBody").innerHTML=calls.length?calls.map(c=>{
+    const s=i=>{const v=c.stages[i]?c.stages[i].score:0;return '<td class="sc '+scColor(v)+'">'+v+'</td>';};
+    return '<tr><td><b>'+esc(c.manager)+'</b><div class="note">'+fmtDate(c.ts)+'</div></td>'+
+      '<td>'+esc(c.funnel)+'<div class="note">'+esc(c.stage)+'</div></td>'+
+      '<td class="sc '+scColor(c.overall)+'" style="font-size:16px">'+c.overall+'</td>'+
+      s(0)+s(1)+s(2)+s(3)+s(4)+s(5)+
+      '<td>'+(c.risk?('<span class="risktag">⚠ РИСК СРЫВА</span><br>'+esc((c.riskReason||"").slice(0,60))):esc((c.result||"").slice(0,60)))+'</td>'+
+      '<td><span class="lnk" onclick="openCall(\''+c.id+'\')">Открыть</span></td></tr>';
+  }).join(""):'<tr><td colspan="11" class="empty">Нет звонков. Разбери первый на вкладке «Разобрать звонок».</td></tr>';
+}
+window.openCall=function(id){const c=findCall(id);if(!c)return;go("analyze");renderReport(c,true);};
+
+/* ---------- dozhim ---------- */
+function updateDozhimBadge(){const n=getCalls().filter(c=>c.dozhim&&c.dozhim.toDozhim&&c.status!=="дожат"&&c.status!=="потерян").length;const b=$("dozhimBadge");if(n>0){b.style.display="inline-block";b.textContent=n;}else b.style.display="none";}
+function renderDozhim(){
+  const dz=getCalls().filter(c=>c.dozhim&&c.dozhim.toDozhim).sort((a,b)=>new Date(b.ts)-new Date(a.ts));
+  const inWork=dz.filter(c=>c.status==="в работе").length,done=dz.filter(c=>c.status==="дожат").length,lost=dz.filter(c=>c.status==="потерян").length;
+  $("funnel").innerHTML=[
+    ["Попало в дожим",dz.length],["В работе",inWork],["Дожато",done],["Потеряно",lost]
+  ].map(([k,v])=>'<div class="fstep"><div class="fn">'+k+'</div><div class="fv">'+v+'</div></div>').join("");
+  $("dozhimList").innerHTML=dz.length?dz.map(c=>{
+    return '<div class="dcard"><div class="dh"><div><span class="who">'+esc(c.manager)+'</span> <span class="mtag">'+esc(c.funnel)+'</span> <span class="note">'+fmtDate(c.ts)+' · оценка '+c.overall+'/100</span></div>'+
+      '<div class="st">Статус: <select onchange="setStatus(\''+c.id+'\',this.value)">'+
+        ['','в работе','дожат','потерян'].map(o=>'<option '+(c.status===o?'selected':'')+' value="'+o+'">'+(o||'— не задан —')+'</option>').join("")+'</select></div></div>'+
+      '<div style="font-size:13px;margin-top:6px"><b>Причина:</b> '+esc(c.dozhim.reason||"")+' · <b>кто:</b> '+esc(c.dozhim.who||"")+'</div>'+
+      '<div style="font-size:13px;margin-top:3px"><b>Как дожимать:</b> '+esc(c.dozhim.playbook||"")+'</div>'+
+      '<div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="openCall(\''+c.id+'\')">Открыть карточку</button><button class="btn dark sm" onclick="showTG(\''+c.id+'\')">🚨 Telegram</button></div></div>';
+  }).join(""):'<div class="empty">Пока пусто. Сделки с рисками и критошибками попадают сюда автоматически.</div>';
+}
+window.setStatus=function(id,v){const calls=getCalls();const c=calls.find(x=>x.id===id);if(c){c.status=v;saveCalls(calls);renderDozhim();updateDozhimBadge();}};
+
+/* ---------- deals: контроль касаний / SLA (TLT) ---------- */
+function getDeals(){try{return JSON.parse(localStorage.getItem(LS.deals)||"null")||[];}catch(_){return[];}}
+function seedDeals(){
+  const F="Практикум A-PLAYERS";let k=0;
+  const d=(client,stage,date,days,touches,last,open,slaMin,regOk,stageOk)=>({id:"d"+(++k),client,funnel:F,stage,date,days,touches,last,open,slaMin,regOk,stageOk});
+  return [
+   d('Заявка "form1155985286"','Записали на разбор','04.11.2025',287,0,'нет касаний',true,null,false,false),
+   d('Регистрация 4-5 декабря','Записали на разбор','02.12.2024',624,0,'нет касаний',true,null,false,false),
+   d('Новое событие из Calendly','Провели разбор','05.12.2024',621,0,'нет касаний',true,null,false,false),
+   d('Новое событие из Calendly','Провели разбор','18.03.2025',518,0,'нет касаний',true,null,false,false),
+   d('Новое событие из Calendly','Записали на разбор','19.03.2025',517,0,'нет касаний',true,null,false,false),
+   d('Новое событие из Calendly','Провели разбор','20.03.2025',516,0,'нет касаний',true,null,false,false),
+   d('Новое событие из Calendly','Записали на разбор','24.03.2025',512,0,'нет касаний',true,null,false,false),
+   d('Новое событие из Calendly','Записали на разбор','26.04.2025',479,0,'нет касаний',true,null,false,false),
+   d('Волкова Мария','Записали на разбор','16.08.2026',3,0,'нет касаний',true,null,false,true),
+   d('Козлова Алина','Записали на разбор','14.08.2026',5,1,'14.08.2026',true,90,false,true),
+   d('Сидоров Артём','Провели разбор','05.08.2026',14,2,'14.08.2026',true,45,true,false),
+   d('Новиков Иван','Провели разбор','03.08.2026',16,2,'16.08.2026',true,20,true,false),
+   d('Петрова Юлия','Записали на разбор','12.08.2026',7,3,'15.08.2026',true,22,true,true),
+   d('Иванов Дмитрий','Провели разбор','10.08.2026',9,4,'12.08.2026',true,8,true,true),
+   d('Морозов Сергей','Провели разбор','01.08.2026',18,5,'17.08.2026',true,15,true,true),
+   d('Смирнов Олег','Провели разбор','20.07.2026',30,6,'10.08.2026',false,12,true,true),
+   d('Кузнецова Дарья','Записали на разбор','18.07.2026',32,4,'08.08.2026',false,25,true,true)
+  ];
+}
+function ensureSeedDeals(){if(localStorage.getItem(LS.dealsSeeded)!=="1"){localStorage.setItem(LS.deals,JSON.stringify(seedDeals()));localStorage.setItem(LS.dealsSeeded,"1");}}
+function buildTouchFilters(){fillSel("tStage",uniq(getDeals().map(x=>x.stage)),"Все этапы");}
+["tStage","tMax","tOnlyMax","tOpen","tSort"].forEach(id=>{const el=$(id);if(el)el.addEventListener("input",renderTouches);});
+function updateTouchBadge(){const n=getDeals().filter(x=>x.open&&x.touches<=2).length;const b=$("touchBadge");if(n>0){b.style.display="inline-block";b.textContent=n;}else b.style.display="none";}
+function renderTouches(){
+  if(!$("touchBody"))return;
+  let deals=getDeals();
+  const openOnly=$("tOpen").checked; if(openOnly)deals=deals.filter(x=>x.open);
+  const stage=$("tStage").value; if(stage)deals=deals.filter(x=>x.stage===stage);
+  const maxN=parseInt($("tMax").value,10); const hasMax=!isNaN(maxN);
+  if($("tOnlyMax").checked&&hasMax)deals=deals.filter(x=>x.touches<=maxN);
+  const sort=$("tSort").value;
+  deals=deals.slice().sort((a,b)=> sort==="days"?b.days-a.days : sort==="sla"?((b.slaMin==null?99999:b.slaMin)-(a.slaMin==null?99999:a.slaMin)) : (a.touches-b.touches || b.days-a.days));
+  const base=getDeals().filter(x=>!openOnly||x.open);
+  const withSla=base.filter(x=>x.slaMin!=null);
+  const avgSla=withSla.length?Math.round(withSla.reduce((s,x)=>s+x.slaMin,0)/withSla.length):0;
+  const slaOk=base.length?Math.round(base.filter(x=>x.slaMin!=null&&x.slaMin<=30).length/base.length*100):0;
+  const regOk=base.length?Math.round(base.filter(x=>x.regOk).length/base.length*100):0;
+  const noTouch=base.filter(x=>x.touches===0).length;
+  $("slaTiles").innerHTML=[
+    ["⏱ Скорость взятия в работу",avgSla+" мин","среднее до 1-го касания"],
+    ["✅ SLA взятия (≤30 мин)",slaOk+"%","доля соблюдено"],
+    ["🔁 Регламент касаний",regOk+"%","выполнен"],
+    ["🚫 Сделок без касаний",noTouch,"0 касаний"]
+  ].map(a=>'<div class="panel" style="padding:13px 15px;box-shadow:none"><div class="note" style="font-weight:700;color:var(--em)">'+a[0]+'</div><div style="font-family:var(--serif);font-weight:700;font-size:26px">'+a[1]+'</div><div class="note">'+a[2]+'</div></div>').join("");
+  $("tCount").innerHTML=deals.length+' сделок'+(hasMax?' · <span class="r">красным — касаний ≤ '+maxN+'</span>':'');
+  const fl=ok=>ok?'<span class="g">✓</span>':'<span class="r">✕</span>';
+  $("touchBody").innerHTML=deals.length?deals.map(x=>{
+    const hot=hasMax&&x.touches<=maxN;
+    return '<tr'+(hot?' style="background:#FBEFEC"':'')+'><td><b class="'+(hot?'r':'g')+'">'+esc(x.client)+'</b></td><td>'+esc(x.funnel)+'</td><td>'+esc(x.stage)+'</td><td>'+esc(x.date)+'</td>'+
+      '<td class="'+(x.days>60?'r':'')+'" style="font-weight:700">'+x.days+'</td>'+
+      '<td class="sc '+(x.touches===0?'r':x.touches<=2?'a':'g')+'" style="font-size:15px">'+x.touches+'</td>'+
+      '<td>'+(x.slaMin==null?'<span class="r">не взят</span>':(x.slaMin+' мин '+(x.slaMin<=30?'<span class="g">✓</span>':'<span class="r">✕</span>')))+'</td>'+
+      '<td>'+fl(x.regOk)+'</td><td>'+fl(x.stageOk)+'</td>'+
+      '<td class="'+(x.touches===0?'r':'')+'">'+esc(x.last)+'</td></tr>';
+  }).join(""):'<tr><td colspan="10" class="empty">Нет сделок под фильтр.</td></tr>';
+}
+
+/* ---------- nav ---------- */
+function go(s){document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on",b.dataset.s===s));document.querySelectorAll(".screen").forEach(x=>x.classList.remove("on"));$("s-"+s).classList.add("on");window.scrollTo({top:0,behavior:"smooth"});}
+$("nav").addEventListener("click",e=>{const b=e.target.closest("button");if(b&&b.dataset.s)go(b.dataset.s);});
+
+/* ---------- init ---------- */
+ensureSeed();ensureSeedDeals();loadCfg();refreshAll();
+</script>
+</body>
+</html>

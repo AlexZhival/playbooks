@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Отдел контроля качества на AI · A-Players</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4F1EA; --bg2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056;
+    --line:#DCD4C2; --em:#143A2D; --em2:#1C4C3B; --gold:#B0822E; --gold-h:#977019; --gold2:#C79A45;
+    --green:#3E8E5E; --red:#B23B2E; --amber:#C77A22;
+    --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#0e1b15;overflow:hidden;font-family:var(--sans)}
+  #stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center;background:var(--cream);overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;padding:56px 68px;color:var(--ink)}
+  .slide.active{display:flex}
+  .slide.dark{background:var(--em);color:#EFE9DA}
+  .slide.dark2{background:linear-gradient(150deg,#17402f,#122f24);color:#EFE9DA}
+  h1{font-family:var(--serif);font-weight:800;font-size:52px;line-height:1.04;letter-spacing:-.5px}
+  h2{font-family:var(--serif);font-weight:800;font-size:38px;line-height:1.08;letter-spacing:-.4px}
+  h3{font-family:var(--serif);font-weight:700;font-size:24px}
+  .kick{font-family:var(--sans);font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-h);font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .kick::before{content:"";width:26px;height:3px;background:var(--gold);border-radius:2px}
+  .dark .kick,.dark2 .kick{color:var(--gold2)}
+  .lead{font-size:21px;color:var(--muted);font-weight:500;line-height:1.45;max-width:60ch}
+  .dark .lead,.dark2 .lead{color:#CBD3C4}
+  .em{color:var(--em)}.dark .em,.dark2 .em{color:#fff}
+  .g{color:var(--gold-h)}.grn{color:var(--green)}.rd{color:var(--red)}
+  b,strong{font-weight:800}
+  .hl{background:linear-gradient(180deg,transparent 58%,rgba(176,130,46,.34) 58%);padding:0 3px;font-weight:800;color:#0f2b20}
+  .dark .hl,.dark2 .hl{background:linear-gradient(180deg,transparent 58%,rgba(199,154,69,.42) 58%);color:#fff}
+  ul{list-style:none;display:flex;flex-direction:column;gap:13px;margin-top:8px}
+  li{position:relative;padding-left:30px;font-size:20px;line-height:1.4}
+  li::before{content:"";position:absolute;left:0;top:10px;width:11px;height:11px;border-radius:3px;background:var(--gold);transform:rotate(45deg)}
+  .dark li::before,.dark2 li::before{background:var(--gold2)}
+  .row{display:flex;gap:28px}
+  .col{flex:1;min-width:0}
+  .bob{position:absolute;pointer-events:none;filter:drop-shadow(0 12px 20px rgba(0,0,0,.16))}
+  .bobc{right:40px;bottom:26px;height:260px}
+  .bobscene{right:56px;bottom:0;height:520px}
+  .bobmid{right:70px;top:50%;transform:translateY(-50%);height:420px}
+  .num{font-family:var(--serif);font-weight:800;font-size:120px;line-height:.9;color:var(--gold-h)}
+  .dark .num,.dark2 .num{color:var(--gold2)}
+  .chipset{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;font-size:16px;font-weight:600}
+  .dark .chip,.dark2 .chip{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:#EFE9DA}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;box-shadow:0 8px 24px rgba(20,32,27,.05)}
+  .grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .b9{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:16px}
+  .b9 .n{font-family:var(--serif);font-weight:800;color:var(--gold-h);font-size:13px}
+  .b9 b{display:block;font-size:16px;margin-top:2px;color:var(--em)}
+  .b9 span{font-size:13px;color:var(--muted)}
+  /* rubric mock */
+  .rub{display:flex;gap:12px;align-items:stretch;margin-top:14px}
+  .rtile{flex:1;border-radius:12px;color:#fff;padding:12px;text-align:center}
+  .rtile .e{font-size:22px}.rtile .rn{font-family:var(--serif);font-weight:800;font-size:30px;margin-top:2px}.rtile .rl{font-size:11px;font-weight:700;opacity:.95;margin-top:2px}
+  .gg{background:linear-gradient(160deg,#3E8E5E,#2f7a4e)}.ga{background:linear-gradient(160deg,#C79A45,#B0822E)}.gr{background:linear-gradient(160deg,#C0503f,#B23B2E)}
+  .over{background:var(--em);color:#fff;border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;min-width:150px}
+  .over .ov{font-family:var(--serif);font-weight:800;font-size:44px;line-height:1}
+  /* telegram mock */
+  .tg{background:#0f1c17;color:#e7efe9;border-radius:16px;padding:18px 20px;font-size:15px;line-height:1.5;max-width:520px;border:1px solid rgba(255,255,255,.08)}
+  .tg .sep{color:#3a5348}
+  /* funnel */
+  .fun{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:6px}
+  .fbar{border-radius:10px;color:#fff;font-weight:700;padding:10px 0;text-align:center;font-size:16px}
+  /* footer / chrome */
+  .brand{position:absolute;left:68px;bottom:26px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:600;letter-spacing:.02em}
+  .dark .brand,.dark2 .brand{color:#9fb0a4}
+  .brand img{height:18px;opacity:.9}
+  #bar{position:absolute;left:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--gold2),var(--gold));width:0;transition:width .25s;z-index:5}
+  #count{position:absolute;right:24px;bottom:22px;font-size:13px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+  .dark #count,.dark2 #count{color:#9fb0a4}
+  .stat{display:flex;gap:26px;margin-top:10px}
+  .stat .s .v{font-family:var(--serif);font-weight:800;font-size:46px;color:var(--em)}
+  .dark .stat .s .v,.dark2 .stat .s .v{color:#fff}
+  .stat .s .l{font-size:15px;color:var(--muted)}
+  .dark .stat .s .l,.dark2 .stat .s .l{color:#c3cec5}
+  .quote{font-family:var(--serif);font-weight:700;font-size:30px;line-height:1.25;max-width:22ch}
+  .tag{display:inline-block;font-size:13px;font-weight:800;background:var(--red);color:#fff;border-radius:8px;padding:3px 9px;margin-left:8px;vertical-align:middle}
+  .hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);font-size:12px;color:#7f8a80;z-index:9}
+  @media(max-width:200px){}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 TITLE -->
+  <section class="slide dark2 active">
+    <div class="kick">A-Players · Практикум · Модуль</div>
+    <h1 style="max-width:20ch">Отдел контроля<br>качества на AI</h1>
+    <p class="lead" style="margin-top:20px">Как контролировать 100% коммуникаций, находить недожатые сделки и превращать контроль качества в <span class="hl">самоокупаемую функцию</span> — воронку дожима.</p>
+    <div class="stat" style="margin-top:28px">
+      <div class="s"><div class="v">10–15%</div><div class="l">выручки приносит ОКК</div></div>
+      <div class="s"><div class="v">98%</div><div class="l">компаний находят, что дожимать</div></div>
+      <div class="s"><div class="v">2–3 дня</div><div class="l">на запуск</div></div>
+    </div>
+    <img class="bob bobscene" src="gen/bob/cut/bob_copilot.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="A-Players">Практикум A-Players</div>
+  </section>
+
+  <!-- 2 WHERE WE ARE -->
+  <section class="slide">
+    <div class="kick">Где мы в траектории</div>
+    <h2>Мы научились строить коммуникации.<br>Теперь — <span class="g">контролировать</span> их</h2>
+    <div class="chipset" style="margin-top:26px">
+      <div class="chip">AAARRR · пиратские метрики</div>
+      <div class="chip">CJM · путь клиента</div>
+      <div class="chip">Высококонверсионные скрипты</div>
+      <div class="chip" style="border-color:var(--em);background:#F0F4EE;color:var(--em);font-weight:800">→ Контроль качества коммуникаций</div>
+    </div>
+    <ul style="margin-top:26px">
+      <li>Собрали скрипт — но исполняет ли его команда в каждом звонке?</li>
+      <li>Где мы теряем сделки в коммуникации — и как их вернуть?</li>
+      <li>Как выстроить инструмент <b>дожима</b>, который приносит деньги?</li>
+    </ul>
+    <img class="bob bobc" src="gen/bob/cut/p_point.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 3 SCALE PROBLEM -->
+  <section class="slide">
+    <div class="kick">Проблема масштаба</div>
+    <h2>Живыми людьми качество<br>коммуникаций <span class="rd">не померяешь</span></h2>
+    <div class="row" style="margin-top:24px">
+      <div class="col" style="max-width:56%">
+        <div class="stat"><div class="s"><div class="v">450 000</div><div class="l">звонков в месяц (Skyeng/Skypro)</div></div></div>
+        <ul style="margin-top:22px">
+          <li>Асессор с чек-листом на 30 пунктов слушает <b>~20–25 звонков в день</b></li>
+          <li>Это физически несопоставимо с реальным объёмом</li>
+          <li>А качество коммуникации — один из главных факторов конверсии</li>
+        </ul>
+      </div>
+    </div>
+    <img class="bob bobscene" src="gen/bob/cut/bob_scale.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 4 WIDER THAN SALES -->
+  <section class="slide">
+    <div class="kick">Это шире отдела продаж</div>
+    <h2>Контролировать нужно <span class="g">каждую</span> коммуникацию</h2>
+    <div class="chipset" style="margin-top:24px">
+      <div class="chip">Продажи B2C / B2B</div><div class="chip">Клиентский сервис</div>
+      <div class="chip">Поддержка</div><div class="chip">Переговоры</div><div class="chip">Внутренние коммуникации</div>
+    </div>
+    <div class="card" style="margin-top:24px;max-width:62%">
+      <h3 class="em">Логика JTBD</h3>
+      <p style="font-size:19px;margin-top:8px;color:var(--muted)">Ценность = <b>выгода − затраты</b> (в т.ч. эмоциональные и энергетические). Заплатил больше, чем получил → разочарование, не вернётся. Сервис на уровне — <b>фундамент капитализации</b>, особенно в премиуме.</p>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/p_think.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 5 IF NO MONEY -->
+  <section class="slide dark">
+    <div class="kick">Главный тезис</div>
+    <div class="quote" style="margin-top:10px">«Если отдел контроля качества не приносит деньги — считай, что его нет»</div>
+    <div class="stat" style="margin-top:34px">
+      <div class="s"><div class="v">10–15%</div><div class="l">ежемесячной выручки — минимум, за всю практику</div></div>
+      <div class="s"><div class="v" style="color:#8ee0a6">ROI</div><div class="l">самоокупаемый юнит с собственной экономикой</div></div>
+    </div>
+    <p class="lead" style="margin-top:24px">Замеряй экономику этой функции отдельно. Если близко нет к этим цифрам — «ручка требовательности» не выкручена.</p>
+    <img class="bob bobmid" src="gen/bob/cut/s8_money.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 6 THREE LAYERS -->
+  <section class="slide">
+    <div class="kick">Что делает ОКК на самом деле</div>
+    <h2>Три пласта — не только «надзор»<br>над отделом продаж</h2>
+    <div class="row" style="margin-top:26px;gap:18px">
+      <div class="col card"><div class="num" style="font-size:40px">01</div><h3 class="em" style="margin-top:6px">Контроль исполнения</h3><p style="color:var(--muted);font-size:17px;margin-top:6px">Скрипт, плейбуки, этапы воронки, регламенты — соблюдаются или нет.</p></div>
+      <div class="col card"><div class="num" style="font-size:40px">02</div><h3 class="em" style="margin-top:6px">Количественный каст-дев</h3><p style="color:var(--muted);font-size:17px;margin-top:6px">10 000 звонков через управленческие фреймворки → инсайты, которые сам добывал бы месяцами.</p></div>
+      <div class="col card" style="border:2px solid var(--gold)"><div class="num" style="font-size:40px">03</div><h3 class="em" style="margin-top:6px">Воронка дожима</h3><p style="color:var(--muted);font-size:17px;margin-top:6px">Самоокупаемость: возвращаем недожатые сделки в работу и закрываем.</p></div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 7 MARKET PROBLEM -->
+  <section class="slide">
+    <div class="kick">Ловушка рынка</div>
+    <h2>Речевых аналитик — «как грязи».<br>Но не каждая <span class="g">приносит деньги</span></h2>
+    <ul style="margin-top:24px;max-width:64%">
+      <li>Технически достать звонки и вывести в дашборд научились многие</li>
+      <li>Но у большинства <b>нет коммерческого бэкграунда</b> — не знают, ЧТО выводить в аналитику, чтобы влиять на выручку</li>
+      <li>Разница между «просто аналитикой» и «аналитикой, которая приносит деньги» — колоссальная</li>
+    </ul>
+    <div class="card" style="margin-top:22px;max-width:64%;border-left:4px solid var(--gold)"><b class="em" style="font-size:19px">Наша задача сегодня:</b> <span style="font-size:18px;color:var(--muted)">разобрать, что именно контролировать, чтобы это влияло на деньги.</span></div>
+    <img class="bob bobc" src="gen/bob/cut/p_book.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 8 NINE BLOCKS -->
+  <section class="slide">
+    <div class="kick">Что контролируем · 9 блоков</div>
+    <h2>Каркас настройки ОКК</h2>
+    <div class="grid9" style="margin-top:16px">
+      <div class="b9"><div class="n">01</div><b>Бизнес-профиль</b><span>сфера, продукт, ЦА, ToV</span></div>
+      <div class="b9"><div class="n">02</div><b>Чек-лист скрипта</b><span>9 этапов исполнения</span></div>
+      <div class="b9"><div class="n">03</div><b>Критические ошибки</b><span>90%+ губят сделку</span></div>
+      <div class="b9"><div class="n">04</div><b>Ключевые фразы</b><span>«фразы-убийцы»</span></div>
+      <div class="b9"><div class="n">05</div><b>Продуктовый каскад</b><span>порядок питча продуктов</span></div>
+      <div class="b9"><div class="n">06</div><b>Финансовый каскад</b><span>порядок способов оплаты</span></div>
+      <div class="b9"><div class="n">07</div><b>Причины отказов</b><span>уникальные + дожимаемые</span></div>
+      <div class="b9"><div class="n">08</div><b>Сегментация</b><span>ABCDE / температура</span></div>
+      <div class="b9"><div class="n">09</div><b>Адаптация под DISC</b><span>психотипы клиента</span></div>
+    </div>
+    <p class="lead" style="margin-top:16px;font-size:17px">Промпты по каждому блоку + твои опорные материалы из JTBD-модуля → готовая методология оценки.</p>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 9 SCRIPT CHECKLIST -->
+  <section class="slide">
+    <div class="kick">Блок 2 · Чек-лист скрипта</div>
+    <h2>Придерживается ли менеджер структуры?</h2>
+    <div class="chipset" style="margin-top:20px;max-width:70%">
+      <div class="chip">Приветствие</div><div class="chip">Контакт</div><div class="chip">Программирование</div>
+      <div class="chip">Выявление потребностей</div><div class="chip">Презентация</div><div class="chip">Предзакрытие</div>
+      <div class="chip">Возражения</div><div class="chip">FOMO</div><div class="chip">Закрытие</div>
+    </div>
+    <div class="card" style="margin-top:22px;max-width:70%;border-left:4px solid var(--red)">
+      <b class="rd" style="font-size:19px">Каскадный эффект:</b> <span style="font-size:18px;color:var(--muted)">провалили один этап (напр. слабо выявили потребность) → презентация уходит в <b>характеристики вместо ХПВ</b> → конверсия падает на всех последующих этапах.</span>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/s41_present.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 10 CRITICAL ERRORS -->
+  <section class="slide">
+    <div class="kick">Блок 3 · Критические ошибки</div>
+    <h2><span class="rd">≥1 критическая ошибка</span> = сделку слили</h2>
+    <ul style="margin-top:20px;max-width:60%">
+      <li>Фразы/действия, которые с <b>90%+</b> вероятностью убивают сделку</li>
+      <li>Пример: пассивная агрессия менеджера, плохой отзыв о компании — считывается даже в подаче</li>
+      <li>Пример: манипуляция «14 дней вернём деньги» как FOMO → рост возвратов, не продавали ценность</li>
+      <li><span class="tag">→ воронка дожима</span> сделки с ошибками попадают туда <b>автоматически</b></li>
+    </ul>
+    <div class="card" style="margin-top:18px;max-width:60%;background:#FBEFEC;border-color:#e9cfc8"><b class="em">98%</b> <span style="color:var(--muted)">— если раньше не замеряли, вы их найдёте.</span></div>
+    <img class="bob bobscene" src="gen/bob/cut/bob_badscript.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 11 COPILOT -->
+  <section class="slide dark2">
+    <div class="kick">Важная рамка</div>
+    <h2>ОКК — это <span style="color:#8ee0a6">co-pilot</span>, а не «большой брат»</h2>
+    <p class="lead" style="margin-top:22px;max-width:52ch">Человеческий фактор неизбежен: не выспался, дроны всю ночь, плохое настроение — и качество коммуникации проседает. Это нормально.</p>
+    <ul style="margin-top:20px;max-width:52ch">
+      <li>Задача — <b>поддержать и подстраховать</b>, а не тыкать пальцем</li>
+      <li>Выровнял менеджера → он вернулся в рабочее состояние → ошибку в следующих звонках допустит с меньшей вероятностью</li>
+    </ul>
+    <img class="bob bobscene" src="gen/bob/cut/bob_copilot.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 12 KEY PHRASES -->
+  <section class="slide">
+    <div class="kick">Блок 4 · Ключевые фразы</div>
+    <h2>Не произносить их — <span class="rd">бизнес-преступление</span></h2>
+    <div class="row" style="margin-top:22px">
+      <div class="col" style="max-width:58%">
+        <ul>
+          <li>«Мы знаем всё о ресторанном бизнесе» = <b>белый шум</b>, характеристика</li>
+          <li>«8 лет на рынке HoReCa, 100+ ресторанов, средний рост Net Revenue +15 п.п., дам контакты» = <b>твёрдый факт</b></li>
+          <li>Логика ХПВ: характеристика → потребность → выгода</li>
+          <li>Упаковать 10–15 «фраз-убийц» можно за <b>1 день</b> с Клодом</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:14px;max-width:58%;border-left:4px solid var(--gold)"><span style="font-size:17px;color:var(--muted)">Кейс «белый шум»: 40 минут презентации — заказчик не запомнил ничего. Не за что «зацепиться».</span></div>
+    <img class="bob bobc" src="gen/bob/cut/bob_arsenal.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 13 PRODUCT CASCADE -->
+  <section class="slide">
+    <div class="kick">Блок 5 · Продуктовый каскад</div>
+    <h2>Порядок питча продуктов =<br>средний чек и <span class="g">чистая прибыль</span></h2>
+    <ul style="margin-top:22px;max-width:60%">
+      <li>В каком порядке коммуницируем и питчим продукты — контролируемо</li>
+      <li>Кейс: <b>+600 млн</b> без увеличения трафика — только за счёт каскада</li>
+      <li>Универсально: B2C / B2B / подписка, короткий и длинный цикл</li>
+      <li>Перестали контролировать исполнение каскада → уже вредим среднему чеку и марже</li>
+    </ul>
+    <img class="bob bobscene" src="gen/bob/cut/s8_money.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 14 REFUSALS -->
+  <section class="slide">
+    <div class="kick">Блок 7 · Причины отказов</div>
+    <h2>Уникальные + помеченные «<span class="g">дожимаемо</span>»</h2>
+    <div class="row" style="margin-top:20px">
+      <div class="col" style="max-width:60%">
+        <ul>
+          <li>Каждая причина <b>уникальна</b> — иначе путаница у менеджеров ×10</li>
+          <li>«Дорого» — часто ложное: не донесли ценность (курсы за 1,5 млн проходил — а тут «дорого»?)</li>
+          <li>Отказ банка по рассрочке → плейбук <b>approval rate 65–70%</b>, а не в корзину</li>
+          <li>Недозвон после консультации: телефония/регламент касаний <b>или</b> плохо пообщались (90% не заинтересовали)</li>
+        </ul>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_temp.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 15 SEGMENTATION + DISC -->
+  <section class="slide">
+    <div class="kick">Блоки 6, 8, 9 · Каскад оплат, сегмент, DISC</div>
+    <h2>Финансы, сегмент и психотип — тоже под контролем</h2>
+    <div class="row" style="margin-top:20px;gap:16px">
+      <div class="col card"><h3 class="em">💳 Финансовый каскад</h3><p style="color:var(--muted);font-size:16px;margin-top:6px">Способ оплаты = часть продукта. Рассрочка = 25–30% банку → минус чистая прибыль. Управляем порядком.</p></div>
+      <div class="col card"><h3 class="em">🌡 Сегментация</h3><p style="color:var(--muted);font-size:16px;margin-top:6px">ОКК перепроверяет ABCDE/температуру за менеджером. Ошибся → маркетинг получил битые данные → неверные решения.</p></div>
+      <div class="col card"><h3 class="em">🧭 Адаптация DISC</h3><p style="color:var(--muted);font-size:16px;margin-top:6px">Подстроился ли менеджер под доминанта/инициативного/постоянного/тщательного.</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_disc.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 16 RUBRIC -->
+  <section class="slide">
+    <div class="kick">Рубрика оценки звонка</div>
+    <h2>Каждый звонок — 6 метрик <span class="g">0–100</span> + общая</h2>
+    <div class="rub">
+      <div class="over"><div style="font-size:13px;opacity:.85">Общая</div><div class="ov">70</div><div style="font-size:12px;opacity:.85">/100</div></div>
+      <div class="rtile gg"><div class="e">👋</div><div class="rn">100</div><div class="rl">Приветствие</div></div>
+      <div class="rtile gg"><div class="e">🔍</div><div class="rn">100</div><div class="rl">Потребности</div></div>
+      <div class="rtile gr"><div class="e">🔥</div><div class="rn">40</div><div class="rl">Усиление боли</div></div>
+      <div class="rtile ga"><div class="e">🎯</div><div class="rn">80</div><div class="rl">Презентация</div></div>
+      <div class="rtile ga"><div class="e">🛡</div><div class="rn">60</div><div class="rl">Возражения</div></div>
+      <div class="rtile gr"><div class="e">🏁</div><div class="rn">40</div><div class="rl">Закрытие</div></div>
+    </div>
+    <p class="lead" style="margin-top:20px;font-size:18px">+ флаги: критические ошибки · ключевые фразы сказаны/нет · каскады · сегмент · DISC · <b>риск срыва</b> → рекомендации по дожиму и зона развития менеджера.</p>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 17 HOW TO DEPLOY -->
+  <section class="slide dark">
+    <div class="kick">Как развернуть за 2–3 дня</div>
+    <h2>Три пути</h2>
+    <div class="row" style="margin-top:26px;gap:18px">
+      <div class="col card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#EFE9DA">
+        <h3 style="color:#fff">1 · Через подрядчика</h3>
+        <p style="color:#c3cec5;font-size:16px;margin-top:8px">Готовые сервисы. Ключевой критерий — <b style="color:#fff">погрешность</b>. iMotion ≈ &lt;5%; Voice AI — осторожно (выше). Дашборды, теги, когорты.</p>
+      </div>
+      <div class="col card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#EFE9DA">
+        <h3 style="color:#fff">2 · Своя тетрадь</h3>
+        <p style="color:#c3cec5;font-size:16px;margin-top:8px">Промпты по 9 блокам → GPT for Sheets + Claude API. Руками только <b style="color:#fff">этап + психотип</b> — оценка адаптируется.</p>
+      </div>
+      <div class="col card" style="background:rgba(199,154,69,.14);border-color:var(--gold2);color:#fff">
+        <h3 style="color:#fff">3 · Свой инструмент</h3>
+        <p style="color:#EFE9DA;font-size:16px;margin-top:8px">Вайбкодинг за 2 дня. <b style="color:#fff">Мы его собрали</b> — покажу вживую.</p>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 18 TRANSCRIPTS -->
+  <section class="slide">
+    <div class="kick">Откуда берём транскрипты</div>
+    <h2>Каждая коммуникация → текст → оценка</h2>
+    <div class="chipset" style="margin-top:22px;max-width:66%">
+      <div class="chip">📞 CRM — авто-транскрибация звонков</div>
+      <div class="chip">🎥 Zoom — встроенные транскрипты встреч</div>
+      <div class="chip">🎙 ККТУ — транскрибация записей</div>
+      <div class="chip">📎 Бейдж-диктофон — для офлайн-встреч</div>
+    </div>
+    <p class="lead" style="margin-top:22px;max-width:60%">Менеджер пообщался → транскрипт автоматически падает в ОКК → карточка с оценкой и рекомендациями по дожиму.</p>
+    <img class="bob bobc" src="gen/bob/cut/p_thumbs.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 19 DEMO -->
+  <section class="slide dark2">
+    <div class="kick">Демо · наш инструмент</div>
+    <h2>Отдел контроля качества A-Players</h2>
+    <ul style="margin-top:20px;max-width:52ch">
+      <li>Вставляем транскрипт (Zoom / CRM / бейдж) → <b>карточка звонка</b></li>
+      <li>Риск срыва · 6 метрик · сильные/ошибки · возражения · рекомендации по дожиму</li>
+      <li>Дашборд со срезами (менеджер / воронка / этап / балл) и <b>воронкой дожима</b></li>
+      <li>Кнопка <b>«🚨 Telegram-алерт»</b> — оперативная обратная связь</li>
+    </ul>
+    <p class="lead" style="margin-top:16px;color:#8ee0a6;font-weight:700">→ переключаемся на инструмент</p>
+    <img class="bob bobscene" src="gen/bob/cut/bob_dashboard.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 20 DOZHIM FUNNEL -->
+  <section class="slide">
+    <div class="kick">Как ОКК начинает зарабатывать</div>
+    <h2>Воронка дожима — <span class="g">2 источника</span> триггеров</h2>
+    <div class="row" style="margin-top:22px">
+      <div class="col card" style="max-width:47%"><h3 class="em">🎧 Из коммуникаций</h3><ul style="margin-top:8px"><li style="font-size:17px">Критическая ошибка</li><li style="font-size:17px">Низкий балл / нет след. шага</li><li style="font-size:17px">Недозвон после консультации</li></ul></div>
+      <div class="col card" style="max-width:47%"><h3 class="em">🗂 CRM-триггеры</h3><ul style="margin-top:8px"><li style="font-size:17px">Счёт/КП висит &gt; 2 дней без оплаты</li><li style="font-size:17px">Закрыта &gt; 5 дней: «не сейчас / нет денег / отказ банка»</li><li style="font-size:17px">Авто-дожим vs ручной</li></ul></div>
+    </div>
+    <img class="bob bobscene" src="gen/bob/cut/bob_dozhim.png" alt="" style="height:420px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 21 DOZHIM CRM -->
+  <section class="slide">
+    <div class="kick">Механика</div>
+    <h2>Оценил звонок → триггер в CRM</h2>
+    <div class="fun" style="max-width:60%;margin-top:10px">
+      <div class="fbar gg" style="width:100%">Все сделки</div>
+      <div class="fbar ga" style="width:74%">ОКК нашёл проблему / риск</div>
+      <div class="fbar gr" style="width:52%">Флаг «на дожим» в CRM (тег / цвет / воронка)</div>
+      <div class="fbar" style="width:34%;background:var(--em)">Вернули в работу → закрыли</div>
+    </div>
+    <p class="lead" style="margin-top:20px;max-width:60%;font-size:18px">В amoCRM / Bitrix: сделка выделяется цветом, дублируется в воронку дожима или получает теги — по ним видно, что забирать в работу.</p>
+    <img class="bob bobc" src="gen/bob/cut/p_point.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 22 DOZHIM DASHBOARD -->
+  <section class="slide">
+    <div class="kick">Дашборд воронки дожима</div>
+    <h2>Видим деньги в динамике</h2>
+    <div class="stat" style="margin-top:16px;gap:34px">
+      <div class="s"><div class="v">↳</div><div class="l">Сколько попало в дожим</div></div>
+      <div class="s"><div class="v">↺</div><div class="l">Реанимировали</div></div>
+      <div class="s"><div class="v">✔</div><div class="l">Дожали</div></div>
+      <div class="s"><div class="v">⏱</div><div class="l">Срок возврата в продажу</div></div>
+    </div>
+    <div class="card" style="margin-top:22px;max-width:64%;border-left:4px solid var(--gold)"><span style="font-size:18px;color:var(--muted)">На старте хватит <b class="em">10 ключевых настроек</b> + простой таблички предиктивной модели — уже видно, какие сделки продолбали.</span></div>
+    <img class="bob bobc" src="gen/bob/cut/s25_build.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 23 SHIELD -->
+  <section class="slide dark2">
+    <div class="kick">Предохранитель</div>
+    <div class="quote" style="margin-top:8px">Масштабироваться с пробоинами в воронке — <span style="color:#f0a79c">вредно</span></div>
+    <ul style="margin-top:26px;max-width:50ch">
+      <li>Пока внутри воронки «пробоины» — рост трафика роняет чистую прибыль</li>
+      <li>Воронка дожима <b>страхует</b> отдел продаж при заливе новых гипотез</li>
+      <li>И даёт маркетингу честный сигнал: проблема в трафике или внизу воронки</li>
+    </ul>
+    <img class="bob bobscene" src="gen/bob/cut/bob_shield.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 24 COORDINATION -->
+  <section class="slide">
+    <div class="kick">Координация · роль</div>
+    <h2>Нужен <span class="g">один</span> ответственный за ОКК</h2>
+    <div class="row" style="margin-top:22px">
+      <div class="col card" style="max-width:47%"><h3 class="em">Руководитель ОКК</h3><p style="color:var(--muted);font-size:17px;margin-top:6px">Недорогой (≈75к) или совмещённая функция. KPI привязан к выручке с воронки дожима — у него <b>свой план продаж</b>.</p></div>
+      <div class="col card" style="max-width:47%"><h3 class="em">Он же «инженер»</h3><p style="color:var(--muted);font-size:17px;margin-top:6px">Постоянно донастраивает чек-лист, скрипты, фразы. Инструмент развивается, а не «настроил и забыл».</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/p_book.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 25 PREDICTIVE -->
+  <section class="slide">
+    <div class="kick">Предиктивная модель</div>
+    <h2>7 метрик, которые видят деньги</h2>
+    <div class="grid9" style="grid-template-columns:repeat(2,1fr);margin-top:16px;max-width:78%">
+      <div class="b9"><b>Доля исполнения продуктового каскада</b></div>
+      <div class="b9"><b>Доля исполнения финансового каскада</b></div>
+      <div class="b9"><b>Доля корректной сегментации</b></div>
+      <div class="b9"><b>Доля звонков с критическими ошибками</b></div>
+      <div class="b9"><b>Конверсия дожима (источник — ОКК)</b></div>
+      <div class="b9"><b>Конверсия дожима (CRM-триггеры)</b></div>
+      <div class="b9" style="grid-column:span 2;border-color:var(--gold);background:#FBF6EC"><b>Выручка с дожима (те самые 10–15%)</b></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_medals.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 26 WEEKLY RHYTHM + ROLEPLAY -->
+  <section class="slide">
+    <div class="kick">Ритм и калибровка</div>
+    <h2>Еженедельно смотрим, у кого что западает</h2>
+    <ul style="margin-top:18px;max-width:58%">
+      <li>Планёрка: метрики ОКК в динамике, зоны провалов по свилзам, что РОП забирает на неделю</li>
+      <li>Главный инструмент калибровки — <b class="g">ролевки</b> (уже можно с AI, голосом)</li>
+      <li>Зоны развития из ОКК → AI-ассистент проводит ролевку с менеджером по его слабым местам</li>
+      <li>Раз в 2 недели — калибровка скриптов/фраз по успешным звонкам; квартальная ретроспектива чек-листа</li>
+    </ul>
+    <img class="bob bobscene" src="gen/bob/cut/bob_roleplay.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 27 TELEGRAM ALERT -->
+  <section class="slide">
+    <div class="kick">Оперативная обратная связь</div>
+    <h2>Алерт «🚨 Риск срыва» в Telegram</h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:46%">
+        <ul>
+          <li>Прилетает сразу после звонка с риском</li>
+          <li>Почему риск · итог · ошибки</li>
+          <li>Оценка + 6 подметрик</li>
+          <li>Что делать + ссылка на дашборд</li>
+        </ul>
+      </div>
+      <div class="col" style="max-width:52%">
+        <div class="tg">🚨 <b>РИСК СРЫВА СДЕЛКИ</b><br><br>👤 Якшеева Елена · Продажа · КП (КЭВ)<br>📅 03.07 11:42 · 5:25<br><span class="sep">━━━━━━━━━━</span><br>⚠️ Не отработано возражение об ответственности<br>❌ Не назначен следующий контакт<br><span class="sep">━━━━━━━━━━</span><br>📊 Оценка: 70<br>👋100 · 🔍100 · 🔥40 · 🎯80 · 🛡60 · 🏁40<br><span class="sep">━━━━━━━━━━</span><br>✅ Связаться в 2 часа, предложить аудит документов</div>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_phone.png" alt="" style="height:210px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 28 PSYCHOANALYSIS -->
+  <section class="slide dark2">
+    <div class="kick">Бонус · за пределами продаж</div>
+    <h2>Психоанализ коммуникаций</h2>
+    <p class="lead" style="margin-top:18px;max-width:54ch">AI подключается ко всем звонкам и перепискам. После one-to-one с топом — обеим сторонам прилетает <b class="em">карточка психоанализа</b> + что подкалибровать.</p>
+    <ul style="margin-top:16px;max-width:54ch">
+      <li>«Экран восприятия»: каждый услышал своё — детали теряются</li>
+      <li>Быстрая калибровка <b>управленческого мышления</b>, не дожидаясь недели</li>
+      <li>Особенно на переговорах, в т.ч. на английском — считать эмоциональный фон</li>
+    </ul>
+    <img class="bob bobc" src="gen/bob/cut/p_think.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 29 HOMEWORK -->
+  <section class="slide">
+    <div class="kick">Домашнее задание</div>
+    <h2>Прогони свою когорту через ОКК</h2>
+    <ul style="margin-top:20px;max-width:62%">
+      <li>Настрой инструмент под свой бизнес (9 блоков) — или возьми готовые промпты</li>
+      <li>Разбери реальные звонки/встречи одной когорты</li>
+      <li>Приди и скажи: «нашли недожатых сделок на <b class="g">N₽</b>»</li>
+      <li>Собери свой список на дожим и запусти воронку дожима</li>
+    </ul>
+    <div class="card" style="margin-top:16px;max-width:62%;border-left:4px solid var(--gold)"><span style="font-size:18px;color:var(--muted)">Вероятность, что найдёте что дожимать — <b class="em">98%</b>.</span></div>
+    <img class="bob bobc" src="gen/bob/cut/bob_dashboard.png" alt="" style="height:250px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 30 FINAL -->
+  <section class="slide dark">
+    <div class="kick">Итог</div>
+    <h1 style="font-size:44px;max-width:22ch">Две функции, которые<br>закрывают коммерческий блок</h1>
+    <div class="row" style="margin-top:26px;max-width:70%">
+      <div class="col card" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#fff"><h3 style="color:#fff">🎧 Отдел контроля качества</h3><p style="color:#c3cec5;font-size:16px;margin-top:6px">Контроль 100% коммуникаций → качество и подстраховка.</p></div>
+      <div class="col card" style="background:rgba(199,154,69,.14);border-color:var(--gold2);color:#fff"><h3 style="color:#fff">🔥 Воронка дожима</h3><p style="color:#EFE9DA;font-size:16px;margin-top:6px">Самоокупаемость → +10–15% выручки ежемесячно.</p></div>
+    </div>
+    <p class="lead" style="margin-top:24px;color:#8ee0a6;font-weight:700;font-size:22px">Сначала выстраиваем предохранители — потом масштабируемся.</p>
+    <img class="bob bobscene" src="gen/bob/cut/s47_win.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+</div>
+
+<div id="bar"></div><div id="count"></div>
+<div class="hint" id="hint">← → пробел · F — полный экран</div>
+
+<script>
+const stage=document.getElementById('stage');
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+function fit(){const s=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+  location.hash=i+1;
+  document.getElementById('hint').style.opacity=i===0?1:0;
+}
+function next(){show(i+1);}function prev(){show(i-1);}
+addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev();}
+  else if(e.key==='Home'){show(0);}else if(e.key==='End'){show(slides.length-1);}
+  else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
+});
+stage.addEventListener('click',e=>{const r=stage.getBoundingClientRect();if((e.clientX-r.left)/r.width<0.22)prev();else next();});
+const start=parseInt((location.hash||'').replace('#',''),10);show(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>
