@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A-Players · Домашнее задание — Коммерческая функция: CRM + план продаж</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+  --em:#143A2D;--em2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold2:#C79A45;--gold-h:#977019;
+  --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+  --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5.2vw,52px);line-height:1.05;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(23px,4vw,33px);line-height:1.1;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 3px}
+.gold{color:var(--gold-h)}b,strong{font-weight:800}.em{color:var(--em)}.rd{color:var(--red)}.grn{color:var(--green)}
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:60px 0 54px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 86% 30%,rgba(199,154,69,.18),transparent 44%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:760px}
+.hero .lead{font-size:clamp(17px,2.3vw,20px);color:rgba(239,233,218,.85);max-width:600px;margin-top:16px;font-weight:500}
+.hero .kicker{color:var(--gold2)}
+.hero-bob{position:absolute;right:20px;bottom:-6px;height:300px;z-index:1;pointer-events:none;filter:drop-shadow(0 12px 20px rgba(0,0,0,.22))}
+@media(max-width:860px){.hero-bob{display:none}}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.badge{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold2)}
+.cta{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;font-weight:800;font-size:16px;padding:14px 22px;border-radius:12px;text-decoration:none;margin-top:24px;box-shadow:0 14px 30px -12px rgba(176,130,46,.7);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+section{padding:48px 0}section.alt{background:var(--bg2)}
+.eyebrow{margin-bottom:13px;display:inline-block}
+.lead{font-size:19px;color:var(--muted);font-weight:500}
+.deliv{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:0 16px 16px 0;padding:22px 26px;margin-top:22px}
+.deliv ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-top:8px}
+@media(max-width:640px){.deliv ul{grid-template-columns:1fr}}
+.deliv li{position:relative;padding-left:27px;font-size:16px}
+.deliv li::before{content:"✓";position:absolute;left:0;top:-1px;color:var(--green);font-weight:800}
+.stat3{display:flex;gap:30px;margin-top:18px;flex-wrap:wrap}
+.stat3 .v{font-family:var(--serif);font-weight:800;font-size:44px;color:var(--em);line-height:1}
+.stat3 .l{font-size:15px;color:var(--muted)}
+.vars{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+@media(max-width:760px){.vars{grid-template-columns:1fr}}
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;display:flex;flex-direction:column}
+.vcard.v1{border-top:5px solid var(--em)}.vcard.v2{border-top:5px solid var(--gold)}
+.vcard .vn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.vcard h3{font-size:21px;margin-top:2px}.vcard p{font-size:14.5px;color:var(--muted);margin-top:6px}
+.vcard ol{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.vcard ol li{font-size:14.5px}
+.vcard .btns{margin-top:auto;padding-top:16px;display:flex;flex-wrap:wrap;gap:9px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:11px 16px;border-radius:10px;text-decoration:none;transition:transform .15s;border:none;cursor:pointer;font-family:var(--sans)}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A}
+.btn.e{background:var(--em);color:#fff}
+.btn.g{background:transparent;border:1.5px solid var(--line);color:var(--em)}
+.road{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.rstep{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.rstep .n{width:46px;height:40px;border-radius:10px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:16px;display:grid;place-items:center}
+.rstep h4{font-family:var(--serif);font-size:18px;color:var(--em)}
+.rstep p{font-size:15px;color:var(--muted);margin-top:5px}
+.rstep .mini{font-size:13.5px;color:var(--ink);margin-top:8px;background:var(--bg2);border-radius:9px;padding:9px 12px}
+.rstep .mini b{color:var(--em)}
+.sec-box{background:#2b1512;border:1px solid #5a2b22;border-radius:18px;padding:26px 28px;margin-top:24px;color:#f3e3df;position:relative;overflow:hidden}
+.sec-box::after{content:"🔒";position:absolute;right:22px;top:18px;font-size:40px;opacity:.25}
+.sec-box h3{color:#fff;font-size:22px}
+.sec-box .rule{display:flex;gap:11px;margin-top:14px;font-size:15px}
+.sec-box .rule .i{color:#ffcf6a;font-weight:800;flex:none}
+.sec-box .big{background:rgba(255,255,255,.08);border-radius:10px;padding:11px 15px;margin-top:16px;font-weight:700;color:#ffd98a}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-top:20px}
+.fbox{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.fbox .ft{font-family:var(--mono);font-size:11px;color:var(--gold-h);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.fbox b{display:block;margin-top:4px;color:var(--em);font-family:var(--serif)}
+.fbox p{font-size:13px;color:var(--muted);margin-top:4px}
+.farrow{align-self:center;color:var(--gold);font-weight:800;font-size:22px}
+@media(max-width:760px){.farrow{transform:rotate(90deg)}}
+
+/* ---- mock dashboards ---- */
+.mock{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:18px;box-shadow:0 10px 30px rgba(20,32,27,.06)}
+.mock .mh{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.mstats{grid-template-columns:1fr 1fr}}
+.ms{border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+.ms .k{font-size:11px;font-weight:700;text-transform:uppercase;opacity:.8}
+.ms .v{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1;margin-top:6px}
+.ms.idx{background:linear-gradient(160deg,#B0822E,#977019);color:#fff;border:none}
+.ms.calls{background:#F1F4F1}.ms.calls .v{color:var(--em)}
+.ms.risk{background:#FBEFEC;border-color:#e9cfc8}.ms.risk .k,.ms.risk .v{color:var(--red)}
+.ms.score{background:linear-gradient(160deg,#2f7a4e,#3E8E5E);color:#fff;border:none}
+.mtiles{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
+@media(max-width:640px){.mtiles{grid-template-columns:1fr 1fr 1fr}}
+.mt{border-radius:10px;color:#fff;padding:10px;text-align:center}
+.mt .e{font-size:16px}.mt .n{font-family:var(--serif);font-weight:800;font-size:22px}.mt .l{font-size:10px;opacity:.95;font-weight:700}
+.gg{background:linear-gradient(160deg,#3E8E5E,#2f7a4e)}.ga{background:linear-gradient(160deg,#C79A45,#B0822E)}.gr{background:linear-gradient(160deg,#C0503f,#B23B2E)}
+.mtbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:12px}
+.mtbl th{text-align:left;font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:700;padding:6px;border-bottom:1px solid var(--line)}
+.mtbl td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.mtbl .sc{font-weight:800}.g1{color:var(--green)}.a1{color:var(--amber)}.r1{color:var(--red)}
+.risktag{color:var(--red);font-weight:800;font-size:11px}
+.callcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:8px}
+.rkbox{background:#FBEFEC;border:1px solid #e9cfc8;border-radius:10px;padding:11px 14px}
+.rkbox b{color:var(--red)}
+.stg{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.stg .sn{width:170px;font-weight:700}.stg .ss{font-family:var(--serif);font-weight:800;font-size:18px;width:60px}
+.tg{background:#0f1c17;color:#e7efe9;border-radius:12px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.5;margin-top:10px;white-space:pre-wrap}
+.funnel{display:flex;flex-direction:column;gap:5px;max-width:520px;margin-top:6px}
+.fbar{border-radius:9px;color:#fff;font-weight:700;padding:9px 0;text-align:center;font-size:14px}
+.note-fallback{background:#FBF6EC;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:15px}
+.value{background:var(--em);color:var(--dark-ink);border-radius:12px;padding:12px 16px;margin-top:14px;font-size:15px;font-weight:600}
+.value b{color:#fff}
+.dl-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.promptbox{background:#F7F2E6;border:1px solid var(--line);border-radius:12px;padding:15px 17px;margin-top:12px;font-family:var(--mono);font-size:13px;line-height:1.5;white-space:pre-wrap}
+.crit{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-top:20px}
+.crit ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:8px}
+.crit li{position:relative;padding-left:26px;font-size:16px}
+.crit li::before{content:"☐";position:absolute;left:0;color:var(--gold-h);font-weight:800}
+footer{background:var(--em);color:var(--dark-ink);padding:26px 0}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:14px}
+footer img{height:20px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img class="hero-bob" src="gen/bob/cut/bob_copilot.png" alt="">
+  <div class="wrap">
+    <div class="badges"><span class="badge">Модуль · CRM + план продаж</span><span class="badge">2 рабочих инструмента</span><span class="badge">План на цифрах, не на глаз</span></div>
+    <span class="kicker">Домашнее задание</span>
+    <h1>Собери коммерческую функцию:<br>CRM + точный план продаж</h1>
+    <p class="lead">За руку, по шагам, простыми словами. Спроектируй воронку в CRM, собери карточку клиента и сегментацию, посчитай план продаж — <b class="hl">на своих цифрах</b>, тремя методами, со сходимостью ≤5%.</p>
+    <a class="cta" href="#start">Начать по шагам ↓</a>
+  </div>
+</header>
+
+<!-- РЕЗУЛЬТАТ -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Что у тебя будет в итоге</span>
+    <h2>Готовая архитектура продаж и цифра плана</h2>
+    <div class="deliv">
+      <ul>
+        <li>ТЗ на воронку в CRM (оформленный Excel)</li>
+        <li>Регламенты отдела продаж (под онбординг)</li>
+        <li>Тех-ТЗ для вайбкодинга своей CRM</li>
+        <li>Карточка клиента + сегментация A–E + DISC</li>
+        <li>План продаж: Commit / Target / Stretch</li>
+        <li>Медиаплан по каналам (CPL / CAC / ROMI) + декомпозиция</li>
+      </ul>
+    </div>
+    <div class="stat3">
+      <div><div class="v">3 метода</div><div class="l">сверху-вниз · снизу-вверх · от ёмкости</div></div>
+      <div><div class="v">≤5%</div><div class="l">сходимость → план в работу</div></div>
+      <div><div class="v">2</div><div class="l">инструмента, работают сразу</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ИНСТРУМЕНТЫ -->
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Твои инструменты</span>
+    <h2>Два инструмента — открываются в браузере</h2>
+    <p class="lead" style="margin-top:8px">Работают на <b>твоём</b> ключе Claude API (вводится в браузере, хранится только у тебя). Без ключа — кнопка «Показать пример» покажет всё на демо-данных.</p>
+    <div class="vars">
+      <div class="vcard v1">
+        <div class="vn">Инструмент 1</div>
+        <h3>🧭 Конструктор воронки → ТЗ в CRM</h3>
+        <p>Отвечаешь на вопросы о бизнесе → AI проектирует идеальную воронку по лучшим практикам.</p>
+        <ol>
+          <li>Этапы по результату + ЦКП, SLA, автоматизации amoCRM/Bitrix</li>
+          <li>Карточка клиента (6 блоков + DISC), сегментация A–E, правила дожима</li>
+          <li>Выгрузка: <b>ТЗ в Excel</b> + регламенты ОП + тех-ТЗ для вайбкодинга</li>
+        </ol>
+        <div class="btns">
+          <a class="btn e" href="konstruktor.html" target="_blank" rel="noopener">🧭 Открыть конструктор</a>
+        </div>
+      </div>
+      <div class="vcard v2">
+        <div class="vn">Инструмент 2</div>
+        <h3>📊 Калькулятор плана продаж → цифра</h3>
+        <p>Прикрепляешь отчётность → инструмент читает её и считает план тремя методами.</p>
+        <ol>
+          <li>Компания → прикрепи Excel → «Прочитать и заполнить» (факт + бенчмарки)</li>
+          <li>Медиаплан по каналам (C0/C1/CAC/ROMI) + отдел продаж (докрутка менеджеров)</li>
+          <li>Итог: <b>Commit / Target / Stretch</b> + декомпозиция месяц→неделя→день</li>
+        </ol>
+        <div class="btns">
+          <a class="btn e" href="kalkulyator.html" target="_blank" rel="noopener">📊 Открыть калькулятор</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ПО ШАГАМ -->
+<section id="start">
+  <div class="wrap">
+    <span class="kicker eyebrow">Как пройти</span>
+    <h2>За руку — 8 шагов</h2>
+    <div class="road">
+      <div class="rstep"><div class="n">1</div><div>
+        <h4>Получи ключ Claude API</h4>
+        <p>Один раз: <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a> → создай ключ (sk-ant-…). Вставь его в инструмент — он сохранится только в твоём браузере.</p>
+        <div class="mini"><b>Без ключа</b> всё тоже смотрится: нажми «Показать пример» — работает на демо-данных.</div>
+      </div></div>
+      <div class="rstep"><div class="n">2</div><div>
+        <h4>Собери воронку в конструкторе</h4>
+        <p>Открой конструктор, пройди 6 шагов о своём бизнесе → «Собрать воронку». Проверь этапы, карточку, сегментацию, дожим. Выгрузи <b>ТЗ в Excel</b> и нажми «Регламенты отдела продаж».</p>
+      </div></div>
+      <div class="rstep"><div class="n">3</div><div>
+        <h4>Настрой воронку в CRM</h4>
+        <p>amoCRM или Bitrix — <b>любая</b>, это просто база («пластилин»), на которую надстраиваешь своё. Не переплачивай: базового тарифа хватит, дорогие «проекты» на старте не нужны. Claude можно подключить к CRM по API.</p>
+        <div class="mini">Заведи этапы по результату, обязательные поля на переходах и таймеры SLA — как в ТЗ.</div>
+      </div></div>
+      <div class="rstep"><div class="n">4</div><div>
+        <h4>Карточка клиента и сегментация</h4>
+        <p>Заведи поля из 6 блоков + DISC. Сегмент A–E ставится по критериям <b>потребность · срочность · деньги</b> (A/B/C — целевые, D — нецелевой, E — не дозвонились). Часть полей (оценка звонка, риск, сегмент, DISC, причина отказа) заполнит <b>ОКК автоматически</b>.</p>
+      </div></div>
+      <div class="rstep"><div class="n">5</div><div>
+        <h4>Загрузи отчётность в калькулятор</h4>
+        <p>Вкладка «Компания» → «📎 Прикрепить отчётность (Excel/CSV)». Google Sheets: «Файл → Скачать → .xlsx». Нажми «🔬 Прочитать и заполнить» — инструмент вытащит твои факт-цифры и предложит бенчмарки.</p>
+      </div></div>
+      <div class="rstep"><div class="n">6</div><div>
+        <h4>Разложи медиаплан по каналам</h4>
+        <p>Вкладка «Медиаплан»: по каждому каналу трафика — бюджет, CPM/CPC, CTR, <b>C0</b> (клик→заявка), <b>C1</b> (заявка→оплата), чек → считает CPL, CAC, cash-in, ROMI. Добавляй/удаляй свои каналы. Формат (вебинар и т.п.) — это конвертер, а не канал.</p>
+      </div></div>
+      <div class="rstep"><div class="n">7</div><div>
+        <h4>Внеси отдел продаж</h4>
+        <p>Вкладка «Отдел продаж»: добавь менеджеров (конверсия, средний чек, сделки/мес). Инструмент покажет резерв <b>докрутки до лучших</b> — сколько выручки добавит, если подтянуть отстающих.</p>
+      </div></div>
+      <div class="rstep"><div class="n">8</div><div>
+        <h4>Получи итоговый план</h4>
+        <p>Вкладка «🎯 Итоговый план»: <b>Commit / Target / Stretch</b>, сходимость трёх методов и вердикт «брать / не брать». Декомпозируй Target по неделям и дням продавца.</p>
+        <div class="mini"><b>Готово:</b> у тебя ТЗ воронки для CRM и Target-цифра плана на месяц, которую не стыдно защитить.</div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- БЕЗОПАСНОСТЬ / КЛЮЧ -->
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Про ключ и приватность</span>
+    <h2>Твой ключ — только твой</h2>
+    <div class="sec-box">
+      <h3>🔒 Как устроена приватность</h3>
+      <div class="rule"><span class="i">1</span><div>Ключ Claude API вводишь в браузере. Он сохраняется <b>локально у тебя</b> и уходит только на <b>api.anthropic.com по твоему ключу</b>. Мы его не храним и не видим.</div></div>
+      <div class="rule"><span class="i">2</span><div>Файлы отчётности парсятся <b>прямо в твоём браузере</b> — никуда не заливаются. К Claude уходит только текстовая выжимка цифр (на твоём ключе).</div></div>
+      <div class="rule"><span class="i">3</span><div>В инструментах <b>нет ничьих чужих ключей</b> — каждый работает на своём. Оплата Claude — по факту, один расчёт стоит центы.</div></div>
+      <div class="big">Правило: ключ никому не пересылай и не вставляй в общие документы. Он нужен только тебе и только в этих инструментах.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ЧТО СДАТЬ -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Что сдать</span>
+    <h2>Критерии готовности</h2>
+    <div class="crit">
+      <h3 class="em">Чек-лист</h3>
+      <ul>
+        <li>Собрано ТЗ на воронку под твой бизнес (Excel)</li>
+        <li>В CRM заведены этапы по результату, обязательные поля и SLA</li>
+        <li>Заполнена карточка клиента + сегментация A–E + DISC</li>
+        <li>Загружена отчётность → подставлены факт-цифры и бенчмарки</li>
+        <li>Медиаплан разложен по каналам, виден ROMI по каждому</li>
+        <li>Внесены менеджеры, найден резерв докрутки</li>
+        <li>Посчитан план: Commit / Target / Stretch, сходимость ≤5%</li>
+      </ul>
+      <div class="value" style="margin-top:16px"><b>Главная задача:</b> приди с <b>Target-цифрой</b> на месяц, которую не стыдно защитить (методы сошлись ≤5%), и с <b>ТЗ воронки</b>, готовым к настройке в CRM.</div>
+    </div>
+    <div class="dl-row">
+      <a class="btn e" href="konstruktor.html" target="_blank" rel="noopener">🧭 Конструктор воронки</a>
+      <a class="btn e" href="kalkulyator.html" target="_blank" rel="noopener">📊 Калькулятор плана</a>
+      <a class="btn g" href="prezentaciya.html" target="_blank" rel="noopener">🖥 Презентация</a>
+      <a class="btn p" href="prezentaciya.pdf" download="Коммерческая функция — презентация.pdf">⬇ Презентация (PDF)</a>
+    </div>
+    <div class="note-fallback">🔑 Для живой работы нужен свой ключ Claude API (<a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a>) — оплата по факту, ключ хранится только у тебя. Дедлайн — до следующей встречи.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span style="display:flex;align-items:center;gap:10px"><img src="assets/logo-aplayers.png" alt="A-Players"> ПРАКТИКУМ A-PLAYERS</span>
+    <span>Модуль · Коммерческая функция: CRM + план продаж</span>
+  </div>
+</footer>
+
+</body>
+</html>

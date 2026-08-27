@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Калькулятор плана продаж · A-Players</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F1EA; --panel:#FCFAF4; --panel2:#EFE9D9; --line:#DCD4C2;
+    --ink:#16201B; --mut:#5A6056; --mut2:#8A8B7E;
+    --acc:#143A2D; --acc2:#B0822E; --good:#3E8E5E; --warn:#C77A22; --bad:#B23B2E;
+    --chip:#EFE9D9;
+    --serif:"Roboto Slab",Georgia,serif;
+    --r:14px;
+    --shadow:0 1px 2px rgba(22,32,27,.04), 0 6px 20px rgba(22,32,27,.07);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  body{padding:0 0 80px}
+  a{color:var(--acc)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+  /* header */
+  header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line)}
+  .hd{display:flex;align-items:center;gap:14px;padding:14px 22px;max-width:1180px;margin:0 auto;flex-wrap:wrap}
+  .logo{font-weight:800;letter-spacing:.3px;font-size:15px;display:flex;align-items:center;gap:9px}
+  .logo .dot{width:10px;height:10px;border-radius:3px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+    box-shadow:0 0 14px var(--acc)}
+  .logo small{color:var(--mut);font-weight:500;font-size:12px}
+  .tabs{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+  .tab{padding:8px 13px;border-radius:10px;font-size:13px;color:var(--mut);cursor:pointer;
+    border:1px solid transparent;white-space:nowrap;user-select:none;transition:.15s}
+  .tab:hover{color:var(--ink);background:var(--chip)}
+  .tab.on{color:var(--acc);font-weight:700;background:rgba(20,58,45,.09);
+    border-color:rgba(20,58,45,.28)}
+  /* hero */
+  .hero{padding:46px 0 22px}
+  .hero h1{font-family:var(--serif);font-size:36px;line-height:1.1;margin:0 0 12px;letter-spacing:-.4px;font-weight:800}
+  .hero h1 span{color:var(--acc2)}
+  .hero p{color:var(--mut);font-size:16px;max-width:760px;line-height:1.55;margin:0}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 6px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px;box-shadow:var(--shadow)}
+  .kpi .l{color:var(--mut);font-size:12px;margin-bottom:7px}
+  .kpi .v{font-size:24px;font-weight:800;letter-spacing:-.5px}
+  .kpi .s{font-size:12px;margin-top:5px}
+  /* generic */
+  section.view{display:none;padding:30px 0}
+  section.view.on{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr 1fr}
+  h2.sec{font-size:12px;letter-spacing:1.6px;text-transform:uppercase;color:var(--acc2);margin:0 0 16px;font-weight:700}
+  h3{font-family:var(--serif);font-size:17px;margin:0 0 4px;font-weight:700}
+  .mcard h4,.kpi .v,.big{font-family:var(--serif)}
+  .lead{color:var(--mut);font-size:14px;line-height:1.55}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;padding:4px 9px;border-radius:20px;
+    background:var(--chip);border:1px solid var(--line);color:var(--mut)}
+  .badge.live{color:var(--good);border-color:rgba(46,201,138,.35)}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:700}
+  .pill.g{background:rgba(46,201,138,.16);color:var(--good)}
+  .pill.y{background:rgba(255,182,72,.16);color:var(--warn)}
+  .pill.r{background:rgba(255,93,108,.16);color:var(--bad)}
+  /* method cards */
+  .mcards{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .mcard{background:var(--panel2);border:1px solid var(--line);border-radius:var(--r);padding:18px;position:relative;overflow:hidden}
+  .mcard:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(var(--acc),var(--acc2))}
+  .mcard .n{font-size:11px;color:var(--mut2);letter-spacing:1px;font-weight:700}
+  .mcard h4{margin:6px 0 8px;font-size:16px}
+  .mcard p{margin:0;color:var(--mut);font-size:13.5px;line-height:1.5}
+  .note{border-left:3px solid var(--warn);background:rgba(207,132,0,.08);padding:12px 14px;border-radius:8px;
+    color:#7a5200;font-size:13.5px;line-height:1.5;margin-top:14px}
+  .note.b{border-color:var(--acc);background:rgba(58,109,240,.07);color:#22458f}
+  /* inputs */
+  table{width:100%;border-collapse:collapse}
+  th,td{text-align:left;padding:10px 10px;font-size:13.5px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{color:var(--mut2);font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+  td.r,th.r{text-align:right}
+  input[type=number],input[type=text]{width:100%;background:var(--panel2);border:1px solid var(--line);
+    color:var(--ink);border-radius:9px;padding:9px 11px;font-size:14px;font-variant-numeric:tabular-nums}
+  input:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(20,58,45,.15)}
+  .inp{display:flex;flex-direction:column;gap:6px}
+  .inp label{font-size:12px;color:var(--mut)}
+  .inpgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .yellow input{background:#fffae3;border-color:#ecdf9f}
+  .yellow{background:#fffdf2}
+  /* компактные инпуты медиаплана — чтобы цифры (C1 и пр.) влезали */
+  #mediaTable input{padding:6px 7px;font-size:13px;border-radius:7px}
+  #mediaTable input[type=number]::-webkit-outer-spin-button,#mediaTable input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  #mediaTable input[type=number]{-moz-appearance:textfield}
+  #mediaTable th,#mediaTable td{padding:8px 8px}
+  /* глоссарий */
+  .gloss{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-top:8px}
+  .gloss .gi{font-size:13.5px;line-height:1.45}
+  .gloss .gt{font-weight:800;color:var(--acc)}
+  .gloss .gf{color:var(--mut);font-style:italic}
+  .num{font-variant-numeric:tabular-nums}
+  .big{font-size:22px;font-weight:800;letter-spacing:-.4px}
+  /* sliders */
+  input[type=range]{-webkit-appearance:none;width:100%;height:5px;border-radius:5px;background:var(--line);outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;border-radius:50%;
+    background:var(--acc2);cursor:pointer;box-shadow:0 0 8px rgba(176,130,46,.5)}
+  .barbg{height:9px;border-radius:6px;background:var(--line);overflow:hidden}
+  .barfill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+  /* funnel */
+  .funnel{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+  .fstep{display:grid;grid-template-columns:170px 1fr 90px;gap:12px;align-items:center}
+  .fstep .lab{font-size:13px;color:var(--mut)}
+  .ftrack{height:30px;border-radius:8px;background:var(--panel2);position:relative;overflow:hidden;border:1px solid var(--line)}
+  .ffill{height:100%;background:linear-gradient(90deg,var(--acc),#1d5140);
+    display:flex;align-items:center;padding-left:10px;font-size:12.5px;font-weight:700;color:#fff;min-width:34px}
+  .fconv{font-size:12px;color:var(--mut2);text-align:right}
+  /* gauge */
+  .gauge{display:flex;align-items:center;gap:20px}
+  .ring{flex:none}
+  /* footer btns */
+  .btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--acc),var(--acc2));
+    color:#fff;border:none;border-radius:10px;padding:11px 16px;font-size:14px;font-weight:600;cursor:pointer}
+  .btn.ghost{background:var(--chip);border:1px solid var(--line);color:var(--ink)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .spacer{height:16px}
+  .mut{color:var(--mut)} .mut2{color:var(--mut2)}
+  .right{text-align:right}
+  .hr{height:1px;background:var(--line);margin:18px 0}
+  .tag{font-size:11px;color:var(--mut2)}
+  .deltapos{color:var(--good)} .deltaneg{color:var(--bad)}
+  .scenrow{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:0}
+  @media(max-width:880px){
+    .kpis,.mcards,.g2,.g3{grid-template-columns:1fr}
+    .inpgrid{grid-template-columns:1fr}
+    .fstep{grid-template-columns:120px 1fr 70px}
+    .hero h1{font-size:26px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="logo"><span class="dot"></span> A-PLAYERS · Калькулятор плана продаж <small>системное планирование без «битого плана»</small></div>
+    <nav class="tabs" id="tabs">
+      <div class="tab on" data-v="company">🏢 Компания</div>
+      <div class="tab" data-v="method">Метод</div>
+      <div class="tab" data-v="inputs">Текущие значения</div>
+      <div class="tab" data-v="reps">Отдел продаж</div>
+      <div class="tab" data-v="bench">Бенчмарки</div>
+      <div class="tab" data-v="media">Медиаплан</div>
+      <div class="tab" data-v="forecast">Прогноз выручки</div>
+      <div class="tab" data-v="plan">Расчёт плана</div>
+      <div class="tab" data-v="final">🎯 Итоговый план</div>
+      <div class="tab" data-v="decomp">Декомпозиция</div>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="wrap">
+  <div class="hero">
+    <div class="badge live" style="margin-bottom:14px" id="heroTag">● пример заполнен — подставь свои цифры во вкладке «Текущие значения»</div>
+    <h1>Точный план продаж<br><span>без «битого планирования»</span></h1>
+    <p>Один калькулятор: подставляешь свои метрики → видишь, какие отстают от бенчмарков → считаешь, сколько выручки откроется, если их дотянуть → строишь план <b>сверху-вниз</b>, <b>снизу-вверх</b> и <b>от ёмкости</b>, сводишь их ≤5% → получаешь <b>итоговую цифру</b> (Commit / Target / Stretch) → декомпозируешь месяц до действий каждого продавца по дням.</p>
+    <div class="kpis" id="heroKpis"></div>
+  </div>
+</div>
+
+<!-- ============ 0. COMPANY ============ -->
+<section class="view on" id="v-company">
+ <div class="wrap grid">
+  <div class="grid g2">
+   <div class="panel">
+    <h2 class="sec">О компании</h2>
+    <div class="inp" style="margin-bottom:12px"><label>Ниша / отрасль</label><input type="text" data-k="niche" placeholder="напр. B2B SaaS для логистики / натяжные потолки / онлайн-школа"></div>
+    <div class="inp" style="margin-bottom:12px"><label>Гео / рынок</label><input type="text" data-k="geo" placeholder="напр. Россия, СНГ; средний/премиум сегмент"></div>
+    <div class="inp" style="margin-bottom:10px"><label>О компании: что продаёте, кому (ЦА), модель, воронки</label>
+      <textarea data-k="bizDesc" style="width:100%;min-height:96px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--ink)" placeholder="Продукт, средний чек, цикл сделки, тип клиентов, ключевые воронки (первичка/база/тендеры)…"></textarea></div>
+    <input type="file" id="coFile" accept=".xlsx,.xls,.csv,.txt,.md" style="display:none" onchange="readCompanyDoc(this.files)">
+    <button class="btn ghost" onclick="document.getElementById('coFile').click()">📎 Прикрепить документ-обёртку о компании</button>
+    <div id="coInfo" class="tag" style="margin-top:8px;display:block"></div>
+   </div>
+
+   <div class="panel">
+    <h2 class="sec">Текущая отчётность</h2>
+    <p class="lead" style="margin-bottom:12px;font-size:15px">Прикрепи выгрузку из <b>Excel / Google Sheets</b> — инструмент прочитает <b>все вкладки локально</b> и достанет цифры. Google Sheets: «Файл → Скачать → .xlsx», затем прикрепи.</p>
+    <input type="file" id="repFile" accept=".xlsx,.xls,.csv" multiple style="display:none" onchange="readReportFile(this.files)">
+    <button class="btn" onclick="document.getElementById('repFile').click()">📎 Прикрепить отчётность (Excel/CSV)</button>
+    <div id="repInfo" class="tag" style="margin-top:10px;display:block">Файлов пока нет.</div>
+    <div class="inp" style="margin-top:12px"><label>…или впиши показатели вручную (необязательно)</label>
+      <textarea data-k="currentReport" style="width:100%;min-height:88px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit;color:var(--ink)" placeholder="лиды/мес, конверсии по этапам, средний чек, close rate, CAC/CPL по каналам, покрытие базы…"></textarea></div>
+   </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec">🔬 Прочитать отчётность и заполнить (AI)</h2>
+    <p class="lead" style="margin-bottom:12px">Модель прочитает прикреплённую отчётность → вытащит ваши <b>фактические цифры</b> (конверсии, чек, pipeline) и подставит их в модель, плюс предложит реалистичные <b>бенчмарки</b> ниши. Всё потом можно <b>править вручную</b>.</p>
+    <div class="row" style="gap:12px;align-items:flex-end;flex-wrap:wrap">
+      <div class="inp" style="flex:1;min-width:220px"><label>Claude API-ключ (sk-ant-…)</label><input type="password" id="apikey" placeholder="sk-ant-..." autocomplete="off"></div>
+      <div class="inp" style="min-width:200px"><label>Модель</label>
+        <select id="model" style="width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 11px;font-size:14px">
+          <option value="claude-opus-5">Claude Opus 5 (точнее)</option>
+          <option value="claude-sonnet-5">Claude Sonnet 5 (быстрее)</option>
+        </select></div>
+    </div>
+    <div class="row" style="gap:10px;margin-top:12px">
+      <button class="btn" onclick="researchBenchmarks()" id="researchBtn">🔬 Прочитать и заполнить</button>
+      <button class="btn ghost" onclick="setAllTargets('bench')">Цели = бенчмарк</button>
+    </div>
+    <div id="researchStatus" style="margin-top:12px"></div>
+    <div class="note b" style="margin-top:12px">Файлы парсятся <b>у тебя в браузере</b> — к api.anthropic.com уходит только текстовая выжимка цифр (на твоём ключе). Приватные Google-таблицы по ссылке из браузера прочитать нельзя — поэтому прикрепляем файлом.</div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 1. METHOD ============ -->
+<section class="view" id="v-method">
+ <div class="wrap">
+  <div class="panel">
+    <h2 class="sec">Два лагеря точек роста</h2>
+    <div class="g2 grid">
+      <div class="mcard"><div class="n">ЛАГЕРЬ 1</div><h4>Слабый Execution</h4>
+        <p>Не хватает требовательности и дожима, либо нет людей/компетенций под тот масштаб, который никогда не делали. Лечится ручкой требовательности и наймом.</p></div>
+      <div class="mcard"><div class="n">ЛАГЕРЬ 2 · ~60% компаний игнорируют</div><h4>Битое планирование</h4>
+        <p>Не умеем правильно считать деньги и складывать декомпозицию. Итог — деморализация и выгорание: ожидания не совпадают с реальностью. <b>Этот движок чинит именно второй лагерь.</b></p></div>
+    </div>
+
+    <div class="spacer"></div>
+    <h2 class="sec">Никогда не считаем одним методом</h2>
+    <div class="mcards">
+      <div class="mcard"><div class="n">МЕТОД 1</div><h4>Сверху-вниз (от цели)</h4>
+        <p>Ставим амбициозную цель → раскладываем, сколько нужно сделок, кваллидов, касаний, бюджета и людей. Выдёргивает команду «из ракушки». Здесь же — красные флажки (предохранители), ниже которых нельзя падать.</p></div>
+      <div class="mcard"><div class="n">МЕТОД 2</div><h4>Снизу-вверх (от ресурса)</h4>
+        <p>Идём от того, что есть: pipeline, ёмкость продавцов, текущие конверсии, база клиентов, каналы. Чтобы не летать в иллюзиях. На выходе — честная цифра «что реально принесём».</p></div>
+      <div class="mcard"><div class="n">МЕТОД 3</div><h4>От каналов маркетинга</h4>
+        <p>Медиаплан: по каждому каналу экономика — бюджет → лиды → CPL → конверсия → выручка → ROMI. Видно, откуда реально придут деньги и где канал просел против бенчмарка.</p></div>
+      <div class="mcard"><div class="n">МЕТОД 4</div><h4>От продуктов (ёмкость)</h4>
+        <p>Когда есть ограничители: ёмкость производства/эксперта, пропускная способность. Предохранитель: бессмысленно лить трафик выше порога, который команда отработает в качестве.</p></div>
+    </div>
+
+    <div class="note b"><b>Правило сходимости:</b> считаем минимум двумя методами (1 и 2). Если расхождение &gt; <b>5%</b> — план в работу НЕ берём: садимся, делаем факторный анализ, ищем причину. ≤5% — план принят. <b>Stretch +20%</b> — отдельная история: мультипликаторы роста и драйверы поверх Farm-плана.</div>
+
+    <div class="g2 grid" style="margin-top:14px">
+      <div class="mcard"><div class="n">СИНХРОНИЗАЦИЯ</div><h4>Маркетинг ↔ Продажи и «перелидоз»</h4>
+        <p>Пропускная способность = смены × ёмкость. Если маркетинг даёт лидов больше ёмкости — сольём 30% и потеряем деньги. «Перелидоз» — это битое планирование в большую сторону. Сначала «приближаем эффект» (овертаймы, автооплаты), иначе режем план маркетинга.</p></div>
+      <div class="mcard"><div class="n">КОНТРОЛЬ</div><h4>Недельные спринты + факторный анализ</h4>
+        <p>Месяц бьём по неделям и дням до операционных действий. Каждую неделю — план/факт, проваливаемся на уровень канала и конвертера: где самолёт не долетел и почему. Гипотезы по просевшим метрикам → спринт → ретроспектива → калибровка предиктивной модели.</p></div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 2. INPUTS ============ -->
+<section class="view" id="v-inputs">
+ <div class="wrap grid g2">
+  <div class="panel">
+    <h2 class="sec">Бизнес и потоки выручки</h2>
+    <div class="inpgrid">
+      <div class="inp"><label>Компания</label><input type="text" data-k="bizName"></div>
+      <div class="inp"><label>Планируемый месяц</label><input type="text" data-k="month"></div>
+      <div class="inp yellow"><label>🎯 Цель Cash-in на месяц, млн ₽ (сверху-вниз)</label><input type="number" data-k="goalMonth"></div>
+      <div class="inp"><label>Годовая цель компании, млн ₽</label><input type="number" data-k="goalYear"></div>
+    </div>
+    <div class="hr"></div>
+    <div class="inpgrid">
+      <div class="inp"><label>Поток 1 — новый бизнес (через воронку)</label><input type="text" data-k="s1name"></div>
+      <div class="inp"><label>Поток 2 — база / повторные / допродажи</label><input type="text" data-k="s2name"></div>
+      <div class="inp"><label>Поток 3 — проекты / тендеры / крупные</label><input type="text" data-k="s3name"></div>
+    </div>
+    <div class="note b">Три канонических потока денег — переименуй под себя. <b>Поток 1</b> считается через воронку (leading), <b>Поток 2</b> — run-rate по базе, <b>Поток 3</b> — штучные проекты/тендеры. Если потока нет — обнули его метрики.</div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec">Воронка · <span data-lbl="s1name"></span> <span class="badge" style="margin-left:6px">факт vs бенчмарк</span></h2>
+    <table>
+      <tr><th>Этап / метрика</th><th class="r">Факт</th><th class="r">Бенчмарк</th></tr>
+      <tr><td>Новых лидов / мес · вся линия <span class="tag">← из Медиаплана</span></td><td class="r mut2" id="inpLeadsF">—</td><td class="r mut2" id="inpLeadsB">—</td></tr>
+      <tr><td>Лид → MQL</td><td class="r yellow"><input type="number" step="0.01" data-k="c_mql"></td><td class="r"><input type="number" step="0.01" data-k="c_mqlB"></td></tr>
+      <tr><td>MQL → Кваллид (SQL)</td><td class="r yellow"><input type="number" step="0.01" data-k="c_sql"></td><td class="r"><input type="number" step="0.01" data-k="c_sqlB"></td></tr>
+      <tr><td>Кваллид → Встреча проведена</td><td class="r yellow"><input type="number" step="0.01" data-k="c_meet"></td><td class="r"><input type="number" step="0.01" data-k="c_meetB"></td></tr>
+      <tr><td>Встреча → КП</td><td class="r yellow"><input type="number" step="0.01" data-k="c_kp"></td><td class="r"><input type="number" step="0.01" data-k="c_kpB"></td></tr>
+      <tr><td>КП → Сделка (close)</td><td class="r yellow"><input type="number" step="0.01" data-k="c_close"></td><td class="r"><input type="number" step="0.01" data-k="c_closeB"></td></tr>
+      <tr><td>Ср. чек новой сделки, млн ₽</td><td class="r yellow"><input type="number" data-k="checkNew"></td><td class="r mut2">—</td></tr>
+    </table>
+    <div class="tag" style="margin-top:8px">Заполни <b>факт</b> (как конвертит сейчас) и <b>бенчмарк</b> ниши (куда тянемся). Разрыв = потенциал. Названия этапов и конверсии возьми из своей воронки в «Конструкторе воронки». Пример откалиброван под B2B с длинным циклом.</div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec">Pipeline и законтрактованный кэш <span class="badge" style="margin-left:6px">снизу-вверх · этот месяц</span></h2>
+    <div class="inpgrid">
+      <div class="inp yellow"><label>Committed — транши + поддержка / мес, млн ₽ (100%)</label><input type="number" step="0.5" data-k="committed"></div>
+      <div class="inp yellow"><label><span data-lbl="s3name"></span> — закрытие в этом мес, млн ₽</label><input type="number" step="0.5" data-k="uniClose"></div>
+      <div class="inp yellow"><label>Forecast (≥85%) — закрытие, млн ₽</label><input type="number" step="0.5" data-k="pipeForecast"></div>
+      <div class="inp yellow"><label>Вер-ть Forecast</label><input type="number" step="0.05" data-k="probF"></div>
+      <div class="inp yellow"><label>Upside (65–84%) — закрытие, млн ₽</label><input type="number" step="0.5" data-k="pipeUpside"></div>
+      <div class="inp yellow"><label>Вер-ть Upside</label><input type="number" step="0.05" data-k="probU"></div>
+      <div class="inp yellow"><label>Весь открытый pipeline (поток 1), млн ₽</label><input type="number" step="1" data-k="pipeTotal"></div>
+      <div class="inp yellow"><label>Ср. цикл сделки, мес</label><input type="number" step="0.5" data-k="cycleMonths"></div>
+    </div>
+    <div class="note b">Для B2B с длинным циклом деньги месяца = сделки, открытые 4–10 мес назад. <b>Committed</b> — подписанные договора и поддержка (предсказуемый кэш). <b>Forecast/Upside</b> — взвешенный pipeline. Воронка выше — это <i>генератор</i> будущего pipeline (leading), а этот блок — <i>касса ближайшего месяца</i> (lagging).</div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec"><span data-lbl="s2name"></span> · база / повторные / допродажи</h2>
+    <table>
+      <tr><th>Метрика</th><th class="r">Факт</th><th class="r">Бенчмарк</th></tr>
+      <tr><td>Действующих клиентов в базе</td><td class="r yellow"><input type="number" data-k="baseClients"></td><td class="r mut2">—</td></tr>
+      <tr><td>Покрытие допродажей / мес (доля)</td><td class="r yellow"><input type="number" step="0.01" data-k="baseCover"></td><td class="r"><input type="number" step="0.01" data-k="baseCoverB"></td></tr>
+      <tr><td>Конверсия в допсделку</td><td class="r yellow"><input type="number" step="0.01" data-k="baseConv"></td><td class="r"><input type="number" step="0.01" data-k="baseConvB"></td></tr>
+      <tr><td>Ср. чек модуля (допродажа), млн ₽</td><td class="r yellow"><input type="number" data-k="baseCheck"></td><td class="r mut2">—</td></tr>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec"><span data-lbl="s3name"></span> · проекты / тендеры</h2>
+    <div class="inpgrid">
+      <div class="inp yellow"><label>Ожидаемо новых сделок / мес</label><input type="number" step="0.1" data-k="uniDeals"></div>
+      <div class="inp yellow"><label>Ср. чек — поток 3, млн ₽</label><input type="number" data-k="uniCheck"></div>
+    </div>
+    <div class="hr"></div>
+    <h2 class="sec">Ресурс команды и нагрузка</h2>
+    <div class="inpgrid">
+      <div class="inp yellow"><label>Продавцов на потоке 1 (воронка + pipeline)</label><input type="number" data-k="sellers"></div>
+      <div class="inp yellow"><label>Менеджер базы (допродажи)</label><input type="number" data-k="baseMgr"></div>
+      <div class="inp yellow"><label>Встреч на 1 продавца / день (ёмкость)</label><input type="number" step="0.1" data-k="meetCap"></div>
+      <div class="inp yellow"><label>Рабочих дней в месяце</label><input type="number" data-k="workdays"></div>
+      <div class="inp yellow"><label>Касаний на 1 контакт до квалификации</label><input type="number" step="1" data-k="touchesPerLead"></div>
+      <div class="inp yellow"><label>Активных сделок в pipeline</label><input type="number" step="1" data-k="activeDeals"></div>
+      <div class="inp yellow"><label>Сделок продвигать на стадию / мес</label><input type="number" step="1" data-k="dealsAdvance"></div>
+    </div>
+    <div class="tag" style="margin-top:8px">Касание = выход на ЛПР (звонок/письмо/LinkedIn). Эти поля задают реальную дневную нагрузку продавца в декомпозиции.</div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 2b. ОТДЕЛ ПРОДАЖ ============ -->
+<section class="view" id="v-reps">
+ <div class="wrap grid">
+  <div class="panel">
+    <h2 class="sec">Отдел продаж — показатели по каждому менеджеру</h2>
+    <p class="lead">Внеси текущие цифры по каждому продавцу. Калькулятор относительно ЛУЧШИХ (или целевых) значений считает, насколько можно докрутить <b>конверсию в продажу</b> и <b>средний чек</b> — и какой это даёт прирост выручки. Эти же значения питают прогноз конверсии/чека в плане.</p>
+    <div class="spacer"></div>
+    <div style="overflow-x:auto"><table id="repsTable"></table></div>
+    <div class="row" style="margin-top:12px;gap:10px">
+      <button class="btn" onclick="addRep()">+ Добавить менеджера</button>
+      <div class="inp" style="max-width:220px"><label>Цель по конверсии, % (0 = взять лучшего)</label><input type="number" step="0.5" data-k="repTargetConv"></div>
+      <div class="inp" style="max-width:220px"><label>Цель по чеку, млн (0 = взять лучшего)</label><input type="number" step="0.1" data-k="repTargetCheck"></div>
+    </div>
+  </div>
+  <div class="grid g3">
+    <div class="panel"><div class="tag">Текущая выручка отдела / мес</div><div class="big" id="repRevNow"></div><div class="lead" style="margin-top:6px" id="repTeamNow"></div></div>
+    <div class="panel"><div class="tag">Потенциал (все → цель/лучший)</div><div class="big" id="repRevPot" style="color:var(--good)"></div><div class="lead" style="margin-top:6px" id="repUplift"></div></div>
+    <div class="panel"><div class="tag">Цель: конверсия / чек</div><div class="big" id="repTargets" style="color:var(--acc2)"></div><div class="lead" style="margin-top:6px">Эталон = лучший менеджер или заданная цель.</div></div>
+  </div>
+  <div class="panel">
+    <h2 class="sec">Насколько докрутить каждого — до эталона</h2>
+    <div style="overflow-x:auto"><table id="repUpliftTable"></table></div>
+    <div class="row" style="margin-top:12px;gap:10px">
+      <button class="btn ghost" onclick="applyRepsToPlan()">↧ Применить средние отдела к плану (чек + close-rate)</button>
+    </div>
+    <div class="note b" style="margin-top:10px">«Применить к плану» подставит средневзвешенную конверсию в продажу (в close rate воронки) и средний чек нового бизнеса — план пересчитается на реальных данных отдела.</div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 3. BENCHMARKS ============ -->
+<section class="view" id="v-bench">
+ <div class="wrap">
+  <div class="panel">
+    <h2 class="sec">Анализ бенчмарков — где мы отстаём и сколько это стоит</h2>
+    <p class="lead">Тяни ползунок «Цель» каждой метрики между фактом и бенчмарком — выручка пересчитывается вживую. Так видно, какой рычаг даёт больше всего денег.</p>
+    <div class="spacer"></div>
+    <div id="benchTable"></div>
+    <div class="hr"></div>
+    <div class="row" style="justify-content:space-between">
+      <div><div class="tag">Устойчивый Cash-in / мес (тек. конверсии)</div><div class="big" id="bRevNow"></div></div>
+      <div style="text-align:center"><div class="tag">При выбранных целях</div><div class="big" id="bRevTgt" style="color:var(--good)"></div></div>
+      <div class="right"><div class="tag">Потенциал к раскрытию · вызреет через цикл</div><div class="big" id="bRevGap" style="color:var(--acc)"></div></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="row">
+      <button class="btn ghost" onclick="setAllTargets('fact')">Все цели = факт</button>
+      <button class="btn ghost" onclick="setAllTargets('bench')">Все цели = бенчмарк</button>
+      <button class="btn" onclick="setAllTargets('mid')">Реалистично (середина)</button>
+    </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ MEDIA PLAN (Метод 3) ============ -->
+<section class="view" id="v-media">
+ <div class="wrap grid">
+  <div class="panel">
+    <h2 class="sec">Медиаплан · Метод 3 «от каналов маркетинга»</h2>
+    <p class="lead">Полная экономика по каждому <b>каналу трафика</b>: бюджет → показы/клики → заявки (C0) → качественные → оплаты (C1) → CAC → cash-in → ROMI. <b>Канал</b> — источник трафика (таргет, affiliate, блогеры, SMM, органика). <b>Формат</b> — конвертер (вебинар / прямая продажа / спецпроект), это НЕ канал. Добавляй/удаляй каналы под себя.</p>
+    <div class="spacer"></div>
+    <div style="overflow-x:auto"><table id="mediaTable"></table></div>
+    <div class="row" style="margin-top:12px;gap:10px">
+      <button class="btn" onclick="addChannel()">+ Добавить канал трафика</button>
+    </div>
+    <div class="tag" style="margin-top:10px">Жёлтое — вводишь сам. Модель закупки: если задан <b>CPM</b> — показы×CTR→клики; иначе клики = бюджет/<b>CPC</b>. <b>C0</b> = клик→заявка, <b>C1</b> = заявка→оплата, <b>%кач</b> = доля горячих+тёплых. Cash-in канала = оплаты × чек. Итоговый плановый объём лидов идёт в верх воронки (синхронизация ниже).</div>
+  </div>
+  <div class="grid g3">
+    <div class="panel"><div class="tag">Бюджет (с налогом/комис.) / мес</div><div class="big" id="mSpend"></div><div class="lead" style="margin-top:6px" id="mCac"></div></div>
+    <div class="panel"><div class="tag">Заявок (лидов) / мес</div><div class="big" id="mLeads" style="color:var(--acc)"></div><div class="lead" style="margin-top:6px" id="mCpl"></div></div>
+    <div class="panel"><div class="tag">ROMI медиаплана</div><div class="big" id="mRomi"></div><div class="lead" style="margin-top:6px" id="mCash">Net = (cash-in − бюджет)/бюджет.</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel">
+      <h2 class="sec">Лиды по каналам</h2>
+      <div id="mBars"></div>
+    </div>
+    <div class="panel">
+      <h2 class="sec">Синхронизация маркетинг ↔ продажи</h2>
+      <div id="mSync"></div>
+      <div class="note b" style="margin-top:12px">По методологии планы маркетинга и продаж синхронизируются: лидов медиаплана должно хватать на цель, но не превышать ёмкость продаж (анти-перелидоз). Расхождение — повод для факторного анализа.</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec">📖 Глоссарий — что означает метрика и как считается</h2>
+    <div class="gloss">
+      <div class="gi"><span class="gt">Бюджет</span> — деньги на канал за месяц. <span class="gf">Бюджет с налогом = Бюджет × (1 + Комиссия %)</span></div>
+      <div class="gi"><span class="gt">Комиссия / налог %</span> — надбавка площадки/агентства или налог сверху бюджета.</div>
+      <div class="gi"><span class="gt">CPM</span> (Cost Per Mille) — цена за 1000 показов рекламы. <span class="gf">Показы = Бюджет с налогом ÷ CPM × 1000</span></div>
+      <div class="gi"><span class="gt">CTR</span> (Click-Through Rate) — доля кликов от показов, кликабельность. <span class="gf">Клики = Показы × CTR</span></div>
+      <div class="gi"><span class="gt">CPC</span> (Cost Per Click) — цена одного клика. <span class="gf">Если без CPM: Клики = Бюджет с налогом ÷ CPC</span></div>
+      <div class="gi"><span class="gt">C0</span> — конверсия «клик → заявка»: сколько кликнувших оставили заявку. <span class="gf">Заявки = Клики × C0</span></div>
+      <div class="gi"><span class="gt">CPL</span> (Cost Per Lead) — стоимость одной заявки. <span class="gf">CPL = Бюджет с налогом ÷ Заявки</span></div>
+      <div class="gi"><span class="gt">%кач</span> — доля горячих+тёплых (целевых) заявок. <span class="gf">Качественные = Заявки × %кач</span></div>
+      <div class="gi"><span class="gt">C1</span> — конверсия «заявка → оплата»: сколько заявок дошли до оплаты. <span class="gf">Оплаты = Заявки × C1</span></div>
+      <div class="gi"><span class="gt">CAC</span> (Customer Acquisition Cost) — стоимость привлечения одной оплаты/клиента. <span class="gf">CAC = Бюджет с налогом ÷ Оплаты</span></div>
+      <div class="gi"><span class="gt">Чек</span> — средняя сумма одной оплаты.</div>
+      <div class="gi"><span class="gt">Cash-in</span> — выручка, которую принёс канал. <span class="gf">Cash-in = Оплаты × Чек</span></div>
+      <div class="gi" style="grid-column:1/-1"><span class="gt">ROMI</span> (Return On Marketing Investment) — рентабельность вложений в маркетинг: сколько рублей вернулось на рубль бюджета. <span class="gf">ROMI = (Cash-in − Бюджет с налогом) ÷ Бюджет с налогом × 100%</span> · &gt;0% окупается, &lt;0% в минус.</div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 4. FORECAST ============ -->
+<section class="view" id="v-forecast">
+ <div class="wrap grid">
+  <div class="panel">
+    <h2 class="sec">Прогнозное планирование — что будет, если дотянем метрики</h2>
+    <p class="lead">Водопад устойчивого Cash-in (steady-state): стартуем от текущих конверсий и поэтапно «дотягиваем» каждую просевшую метрику до выбранной цели (вкладка «Бенчмарки»). Это <b>leading</b>-картина — прирост вызревает через цикл сделки (~6–10 мес), а не в этом месяце.</p>
+    <div class="spacer"></div>
+    <div id="waterfall"></div>
+  </div>
+  <div class="grid g3">
+    <div class="panel"><div class="tag">Устойчивый Cash-in / мес сейчас</div><div class="big" id="fNow"></div><div class="lead" style="margin-top:6px">Воронка + база + проекты по текущим конверсиям.</div></div>
+    <div class="panel"><div class="tag">Устойчивый Cash-in / мес целевой</div><div class="big" id="fTgt" style="color:var(--good)"></div><div class="lead" style="margin-top:6px">Если дотянем выбранные метрики до цели.</div></div>
+    <div class="panel"><div class="tag">Прирост в год</div><div class="big" id="fYear" style="color:var(--acc)"></div><div class="lead" style="margin-top:6px">(целевая − текущая) × 12.</div></div>
+  </div>
+  <div class="panel">
+    <h2 class="sec">Разрез выручки по источникам · план месяца</h2>
+    <div id="srcSplit"></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 5. PLAN ============ -->
+<section class="view" id="v-plan">
+ <div class="wrap grid">
+  <div class="grid g2">
+    <div class="panel">
+      <h2 class="sec">① Сверху-вниз — от цели к ресурсу</h2>
+      <table id="topdown"></table>
+      <div class="note">Красные флажки (предохранители): конв. «Кваллид → Встреча» ≥ 0.50; зависших сделок &lt; 10%; CAC/сделку ≤ ср. чек × маржа. Ниже — активируется план «Б».</div>
+    </div>
+    <div class="panel">
+      <h2 class="sec">② Снизу-вверх — от ресурса к цифре</h2>
+      <table id="bottomup"></table>
+      <div class="tag" style="margin-top:8px">Pipeline-логика: деньги месяца = сделки, открытые 4–10 мес назад. Committed (100%) + Forecast (≥85%) + Upside (65–84%).</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec">Сходимость методов — критерий ≤ 5%</h2>
+    <div class="gauge">
+      <div class="ring" id="gaugeRing"></div>
+      <div>
+        <div id="convergeVerdict" class="big"></div>
+        <div class="lead" id="convergeText" style="margin-top:6px;max-width:560px"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec">Farm / Stretch + P&amp;L</h2>
+    <div class="scenrow" style="border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:6px">
+      <div class="th tag">Показатель</div><div class="th tag right">Сверху-вниз</div><div class="th tag right">Farm (снизу)</div><div class="th tag right" style="color:var(--warn)">Stretch +20%</div>
+    </div>
+    <div id="scenarios"></div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 5b. ИТОГОВЫЙ ПЛАН ============ -->
+<section class="view" id="v-final">
+ <div class="wrap grid">
+  <div class="panel" style="border:2px solid var(--acc)">
+    <h2 class="sec">🎯 Итоговая цифра плана — сведено по трём методам</h2>
+    <p class="lead">Три независимых расчёта сходятся в одну рекомендацию. Берём в работу не «амбицию с потолка» и не «сколько само придёт», а <b>обоснованный Target</b> — с предохранителем снизу (Commit) и планкой роста сверху (Stretch).</p>
+    <div class="spacer"></div>
+    <div class="g3 grid" id="finalCards"></div>
+    <div class="note b" id="finalVerdict" style="margin-top:16px"></div>
+  </div>
+
+  <div class="panel">
+    <h2 class="sec">Триангуляция — три независимых взгляда на цифру</h2>
+    <table id="triTable"></table>
+    <div class="note">Правило: если методы 1 и 2 расходятся &gt; <b>5%</b> — план в работу не берём, идём в факторный анализ. Метод 3 (ёмкость) — предохранитель: план не может быть выше того, что команда физически отработает в качестве.</div>
+  </div>
+
+  <div class="grid g2">
+    <div class="panel">
+      <h2 class="sec">Как закрыть GAP до Target</h2>
+      <div id="gapPlan"></div>
+    </div>
+    <div class="panel">
+      <h2 class="sec">Разложение Target по потокам</h2>
+      <div id="finalSplit"></div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<!-- ============ 6. DECOMP ============ -->
+<section class="view" id="v-decomp">
+ <div class="wrap grid">
+  <div class="panel">
+    <h2 class="sec">Месяц → недели — Farm-план по неделям</h2>
+    <p class="lead">Веса недель настраиваются (B2B обычно с разгоном к концу месяца). План/факт по каждой строке — для недельного контроля и факторного анализа.</p>
+    <div class="spacer"></div>
+    <table id="weekly"></table>
+  </div>
+  <div class="panel">
+    <h2 class="sec">Неделя → день → операционные действия каждого продавца</h2>
+    <p class="lead">Дневная норма активностей, которая математически вытекает из плана. «Касание» = выход на ЛПР (звонок / письмо / LinkedIn). Это то, что продавец делает каждый день — и что контролируется на недельном спринте.</p>
+    <div class="spacer"></div>
+    <div id="ops"></div>
+    <div class="note b" id="capacityNote"></div>
+  </div>
+ </div>
+</section>
+
+<div class="wrap" style="margin-top:30px">
+  <div class="row" style="justify-content:space-between">
+    <div class="tag">A-Players · Практикум · методология «системное планирование без битого плана» — считай двумя-тремя методами и своди ≤5%</div>
+    <div class="row">
+      <button class="btn ghost" onclick="resetState()">Сбросить к примеру</button>
+      <button class="btn ghost" onclick="window.print()">Печать / PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===================== STATE (реальные значения SoftSnow Q2 2026) ===================== */
+const DEFAULTS = {
+  bizName:'Пример · B2B c длинным циклом', month:'Июль 2026',
+  s1name:'Новый бизнес', s2name:'База / допродажи', s3name:'Проекты / тендеры',
+  goalMonth:25,            // млн/мес цель сверху-вниз
+  goalYear:300,            // годовая цель компании, млн
+  // Воронка нового бизнеса (поток 1), месяц.
+  contacts:22, contactsB:33,
+  c_mql:0.30, c_mqlB:0.40,    // касание → MQL (industry lead→MQL 20–25%)
+  c_sql:0.10, c_sqlB:0.15,    // MQL → SQL/кваллид (industry 12–18%, их файл 15%)
+  c_meet:0.43, c_meetB:0.55,  // SQL → встреча проведена (их модель: факт 0.43, план 0.55)
+  c_kp:0.55, c_kpB:0.65,      // встреча → КП
+  c_close:0.45, c_closeB:0.50,// КП → сделка (SQL→сделка итог ≈18% ✓ их файл)
+  checkNew:10,
+  // EXPAND — допродажи 20 клиентам базы (83% денег; бенч ≈ 184 млн/год)
+  baseClients:20, baseCover:0.30, baseCoverB:0.42, baseConv:0.22, baseConvB:0.30, baseCheck:6,
+  // Univer / Порталы (тендеры)
+  uniDeals:0.5, uniCheck:8,
+  // МЕДИАПЛАН — каналы трафика (Метод 3). Всё в ₽. comm/ctr/c0/qual/c1 — доли 0..1.
+  // budget — ₽/мес; comm — налог/комиссия; cpm — ₽/1000 показов (0=не исп.); ctr — доля; cpc — ₽/клик (если без CPM);
+  // c0 — клик→заявка; qual — доля гор+тёпл; c1 — заявка→оплата; check — ср. чек, ₽.
+  channels:[
+    {name:'Таргет (Meta/VK)', format:'Вебинар', budget:300000, comm:0.15, cpm:0, ctr:0, cpc:350, c0:0.12, qual:0.40, c1:0.025, check:450000},
+    {name:'Affiliate / CPA', format:'Прямая продажа', budget:180000, comm:0.20, cpm:0, ctr:0, cpc:1000, c0:0.35, qual:0.55, c1:0.03, check:450000},
+    {name:'Блогеры (перформанс)', format:'Прямая продажа', budget:250000, comm:0, cpm:0, ctr:0, cpc:700, c0:0.18, qual:0.45, c1:0.02, check:450000},
+    {name:'SMM / контент', format:'Вебинар', budget:120000, comm:0, cpm:1500, ctr:0.008, cpc:0, c0:0.10, qual:0.35, c1:0.015, check:450000},
+    {name:'Органика / SEO', format:'Прямая продажа', budget:80000, comm:0, cpm:0, ctr:0, cpc:250, c0:0.20, qual:0.60, c1:0.05, check:450000}
+  ],
+  // PIPELINE и законтрактованный кэш — «снизу-вверх» на ближайший месяц (lagging)
+  committed:5,        // поддержка/продления + транши подписанных проектов, млн ₽/мес (100%)
+  pipeForecast:2,     // Forecast LAND: сделки ≥85%, закрытие в этом мес, млн ₽
+  pipeUpside:2,       // Upside LAND: сделки 65–84%, закрытие в этом мес, млн ₽
+  probF:0.90, probU:0.75,
+  pipeTotal:54,       // весь открытый pipeline Директум (вкл. срезы Forecast/Upside; их модель ~54), млн ₽
+  cycleMonths:8,      // ср. цикл сделки, мес (их ниша 6–18)
+  uniClose:3.5,       // ожидаемое закрытие Univer в этом месяце, млн ₽
+  // активность / нагрузка
+  touchesPerLead:6,   // касаний (звонок/письмо/LinkedIn) на 1 контакт до квалификации
+  activeDeals:25,     // активных сделок в pipeline (нагрузка по ведению/follow-up)
+  followupsWk:1,      // follow-up касаний на 1 активную сделку в неделю
+  dealsAdvance:9,     // сделок продвигать на 1+ стадию / мес (их модель ~26/квартал)
+  // команда
+  sellers:2, baseMgr:1, meetCap:2, workdays:21,
+  // веса недель
+  w1:0.20,w2:0.25,w3:0.25,w4:0.30,
+  margin:0.65,
+  // компания (для ресерча бенчмарков)
+  niche:'', geo:'', bizDesc:'', currentReport:'',
+  // отдел продаж — менеджеры: {name, leads(сделок в работе/мес), conv(% в продажу), check(млн)}
+  reps:[
+    {name:'Иванов Иван', leads:20, conv:35, check:0.45},
+    {name:'Петров Пётр', leads:20, conv:22, check:0.30},
+    {name:'Сидорова Анна', leads:18, conv:28, check:0.38}
+  ],
+  repTargetConv:0, repTargetCheck:0
+};
+let S = load();
+// targets для бенчмарков (доля 0..1 между факт и бенч); по умолчанию середина
+let T = { c_meet:0.5, c_close:0.5, c_sql:0.5, c_mql:0.5, contacts:0.5, baseCover:0.5, baseConv:0.5 };
+
+const SCHEMA_V = 8; // поднимать при изменении набора полей — сбрасывает старый кэш
+function load(){ try{
+    if(localStorage.getItem('softsnow_v')!=String(SCHEMA_V)) return {...DEFAULTS};
+    const j=JSON.parse(localStorage.getItem('softsnow_plan')); return Object.assign({},DEFAULTS,j||{});
+  }catch(e){ return {...DEFAULTS}; } }
+function save(){ localStorage.setItem('softsnow_plan', JSON.stringify(S)); localStorage.setItem('softsnow_v',String(SCHEMA_V)); }
+function resetState(){ S={...DEFAULTS}; save(); bindInputs(); compute(); }
+
+/* ===================== ENGINE ===================== */
+const mln = v => (v>=100? v.toFixed(0) : v.toFixed(v<10?2:1));
+const money = v => mln(v)+' млн ₽';
+const pct = v => (v*100).toFixed(0)+'%';
+
+// воронка: вернуть сделки/мес и выручку для заданного набора конверсий
+function funnel(contacts, cm, cs, cme, ck, cc, check){
+  const mql = contacts*cm, sql=mql*cs, meet=sql*cme, kp=meet*ck, deals=kp*cc;
+  return {contacts, mql, sql, meet, kp, deals, rev: deals*check,
+          stages:[['Касания',contacts],['MQL',mql],['Кваллиды',sql],['Встречи',meet],['КП',kp],['Сделки',deals]]};
+}
+// интерполяция факт→бенч по target-доле
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+function curVals(){
+  // текущие конверсии с учётом выбранных целей T (для прогноза/бенчмарков)
+  return {
+    contacts: lerp(S.contacts,S.contactsB,T.contacts),
+    cm: lerp(S.c_mql,S.c_mqlB,T.c_mql),
+    cs: lerp(S.c_sql,S.c_sqlB,T.c_sql),
+    cme:lerp(S.c_meet,S.c_meetB,T.c_meet),
+    ck: S.c_kp,
+    cc: lerp(S.c_close,S.c_closeB,T.c_close),
+  };
+}
+function baseRev(cover,conv){ return S.baseClients*cover*conv*S.baseCheck; }
+
+// Экономика одного канала трафика (всё в ₽; доли 0..1). Формулы сверены с эталонным медиапланом.
+function chanCalc(c){
+  const budget=+c.budget||0, comm=+c.comm||0, cpm=+c.cpm||0, ctr=+c.ctr||0, cpc=+c.cpc||0,
+        c0=+c.c0||0, qual=+c.qual||0, c1=+c.c1||0, check=+c.check||0;
+  const budgetTax = budget*(1+comm);                                   // бюджет с налогом/комиссией
+  const impressions = cpm>0 ? budgetTax/cpm*1000 : 0;                   // показы (если CPM-модель)
+  const clicks = cpm>0 ? impressions*ctr : (cpc>0 ? budgetTax/cpc : 0); // клики
+  const cpcEff = clicks>0 ? budgetTax/clicks : 0;                       // фактический CPC
+  const leads = clicks*c0;                                             // заявки (C0)
+  const cpl = leads>0 ? budgetTax/leads : 0;
+  const qLeads = leads*qual;                                           // качественные (гор+тёпл)
+  const costQ = qLeads>0 ? budgetTax/qLeads : 0;
+  const sales = leads*c1;                                              // оплаты (C1)
+  const cac = sales>0 ? budgetTax/sales : 0;
+  const cashIn = sales*check;                                          // выручка канала, ₽
+  const romi = budgetTax>0 ? (cashIn-budgetTax)/budgetTax : 0;
+  return {budget,budgetTax,impressions,clicks,cpcEff,leads,cpl,qLeads,costQ,sales,cac,cashIn,romi};
+}
+function media(){
+  const rows = (S.channels||[]).map(c=>({...c, ...chanCalc(c)}));
+  const sum=k=>rows.reduce((a,r)=>a+(r[k]||0),0);
+  const spend=sum('budget'), spendTax=sum('budgetTax'), clicks=sum('clicks'),
+        leads=sum('leads'), qLeads=sum('qLeads'), sales=sum('sales'), cashIn=sum('cashIn');
+  const cplBlend = leads>0 ? spendTax/leads : 0;
+  const cacBlend = sales>0 ? spendTax/sales : 0;
+  const romiBlend = spendTax>0 ? (cashIn-spendTax)/spendTax : 0;
+  // downstream-контракт: объём лидов идёт в верх воронки (leadsF/leadsB — счётчики, один сценарий)
+  return {rows, spend, spendTax, clicks, leads, qLeads, sales, cashIn, cplBlend, cacBlend, romiBlend,
+          leadsF:leads, leadsB:leads};
+}
+
+function compute(){
+  // верх воронки = выход медиаплана (маркетинг ↔ продажи синхронизированы)
+  const MP = media();
+  S.contacts = MP.leadsF; S.contactsB = MP.leadsB;
+  // --- факт (всё по текущим, target=0) ---
+  const fNew = funnel(S.contacts,S.c_mql,S.c_sql,S.c_meet,S.c_kp,S.c_close,S.checkNew);
+  const fBase = baseRev(S.baseCover,S.baseConv);
+  const fUni = S.uniDeals*S.uniCheck;
+  const revNow = fNew.rev + fBase + fUni;
+
+  // --- target (по ползункам T) ---
+  const cv = curVals();
+  const tNew = funnel(cv.contacts,cv.cm,cv.cs,cv.cme,cv.ck,cv.cc,S.checkNew);
+  const tBase = baseRev(lerp(S.baseCover,S.baseCoverB,T.baseCover), lerp(S.baseConv,S.baseConvB,T.baseConv));
+  const revTgt = tNew.rev + tBase + fUni;
+
+  // --- СНИЗУ-ВВЕРХ: Cash-in ближайшего месяца — явные потоки (lagging, реальные поступления) ---
+  const fW = S.pipeForecast*S.probF;     // Forecast LAND взвешенный
+  const uW = S.pipeUpside*S.probU;        // Upside LAND взвешенный
+  // EXPAND — допродажи базе: короткий цикл (1–3 мес), идут run-rate'ом в этом месяце
+  const baseCash = fBase;                 // = baseRev(факт)
+  const cashMonth = S.committed + fW + uW + baseCash + S.uniClose;
+  // покрытие цели открытым pipeline (норма enterprise 3–5x). pipeTotal = весь открытый pipeline (вкл. срезы Forecast/Upside)
+  const totalPipe = S.pipeTotal;
+  const coverage = totalPipe / (S.goalMonth||1);
+  const gap = Math.max(0, S.goalMonth - cashMonth);
+  // кваллидов (SQL) открыть сейчас, чтобы закрыть GAP с бенч-конверсиями SQL→сделка
+  const sqlToDeal = (S.c_meetB*S.c_kpB*S.c_closeB)||1;
+  const qualNeed = gap>0 ? Math.ceil((gap/S.checkNew)/sqlToDeal) : 0;
+
+  const bottomUp = cashMonth;             // снизу-вверх = реальный кэш месяца
+  const topDown = S.goalMonth;
+  const diff = (bottomUp-topDown)/topDown;
+
+  // --- МЕТОД 3: от ёмкости/ресурса (достижимый потолок) — честно: узкое место = min(люди, трафик) ---
+  const meetCapMonth    = S.sellers*S.meetCap*S.workdays;                    // встреч/мес физически (ёмкость людей)
+  const meetSupplyBench = MP.leadsB * S.c_mqlB * S.c_sqlB * S.c_meetB;       // встреч даёт трафик при бенч-конверсиях
+  const meetReal        = Math.min(meetCapMonth, meetSupplyBench);          // узкое место: люди ИЛИ лиды
+  const leadBound       = meetSupplyBench < meetCapMonth;                    // true → узкое место = лидогенерация
+  const capNewDeals     = meetReal * S.c_kpB * S.c_closeB;                   // сделок нового бизнеса (потолок)
+  const capNewRev       = capNewDeals * S.checkNew;
+  const capBaseCeil     = baseRev(S.baseCoverB, S.baseConvB);                // база при бенч-конверсиях
+  const capacityMax     = capNewRev + capBaseCeil + S.uniClose;             // достижимый потолок кэша/мес
+
+  // --- ИТОГОВЫЕ ЧИСЛА: Commit / Target / Stretch ---
+  const commit     = S.committed + fW + baseCash;                     // «ручаюсь»: подписано + высоковер. forecast + база run-rate
+  const converge   = Math.abs(diff)<=0.05;
+  const reconciled = converge ? (topDown+bottomUp)/2 : bottomUp;      // сходятся → среднее; нет → честный снизу-вверх
+  const capBinds   = capacityMax>0 && reconciled>capacityMax;
+  const target     = capBinds ? capacityMax : reconciled;            // рекомендованный план
+  const stretch    = target*1.2;                                      // планка роста (драйверы/овертайм/найм)
+  const targetGap  = Math.max(0, target - commit);                   // сколько добрать из воронки/pipeline к commit
+
+  return {fNew,fBase,fUni,revNow, tNew,tBase,revTgt,
+          cashMonth,fW,uW,baseCash,totalPipe,coverage,gap,qualNeed,sqlToDeal,
+          bottomUp,topDown,diff, cv, MP,
+          meetCapMonth,meetSupplyBench,meetReal,leadBound,capNewDeals,capNewRev,capBaseCeil,capacityMax,
+          commit,converge,reconciled,capBinds,target,stretch,targetGap};
+}
+
+/* ===================== RENDER ===================== */
+const $ = s=>document.querySelector(s);
+const el = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+
+function render(){
+  const C = compute();
+  // подставляем названия потоков в подписи
+  document.querySelectorAll('[data-lbl]').forEach(e=>{ e.textContent = S[e.dataset.lbl]||''; });
+  updateHero(C);
+  renderBench(C); renderMedia(C); renderForecast(C); renderPlan(C); renderFinal(C); renderDecomp(C); renderReps(C);
+}
+// шапка: на вкладке «Компания» KPI не показываем (данные ещё не введены), на остальных — итоговые цифры
+function updateHero(C){
+  C=C||compute(); const box=$('#heroKpis'); if(!box)return;
+  const act=(document.querySelector('.tab.on')||{dataset:{}}).dataset.v;
+  const tag=$('#heroTag');
+  if(act==='company'){
+    if(tag)tag.textContent='● заполни данные и открой «🎯 Итоговый план» — там появятся цифры';
+    box.innerHTML='<div class="kpi" style="grid-column:1/-1;background:linear-gradient(120deg,#fbf3df,#f4e9cd);border-color:var(--acc2)"><div class="l">Итоговая цифра плана</div><div class="v" style="font-size:19px;color:var(--acc)">Заполни отчётность и параметры → вкладка «🎯 Итоговый план»</div><div class="s mut">Commit / Target / Stretch считаются по твоим данным. Пример в модели можно сбросить кнопкой внизу.</div></div>';
+    return;
+  }
+  if(tag)tag.textContent='● цифры считаются по введённым данным · пример можно сбросить внизу';
+  const kpi=(l,v,s,col)=>`<div class="kpi"><div class="l">${l}</div><div class="v" style="${col?'color:'+col:''}">${v}</div><div class="s mut">${s||''}</div></div>`;
+  box.innerHTML=
+    kpi('🎯 План месяца · Target','₽ '+mln(C.target)+' млн', C.converge?'методы сошлись ✓':'по снизу-вверх (честно)', 'var(--acc2)') +
+    kpi('Commit · минимум','₽ '+mln(C.commit)+' млн', 'подписано + высоковер. + база') +
+    kpi('Stretch · +20%','₽ '+mln(C.stretch)+' млн', 'с драйверами роста', 'var(--warn)') +
+    kpi('Сходимость методов', (Math.abs(C.diff)*100).toFixed(0)+'%', C.converge?'✓ план принят':'⚠ нужен факторный анализ', C.converge?'var(--good)':'var(--warn)');
+}
+
+/* ---- Итоговый план (свод трёх методов) ---- */
+function renderFinal(C){
+  const card=(tag,val,sub,col,strong)=>`<div class="panel" style="text-align:center;${strong?'border:2px solid '+col:''}">
+     <div class="tag">${tag}</div>
+     <div class="big" style="font-size:30px;color:${col}">₽ ${mln(val)} млн</div>
+     <div class="lead" style="margin-top:6px">${sub}</div></div>`;
+  $('#finalCards').innerHTML =
+    card('Commit · минимум (ручаюсь)', C.commit, 'Подписано (Committed) + высоковероятный Forecast + база run-rate. Ниже — не упадём.', 'var(--good)') +
+    card('🎯 Target · план в работу', C.target, C.converge?'Методы сошлись (≤5%). Рекомендованная цифра плана месяца.':(C.capBinds?'Ограничено ёмкостью команды — выше физически не отработать в качестве.':'Методы разошлись — берём честный снизу-вверх, GAP закрываем действиями.'), 'var(--acc2)', true) +
+    card('Stretch · +20% (амбиция)', C.stretch, 'Планка роста: требует драйверов — овертайм, найм, новые каналы, реактивация базы.', 'var(--warn)');
+
+  const d=Math.abs(C.diff);
+  $('#finalVerdict').innerHTML = C.converge
+    ? `<b style="color:var(--good)">✓ План можно брать в работу.</b> Сверху-вниз ₽${mln(C.topDown)} млн и снизу-вверх ₽${mln(C.bottomUp)} млн сходятся (${(d*100).toFixed(0)}% ≤ 5%). Рекомендованный <b>Target = ₽${mln(C.target)} млн</b>${C.capBinds?' (упёрлись в ёмкость — для роста расширяй команду)':''}. Commit ₽${mln(C.commit)} млн — предохранитель снизу.`
+    : `<b style="color:var(--warn)">⚠ Методы расходятся на ${(d*100).toFixed(0)}% (&gt; 5%) — «сырой» план в работу не берём.</b> Сверху-вниз ₽${mln(C.topDown)} млн vs снизу-вверх ₽${mln(C.bottomUp)} млн. ${C.bottomUp<C.topDown?`GAP ₽${mln(C.gap)} млн: либо закрыть действиями (ниже), либо честно резать цель до <b>Target ₽${mln(C.target)} млн</b>.`:`Ресурс даёт больше цели — поднимаем планку до <b>₽${mln(C.target)} млн</b> и фиксируем, за счёт чего.`} Садимся на факторный анализ.`;
+
+  const trithead='<tr><th>Метод</th><th class="r">Цифра / мес</th><th>Логика</th></tr>';
+  const trirow=(m,v,l,col)=>`<tr><td>${m}</td><td class="r num"><b style="${col?'color:'+col:''}">₽ ${mln(v)} млн</b></td><td class="tag">${l}</td></tr>`;
+  $('#triTable').innerHTML = trithead +
+    trirow('① Сверху-вниз (от цели)', C.topDown, 'Амбиция собственника / OGSM. Задаёт, куда тянемся.') +
+    trirow('② Снизу-вверх (от pipeline)', C.bottomUp, 'Committed + Forecast×вер. + Upside×вер. + база + проекты. Что реально принесём.', C.bottomUp>=C.topDown?'var(--good)':'var(--bad)') +
+    trirow('③ От ёмкости/ресурса (потолок)', C.capacityMax, `Узкое место — ${C.leadBound?'<b>лидогенерация</b> (людей хватает, трафика нет)':'<b>ёмкость команды</b> (лидов хватает, людей нет)'}: ${C.meetReal.toFixed(1)} реальных встреч/мес × бенч-конверсии → ${C.capNewDeals.toFixed(1)} сделок + база + проекты.`, 'var(--acc)') +
+    `<tr style="border-top:2px solid var(--line)"><td><b>🎯 Target (рекомендованный)</b></td><td class="r num"><b style="color:var(--acc2)">₽ ${mln(C.target)} млн</b></td><td class="tag">свод трёх методов</td></tr>`;
+
+  const gapToTarget=Math.max(0,C.target-C.commit);
+  const dealsNeed=gapToTarget/S.checkNew;
+  const sqlNeed=Math.ceil(dealsNeed/(C.sqlToDeal||1));
+  const g=(a,b)=>`<div class="row" style="justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--panel2)"><div>${a}</div><div class="num"><b>${b}</b></div></div>`;
+  $('#gapPlan').innerHTML =
+    g('Target', '₽ '+mln(C.target)+' млн') +
+    g('− Commit (уже «в кармане»)', '₽ '+mln(C.commit)+' млн') +
+    g('= GAP добрать', '₽ '+mln(gapToTarget)+' млн') +
+    g('Сделок нового бизнеса', dealsNeed.toFixed(1)+' шт') +
+    g('Кваллидов (SQL) открыть под цикл', sqlNeed+' шт · цикл ~'+S.cycleMonths+' мес') +
+    `<div class="note b" style="margin-top:10px">Ускорители GAP: реактивация базы (+допродажи), поднять Committed (продления), дожать Upside, добрать трафик в медиаплане — но не выше ёмкости.</div>`;
+
+  const parts=[[S.s1name||'Новый бизнес', C.fW+C.uW, 'var(--acc)'],[S.s2name||'База', C.baseCash, 'var(--acc2)'],[S.s3name||'Проекты', S.uniClose, '#3E8E5E'],['Committed (подписано)', S.committed, '#8A8B7E']];
+  const tot=parts.reduce((a,p)=>a+p[1],0)||1;
+  $('#finalSplit').innerHTML = parts.map(p=>`
+    <div style="margin-bottom:12px">
+      <div class="row" style="justify-content:space-between"><div>${p[0]}</div><div class="num"><b>₽ ${mln(p[1])} млн</b> <span class="mut2">· ${pct(p[1]/tot)}</span></div></div>
+      <div class="barbg" style="margin-top:6px"><div class="barfill" style="width:${(p[1]/tot*100)}%;background:${p[2]}"></div></div>
+    </div>`).join('');
+}
+
+/* ---- Media plan (Метод 3) ---- */
+const rub=v=>{v=+v||0;const s=v<0?'-':'';v=Math.abs(v);return s+(v>=1e6?(v/1e6).toFixed(2)+' млн':v>=1e3?Math.round(v/1e3)+'к':Math.round(v));};
+function addChannel(){S.channels=S.channels||[];const ck=(S.channels[0]&&S.channels[0].check)||450000;S.channels.push({name:'Новый канал',format:'Прямая продажа',budget:100000,comm:0,cpm:0,ctr:0,cpc:100,c0:0.3,qual:0.5,c1:0.05,check:ck});save();render();}
+function removeChannel(i){S.channels.splice(i,1);save();render();}
+window.addChannel=addChannel;window.removeChannel=removeChannel;
+function renderMedia(C){
+  const MP=C.MP;
+  const romiCol=v=>v>=1?'var(--good)':v>=0?'var(--warn)':'var(--bad)';
+  const inp=(i,k,val,step,w)=>`<input type="number" step="${step}" data-ch="${i}.${k}" value="${val}" style="width:${w||68}px;text-align:right">`;
+  const inpP=(i,k,val,step,w)=>`<input type="number" step="${step}" data-ch="${i}.${k}" data-pct="1" value="${+(( +val||0)*100).toFixed(2)}" style="width:${w||60}px;text-align:right">`;
+  const inpT=(i,k,val,w)=>`<input type="text" data-ch="${i}.${k}" value="${String(val||'').replace(/"/g,'&quot;')}" style="width:${w||118}px">`;
+  const tbl=$('#mediaTable');
+  const head='<tr><th>Канал</th><th>Формат</th><th class="r">Бюджет ₽</th><th class="r">Комис.%</th><th class="r">CPM ₽</th><th class="r">CTR%</th><th class="r">CPC ₽</th><th class="r">C0%</th><th class="r">%кач</th><th class="r">C1%</th><th class="r">Чек ₽</th><th class="r">Клики</th><th class="r">Заявки</th><th class="r">CPL</th><th class="r">Опл.</th><th class="r">CAC</th><th class="r">Cash-in</th><th class="r">ROMI</th><th></th></tr>';
+  const rows=(S.channels||[]).map((c,i)=>{const r=MP.rows[i];return `<tr>
+      <td class="yellow">${inpT(i,'name',c.name,116)}</td>
+      <td class="yellow">${inpT(i,'format',c.format,100)}</td>
+      <td class="r yellow">${inp(i,'budget',c.budget,1000,84)}</td>
+      <td class="r yellow">${inpP(i,'comm',c.comm,1)}</td>
+      <td class="r yellow">${inp(i,'cpm',c.cpm,10)}</td>
+      <td class="r yellow">${inpP(i,'ctr',c.ctr,0.1)}</td>
+      <td class="r yellow">${inp(i,'cpc',c.cpc,5)}</td>
+      <td class="r yellow">${inpP(i,'c0',c.c0,0.5)}</td>
+      <td class="r yellow">${inpP(i,'qual',c.qual,1)}</td>
+      <td class="r yellow">${inpP(i,'c1',c.c1,0.1)}</td>
+      <td class="r yellow">${inp(i,'check',c.check,10000,78)}</td>
+      <td class="r num">${Math.round(r.clicks)}</td>
+      <td class="r num">${r.leads.toFixed(0)}</td>
+      <td class="r num">₽${rub(r.cpl)}</td>
+      <td class="r num">${r.sales.toFixed(1)}</td>
+      <td class="r num">₽${rub(r.cac)}</td>
+      <td class="r num">₽${rub(r.cashIn)}</td>
+      <td class="r num" style="color:${romiCol(r.romi)}">${(r.romi*100).toFixed(0)}%</td>
+      <td class="r"><button class="btn ghost" style="padding:5px 9px" onclick="removeChannel(${i})">✕</button></td></tr>`;}).join('');
+  const tot=`<tr style="border-top:2px solid var(--line)">
+      <td colspan="2"><b>ИТОГО</b></td>
+      <td class="r num"><b>₽${rub(MP.spend)}</b></td>
+      <td colspan="8" class="r tag">с налогом/комис. ₽${rub(MP.spendTax)}</td>
+      <td class="r num"><b>${Math.round(MP.clicks)}</b></td>
+      <td class="r num"><b>${MP.leads.toFixed(0)}</b></td>
+      <td class="r num"><b>₽${rub(MP.cplBlend)}</b></td>
+      <td class="r num"><b>${MP.sales.toFixed(1)}</b></td>
+      <td class="r num"><b>₽${rub(MP.cacBlend)}</b></td>
+      <td class="r num"><b>₽${rub(MP.cashIn)}</b></td>
+      <td class="r num"><b style="color:${romiCol(MP.romiBlend)}">${(MP.romiBlend*100).toFixed(0)}%</b></td>
+      <td></td></tr>`;
+  tbl.innerHTML=head+rows+tot;
+  tbl.querySelectorAll('input[data-ch]').forEach(el=>{el.onchange=()=>{const[i,key]=el.dataset.ch.split('.');let v;if(el.type==='text')v=el.value;else{v=parseFloat(el.value)||0;if(el.dataset.pct)v=v/100;}S.channels[+i][key]=v;save();render();};});
+
+  $('#mSpend').textContent='₽ '+rub(MP.spendTax);
+  $('#mCac').textContent='CAC ср. ₽'+rub(MP.cacBlend)+'/оплату · оплат '+MP.sales.toFixed(1)+'/мес';
+  $('#mLeads').textContent=MP.leads.toFixed(0);
+  $('#mCpl').textContent='CPL ср. ₽'+rub(MP.cplBlend)+' · качеств. '+MP.qLeads.toFixed(0);
+  $('#mRomi').innerHTML='<span style="color:'+romiCol(MP.romiBlend)+'">'+(MP.romiBlend*100).toFixed(0)+'%</span>';
+  $('#mCash').textContent='Cash-in ₽'+rub(MP.cashIn)+'/мес · Net = (cash-in − бюджет)/бюджет';
+  const lf=$('#inpLeadsF'),lb=$('#inpLeadsB');if(lf)lf.textContent=MP.leads.toFixed(0);if(lb)lb.textContent=MP.leads.toFixed(0);
+
+  const maxL=Math.max(...MP.rows.map(r=>r.leads),0.1);
+  $('#mBars').innerHTML=MP.rows.map(r=>`
+    <div style="margin-bottom:11px">
+      <div class="row" style="justify-content:space-between"><div style="font-size:13px">${r.name} <span class="mut2">· ${r.format||''}</span></div><div class="num mut">${r.leads.toFixed(0)} заявок · ROMI ${(r.romi*100).toFixed(0)}%</div></div>
+      <div class="barbg" style="margin-top:5px"><div class="barfill" style="width:${(r.leads/maxL*100)}%"></div></div>
+    </div>`).join('');
+
+  // синхронизация маркетинг ↔ продажи
+  const leadToDeal=S.c_mql*S.c_sql*S.c_meet*S.c_kp*S.c_close;                    // факт лид→сделка по воронке
+  const landDealsTarget=Math.max(0,S.goalMonth - C.fBase - C.fUni)/S.checkNew;    // сделок нового бизнеса нужно/мес
+  const leadsNeed=leadToDeal>0 ? landDealsTarget/leadToDeal : 0;
+  const capMeet=S.sellers*S.meetCap*S.workdays;
+  const meetFromLeads=MP.leads*S.c_mql*S.c_sql*S.c_meet;
+  const cover=leadsNeed>0?MP.leads/leadsNeed:1;
+  const row=(a,b,st)=>`<div class="row" style="justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--panel2)"><div>${a}</div><div class="num"><b>${b}</b> ${st||''}</div></div>`;
+  $('#mSync').innerHTML =
+    row('Заявок даёт медиаплан', MP.leads.toFixed(0)+' /мес') +
+    row('Заявок нужно на цель по новому бизнесу', Math.ceil(leadsNeed)+' /мес') +
+    row('Покрытие цели заявками', pct(cover), cover>=1?'<span class="pill g">хватает</span>':'<span class="pill r">дефицит трафика</span>') +
+    row('Встреч из медиаплана / мес', meetFromLeads.toFixed(1)+' vs ёмкость '+capMeet, meetFromLeads<=capMeet?'<span class="pill g">в ёмкости</span>':'<span class="pill r">перелидоз</span>') +
+    row('Оплаты из медиаплана (C1)', MP.sales.toFixed(1)+' /мес', '<span class="pill g">cash-in ₽'+rub(MP.cashIn)+'</span>');
+}
+
+/* ---- Benchmarks ---- */
+const BENCH_ROWS = [
+  {k:'c_meet', name:'Конверсия «Кваллид → Встреча проведена»', fmt:pct, type:'conv'},
+  {k:'c_close',name:'Конверсия «КП → Сделка» (close rate)', fmt:pct, type:'conv'},
+  {k:'c_sql', name:'Конверсия «MQL → Кваллид (SQL)»', fmt:pct, type:'conv'},
+  {k:'c_mql', name:'Конверсия «Касание → MQL»', fmt:pct, type:'conv'},
+  {k:'baseCover',name:'Покрытие базы допродажей / мес', fmt:pct, type:'base'},
+  {k:'baseConv', name:'Конверсия в допсделку (база)', fmt:pct, type:'base'},
+];
+function rowUplift(r){
+  // выручка с этой метрикой на цели vs на факте, остальное на текущих T
+  const base = compute().revNow0!=null?0:0;
+  const Tsave={...T};
+  // revenue при target этой метрики=0
+  T[r.k]=0; const lo=compute().revTgt;
+  T[r.k]=1; const hi=compute().revTgt;
+  T[r.k]=Tsave[r.k];
+  return hi-lo;
+}
+function renderBench(C){
+  const wrap = $('#benchTable'); wrap.innerHTML='';
+  const tbl = el('table');
+  tbl.innerHTML = '<tr><th>Метрика</th><th class="r">Факт</th><th class="r">Бенчмарк</th><th>Цель</th><th class="r">Δ выручки/мес</th><th class="r">Статус</th></tr>';
+  BENCH_ROWS.forEach(r=>{
+    const f=S[r.k], b=S[r.k+'B'];
+    const gapRel = (b-f)/(Math.abs(b)||1);
+    const status = gapRel<=0.08?'g':gapRel<=0.25?'y':'r';
+    const stTxt = gapRel<=0.08?'в норме':gapRel<=0.25?'отстаёт':'сильно отстаёт';
+    const upl = rowUplift(r);
+    const tr = el('tr');
+    tr.innerHTML =
+      `<td>${r.name}</td>
+       <td class="r num">${r.fmt(f)}</td>
+       <td class="r num" style="color:var(--good)">${r.fmt(b)}</td>
+       <td style="min-width:160px"></td>
+       <td class="r num" style="color:var(--acc)">+${mln(upl)} млн</td>
+       <td class="r"><span class="pill ${status}">${stTxt}</span></td>`;
+    const cell = tr.children[3];
+    const cur = (T[r.k]!=null?T[r.k]:0.5);
+    const valNow = lerp(f,b,cur);
+    cell.innerHTML = `<input type="range" min="0" max="1" step="0.02" value="${cur}" data-bk="${r.k}">
+                      <div class="tag" style="margin-top:3px" id="bv_${r.k}">цель: <b>${r.fmt(valNow)}</b></div>`;
+    tbl.appendChild(tr);
+  });
+  wrap.appendChild(tbl);
+  wrap.querySelectorAll('input[data-bk]').forEach(s=>{
+    s.oninput=()=>{ T[s.dataset.bk]=parseFloat(s.value);
+      const r=BENCH_ROWS.find(x=>x.k===s.dataset.bk);
+      $('#bv_'+s.dataset.bk).innerHTML = 'цель: <b>'+r.fmt(lerp(S[r.k],S[r.k+'B'],T[s.dataset.bk]))+'</b>';
+      const c=compute(); softUpdate(c);
+    };
+  });
+  $('#bRevNow').textContent='₽ '+mln(C.revNow)+' млн';
+  $('#bRevTgt').textContent='₽ '+mln(C.revTgt)+' млн';
+  $('#bRevGap').textContent='+₽ '+mln(C.revTgt-C.revNow)+' млн';
+}
+function softUpdate(C){
+  $('#bRevNow').textContent='₽ '+mln(C.revNow)+' млн';
+  $('#bRevTgt').textContent='₽ '+mln(C.revTgt)+' млн';
+  $('#bRevGap').textContent='+₽ '+mln(C.revTgt-C.revNow)+' млн';
+  renderForecast(C);
+}
+function setAllTargets(mode){
+  const v = mode==='fact'?0: mode==='bench'?1: 0.5;
+  Object.keys(T).forEach(k=>T[k]=v);
+  renderBench(compute()); renderForecast(compute());
+}
+
+/* ---- Forecast waterfall ---- */
+function renderForecast(C){
+  // строим водопад: revNow -> добавляем вклад каждой метрики -> revTgt
+  const steps=[]; const Tsave={...T};
+  Object.keys(T).forEach(k=>T[k]=0);
+  let running = compute().revTgt; // = revNow
+  const start = running;
+  const order = ['c_meet','c_close','c_sql','c_mql','baseCover','baseConv'];
+  const labels = {c_meet:'Конв. Встреча',c_close:'Close rate',c_sql:'MQL→SQL',c_mql:'Касание→MQL',baseCover:'Покрытие базы',baseConv:'Конв. база'};
+  order.forEach(k=>{
+    T[k]=Tsave[k];
+    const nv = compute().revTgt;
+    const d = nv-running;
+    if(Math.abs(d)>0.001) steps.push([labels[k], d]);
+    running=nv;
+  });
+  const end=running; T={...Tsave};
+
+  // SVG waterfall
+  const W=Math.max(680, (steps.length+2)*92), H=300, pad=40, base=H-50;
+  const allVals=[start,end].concat(steps.map(s=>s[1]));
+  const maxV=Math.max(start,end, start+steps.reduce((a,s)=>a+Math.max(0,s[1]),0))*1.12;
+  const sc=v=>(v/maxV)*(base-30);
+  let x=pad, svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:100%">`;
+  svg+=`<line x1="${pad-10}" y1="${base}" x2="${W-10}" y2="${base}" stroke="var(--line)"/>`;
+  const bw=58, gap=(W-2*pad-bw)/(steps.length+2)-0;
+  // start bar
+  const drawBar=(x,h,y,col,lab,val)=>{
+    return `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="5" fill="${col}"/>
+      <text x="${x+bw/2}" y="${y-8}" fill="var(--ink)" font-size="12" font-weight="700" text-anchor="middle">${val}</text>
+      <text x="${x+bw/2}" y="${base+18}" fill="var(--mut)" font-size="10.5" text-anchor="middle">${lab}</text>`;
+  };
+  let run=0;
+  let h0=sc(start);
+  svg+=drawBar(x,h0,base-h0,'url(#g1)','Сейчас','₽'+mln(start));
+  run=start; x+=gap;
+  steps.forEach(s=>{
+    const d=s[1], h=sc(Math.abs(d));
+    const top = d>=0 ? base-sc(run)-h : base-sc(run);
+    const col = d>=0?'rgba(46,201,138,.85)':'rgba(255,93,108,.85)';
+    svg+=`<line x1="${x-gap+bw}" y1="${base-sc(run)}" x2="${x}" y2="${base-sc(run)}" stroke="var(--mut2)" stroke-dasharray="3 3"/>`;
+    svg+=drawBar(x,h,top,col,s[0],(d>=0?'+':'')+mln(d));
+    run+=d; x+=gap;
+  });
+  svg+=drawBar(x,sc(end),base-sc(end),'url(#g2)','Цель','₽'+mln(end));
+  svg+=`<defs><linearGradient id="g1" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#5b8cff"/><stop offset="1" stop-color="#3a5fcc"/></linearGradient>
+        <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2ec98a"/><stop offset="1" stop-color="#1d9968"/></linearGradient></defs></svg>`;
+  $('#waterfall').innerHTML=svg;
+
+  $('#fNow').textContent='₽ '+mln(C.revNow)+' млн';
+  $('#fTgt').textContent='₽ '+mln(C.revTgt)+' млн';
+  $('#fYear').textContent='+₽ '+mln((C.revTgt-C.revNow)*12)+' млн';
+
+  // источники
+  const src=[[(S.s1name||'Новый бизнес'),C.tNew.rev,'var(--acc)'],[(S.s2name||'База'),C.tBase,'var(--acc2)'],[(S.s3name||'Проекты'),C.fUni,'#3E8E5E']];
+  const tot=src.reduce((a,s)=>a+s[1],0)||1;
+  $('#srcSplit').innerHTML = src.map(s=>`
+    <div style="margin-bottom:12px">
+      <div class="row" style="justify-content:space-between"><div>${s[0]}</div><div class="num"><b>₽ ${mln(s[1])} млн</b> <span class="mut2">· ${pct(s[1]/tot)}</span></div></div>
+      <div class="barbg" style="margin-top:6px"><div class="barfill" style="width:${(s[1]/tot*100)}%;background:${s[2]}"></div></div>
+    </div>`).join('');
+}
+
+/* ---- Plan ---- */
+function renderPlan(C){
+  // сверху-вниз: цель -> сделки -> кваллиды -> mql -> касания
+  const goal=S.goalMonth;
+  const newShare=0.55; // доля цели из нового бизнеса (демо); остальное база+univer
+  const goalNew=goal - C.fBase - C.fUni; // что должен дать новый бизнес сверх базы/univer
+  const dealsNeed=Math.max(0,goalNew)/S.checkNew;
+  const kpNeed=dealsNeed/(S.c_closeB||1);
+  const meetNeed=kpNeed/(S.c_kpB||1);
+  const sqlNeed=meetNeed/(S.c_meetB||1);
+  const mqlNeed=sqlNeed/(S.c_sqlB||1);
+  const contNeed=mqlNeed/(S.c_mqlB||1);
+  const meetCapMonth=S.sellers*S.meetCap*S.workdays;
+  const td=$('#topdown'); td.innerHTML='';
+  const tr=(a,b,c)=>`<tr><td>${a}</td><td class="r num"><b>${b}</b></td><td class="tag">${c||''}</td></tr>`;
+  td.innerHTML =
+    tr('Цель Cash-in / мес','₽ '+mln(goal)+' млн','амбиция сверху') +
+    tr('— из базы и проектов','₽ '+mln(C.fBase+C.fUni)+' млн','тянется снизу') +
+    tr('Нужно от нового бизнеса','₽ '+mln(Math.max(0,goalNew))+' млн','остаток на воронку') +
+    tr('Сделок нужно',''+dealsNeed.toFixed(1)+' шт','/ ср.чек '+S.checkNew+' млн') +
+    tr('КП нужно',''+Math.ceil(kpNeed)+' шт','close '+pct(S.c_closeB)) +
+    tr('Встреч провести',''+Math.ceil(meetNeed)+' шт','встреча→КП '+pct(S.c_kpB)) +
+    tr('Кваллидов нужно',''+Math.ceil(sqlNeed)+' шт','кваллид→встреча '+pct(S.c_meetB)) +
+    tr('MQL нужно',''+Math.ceil(mqlNeed)+' шт','') +
+    tr('Касаний нужно',''+Math.ceil(contNeed)+' шт','верх воронки') +
+    `<tr><td>Ёмкость по встречам / мес</td><td class="r num"><b>${meetCapMonth}</b></td><td class="tag">${meetNeed>meetCapMonth?'<span class=\"pill r\">дефицит ёмкости</span>':'<span class=\"pill g\">хватает</span>'}</td></tr>`;
+
+  // снизу-вверх — из pipeline + законтрактованного кэша (реальные поступления месяца)
+  const bu=$('#bottomup'); bu.innerHTML='';
+  const trb=(a,b,c)=>`<tr><td>${a}</td><td class="r num"><b>${b}</b></td><td class="tag">${c||''}</td></tr>`;
+  bu.innerHTML =
+    trb('Committed — поддержка + транши','₽ '+mln(S.committed)+' млн', 'подписано · 100%') +
+    trb('Поток 1 · Forecast (≥85%) × вер.','₽ '+mln(C.fW)+' млн', '₽'+mln(S.pipeForecast)+' млн × '+pct(S.probF)) +
+    trb('Поток 1 · Upside (65–84%) × вер.','₽ '+mln(C.uW)+' млн', '₽'+mln(S.pipeUpside)+' млн × '+pct(S.probU)) +
+    trb('EXPAND — допродажи базе','₽ '+mln(C.baseCash)+' млн', (S.baseClients*S.baseCover*S.baseConv).toFixed(1)+' сделок · цикл 1–3 мес') +
+    trb((S.s3name||'Проекты')+' — закрытие','₽ '+mln(S.uniClose)+' млн', 'проекты / тендеры') +
+    `<tr style="border-top:2px solid var(--line)"><td><b>Итого снизу-вверх · этот месяц</b></td><td class="r num"><b style="color:var(--good)">₽ ${mln(C.cashMonth)} млн</b></td><td class="tag">реальный кэш</td></tr>` +
+    `<tr><td>Покрытие цели открытым pipeline</td><td class="r num"><b>${C.coverage.toFixed(1)}×</b></td><td class="tag">${C.coverage>=3?'<span class="pill g">норма 3–5×</span>':'<span class="pill y">тонко для enterprise</span>'}</td></tr>` +
+    `<tr><td>GAP до цели месяца</td><td class="r num"><b style="color:${C.gap>0?'var(--bad)':'var(--good)'}">₽ ${mln(C.gap)} млн</b></td><td class="tag">${C.gap>0?'дозакрыть из воронки':'цель покрыта'}</td></tr>` +
+    `<tr><td>Кваллидов (SQL) открыть сейчас</td><td class="r num"><b>${C.qualNeed}</b></td><td class="tag">под GAP, цикл ~${S.cycleMonths} мес</td></tr>`;
+
+  // gauge
+  const d=Math.abs(C.diff), ok=d<=0.05;
+  const ang=Math.min(d/0.30,1)*180; // 0..30% mapped to half-circle
+  const R=54, cx=64, cy=64;
+  const arc=(a)=>{const rad=(180-a)*Math.PI/180; return [cx+R*Math.cos(rad), cy-R*Math.sin(rad)];};
+  const [ex,ey]=arc(ang);
+  $('#gaugeRing').innerHTML=`<svg width="128" height="80" viewBox="0 0 128 80">
+    <path d="M10,64 A54,54 0 0 1 118,64" fill="none" stroke="var(--line)" stroke-width="11" stroke-linecap="round"/>
+    <path d="M10,64 A54,54 0 0 1 ${ex.toFixed(1)},${ey.toFixed(1)}" fill="none" stroke="${ok?'var(--good)':'var(--warn)'}" stroke-width="11" stroke-linecap="round"/>
+    <text x="64" y="58" text-anchor="middle" font-size="22" font-weight="800" fill="var(--ink)">${(d*100).toFixed(0)}%</text>
+    <text x="64" y="74" text-anchor="middle" font-size="10" fill="var(--mut)">расхождение</text></svg>`;
+  $('#convergeVerdict').innerHTML = ok? '<span style="color:var(--good)">✓ План можно брать в работу</span>' :
+    '<span style="color:var(--warn)">⚠ Расхождение &gt; 5% — в работу не берём</span>';
+  $('#convergeText').innerHTML = ok
+    ? `Сверху-вниз ₽${mln(S.goalMonth)} млн и снизу-вверх ₽${mln(C.bottomUp)} млн сходятся в пределах нормы. Pipeline покрывает цель — план берём в работу.`
+    : `Сверху-вниз ₽${mln(S.goalMonth)} млн vs снизу-вверх ₽${mln(C.bottomUp)} млн (из pipeline). ${C.bottomUp<S.goalMonth?`GAP ₽${mln(C.gap)} млн: ускорить закрытие Forecast/Upside, поднять Committed (продления), открыть ~${C.qualNeed} кваллидов под будущие месяцы — либо честно резать цель.`:'Pipeline даёт больше цели — поднимаем планку, фиксируем за счёт чего.'} Садимся на факторный анализ.`;
+
+  // scenarios Farm/Stretch
+  const farm=C.bottomUp, stretch=farm*1.2;
+  const sc=$('#scenarios'); sc.innerHTML='';
+  const cost = S.sellers*0.0+0; // упрощённо без ФОТ; покажем маржу
+  const line=(lab,a,b,c,fmt)=>`<div class="scenrow" style="padding:7px 0;border-bottom:1px solid var(--panel2)">
+     <div>${lab}</div><div class="right num">${fmt(a)}</div><div class="right num">${fmt(b)}</div><div class="right num" style="color:var(--warn)">${fmt(c)}</div></div>`;
+  sc.innerHTML =
+    line('Cash-in, млн ₽', S.goalMonth, farm, stretch, v=>'₽ '+mln(v)) +
+    line('Сделок нового бизнеса', Math.max(0,(S.goalMonth-C.fBase-C.fUni)/S.checkNew), C.fNew.deals, C.fNew.deals*1.2, v=>v.toFixed(2)) +
+    line('Валовая прибыль (×маржа)', S.goalMonth*S.margin, farm*S.margin, stretch*S.margin, v=>'₽ '+mln(v)) +
+    line('Год, млн ₽', S.goalMonth*12, farm*12, stretch*12, v=>'₽ '+mln(v));
+}
+
+/* ---- Decomposition ---- */
+function renderDecomp(C){
+  const w=[S.w1,S.w2,S.w3,S.w4]; const wsum=w.reduce((a,b)=>a+b,0)||1;
+  const days=S.workdays, perSeller=S.sellers||1;
+  // потоки кэша
+  const landClose=C.fW+C.uW;                 // закрытие LAND-сделок (взвеш.)
+  const baseInWork=S.baseClients*S.baseCover;
+  const baseDeals=baseInWork*S.baseConv;
+  // активность: генерация LAND (leading) + продвижение активного pipeline (реальные встречи/КП)
+  const newContacts=S.contacts;
+  const meetingsM = S.dealsAdvance + C.fNew.meet;   // встречи: продвижение pipeline + квалификация новых
+  const kpM = S.dealsAdvance*0.5 + C.fNew.kp;        // КП: ~половина продвижений + новые
+
+  const wt=$('#weekly'); wt.innerHTML='';
+  const head='<tr><th>Показатель · план</th>'+[1,2,3,4].map(i=>`<th class="r">Нед ${i}</th>`).join('')+'<th class="r">Итого</th></tr>';
+  // r: [label, monthTotal, fmt, mode]  mode: 'even' (равномерно, напр. поддержка) | 'w' (по весам)
+  const secHdr=(t)=>`<tr><td colspan="6" class="tag" style="padding-top:14px;color:var(--mut2);letter-spacing:.6px;border-bottom:none">${t}</td></tr>`;
+  // per-week distributor: even (committed) либо по весам
+  const wk=(total,mode)=>w.map((wi)=> mode==='even'? total/4 : total*wi/wsum);
+  const add=(a,b)=>a.map((x,i)=>x+b[i]);
+  const rowHtml=(label,total,fmt,mode,bold)=>{
+    const cells=wk(total,mode).map(part=>`<td class="r num">${fmt(part)}</td>`).join('');
+    return `<tr><td>${bold?'<b>'+label+'</b>':label}</td>${cells}<td class="r num"><b>${fmt(total)}</b></td></tr>`;
+  };
+  const rowFromArr=(label,arr,total,fmt,bold)=>{
+    const cells=arr.map(part=>`<td class="r num">${fmt(part)}</td>`).join('');
+    return `<tr style="border-top:1px solid var(--line)"><td>${bold?'<b>'+label+'</b>':label}</td>${cells}<td class="r num"><b>${fmt(total)}</b></td></tr>`;
+  };
+  const M=v=>'₽'+mln(v), N1=v=>v.toFixed(1), N0=v=>v.toFixed(0), N2=v=>v.toFixed(2);
+  // точная сумма по неделям: committed равномерно + остальное по весам
+  const cashWk = add(wk(S.committed,'even'), wk(landClose+C.baseCash+S.uniClose,'w'));
+  wt.innerHTML = head +
+    secHdr('💰 ПОСТУПЛЕНИЯ (Cash-in) — откуда деньги') +
+    rowHtml('Committed — поддержка + транши', S.committed, M, 'even') +
+    rowHtml('Поток 1 — закрытие сделок (Forecast+Upside)', landClose, M, 'w') +
+    rowHtml('EXPAND — допродажи базе', C.baseCash, M, 'w') +
+    rowHtml((S.s3name||'Проекты'), S.uniClose, M, 'w') +
+    rowFromArr('Итого Cash-in, млн ₽', cashWk, C.cashMonth, M, true) +
+    secHdr('🌱 ВОРОНКА И PIPELINE (активность продавцов)') +
+    rowHtml('Новых контактов (лидов) · вся линия', newContacts, N0, 'w') +
+    rowHtml('Встреч с ЛПР проведено', meetingsM, N1, 'w') +
+    rowHtml('КП отправлено', kpM, N1, 'w') +
+    secHdr('🔁 РАБОТА С БАЗОЙ (поток 2 · допродажи)') +
+    rowHtml('Клиентов в проработке допродаж', baseInWork, N0, 'w') +
+    rowHtml('Допсделок закрыто', baseDeals, N1, 'w') +
+    `<tr><td class="tag" style="padding-top:12px">Вес недели</td>${w.map((wi,i)=>`<td class="r"><input type="number" step="0.05" data-k="w${i+1}" style="width:62px;text-align:right" value="${wi}"></td>`).join('')}<td class="r tag">${(wsum*100).toFixed(0)}%</td></tr>`;
+  wt.querySelectorAll('input[data-k]').forEach(inp=>{
+    inp.oninput=()=>{ S[inp.dataset.k]=parseFloat(inp.value)||0; save(); renderDecomp(compute()); };
+  });
+
+  // operational per seller / day
+  // касание = выход на ЛПР (звонок/письмо/LinkedIn). Дневная нагрузка = новые контакты × касаний/контакт + follow-up активного pipeline
+  const outreachMonth = newContacts*S.touchesPerLead + S.activeDeals*S.followupsWk*4;
+  const touchesDay = outreachMonth/perSeller/days;
+  const meetWeek = meetingsM/4/perSeller;
+  const kpWeek = kpM/4/perSeller;
+  const baseTouchDay = (baseInWork*S.touchesPerLead/2)/(S.baseMgr||1)/days;
+  const ops=$('#ops'); ops.innerHTML='';
+  const card=(title,items,col)=>`<div class="mcard" style="margin-bottom:12px">
+     <div class="n" style="color:${col}">${title}</div>
+     <table style="margin-top:4px">${items.map(i=>`<tr><td>${i[0]}</td><td class="r num"><b>${i[1]}</b></td></tr>`).join('')}</table></div>`;
+  ops.innerHTML =
+    card('ПРОДАВЕЦ · поток 1 (воронка + ведение pipeline) ×'+S.sellers, [
+      ['Касаний / выходов на ЛПР в день', touchesDay.toFixed(1)+' <span class="mut2">(звонок/письмо/мессенджер)</span>'],
+      ['Активных сделок вести', Math.round(S.activeDeals/perSeller)],
+      ['Встреч с ЛПР / неделю', meetWeek.toFixed(1)+' <span class="mut2">(ёмкость '+(S.meetCap*5)+'/нед)</span>'],
+      ['КП / неделю', kpWeek.toFixed(1)],
+      ['Реактивация зависших сделок / нед', '3–4 <span class="mut2">(цель: зависших &lt;10%)</span>'],
+    ],'var(--acc)') +
+    card('МЕНЕДЖЕР БАЗЫ · поток 2 (допродажи) ×'+S.baseMgr, [
+      ['Клиентов в проработке / мес', Math.round(baseInWork)],
+      ['Касаний базы / день', baseTouchDay.toFixed(1)],
+      ['Допсделок / мес', baseDeals.toFixed(1)],
+      ['Cash-in базы / мес', '₽ '+mln(C.baseCash)+' млн'],
+    ],'var(--acc2)') +
+    card('МАРКЕТИНГ · верх воронки (генерация MQL)', [
+      ['Новых контактов / мес', newContacts.toFixed(0)],
+      ['MQL / мес (план)', C.fNew.mql.toFixed(1)],
+      ['Каналов лидогена', (S.channels||[]).length+' <span class="mut2">(в медиаплане)</span>'],
+      ['Кваллидов (SQL) / мес', C.fNew.sql.toFixed(1)],
+    ],'var(--good)');
+
+  const capMonth=S.sellers*S.meetCap*S.workdays;
+  $('#capacityNote').innerHTML = `<b>Что такое «касание»:</b> выход на ЛПР (звонок / письмо / LinkedIn). На 1 контакт нужно ~${S.touchesPerLead} касаний до квалификации, плюс follow-up по ${S.activeDeals} активным сделкам → ~<b>${touchesDay.toFixed(0)} касаний/день</b> на продавца (ABM-режим, не холодный обзвон). <b>Анти-перелидоз:</b> ёмкость ${capMonth} встреч/мес, нужно ~${Math.ceil(meetingsM)} — ${meetingsM<=capMonth?'<span class="pill g">в пределах ёмкости</span>':'<span class="pill r">превышение</span>'}.`;
+}
+
+/* ===================== ОТДЕЛ ПРОДАЖ ===================== */
+const round2=v=>Math.round(v*100)/100;
+function repStats(){
+  const reps=(S.reps||[]).filter(r=>r&&(r.name||r.conv||r.check||r.leads));
+  let leadsSum=0,dealsSum=0,revSum=0,wConv=0,bestConv=0,bestCheck=0;
+  reps.forEach(r=>{const leads=+r.leads||0,conv=+r.conv||0,check=+r.check||0;const deals=leads*conv/100;leadsSum+=leads;dealsSum+=deals;revSum+=deals*check;wConv+=leads*conv;bestConv=Math.max(bestConv,conv);bestCheck=Math.max(bestCheck,check);});
+  const avgConv=leadsSum>0?wConv/leadsSum:0, avgCheck=dealsSum>0?revSum/dealsSum:0;
+  const targetConv=(+S.repTargetConv>0)?+S.repTargetConv:bestConv, targetCheck=(+S.repTargetCheck>0)?+S.repTargetCheck:bestCheck;
+  let potRev=0; reps.forEach(r=>{const leads=+r.leads||0; potRev+=leads*targetConv/100*targetCheck;});
+  return {reps,leadsSum,dealsSum,revSum,avgConv,avgCheck,bestConv,bestCheck,targetConv,targetCheck,potRev};
+}
+function renderReps(){
+  const m=repStats();
+  const t=$('#repsTable'); if(!t)return;
+  const head='<tr><th>Менеджер (фамилия имя)</th><th class="r">Сделок/мес</th><th class="r">Конверсия в продажу, %</th><th class="r">Ср. чек, млн ₽</th><th class="r">Выручка/мес</th><th></th></tr>';
+  const rows=(S.reps||[]).map((r,i)=>{const rev=(+r.leads||0)*(+r.conv||0)/100*(+r.check||0);
+    return `<tr>
+      <td><input type="text" data-r="${i}.name" value="${(r.name||'').replace(/"/g,'&quot;')}" style="min-width:170px"></td>
+      <td class="r"><input type="number" step="1" data-r="${i}.leads" value="${r.leads||0}" style="width:80px;text-align:right"></td>
+      <td class="r"><input type="number" step="0.5" data-r="${i}.conv" value="${r.conv||0}" style="width:90px;text-align:right"></td>
+      <td class="r"><input type="number" step="0.05" data-r="${i}.check" value="${r.check||0}" style="width:90px;text-align:right"></td>
+      <td class="r num">₽ ${mln(rev)} млн</td>
+      <td class="r"><button class="btn ghost" style="padding:6px 10px" onclick="removeRep(${i})">✕</button></td></tr>`;}).join('');
+  t.innerHTML=head+rows;
+  t.querySelectorAll('input[data-r]').forEach(inp=>{inp.onchange=()=>{const[i,key]=inp.dataset.r.split('.');const v=inp.type==='number'?(parseFloat(inp.value)||0):inp.value;S.reps[+i][key]=v;save();render();};});
+
+  $('#repRevNow').textContent='₽ '+mln(m.revSum)+' млн';
+  $('#repTeamNow').textContent='Ср. конв. '+m.avgConv.toFixed(0)+'% · ср. чек ₽'+mln(m.avgCheck)+' млн · сделок '+m.dealsSum.toFixed(0);
+  $('#repRevPot').textContent='₽ '+mln(m.potRev)+' млн';
+  const up=m.revSum>0?(m.potRev/m.revSum-1):0;
+  $('#repUplift').textContent='+₽ '+mln(m.potRev-m.revSum)+' млн ('+(up>=0?'+':'')+(up*100).toFixed(0)+'%) если все → эталон';
+  $('#repTargets').textContent=m.targetConv.toFixed(0)+'% / ₽'+mln(m.targetCheck)+' млн';
+
+  const ut=$('#repUpliftTable');
+  const uh='<tr><th>Менеджер</th><th class="r">Конв. сейчас→цель</th><th class="r">Чек сейчас→цель</th><th class="r">Выручка сейчас→потенциал</th><th class="r">Прирост</th></tr>';
+  const ur=(S.reps||[]).map(r=>{const leads=+r.leads||0,conv=+r.conv||0,check=+r.check||0;const rev=leads*conv/100*check;const pot=leads*m.targetConv/100*m.targetCheck;const d=pot-rev;
+    const pill=v=>v>0?'<span class="pill g">+'+mln(v)+'</span>':'<span class="pill">—</span>';
+    return `<tr><td>${(r.name||'—')}</td>
+      <td class="r num">${conv.toFixed(0)}% <span class="mut2">→ ${m.targetConv.toFixed(0)}%</span></td>
+      <td class="r num">₽${mln(check)} <span class="mut2">→ ₽${mln(m.targetCheck)}</span></td>
+      <td class="r num">₽${mln(rev)} <span class="mut2">→ ₽${mln(pot)}</span></td>
+      <td class="r num">${pill(d)}</td></tr>`;}).join('');
+  ut.innerHTML=uh+ur;
+}
+function addRep(){ S.reps=S.reps||[]; S.reps.push({name:'',leads:20,conv:25,check:0.3}); save(); render(); }
+function removeRep(i){ S.reps.splice(i,1); save(); render(); }
+function applyRepsToPlan(){
+  const m=repStats(); if(m.dealsSum<=0){toast('Заполни показатели менеджеров');return;}
+  S.checkNew=round2(m.avgCheck); S.c_close=Math.min(0.95,m.avgConv/100); S.c_closeB=Math.min(0.98,m.targetConv/100);
+  save(); bindInputs(); render(); toast('Средние отдела применены к плану ✓ (чек + close-rate)');
+}
+window.addRep=addRep; window.removeRep=removeRep; window.applyRepsToPlan=applyRepsToPlan;
+
+/* ===================== CLAUDE API — ресерч бенчмарков ===================== */
+const API_URL="https://api.anthropic.com/v1/messages";
+let toastT;
+function toast(msg,ms){let el=$('#toast');if(!el){el=document.createElement('div');el.id='toast';el.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--acc);color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,.15);max-width:90%';document.body.appendChild(el);}el.textContent=msg;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>{el.style.display='none';},ms||3500);}
+function balanceClose(s){let inStr=false,esc=false;const st=[];for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(esc)esc=false;else if(ch==="\\")esc=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch==='{'||ch==='[')st.push(ch==='{'?'}':']');else if(ch==='}'||ch===']')st.pop();}let out=s;if(inStr)out+='"';out=out.replace(/[,\s]+$/,"");for(let i=st.length-1;i>=0;i--)out+=st[i];return out.replace(/,\s*([}\]])/g,"$1");}
+function lastTopComma(s){let inStr=false,esc=false,last=-1;for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(esc)esc=false;else if(ch==="\\")esc=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch===',')last=i;}return last;}
+function parseJSON(s){let t=String(s||"").replace(/^﻿/,"").trim().replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,"").trim();const a=t.indexOf("{");if(a>0)t=t.slice(a);const b=t.lastIndexOf("}");if(b>0){try{return JSON.parse(t.slice(0,b+1).replace(/,\s*([}\]])/g,"$1"));}catch(_){}}let work=t;for(let k=0;k<400;k++){try{return JSON.parse(balanceClose(work));}catch(_){}const cut=lastTopComma(work);if(cut<0)break;work=work.slice(0,cut);}throw new Error("Модель вернула не-JSON.");}
+async function callClaude({system,messages,max_tokens,effort}){
+  const key=($('#apikey').value||'').trim(); if(!key)throw new Error('no-key');
+  const model=$('#model').value;
+  const body={model,max_tokens,system:[{type:"text",text:system,cache_control:{type:"ephemeral"}}],messages};
+  if(effort&&(model==="claude-opus-5"||model==="claude-sonnet-5"))body.output_config={effort};
+  const res=await fetch(API_URL,{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok||data.type==="error"){throw new Error((data.error&&data.error.message)||("HTTP "+res.status));}
+  return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+}
+/* --- чтение прикреплённых файлов (локально, через SheetJS) --- */
+let attachedReport="", attachedCompanyDoc="";
+function readFileAB(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsArrayBuffer(file);});}
+function readFileText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsText(file);});}
+function wbDigest(wb,maxRows){let out="";(wb.SheetNames||[]).forEach(nm=>{const ws=wb.Sheets[nm];let csv="";try{csv=XLSX.utils.sheet_to_csv(ws,{blankrows:false});}catch(_){}const lines=csv.split("\n").filter(l=>l.replace(/[,;\s]/g,"").length).slice(0,maxRows||60);if(lines.length)out+="### Лист: "+nm+"\n"+lines.join("\n")+"\n\n";});return out;}
+async function readReportFile(files){
+  if(!files||!files.length)return; let digest="",names=[];
+  for(const f of files){ names.push(f.name);
+    try{
+      if(/\.csv$/i.test(f.name)){const t=await readFileText(f);digest+="## Файл: "+f.name+"\n"+t.split("\n").slice(0,90).join("\n")+"\n\n";}
+      else{const ab=await readFileAB(f);const wb=XLSX.read(ab,{type:"array"});digest+="## Файл: "+f.name+"\n"+wbDigest(wb,60);}
+    }catch(e){digest+="(не удалось прочитать "+f.name+")\n";}
+  }
+  if(digest.length>9000)digest=digest.slice(0,9000)+"\n…(обрезано)";
+  attachedReport=digest;
+  $('#repInfo').innerHTML='📎 Прикреплено: <b>'+names.join(", ")+'</b> · прочитано '+digest.length+' симв. Нажми «🔬 Прочитать и заполнить».';
+}
+async function readCompanyDoc(files){
+  if(!files||!files.length)return; const f=files[0]; let txt="";
+  try{ if(/\.(xlsx|xls)$/i.test(f.name)){const ab=await readFileAB(f);txt=wbDigest(XLSX.read(ab,{type:"array"}),40);} else {txt=await readFileText(f);} }catch(e){txt="";}
+  if(txt.length>6000)txt=txt.slice(0,6000)+"…";
+  attachedCompanyDoc=txt;
+  $('#coInfo').innerHTML=txt?('📎 <b>'+f.name+'</b> прочитан ('+txt.length+' симв.) — учтётся при заполнении.'):('⚠ Не удалось прочитать '+f.name);
+}
+window.readReportFile=readReportFile; window.readCompanyDoc=readCompanyDoc;
+
+async function researchBenchmarks(){
+  const btn=$('#researchBtn'), st=$('#researchStatus');
+  if(!($('#apikey').value||'').trim()){st.innerHTML='<div class="note">Вставь Claude API-ключ выше.</div>';return;}
+  localStorage.setItem('softsnow_key',$('#apikey').value.trim());
+  const hasData=attachedReport||attachedCompanyDoc||(S.currentReport||'').trim();
+  btn.disabled=true;const old=btn.textContent;btn.textContent='🔬 Читаю…';
+  st.innerHTML='<div class="lead">'+(attachedReport?'Читаю отчётность, извлекаю факт и подбираю бенчмарки…':'Подбираю бенчмарки по нише…')+' (10–40 сек)</div>';
+  const sys=[
+   "Ты — эксперт по юнит-экономике и бенчмаркам продаж. На вход: описание компании, (опц.) документ-обёртка и (опц.) ВЫГРУЗКА ТЕКУЩЕЙ ОТЧЁТНОСТИ из Excel/CSV (все листы, в CSV).",
+   "Задачи: (1) если есть отчётность — ИЗВЛЕКИ фактические текущие показатели компании; (2) дай РЕАЛИСТИЧНЫЕ бенчмарки ниши (достижимые лучшими, не идеал).",
+   "ЕДИНИЦЫ: конверсии/доли — 0..1 (напр. 0.35); в модели чек и суммы pipeline — в МЛН ₽ (checkNew, committed…); в МЕДИАПЛАНЕ бюджет/CPM/CPC/чек — в ₽ (рублях).",
+   "Верни СТРОГО один JSON и ничего больше:",
+   '{',
+   '  "facts":{ "c_mql":,"c_sql":,"c_meet":,"c_kp":,"c_close":,"checkNew":,"baseClients":,"baseCover":,"baseConv":,"baseCheck":,"uniDeals":,"uniCheck":,"committed":,"pipeForecast":,"pipeUpside":,"pipeTotal":,"cycleMonths":,"sellers":,"meetCap":,"workdays": },',
+   '  "benchmarks":{ "c_mqlB":,"c_sqlB":,"c_meetB":,"c_kpB":,"c_closeB":,"baseCoverB":,"baseConvB": },',
+   '  "channels":[ {"name":"канал трафика","format":"формат/конвертер (вебинар/прямая продажа)","budget":₽,"comm":доля,"cpm":₽,"ctr":доля,"cpc":₽,"c0":доля клик→заявка,"qual":доля гор+тёпл,"c1":доля заявка→оплата,"check":₽} ],',
+   '  "found":["что конкретно нашёл в отчётности"], "missing":["каких данных не хватило — вписать вручную"], "rationale":["почему такие бенчмарки"]',
+   '}',
+   "channels — ТОЛЬКО если в отчётности реально есть данные по каналам трафика (бюджеты/CPL/оплаты). Тогда собери по каждому каналу что нашёл (недостающие поля модели оцени разумно). Формат (вебинар и т.п.) — это НЕ канал; клади его в поле format. Если данных по каналам нет — channels НЕ включай.",
+   "В facts клади ТОЛЬКО значения, которые реально нашёл/уверенно вывел; неизвестное — ПРОПУСТИ ключ (не выдумывай). Если отчётности нет — facts оставь пустым {}."
+  ].join("\n");
+  const chNames=(S.channels||[]).map((c,i)=>(i+1)+". "+c.name+" ("+(c.format||'')+", бюджет ₽"+c.budget+")").join("; ");
+  let usr="НИША: "+(S.niche||'—')+"\nГЕО: "+(S.geo||'—')+"\nО КОМПАНИИ: "+(S.bizDesc||'—');
+  if(attachedCompanyDoc)usr+="\n\n=== ДОКУМЕНТ-ОБЁРТКА О КОМПАНИИ ===\n"+attachedCompanyDoc;
+  if(attachedReport)usr+="\n\n=== ВЫГРУЗКА ТЕКУЩЕЙ ОТЧЁТНОСТИ (Excel/CSV) ===\n"+attachedReport;
+  if((S.currentReport||'').trim())usr+="\n\n=== ОТЧЁТНОСТЬ (введено вручную) ===\n"+S.currentReport;
+  usr+="\n\nТЕКУЩИЕ КАНАЛЫ В МОДЕЛИ: "+(chNames||'—');
+  try{
+    const raw=await callClaude({system:sys,messages:[{role:"user",content:usr}],max_tokens:4000,effort:"low"});
+    const b=parseJSON(raw);
+    const facts=b.facts||{}, bm=b.benchmarks||{};
+    let applied=0;
+    Object.keys(facts).forEach(k=>{ if(k in S){ const n=parseFloat(facts[k]); if(isFinite(n)){ S[k]=n; applied++; } } });
+    const num=(v)=>{const n=parseFloat(v);return isFinite(n)&&n>0?n:null;};
+    ['c_mqlB','c_sqlB','c_meetB','c_kpB','c_closeB','baseCoverB','baseConvB'].forEach(k=>{const n=num(bm[k]);if(n!=null)S[k]=n;});
+    let chMsg='';
+    if(Array.isArray(b.channels)&&b.channels.length){
+      const dflt={name:'Канал',format:'Прямая продажа',budget:100000,comm:0,cpm:0,ctr:0,cpc:100,c0:0.3,qual:0.5,c1:0.05,check:(S.channels[0]&&S.channels[0].check)||450000};
+      S.channels=b.channels.map(c=>{const o={...dflt};['name','format'].forEach(k=>{if(c[k]!=null)o[k]=String(c[k]);});['budget','comm','cpm','ctr','cpc','c0','qual','c1','check'].forEach(k=>{const n=parseFloat(c[k]);if(isFinite(n))o[k]=n;});return o;});
+      chMsg=' Каналы медиаплана заменены на найденные в отчётности ('+S.channels.length+').';
+    }
+    save(); bindInputs(); render();
+    const list=a=>(Array.isArray(a)?a:(a?[a]:[])); const ul=a=>list(a).length?'<ul style="margin:6px 0 0;padding-left:18px">'+list(a).map(x=>'<li>'+x+'</li>').join('')+'</ul>':'';
+    st.innerHTML='<div class="note b"><b>✓ Готово.</b> Подставлено фактических значений: <b>'+applied+'</b> + бенчмарки.'+chMsg+' Проверь вкладки «Текущие значения» / «Медиаплан» / «🎯 Итоговый план».'
+      +(list(b.found).length?'<div style="margin-top:8px"><b>Нашёл в отчётности:</b>'+ul(b.found)+'</div>':'')
+      +(list(b.missing).length?'<div style="margin-top:8px"><b>Не хватило (впиши вручную):</b>'+ul(b.missing)+'</div>':'')
+      +(list(b.rationale).length?'<div style="margin-top:8px"><b>Логика бенчмарков:</b>'+ul(b.rationale)+'</div>':'')+'</div>';
+    toast('Данные подставлены ✓');
+  }catch(e){
+    const msg=e.message==='no-key'?'Не указан ключ.':/Failed to fetch|NetworkError/i.test(e.message)?'Нет связи с api.anthropic.com (открой в Chrome).':e.message;
+    st.innerHTML='<div class="note" style="border-color:var(--bad);color:var(--bad)">⚠ Не удалось: '+msg+'</div>';
+  }finally{btn.disabled=false;btn.textContent=old;}
+}
+window.researchBenchmarks=researchBenchmarks;
+
+/* ===================== BIND ===================== */
+function bindInputs(){
+  document.querySelectorAll('input[data-k],textarea[data-k]').forEach(inp=>{
+    if(inp.dataset.k in S){
+      inp.value = S[inp.dataset.k];
+      inp.oninput=()=>{ const v=inp.type==='number'?(parseFloat(inp.value)||0):inp.value; S[inp.dataset.k]=v; save(); render(); };
+    }
+  });
+}
+// tabs
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));
+    t.classList.add('on'); document.getElementById('v-'+t.dataset.v).classList.add('on');
+    updateHero();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+// API-ключ и модель (для ресерча бенчмарков)
+(function(){const k=$('#apikey');if(k){k.value=localStorage.getItem('softsnow_key')||'';k.addEventListener('change',()=>localStorage.setItem('softsnow_key',k.value.trim()));}
+  const m=$('#model');if(m){m.value=localStorage.getItem('softsnow_model')||'claude-opus-5';m.addEventListener('change',()=>localStorage.setItem('softsnow_model',m.value));}})();
+
+bindInputs();
+render();
+</script>
+</body>
+</html>
