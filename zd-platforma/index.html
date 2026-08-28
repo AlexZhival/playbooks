@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Здоровое движение · Платформа онбординга - инструкция для команды</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+  --em:#143A2D;--em2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold2:#C79A45;--gold-h:#977019;
+  --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+  --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(29px,5vw,50px);line-height:1.05;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,31px);line-height:1.12;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:19.5px;line-height:1.25}
+p{margin-top:12px}
+a{color:var(--em2)}
+.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"\25CF";color:var(--gold);font-size:10px}
+b,strong{font-weight:800}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 3px}
+
+/* hero */
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:58px 0 50px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 26%,rgba(199,154,69,.2),transparent 46%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:740px}
+.hero .lead{font-size:clamp(16.5px,2.2vw,19px);color:rgba(239,233,218,.85);max-width:640px;margin-top:16px;font-weight:500}
+.hero .kicker{color:var(--gold2)}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold2)}
+.cta{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;font-weight:800;font-size:16px;padding:14px 22px;border-radius:12px;text-decoration:none;margin-top:26px;box-shadow:0 14px 30px -12px rgba(176,130,46,.7);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+
+section{padding:46px 0}
+section.alt{background:var(--bg2)}
+.eyebrow{margin-bottom:12px;display:inline-block}
+.lead{font-size:18.5px;color:var(--muted);font-weight:500}
+
+/* оглавление */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:26px}
+.toc a{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s}
+.toc a:hover{border-color:var(--gold);transform:translateY(-2px)}
+.toc .n{font-family:var(--mono);font-size:11.5px;color:var(--gold-h);font-weight:700;letter-spacing:.08em}
+.toc .t{font-weight:700;font-size:15.5px;margin-top:3px;display:block}
+
+/* карточки ролей */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+@media(max-width:740px){.roles{grid-template-columns:1fr}}
+.rcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px}
+.rcard.r1{border-top:5px solid var(--em)}
+.rcard.r2{border-top:5px solid var(--gold)}
+.rcard .rn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.rcard ul{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.rcard li{font-size:15.5px}
+
+/* шаги */
+ol.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
+ol.steps>li b{display:block;font-size:17px;margin-bottom:2px}
+ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+
+/* выноски */
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
+.note.warn{border-left-color:var(--red)}
+.note.ok{border-left-color:var(--green)}
+.note b{display:block;margin-bottom:4px}
+code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
+
+/* таблица статуса */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--em);color:var(--dark-ink);text-align:left;padding:13px 16px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono)}
+.tbl td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag.live{background:#dfeccb;color:#2F5233}
+.tag.next{background:#f3e3c6;color:#7c5a14}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.foot{background:var(--em);color:rgba(239,233,218,.8);padding:38px 0;font-size:15px}
+.foot b{color:#fff}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="wrap">
+    <div class="badges">
+      <span class="badge">Здоровое движение</span>
+      <span class="badge">Онбординг менеджеров</span>
+      <span class="badge">Инструкция для команды</span>
+    </div>
+    <h1>Платформа онбординга: как ей управлять</h1>
+    <p class="lead">Все, что нужно вашей команде, чтобы работать с платформой самостоятельно: выдавать доступы менеджерам, править контент, подключить AI и понимать, что уже боевое, а что следующий шаг. Программисты для этого не нужны.</p>
+    <a class="cta" href="https://zavod-aplayers.zhivotov-alexander.workers.dev" target="_blank" rel="noopener">Открыть платформу &rarr;</a>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">С чего начать</span>
+    <h2>Пять вещей за пять минут</h2>
+    <div class="toc">
+      <a href="#dostupy"><span class="n">01</span><span class="t">Выдать доступ менеджеру</span></a>
+      <a href="#aikey"><span class="n">02</span><span class="t">Подключить AI-ключ</span></a>
+      <a href="#redaktor"><span class="n">03</span><span class="t">Править контент модулей</span></a>
+      <a href="#roli"><span class="n">04</span><span class="t">Кто что видит</span></a>
+      <a href="#status"><span class="n">05</span><span class="t">Что боевое, что дальше</span></a>
+    </div>
+    <div class="note ok">
+      <b>Адрес платформы</b>
+      <a href="https://zavod-aplayers.zhivotov-alexander.workers.dev" target="_blank" rel="noopener">zavod-aplayers.zhivotov-alexander.workers.dev</a> - сохраните в закладки. Без логина и пароля страница не откроется: онбординг закрыт полностью, поисковики его не индексируют.
+      <br><br>Логин и пароль администратора передаются отдельно, в переписке. В этой инструкции паролей нет намеренно - ее можно спокойно переслать любому сотруднику.
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="roli">
+  <div class="wrap">
+    <span class="kicker eyebrow">Роли</span>
+    <h2>Два типа доступа</h2>
+    <p class="lead">Разделение простое: администратор управляет, менеджер учится. Третьей роли пока нет.</p>
+    <div class="roles">
+      <div class="rcard r1">
+        <div class="rn">Роль 1</div>
+        <h3>Администратор</h3>
+        <p>Обычно это руководитель отдела продаж или собственник. Входит под своим логином и попадает не в обучение, а в панель управления.</p>
+        <ul>
+          <li>Выдает и забирает доступы менеджерам</li>
+          <li>Подключает AI-ключ компании</li>
+          <li>Правит тексты модулей прямо в браузере</li>
+          <li>Может открыть сам онбординг и пройти его глазами менеджера</li>
+        </ul>
+      </div>
+      <div class="rcard r2">
+        <div class="rn">Роль 2</div>
+        <h3>Менеджер</h3>
+        <p>Сотрудник, которого вы онбордите. Получает личный логин и пароль, входит и проходит программу.</p>
+        <ul>
+          <li>Семь слоев, 60 модулей, аттестации после каждого слоя</li>
+          <li>AI-наставник по базе знаний компании</li>
+          <li>Тренажер ролевок с ИИ-клиентом</li>
+          <li>Диагностика поведения и персональный план развития</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note">
+      <b>Переключиться между ролями</b>
+      В правом верхнем углу есть кнопка <b>Выйти</b>. Нажали - попали на экран логина - ввели другой логин. Так вы, например, выходите из кабинета менеджера и заходите под администратором.
+    </div>
+  </div>
+</section>
+
+<section id="dostupy">
+  <div class="wrap">
+    <span class="kicker eyebrow">Шаг 01</span>
+    <h2>Как выдать доступ менеджеру</h2>
+    <p class="lead">Логины и пароли создает система. Вручную ничего придумывать не надо.</p>
+    <ol class="steps">
+      <li><b>Войдите администратором</b>
+        Откроется панель «Управление доступами». Если вы случайно попали в обучение, нажмите «Выйти» и зайдите заново под логином администратора.
+      </li>
+      <li><b>Впишите ФИО сотрудника и нажмите «Создать логин и пароль»</b>
+        <ul>
+          <li>ФИО нужно вам самим: в списке видно, кому какой доступ выдан, и менеджер видит свое имя в шапке.</li>
+          <li>Система создаст обезличенный логин вида <code>zd-abcdef</code> и пароль.</li>
+        </ul>
+      </li>
+      <li><b>Скопируйте доступ и передайте сотруднику</b>
+        <ul>
+          <li>Кнопка «Скопировать доступ» кладет в буфер ссылку, логин и пароль одним текстом - остается вставить в мессенджер.</li>
+          <li>Пароль показывается один раз. Потеряли - нажмите «Новый пароль», система выдаст свежий.</li>
+        </ul>
+      </li>
+      <li><b>Управляйте доступом дальше</b>
+        <ul>
+          <li><b>Отключить</b> - сотрудник больше не войдет, а активная сессия закроется при переходе по страницам. Работает в течение минуты.</li>
+          <li><b>Включить</b> - вернуть доступ обратно.</li>
+          <li><b>Удалить</b> - убрать запись совсем.</li>
+        </ul>
+      </li>
+    </ol>
+    <div class="note warn">
+      <b>Когда сотрудник уходит из компании</b>
+      Зайдите в панель и нажмите «Отключить» или «Удалить» напротив его имени. Это единственное действие, которое нужно сделать: без логина платформа не открывается ни по какой ссылке.
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="aikey">
+  <div class="wrap">
+    <span class="kicker eyebrow">Шаг 02</span>
+    <h2>Подключить AI-ключ компании</h2>
+    <p class="lead">Три функции платформы работают на модели Claude: AI-наставник, тренажер ролевок и персональный план развития по итогам диагностики. Чтобы они отвечали, нужен ключ доступа к Claude API - <b>ваш собственный</b>.</p>
+
+    <div class="note warn">
+      <b>Важно про оплату</b>
+      Ключ - это ваш платежный инструмент. Обращения к модели тарифицируются и списываются с вашего аккаунта Anthropic. Ключ A-Players в платформе не используется: до тех пор, пока вы не вставите свой, AI-функции просто не отвечают и сообщают об этом. Все остальное обучение - модули, видео, аттестации, прогресс - работает без всякого ключа.
+    </div>
+
+    <h3 style="margin-top:32px">Где взять ключ</h3>
+    <ol class="steps">
+      <li><b>Зарегистрируйте аккаунт разработчика Anthropic</b>
+        Адрес: <a href="https://console.anthropic.com" target="_blank" rel="noopener">console.anthropic.com</a>. Это отдельный кабинет для API, он не совпадает с подпиской на чат Claude: подписка Pro на claude.ai ключ не дает.
+      </li>
+      <li><b>Пополните баланс</b>
+        Раздел <b>Billing</b> (или Plans and Billing) - добавьте карту и внесите сумму. Оплата идет по факту использования. Для отдела на несколько человек стартовой суммы порядка 20-50 долларов хватает надолго - расход зависит от того, сколько ролевок и вопросов наставнику будет.
+      </li>
+      <li><b>Создайте ключ</b>
+        Раздел <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">API Keys</a> - кнопка <b>Create Key</b> - назовите его, например, <code>onbording-zd</code>. Ключ начинается с <code>sk-ant-</code>.
+        <ul>
+          <li>Ключ показывается ровно один раз. Скопируйте его сразу - потом посмотреть его будет нельзя, можно только выпустить новый.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3 style="margin-top:32px">Куда его вставить</h3>
+    <ol class="steps">
+      <li><b>Войдите на платформу администратором</b>
+        Панель «Управление доступами».
+      </li>
+      <li><b>Найдите блок «AI-ключ Claude»</b>
+        Он под формой выдачи доступов. Рядом с заголовком видно состояние: <b>не задан</b> или <b>подключен</b>.
+      </li>
+      <li><b>Вставьте ключ и нажмите «Сохранить ключ»</b>
+        <ul>
+          <li>Появится подтверждение, а состояние сменится на «подключен». В панели дальше видны только последние знаки ключа - целиком он наружу не отдается.</li>
+          <li>Если ключ введен с ошибкой, платформа так и скажет: она проверяет формат до сохранения.</li>
+        </ul>
+      </li>
+      <li><b>Проверьте, что заработало</b>
+        <ul>
+          <li>Откройте онбординг, нажмите круглую кнопку чата справа внизу и задайте наставнику любой вопрос про компанию.</li>
+          <li>Зайдите в тренажер ролевок - поля для ключа там больше не будет, сразу можно генерировать клиента.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <div class="note ok">
+      <b>Ключ вставляется один раз на всю компанию</b>
+      Менеджерам вводить ничего не нужно и сам ключ они не видят: запросы к модели уходят через сервер платформы. Захотите сменить ключ - вставьте новый в том же блоке, он заменит старый. Кнопка «Удалить ключ» отключает AI-функции, все остальное продолжает работать.
+    </div>
+  </div>
+</section>
+
+<section id="redaktor">
+  <div class="wrap">
+    <span class="kicker eyebrow">Шаг 03</span>
+    <h2>Править контент своими руками</h2>
+    <p class="lead">Поменялась цена, добавился продукт, отдел придумал более точную формулировку возражения - правится прямо в браузере, без нас и без выкладки кода.</p>
+    <ol class="steps">
+      <li><b>Панель администратора - кнопка «Редактор контента»</b>
+        Слева дерево: семь слоев, внутри модули.
+      </li>
+      <li><b>Выберите модуль и правьте текст</b>
+        Справа поле с текстом и живое превью - видно ровно то, что увидит менеджер.
+      </li>
+      <li><b>Сохраните</b>
+        Правка попадает на боевую платформу сразу. Обновите страницу онбординга - текст уже новый.
+      </li>
+      <li><b>Не понравилось - откат в один клик</b>
+        Кнопка отката возвращает исходную версию модуля. Ваши правки лежат отдельным слоем поверх базового контента, поэтому вернуться к исходнику можно всегда.
+      </li>
+    </ol>
+    <div class="note">
+      <b>Что стоит держать в голове</b>
+      Правьте по факту, а не «на всякий случай»: контент платформы собран из ваших материалов и выверен, каждое утверждение опирается на источник. Если добавляете новое - добавляйте то, что реально принято в отделе, иначе менеджер выучит то, чего нет.
+    </div>
+  </div>
+</section>
+
+<section class="alt" id="status">
+  <div class="wrap">
+    <span class="kicker eyebrow">Шаг 04</span>
+    <h2>Что уже боевое, а что следующий шаг</h2>
+    <p class="lead">Честная картина, чтобы вы планировали работу отдела без сюрпризов.</p>
+    <div class="scroll">
+      <table class="tbl">
+        <thead><tr><th>Возможность</th><th>Состояние</th><th>Комментарий</th></tr></thead>
+        <tbody>
+          <tr><td><b>Онбординг: 7 слоев, 60 модулей</b></td><td><span class="tag live">боевое</span></td><td>Компания, продукт, клиент, продажи, инструменты, стандарты, практика. С видео экспертов внутри модулей.</td></tr>
+          <tr><td><b>Аттестации</b></td><td><span class="tag live">боевое</span></td><td>Вопросы после каждого слоя, часть проверяет, что видео действительно посмотрели.</td></tr>
+          <tr><td><b>Выдача и отзыв доступов</b></td><td><span class="tag live">боевое</span></td><td>Панель администратора, логины и пароли создаются автоматически.</td></tr>
+          <tr><td><b>Редактор контента</b></td><td><span class="tag live">боевое</span></td><td>Правка модулей в браузере с откатом.</td></tr>
+          <tr><td><b>AI-наставник, тренажер ролевок, ИИ-план развития</b></td><td><span class="tag live">боевое</span></td><td>Включаются после того, как вы вставите свой ключ Claude.</td></tr>
+          <tr><td><b>Прогресс менеджера</b></td><td><span class="tag next">следующий шаг</span></td><td>Сейчас прогресс хранится в браузере сотрудника: он видит свой процент, но руководитель не видит чужой прогресс со своего компьютера.</td></tr>
+          <tr><td><b>Кабинет руководителя с результатами</b></td><td><span class="tag next">следующий шаг</span></td><td>Сводка по всем менеджерам в динамике: кто где идет, кто застрял, как сдал аттестации. Требует серверного хранения прогресса.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note">
+      <b>Почему прогресс пока не серверный</b>
+      Результаты сотрудников - это персональные данные, их правильно хранить на российском сервере, а не там, где сейчас живет сама платформа. Мы намеренно не стали складывать их «куда попало» ради быстрой галочки. Это отдельный следующий этап, и он обсуждается отдельно.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Безопасность</span>
+    <h2>Что где хранится</h2>
+    <ul class="rcard" style="list-style:none;padding:24px 26px;margin-top:22px">
+      <li style="margin-bottom:12px"><b>Пароли.</b> Хранятся не в открытом виде, а в виде необратимого отпечатка. Даже с полным доступом к базе пароль сотрудника прочитать нельзя - только выдать новый.</li>
+      <li style="margin-bottom:12px"><b>Логины.</b> Обезличенные, вида <code>zd-abcdef</code>. По логину нельзя понять, кто это - связку с человеком держите вы у себя в панели.</li>
+      <li style="margin-bottom:12px"><b>Персональные данные клиентов.</b> В контенте платформы их нет. Разборы и примеры обезличены, публично известные эксперты названы как эксперты.</li>
+      <li style="margin-bottom:12px"><b>AI-ключ.</b> Хранится на стороне платформы, менеджерам не показывается, в браузер не попадает. В панели администратора видны только последние знаки.</li>
+      <li><b>Сама ссылка.</b> Закрыта логином целиком и закрыта от индексации поисковиками. Переслать ссылку без пароля бесполезно.</li>
+    </ul>
+    <div class="note warn">
+      <b>Одно правило для команды</b>
+      Пароли передавайте лично сотруднику, а не в общий чат отдела. И не заводите один общий логин на всех: смысл персональных доступов в том, что вы видите, кто учится, и можете забрать доступ у одного, не трогая остальных.
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Если что-то не так</span>
+    <h2>Короткая шпаргалка</h2>
+    <div class="scroll">
+      <table class="tbl">
+        <thead><tr><th>Симптом</th><th>Что делать</th></tr></thead>
+        <tbody>
+          <tr><td>Сотрудник не может войти</td><td>Проверьте в панели, что доступ активен. Если пароль потерян - «Новый пароль».</td></tr>
+          <tr><td>Наставник не отвечает</td><td>Проверьте блок «AI-ключ Claude»: он должен быть «подключен». Если подключен, а ответа нет - смотрите баланс в Billing на console.anthropic.com.</td></tr>
+          <tr><td>В тренажере просит ключ</td><td>Значит ключ компании не подключен. Подключите его в панели администратора - поле исчезнет само.</td></tr>
+          <tr><td>Правка контента не видна</td><td>Обновите страницу онбординга. Правка применяется сразу после сохранения.</td></tr>
+          <tr><td>Попал не в тот кабинет</td><td>Кнопка «Выйти» в правом верхнем углу, затем вход под нужным логином.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  <div class="wrap">
+    <b>A-Players</b> &middot; Платформа онбординга «Здоровое движение»<br>
+    Инструкция для команды клиента. Не для публичного распространения.
+  </div>
+</div>
+
+</body>
+</html>
