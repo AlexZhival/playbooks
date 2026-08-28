@@ -71,14 +71,14 @@ section.alt{background:var(--bg2)}
 ol.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
 ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
 ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
-ol.steps>li b{display:block;font-size:17px;margin-bottom:2px}
+ol.steps>li>b:first-child{display:block;font-size:17px;margin-bottom:2px}
 ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
 
 /* выноски */
 .note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
 .note.warn{border-left-color:var(--red)}
 .note.ok{border-left-color:var(--green)}
-.note b{display:block;margin-bottom:4px}
+.note>b:first-child{display:block;margin-bottom:4px}
 code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
 
 /* таблица статуса */
