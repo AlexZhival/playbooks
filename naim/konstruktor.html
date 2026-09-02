@@ -121,6 +121,20 @@
   .fixbox h4{font-family:var(--serif);color:var(--em);font-size:15px;margin-bottom:8px}
   .fixbox textarea{min-height:64px}
   .card.edit{border:2px solid var(--gold2)}
+  /* ---- скоркарта кандидатов ---- */
+  table.sctable td{padding:6px 8px;min-width:0;vertical-align:middle}
+  table.sctable th{white-space:nowrap}
+  table.sctable td.scname input{width:150px;padding:7px 9px;font-size:13.5px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-weight:700;color:var(--em)}
+  table.sctable td.sccell{padding:4px 5px}
+  table.sctable td.sccell input{width:56px;padding:6px;font-size:13.5px;text-align:center;border:1px solid var(--line);border-radius:7px;font-family:inherit}
+  table.sctable td.sccell input:focus,table.sctable td.scname input:focus{border-color:var(--gold);outline:none}
+  table.sctable td.scsum,table.sctable td.scavg{font-family:var(--serif);font-weight:800;color:var(--em);text-align:center;background:#F4F1EA}
+  table.sctable td.scnote textarea{width:210px;min-height:44px;padding:6px 8px;font-size:12.5px;border:1px solid var(--line);border-radius:8px;font-family:inherit;resize:vertical}
+  .shortlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:6px}
+  .b9x{display:flex;gap:11px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .b9x .nn{width:30px;height:30px;flex:none;border-radius:9px;background:linear-gradient(160deg,#C79A45,#B0822E);color:#fff;font-family:var(--serif);font-weight:800;display:flex;align-items:center;justify-content:center}
+  .b9x b{display:block;color:var(--em);font-size:14.5px}
+  .b9x span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
   /* ---- отчётность: дашборд вакансий ---- */
   .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:14px}
   .vcard2{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:10px}
@@ -444,6 +458,7 @@ function render(){
   if(id==="start")return renderStart();
   if(id==="brief")return renderBrief();
   if(id==="portrait")return renderPortrait();
+  if(id==="summary")return renderSummary();
   if(id==="report")return renderReport();
   if(id==="calc")return renderCalc();
   if(id==="admin")return renderAdmin();
@@ -654,6 +669,96 @@ function cancelEdit(id){EDITBUF=null;renderGen(id);}
 window.editGen=editGen;window.edTitle=edTitle;window.edH=edH;window.edText=edText;window.edItem=edItem;window.edDelItem=edDelItem;window.edAddItem=edAddItem;window.edCol=edCol;window.edCell=edCell;window.edDelRow=edDelRow;window.edAddRow=edAddRow;window.saveEdit=saveEdit;window.cancelEdit=cancelEdit;
 function exportGen(id){const r=S.results[id];if(!r)return;const wb=XLSX.utils.book_new();let n=0;(r.blocks||[]).forEach(b=>{let rows=[];if(b.kind==="table"&&b.columns){rows=[b.columns].concat(b.rows||[]);}else if(b.kind==="list"){rows=[[b.h]].concat((b.items||[]).map(x=>[x]));}else{rows=[[b.h]].concat(String(b.text||"").split("\n").map(x=>[x]));}const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=(rows[0]||[""]).map(()=>({wch:40}));XLSX.utils.book_append_sheet(wb,ws,(b.h||("Блок "+(++n))).slice(0,28).replace(/[\\/?*:\[\]]/g,""));});XLSX.writeFile(wb,(r.title||GEN[id].title).slice(0,28)+".xlsx");}
 window.exportGen=exportGen;
+
+/* ---- СВОДНАЯ ПО КАНДИДАТАМ: ручная скоркарта по этапам + short-list ---- */
+const SC_STAGES=[
+ {k:"cv",label:"Резюме",hint:"опыт, цифры, соцсети и аватарка, стиль мышления"},
+ {k:"anketa",label:"Анкета",hint:"светофор ответов, вопрос «красный флаг»"},
+ {k:"hr",label:"1-е собес (HR)",hint:"адекватность, мотивация, ожидания"},
+ {k:"test",label:"Тестовое",hint:"рубрика Senior / Middle / ниже Middle"},
+ {k:"int2",label:"2-е собес",hint:"дип-дайв + блиц по hard skills"},
+ {k:"culture",label:"Culture Fit",hint:"ценности + бизнес-кейсы"},
+ {k:"ref",label:"Reference",hint:"2–3 бывших руководителя, калибровочный вопрос"}
+];
+function scState(){S.scorecard=S.scorecard||{list:[]};return S.scorecard;}
+function scNum(x){const v=parseFloat(x);return isFinite(v)?v:null;}
+function scCalc(c){
+  const vals=SC_STAGES.map(s=>scNum(c.sc&&c.sc[s.k])).filter(v=>v!==null);
+  const sum=vals.reduce((a,b)=>a+b,0);
+  const avg=vals.length?sum/vals.length:null;
+  const stop=SC_STAGES.some(s=>{const v=scNum(c.sc&&c.sc[s.k]);return v!==null&&v<=4;});
+  return {sum:sum,avg:avg,n:vals.length,stop:stop};
+}
+function scVerdict(c){
+  const r=scCalc(c);
+  if(r.n<3)return '<span class="kmini" style="margin:0">мало оценок</span>';
+  if(r.stop)return '<span class="r">⛔ стоп-фактор</span>';
+  if(r.avg>=8)return '<span class="g">✓ оффер</span>';
+  if(r.avg>=6.5)return '<span class="y">short-list</span>';
+  return '<span class="r">не берём</span>';
+}
+function renderSummary(){
+  const SC=scState();
+  const rows=SC.list.map((c,i)=>{
+    const cells=SC_STAGES.map(s=>'<td class="sccell"><input type="number" min="1" max="10" step="1" value="'+(c.sc&&c.sc[s.k]!==undefined&&c.sc[s.k]!==""?esc(String(c.sc[s.k])):"")+'" oninput="scSet('+i+',\''+s.k+'\',this.value)" placeholder="—"></td>').join("");
+    return '<tr><td class="scname"><input type="text" value="'+esc(c.name||"")+'" oninput="scName('+i+',this.value)" placeholder="Имя кандидата"></td>'+cells+
+      '<td class="scsum" id="scsum_'+i+'"></td><td class="scavg" id="scavg_'+i+'"></td><td id="scv_'+i+'"></td>'+
+      '<td class="scnote"><textarea rows="2" oninput="scNote('+i+',this.value)" placeholder="комментарий рекрутера / руководителя">'+esc(c.note||"")+'</textarea></td>'+
+      '<td><button class="btn ghost sm" onclick="scDel('+i+')">✕</button></td></tr>';
+  }).join("");
+  const r=S.results.summary;
+  $("#main").innerHTML=head("Шаг 10 · Сводная по кандидатам","Скоркарта: <span style=\"color:#B0822E\">цифрами</span>, а не «мне показалось»","Взгляд замыливается, эмоции мешают. Проставь оценку 1–10 по каждому этапу — сумма, средний балл и вердикт посчитаются сами, а ТОП-3 соберутся в short-list.")+
+   '<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Оценки по этапам</h3><button class="btn primary sm" onclick="scAdd()">+ Кандидат</button></div>'+
+   (SC.list.length?'<div style="overflow-x:auto"><table class="gt narrow sctable"><thead><tr><th>Кандидат</th>'+
+     SC_STAGES.map(s=>'<th title="'+esc(s.hint)+'">'+esc(s.label)+'</th>').join("")+
+     '<th>Σ</th><th>Средний</th><th>Вердикт</th><th>Комментарий</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+    :'<div class="note b">Добавь кандидатов и проставь баллы 1–10 по каждому пройденному этапу. Пустые этапы просто не учитываются в среднем.</div>')+
+   '<div class="note">Шкала: <b>9–10</b> — эталон, забираем; <b>7–8</b> — сильно, идём дальше; <b>5–6</b> — сомнения, нужен ещё сигнал; <b>≤4</b> — стоп-фактор, дальше не двигаем. Оценки по каждому этапу удобно получать промптами Второго мозга по транскриптам — см. домашку.</div>'+
+   '<div class="row" style="margin-top:12px"><button class="btn dark sm" onclick="exportScorecard()">⬇ Скоркарта в Excel</button></div></div>'+
+   '<div id="scshort"></div>'+
+   '<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><div><h3 style="margin:0">Методичка: как принимать решение</h3><div class="kmini" style="margin:2px 0 0">Кто что оценивает, какая шкала, как формировать short-list. Собирается ИИ по плейбуку — нужен ключ Claude.</div></div><button class="btn ghost sm" onclick="runGen(\'summary\')" id="genBtn">✨ Собрать методичку</button></div><div id="genStatus"></div></div>'+
+   '<div id="genOut">'+(r?blocksHTML(r)+fixboxHTML("summary"):"")+'</div>'+navBtns();
+  scRefresh();
+}
+function scRefresh(){
+  const SC=scState();
+  SC.list.forEach((c,i)=>{
+    const r=scCalc(c);
+    const su=$("#scsum_"+i),av=$("#scavg_"+i),vv=$("#scv_"+i);
+    if(su)su.textContent=r.n?String(r.sum):"—";
+    if(av)av.textContent=r.avg===null?"—":r.avg.toFixed(1);
+    if(vv)vv.innerHTML=scVerdict(c);
+  });
+  const box=$("#scshort");if(!box)return;
+  const ranked=SC.list.map((c,i)=>({c:c,r:scCalc(c),i:i})).filter(x=>x.r.n>=3&&!x.r.stop).sort((a,b)=>b.r.avg-a.r.avg);
+  if(ranked.length<2){box.innerHTML="";return;}
+  const top=ranked.slice(0,3).map((x,n)=>'<div class="b9x"><div class="nn">'+(n+1)+'</div><div><b>'+esc(x.c.name||"Без имени")+'</b><span>средний '+x.r.avg.toFixed(1)+' · сумма '+x.r.sum+'</span></div></div>').join("");
+  box.innerHTML='<div class="card"><h3 style="margin:0">Short-list ТОП-3</h3><div class="kmini" style="margin:2px 0 8px">Сортировка по среднему баллу. Кандидаты со стоп-фактором (любая оценка ≤4) в short-list не попадают. С этими идём к офферу — по очереди, а не «всем сразу».</div><div class="shortlist">'+top+'</div>'+
+   '<div class="note">Если у лидера средний ниже 7 — это не «лучший из тех, кто есть», это сигнал <b>вернуться в воронку</b>. Не идём на компромисс: долго нанимаем — быстро увольняем.</div></div>';
+}
+function scAdd(){const SC=scState();SC.list.push({name:"",sc:{},note:""});save();renderSummary();}
+function scDel(i){const SC=scState();if(!confirm("Удалить кандидата из скоркарты?"))return;SC.list.splice(i,1);save();renderSummary();}
+function scSet(i,k,v){const SC=scState();const c=SC.list[i];if(!c)return;c.sc=c.sc||{};let n=parseFloat(v);if(isFinite(n)){if(n>10)n=10;if(n<1)n=1;c.sc[k]=n;}else c.sc[k]="";save();scRefresh();}
+function scName(i,v){const SC=scState();if(SC.list[i]){SC.list[i].name=v;save();scRefresh();}}
+function scNote(i,v){const SC=scState();if(SC.list[i]){SC.list[i].note=v;save();}}
+window.scAdd=scAdd;window.scDel=scDel;window.scSet=scSet;window.scName=scName;window.scNote=scNote;
+async function exportScorecard(){
+  const SC=scState();if(!SC.list.length){alert("Добавь хотя бы одного кандидата");return;}
+  if(typeof ExcelJS==="undefined"){alert("Библиотека Excel не загрузилась — обнови страницу.");return;}
+  const wb=new ExcelJS.Workbook();wb.creator="A-Players";
+  const ws=wb.addWorksheet("Сводная по кандидатам");
+  xTitle(ws,"Сводная по кандидатам · "+(S.role||"вакансия")+(S.company?" · "+S.company:""),SC_STAGES.length+5);
+  xHeader(ws,["Кандидат"].concat(SC_STAGES.map(s=>s.label)).concat(["Сумма","Средний","Вердикт","Комментарий"]));
+  SC.list.forEach((c,i)=>{const r=scCalc(c);
+    xData(ws,[c.name||""].concat(SC_STAGES.map(s=>{const v=scNum(c.sc&&c.sc[s.k]);return v===null?"":v;}))
+      .concat([r.n?r.sum:"",r.avg===null?"":+r.avg.toFixed(1),scVerdict(c).replace(/<[^>]+>/g,""),c.note||""]),i%2);});
+  ws.addRow([]);
+  xSection(ws,"Шкала оценки",SC_STAGES.length+5);
+  ["9–10 — эталон, забираем","7–8 — сильно, идём дальше","5–6 — сомнения, нужен ещё сигнал","4 и ниже — стоп-фактор, дальше не двигаем"].forEach(t=>xText(ws,t,1));
+  wsWidths(ws,[26].concat(SC_STAGES.map(()=>14)).concat([10,11,16,50]));
+  await xlsxDownload(wb,("Сводная по кандидатам — "+(S.role||"вакансия")).slice(0,60)+".xlsx");
+}
+window.exportScorecard=exportScorecard;
 
 /* ---- ОТЧЁТНОСТЬ РЕКРУТИНГА: дашборд вакансий → дневной журнал → недели → аналитика ---- */
 function todayISO(){const t=new Date();return new Date(t.getTime()-t.getTimezoneOffset()*60000).toISOString().slice(0,10);}
@@ -1142,7 +1247,7 @@ $("#apikey").value=localStorage.getItem(LS.key)||"";
 $("#model").value=localStorage.getItem(LS.model)||"claude-opus-5";
 $("#apikey").addEventListener("change",()=>localStorage.setItem(LS.key,$("#apikey").value.trim()));
 $("#model").addEventListener("change",()=>localStorage.setItem(LS.model,$("#model").value));
-/* прямая ссылка на шаг: konstruktor.html#report */
+/* прямая ссылка на шаг: #report */
 (function(){var h=(location.hash||"").replace("#","").trim();if(!h)return;var i=STEPS.findIndex(function(x){return x.id===h;});if(i>=0)STEP=i;})();
 renderNav();render();
 </script>
