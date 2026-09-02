@@ -1,0 +1,952 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Воронка найма под A-Players · Практикум</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4F1EA; --bg2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056;
+    --line:#DCD4C2; --em:#143A2D; --em2:#1C4C3B; --gold:#B0822E; --gold-h:#977019; --gold2:#C79A45;
+    --green:#3E8E5E; --red:#B23B2E; --amber:#C77A22;
+    --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#0e1b15;overflow:hidden;font-family:var(--sans)}
+  #stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center;background:var(--cream);overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;padding:52px 64px;color:var(--ink)}
+  .slide.active{display:flex}
+  .slide.dark{background:var(--em);color:#EFE9DA}
+  .slide.dark2{background:linear-gradient(150deg,#17402f,#122f24);color:#EFE9DA}
+  h1{font-family:var(--serif);font-weight:800;font-size:52px;line-height:1.04;letter-spacing:-.5px}
+  h2{font-family:var(--serif);font-weight:800;font-size:37px;line-height:1.08;letter-spacing:-.4px}
+  h3{font-family:var(--serif);font-weight:700;font-size:23px}
+  .kick{font-family:var(--sans);font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-h);font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .kick::before{content:"";width:26px;height:3px;background:var(--gold);border-radius:2px}
+  .dark .kick,.dark2 .kick{color:var(--gold2)}
+  .lead{font-size:20px;color:var(--muted);font-weight:500;line-height:1.45;max-width:62ch}
+  .dark .lead,.dark2 .lead{color:#CBD3C4}
+  .em{color:var(--em)}.dark .em,.dark2 .em{color:#fff}
+  .g{color:var(--gold-h)}.grn{color:var(--green)}.rd{color:var(--red)}
+  .dark .g,.dark2 .g{color:var(--gold2)}
+  b,strong{font-weight:800}
+  .hl{background:linear-gradient(180deg,transparent 58%,rgba(176,130,46,.34) 58%);padding:0 3px;font-weight:800;color:#0f2b20}
+  .dark .hl,.dark2 .hl{background:linear-gradient(180deg,transparent 58%,rgba(199,154,69,.42) 58%);color:#fff}
+  ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  li{position:relative;padding-left:30px;font-size:19px;line-height:1.4}
+  li::before{content:"";position:absolute;left:0;top:9px;width:11px;height:11px;border-radius:3px;background:var(--gold);transform:rotate(45deg)}
+  .dark li::before,.dark2 li::before{background:var(--gold2)}
+  .row{display:flex;gap:24px}
+  .col{flex:1;min-width:0}
+  .bob{position:absolute;pointer-events:none;filter:drop-shadow(0 12px 20px rgba(0,0,0,.16))}
+  .bobc{right:36px;bottom:22px;height:230px}
+  .bobscene{right:44px;bottom:0;height:480px}
+  .bobmid{right:60px;top:50%;transform:translateY(-50%);height:380px}
+  .num{font-family:var(--serif);font-weight:800;font-size:110px;line-height:.9;color:var(--gold-h)}
+  .dark .num,.dark2 .num{color:var(--gold2)}
+  .chipset{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;font-size:16px;font-weight:600}
+  .chip.on{border-color:var(--em);background:#F0F4EE;color:var(--em);font-weight:800}
+  .chip.sm{font-size:14px;padding:7px 11px}
+  .dark .chip,.dark2 .chip{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:#EFE9DA}
+  .dark2 .chip.on{background:rgba(199,154,69,.2);border-color:var(--gold2);color:#fff}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 8px 24px rgba(20,32,27,.05)}
+  .card h3{color:var(--em)}
+  .dark .card,.dark2 .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#EFE9DA}
+  .dark .card h3,.dark2 .card h3{color:#fff}
+  .grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .b9{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px}
+  .b9 .n{font-family:var(--serif);font-weight:800;color:var(--gold-h);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+  .b9 b{display:block;font-size:16px;margin-top:2px;color:var(--em)}
+  .b9 span{display:block;font-size:13px;color:var(--muted);line-height:1.3;margin-top:3px}
+  .dark .b9,.dark2 .b9{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
+  .dark .b9 b,.dark2 .b9 b{color:#fff}
+  .dark .b9 span,.dark2 .b9 span{color:#c3cec5}
+  .dark .b9 .n,.dark2 .b9 .n{color:var(--gold2)}
+  .stat{display:flex;gap:26px;margin-top:10px}
+  .stat .s .v{font-family:var(--serif);font-weight:800;font-size:42px;color:var(--em)}
+  .dark .stat .s .v,.dark2 .stat .s .v{color:#fff}
+  .stat .s .l{font-size:14px;color:var(--muted)}
+  .dark .stat .s .l,.dark2 .stat .s .l{color:#c3cec5}
+  .brand{position:absolute;left:64px;bottom:22px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:600}
+  .dark .brand,.dark2 .brand{color:#9fb0a4}
+  .brand img{height:17px;opacity:.9}
+  #bar{position:absolute;left:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--gold2),var(--gold));width:0;transition:width .25s;z-index:5}
+  #count{position:absolute;right:22px;bottom:20px;font-size:13px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+  .dark #count,.dark2 #count{color:#9fb0a4}
+  .hint{position:absolute;left:50%;bottom:9px;transform:translateX(-50%);font-size:12px;color:#7f8a80;z-index:9}
+  /* funnel */
+  .fun{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:4px}
+  .fbar{border-radius:9px;color:#fff;font-weight:700;padding:8px 0;text-align:center;font-size:15px;display:flex;justify-content:center;align-items:center;gap:10px}
+  .fbar .cv{font-size:12px;font-weight:700;opacity:.85}
+  /* mini table */
+  .mt{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .mt th{background:var(--em);color:#EFE9DA;text-align:left;padding:8px 12px;font-size:13px;font-weight:700}
+  .mt td{padding:7px 12px;border-top:1px solid var(--line);vertical-align:top}
+  .mt td:first-child{font-weight:800;color:var(--em)}
+  .mt.sm{font-size:13.5px}
+  .mt.sm td{padding:5px 10px}
+  .mt.sm th{padding:6px 10px;font-size:12px}
+  .dark .mt,.dark2 .mt{color:var(--ink)}
+  /* browser frame for tool shots */
+  .frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 14px 40px rgba(20,32,27,.14)}
+  .frame .top{background:var(--bg2);padding:8px 13px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--line)}
+  .frame .top i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .frame .top .u{margin-left:10px;font-size:11.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 11px}
+  .frame img{display:block;width:100%;height:auto}
+  .frame.clip{max-height:430px}
+  .frame.clip img{object-fit:cover;object-position:top}
+  .btnlink{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#fff;text-decoration:none;font-weight:800;font-size:16px;padding:11px 18px;border-radius:11px;margin-top:14px}
+  .btnlink.em{background:var(--em)}
+  .note{border-left:3px solid var(--gold);background:rgba(176,130,46,.09);padding:11px 14px;border-radius:8px;font-size:15px;color:#6a4e17;line-height:1.4;margin-top:12px}
+  .dark .note,.dark2 .note{background:rgba(199,154,69,.14);color:#f0e6cf;border-color:var(--gold2)}
+  .note.red{border-color:var(--red);background:rgba(178,59,46,.09);color:#7d2b21}
+  .note.grn{border-color:var(--green);background:rgba(62,142,94,.1);color:#255c3c}
+  .badge{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.02em;background:var(--em);color:#EFE9DA;border-radius:8px;padding:4px 11px}
+  .ex{font-size:14px;color:var(--muted);font-style:italic;margin-top:6px}
+  .arrow{color:var(--gold-h);font-weight:800}
+  .quote{font-family:var(--serif);font-size:26px;line-height:1.42;color:var(--em);border-left:4px solid var(--gold);padding-left:20px;max-width:60ch}
+  .dark .quote,.dark2 .quote{color:#fff;border-color:var(--gold2)}
+  /* traffic light */
+  .tl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+  .tlb{border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.35;border:1.5px solid}
+  .tlb .h{font-weight:800;font-size:15px;margin-bottom:4px}
+  .tlg{border-color:#bcd3c2;background:#F0F6F1}.tlg .h{color:var(--green)}
+  .tly{border-color:#e6d4a5;background:#FCF7E9}.tly .h{color:var(--amber)}
+  .tlr{border-color:#e0b6ad;background:#FBF0EE}.tlr .h{color:var(--red)}
+  /* 7 steps strip */
+  .steps7{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+  .st7{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .st7 .n{width:24px;height:24px;border-radius:7px;background:var(--em);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+  .st7 b{display:block;font-size:15.5px;color:var(--em)}
+  .st7 span{display:block;font-size:12.5px;color:var(--muted);line-height:1.3;margin-top:2px}
+  .st7.zero .n{background:var(--gold)}
+  .vs{display:flex;gap:16px;margin-top:14px}
+  .vs .p{flex:1;border-radius:14px;padding:14px 16px;border:1.5px solid}
+  .vs .bad{border-color:#e0b6ad;background:#FBF0EE}
+  .vs .good{border-color:#bcd3c2;background:#F0F6F1}
+  .vs h3{font-size:19px}
+  .big{font-family:var(--serif);font-weight:800;font-size:52px;line-height:1;color:var(--gold-h);white-space:nowrap}
+  .dark .big,.dark2 .big{color:var(--gold2)}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 TITLE -->
+  <section class="slide dark2 active">
+    <div class="kick">A-Players · Практикум · Модуль 11</div>
+    <h1 style="max-width:19ch">Воронка найма<br>под A&#8209;Players</h1>
+    <p class="lead" style="margin-top:20px;max-width:56ch">Современный найм — это <span class="hl">маркетинговая воронка</span>. Проектируем каждый этап: от портрета кандидата до презентации оффера. Не под «нормального сотрудника» — под чемпиона.</p>
+    <div class="stat" style="margin-top:26px">
+      <div class="s"><div class="v">7 этапов</div><div class="l">+ Шаг 0, без которого не стартуем</div></div>
+      <div class="s"><div class="v">~2 200</div><div class="l">откликов на 1 нанятого руководителя</div></div>
+      <div class="s"><div class="v">1 инструмент</div><div class="l">конструктор собирает всю воронку</div></div>
+    </div>
+    <img class="bob bobscene" src="gen/bob/cut/bob_medals.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 2 WHERE -->
+  <section class="slide">
+    <div class="kick">Где мы в траектории</div>
+    <h2>Систему собрали. Теперь —<br>люди, которые её <span class="g">потащат</span></h2>
+    <div class="chipset" style="margin-top:22px">
+      <div class="chip">ОКК на AI</div>
+      <div class="chip">Коммерческая функция: CRM + план</div>
+      <div class="chip on">→ Воронка найма под A-Players</div>
+      <div class="chip">People management</div>
+      <div class="chip">Первичный онбординг</div>
+    </div>
+    <ul style="margin-top:24px;max-width:70%">
+      <li>Любая гипотеза упирается в <b>execution</b>. Исполняют — люди</li>
+      <li>Скорость роста = <b>средняя компетенция команды</b>, которую ты вокруг себя собрал</li>
+      <li>Тему команды делим на три встречи: <b>найм</b> → people management → онбординг</li>
+    </ul>
+    <img class="bob bobc" src="gen/bob/cut/p_point.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 3 WHY TEAM -->
+  <section class="slide dark">
+    <div class="kick">Почему это главный рычаг</div>
+    <h2 style="max-width:22ch">Результат в <span class="g">2,5 млрд</span> случился,<br>когда перенаняли 60% управленцев</h2>
+    <p class="lead" style="margin-top:18px;max-width:62ch">Хочешь ты это осознавать или нет — большие результаты всегда лежат через плоскость <b class="em">средней компетенции команды</b>.</p>
+    <div class="row" style="margin-top:24px;max-width:78%">
+      <div class="col card"><h3>Прямая обязанность CEO</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Постоянно искать людей сильнее себя. Это нормально и правильно — так делают все сильные фаундеры.</p></div>
+      <div class="col card"><h3>Среда формирует результат</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Каждый человек либо усиливает среду, либо вытягивает энергию. Один токсичный убивает команду быстрее, чем приносит пользу.</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_disc.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 4 GOAL -->
+  <section class="slide">
+    <div class="kick">Ключевая цель модуля</div>
+    <h2 style="max-width:25ch">Спроектировать воронку найма<br>на <span class="g">любую должность</span> — за 1–2 дня</h2>
+    <div class="row" style="margin-top:22px;max-width:96%">
+      <div class="col card"><div class="badge">Артефакт 1</div><h3 style="margin-top:8px">Портрет должности</h3><p style="color:var(--muted);font-size:15px;margin-top:4px">Бриф из 60+ вопросов + портрет навыков с грейдами J/M/S и ТОП-5</p></div>
+      <div class="col card"><div class="badge">Артефакт 2</div><h3 style="margin-top:8px">Все 7 этапов воронки</h3><p style="color:var(--muted);font-size:15px;margin-top:4px">Вакансия, анкета, вопросы HR, тестовое, 2-е собес, reference, culture fit</p></div>
+      <div class="col card"><div class="badge">Артефакт 3</div><h3 style="margin-top:8px">Оффер + план-факт</h3><p style="color:var(--muted);font-size:15px;margin-top:4px">Презентация оффера, сводная по кандидатам, отчётность vs бенчмарки</p></div>
+    </div>
+    <div class="note">Всё складывается в <b>один Excel-файл со всеми листами</b> — команда видит картину целиком, оценки кандидатов суммируются автоматически.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_arsenal.png" alt="" style="height:180px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 5 BIG IDEA -->
+  <section class="slide dark2">
+    <div class="kick">Главная идея модуля</div>
+    <h2>Современный найм — это<br><span class="g">маркетинговая воронка</span></h2>
+    <p class="lead" style="margin-top:16px;max-width:66ch">Никакого «опубликовали вакансию и посмотрели, кто придёт». Проектируется каждый этап и каждый вопрос — ровно как в маркетинге.</p>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:22px">
+      <div class="b9"><div class="n">Как в маркетинге</div><b>Метрики и план-факт</b><span>отклики, CR по этапам, воронка ежедневно</span></div>
+      <div class="b9"><div class="n">Как в маркетинге</div><b>Упаковка смыслов</b><span>каждая точка касания продаёт компанию</span></div>
+      <div class="b9"><div class="n">Как в маркетинге</div><b>HR-бренд</b><span>усиливается на каждом этапе, нативно</span></div>
+      <div class="b9"><div class="n">Как в маркетинге</div><b>Фильтры</b><span>отсекаем нецелевых так же, как неквал-лиды</span></div>
+    </div>
+    <div class="note">Сильных на рынке — меньшинство. Чтобы их достать, воронку собираем <b>пинцетом</b>: прочувствовав каждый элемент.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_dozhim.png" alt="" style="height:190px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 6 FIVE INSIGHTS -->
+  <section class="slide">
+    <div class="kick">5 инсайтов до старта</div>
+    <h2>Фундамент, без которого <span class="rd">любой шаг</span> даст результат хуже</h2>
+    <div class="grid9" style="margin-top:20px">
+      <div class="b9"><div class="n">Инсайт 1</div><b>Найм = маркетинговая воронка</b><span>каждый вопрос и артефакт проектируется</span></div>
+      <div class="b9"><div class="n">Инсайт 2</div><b>Малая компания бьёт корпорат</b><span>«к нам не пойдёт чемпион» — это буллшит</span></div>
+      <div class="b9"><div class="n">Инсайт 3</div><b>Продаём компанию ВСЕГДА</b><span>нативно, через факты и цифры — не в грудь кулаком</span></div>
+      <div class="b9"><div class="n">Инсайт 4</div><b>Долго нанимаем — быстро увольняем</b><span>1,5–2 месяца на найм — это норма</span></div>
+      <div class="b9"><div class="n">Инсайт 5</div><b>Среда формирует результат</b><span>окружай себя людьми сильнее себя</span></div>
+      <div class="b9" style="background:#F0F4EE;border-color:#bcd3c2"><div class="n">Правило №0</div><b>Ни один найм не стартует без портрета</b><span>каждый вопрос брифа кому-то стоил денег</span></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/ac_activation.png" alt="" style="height:165px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 7 SMALL VS CORP -->
+  <section class="slide">
+    <div class="kick">Инсайт 2 · подробно</div>
+    <h2>Сотрудник молча задаёт себе <span class="g">три вопроса</span></h2>
+    <div class="row" style="margin-top:20px">
+      <div class="col" style="max-width:52%">
+        <div class="grid9" style="grid-template-columns:1fr">
+          <div class="b9"><div class="n">Вопрос 1</div><b>Вырасту ли я в доходе за 12 месяцев?</b></div>
+          <div class="b9"><div class="n">Вопрос 2</div><b>Есть ли карьерный рост в этой компании?</b></div>
+          <div class="b9"><div class="n">Вопрос 3</div><b>Расту ли я профессионально в навыках?</b></div>
+        </div>
+        <div class="note">Выпиши свою команду в матрицу: фамилия · грейд · три галочки. Хоть один крестик — <b>риск, что человека схантят</b>.</div>
+      </div>
+      <div class="col card" style="max-width:45%">
+        <h3>Почему частная компания выигрывает 9 из 10</h3>
+        <ul style="margin-top:8px">
+          <li style="font-size:16.5px">Карьера растёт быстрее: нет 15 слоёв согласований</li>
+          <li style="font-size:16.5px">Навыки растут быстрее: человек оркестрирует много процессов, а не крутит один винтик</li>
+          <li style="font-size:16.5px">Доход гибче: доля, % от прибыли, привязка к результату — вместо зарплатной сетки по исследованию рынка</li>
+        </ul>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 8 LONG HIRE -->
+  <section class="slide dark">
+    <div class="kick">Инсайт 4 · цена ошибки</div>
+    <h2>Полгода не с тем человеком =<br><span class="g">12–15 окладов</span> в реальных деньгах</h2>
+    <div class="row" style="margin-top:22px;max-width:80%">
+      <div class="col card"><h3>Из чего складывается</h3><ul style="margin-top:6px"><li style="font-size:16px">оклад и налоги</li><li style="font-size:16px">твоё время на управление</li><li style="font-size:16px">нереализованные проекты</li><li style="font-size:16px">упущенные возможности</li></ul></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">Сигнал «не бери»</h3><p style="color:#c3cec5;font-size:16px;margin-top:6px">Если чувствуешь, что идёшь на компромисс, — это не компромисс. Это твой мозг говорит «не бери».</p><p style="color:#c3cec5;font-size:16px;margin-top:8px">За 16 лет ни один компромисс при найме не сыграл в плюс.</p></div>
+    </div>
+    <p class="lead" style="margin-top:20px;color:#8ee0a6;font-weight:700;font-size:22px">Долго нанимаем — быстро увольняем.</p>
+    <img class="bob bobc" src="gen/bob/cut/bob_scale.png" alt="" style="height:200px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 9 MAP -->
+  <section class="slide dark2">
+    <div class="kick">Карта модуля</div>
+    <h2>Восемь шагов, которые собираем сегодня</h2>
+    <div class="chipset" style="margin-top:22px;gap:8px">
+      <div class="chip on">0 · Бриф + портрет навыков</div><span class="arrow" style="align-self:center">→</span>
+      <div class="chip">1 · Вакансия HH</div><span class="arrow" style="align-self:center">→</span>
+      <div class="chip">2 · Анкета + HR</div><span class="arrow" style="align-self:center">→</span>
+      <div class="chip">3 · Тестовое</div><span class="arrow" style="align-self:center">→</span>
+      <div class="chip">4 · 2-е собеседование</div>
+    </div>
+    <div class="chipset" style="margin-top:10px;gap:8px">
+      <div class="chip">5 · Reference check</div><span class="arrow" style="align-self:center">→</span>
+      <div class="chip">6 · Culture Fit</div><span class="arrow" style="align-self:center">→</span>
+      <div class="chip">7 · Оффер</div><span class="arrow" style="align-self:center">→</span>
+      <div class="chip">8 · Мотивация №1 и испытательный</div>
+    </div>
+    <p class="lead" style="margin-top:26px;max-width:68ch">Это и есть оглавление. Пройдём по каждому шагу — и в конце соберём всё <b class="em">одним инструментом</b>, который делает воронку под твою роль.</p>
+    <img class="bob bobc" src="gen/bob/cut/s9_map.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 10 FUNNEL TABLE -->
+  <section class="slide">
+    <div class="kick">Обзор воронки · уровень C-1 и руководители</div>
+    <h2>Столько фильтров нужно, чтобы из <span class="g">тысяч откликов</span> получить одного</h2>
+    <div class="steps7" style="margin-top:16px">
+      <div class="st7 zero"><div class="n">0</div><b>Бриф + портрет</b><span>зафиксировать ожидания и навыки</span></div>
+      <div class="st7"><div class="n">1</div><b>Вакансия HH</b><span>привлечь идеального на отклик</span></div>
+      <div class="st7"><div class="n">2</div><b>Анкета + HR</b><span>адекватность, отсев, продать компанию</span></div>
+      <div class="st7"><div class="n">3</div><b>Тестовое</b><span>проверить компетенции на практике</span></div>
+    </div>
+    <div class="steps7" style="margin-top:10px">
+      <div class="st7"><div class="n">4</div><b>2-е собеседование</b><span>дип-дайв в кейсы + блиц по навыкам</span></div>
+      <div class="st7"><div class="n">5</div><b>Reference check</b><span>кем кандидат был на самом деле</span></div>
+      <div class="st7"><div class="n">6</div><b>Culture Fit</b><span>готовы ли работать вместе 2–3 года</span></div>
+      <div class="st7"><div class="n">7</div><b>Оффер</b><span>презентовать так, чтобы выбрали нас</span></div>
+    </div>
+    <div class="note">Для меня найм — это ещё и <b>испытательный срок</b> и <b>период после него</b>. Их разбираем на следующих встречах, но в картине они уже есть.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 11 BENCHMARKS TABLE -->
+  <section class="slide">
+    <div class="kick">Бенчмарки агентства A-Players · 11 закрытых кейсов</div>
+    <h2>Сколько откликов нужно на <span class="g">одного нанятого</span></h2>
+    <table class="mt sm" style="margin-top:10px">
+      <tr><th>Роль</th><th>Откликов</th><th>Анкет</th><th>Презентовано</th><th>Нанято</th><th>На 1 нанятого</th></tr>
+      <tr><td>РОП · кейс 1</td><td>1 404</td><td>464</td><td>3</td><td>1</td><td class="g"><b>1 404 отклика</b></td></tr>
+      <tr><td>РОП · кейс 2</td><td>620</td><td>123</td><td>4</td><td>1</td><td class="g"><b>620 откликов</b></td></tr>
+      <tr><td>РОП · кейс 3</td><td>2 392</td><td>1 134</td><td>52</td><td>1</td><td class="g"><b>2 392 отклика</b></td></tr>
+      <tr><td>РОП · кейс 4</td><td>807</td><td>348</td><td>13</td><td>1</td><td class="g"><b>807 откликов</b></td></tr>
+      <tr><td>Руководитель отдела продаж</td><td>4 525</td><td>2 053</td><td>25</td><td>1</td><td class="g"><b>4 525 откликов</b></td></tr>
+      <tr><td>Руководитель отдела маркетинга</td><td>1 655</td><td>331</td><td>15</td><td>1</td><td class="g"><b>1 655 откликов</b></td></tr>
+      <tr><td>Менеджер продаж · кейс 1</td><td>3 111</td><td>1 032</td><td>32</td><td>2</td><td class="g"><b>1 556 откликов</b></td></tr>
+      <tr><td>Ассистент · 2 позиции</td><td>4 243</td><td>902</td><td>30</td><td>2</td><td class="g"><b>2 122 отклика</b></td></tr>
+      <tr><td>Офис-менеджер</td><td>803</td><td>229</td><td>6</td><td>1</td><td class="g"><b>803 отклика</b></td></tr>
+    </table>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 12 BENCH CONCLUSION -->
+  <section class="slide dark">
+    <div class="kick">Главный вывод по бенчмаркам</div>
+    <h2>Это не аномалия. Это <span class="g">норма</span></h2>
+    <div class="row" style="margin-top:24px;max-width:74%">
+      <div class="col card"><div class="big">1 из 1 100–2 100</div><h3 style="margin-top:6px">Линейные позиции</h3><p style="color:#c3cec5;font-size:15px">менеджеры, ассистенты, офис</p></div>
+      <div class="col card"><div class="big">1 из 800–4 500</div><h3 style="margin-top:6px">Руководящие позиции</h3><p style="color:#c3cec5;font-size:15px">РОП, РО, директора</p></div>
+    </div>
+    <p class="lead" style="margin-top:24px;max-width:64ch">Современный найм — это <b class="em">поиск золота в реке</b>. Трясём сито, трясём, трясём — и из всей «грязи» находим крупицу. Поэтому воронку и надо строить как маркетинговую.</p>
+    <div class="note">Оговорка: цифры — для найма через HH / Superjob / агентства. Хантинг через сеть контактов и компании-доноры даёт совсем другую, более экономную математику.</div>
+    <img class="bob bobc" src="gen/bob/cut/t_bucket.png" alt="" style="height:190px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 13 CR BY STAGE -->
+  <section class="slide">
+    <div class="kick">Конверсии по этапам · где искать узкое место</div>
+    <h2>Свои цифры сверяем с <span class="g">этой таблицей</span> каждую неделю</h2>
+    <table class="mt sm" style="margin-top:10px">
+      <tr><th>Переход воронки</th><th>Средняя CR</th><th>Что это значит, если у тебя хуже</th></tr>
+      <tr><td>Отклик → заполненная анкета</td><td class="g"><b>~33%</b></td><td>ниже 20% — анкета длинная/сложная или пришёл не тот трафик</td></tr>
+      <tr><td>Анкета → 1-е собеседование (HR)</td><td class="g"><b>~28%</b></td><td>ниже 15% — анкета плохо квалифицирует, нужны другие «красные флаги»</td></tr>
+      <tr><td>1-е собес → выполнил тестовое</td><td class="g"><b>~50%</b></td><td>ниже 30% — тестовое пугает объёмом или непонятно сформулировано</td></tr>
+      <tr><td>Тестовое → 2-е собес (hard skills)</td><td class="g"><b>~55%</b></td><td>ниже 35% — тестовое не отделяет сильных от слабых</td></tr>
+      <tr><td>2-е собес → презентация в компанию</td><td class="g"><b>~35%</b></td><td>выше 60% — слабо фильтруете на hard skills</td></tr>
+      <tr><td>Презентация → финал</td><td class="g"><b>~33%</b></td><td>здесь уже личная химия с фаундером</td></tr>
+      <tr><td>Финал → найм</td><td class="g"><b>~20%</b></td><td>1 нанятый из 3–9 финалистов</td></tr>
+    </table>
+    <div class="note">Просела конверсия на конкретном этапе — усиливаем <b>именно этот инструмент</b>: вакансию, анкету, тестовое или вопросы. А не «давайте лить ещё откликов».</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 14 VACANCY METRICS -->
+  <section class="slide">
+    <div class="kick">Метрики самой вакансии (нормативы HH)</div>
+    <h2>Через 7 дней смотрим цифры —<br>и <span class="rd">переписываем</span>, если ниже нормы</h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col" style="max-width:60%">
+        <table class="mt">
+          <tr><th>Метрика</th><th>Средний рынок</th><th>Хороший результат</th></tr>
+          <tr><td>Откликов за 7 дней · линейная</td><td>50–150</td><td class="grn"><b>200+</b></td></tr>
+          <tr><td>Откликов за 7 дней · руководящая</td><td>20–50</td><td class="grn"><b>100+</b></td></tr>
+          <tr><td>CR «просмотр → отклик»</td><td>1–3%</td><td class="grn"><b>5%+</b></td></tr>
+          <tr><td>Доля целевых из откликов</td><td>10–20%</td><td class="grn"><b>30%+</b></td></tr>
+        </table>
+      </div>
+      <div class="col card" style="max-width:37%">
+        <h3>Не жди месяц</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">Меньше нормы за 7 дней — <b>переписывай заголовок и первый абзац</b>. 80% вакансий улучшаются за 30 минут с ИИ.</p>
+        <div class="note" style="margin-top:10px">Ключевая метрика вакансии — <b>отклики</b>. Это то же самое, что CTR и CPM у креатива.</div>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_cjm.png" alt="" style="height:165px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 15 STEP 0 -->
+  <section class="slide dark2">
+    <div class="kick">Шаг 0 · Правило ноль</div>
+    <h2>Ни один найм не начинается,<br>пока нет <span class="g">портрета кандидата</span></h2>
+    <p class="lead" style="margin-top:16px;max-width:64ch">Бриф — 60+ вопросов. Ни один не появился случайно: каждый когда-то стоил реальных денег и ошибки в найме.</p>
+    <div class="row" style="margin-top:22px;max-width:88%">
+      <div class="col card"><h3>Пример: «как эти задачи решаются сейчас?»</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Появился, потому что кандидаты выходили и говорили «ожидание не совпало с реальностью». Потеря — три недели и человек.</p></div>
+      <div class="col card"><h3>Руками — 3 часа. Через ИИ — 30 минут</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Заполняем не «по-своему», а ровно по шаблону. Как в коучинге: магия начинается, когда перестаёшь менять порядок вопросов.</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_badscript.png" alt="" style="height:200px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 16 DICTATION -->
+  <section class="slide">
+    <div class="kick">Шаг 0.1 · Метод диктовки</div>
+    <h2>Бриф заполняется <span class="g">голосом</span> за 30 минут</h2>
+    <div class="grid9" style="grid-template-columns:repeat(5,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Шаг 1</div><b>Взять шаблон брифа</b><span>тот, что зашит в конструкторе</span></div>
+      <div class="b9"><div class="n">Шаг 2</div><b>Уйти гулять</b><span>парк, кухня — где думается</span></div>
+      <div class="b9"><div class="n">Шаг 3</div><b>Надиктовать мысли</b><span>задачи, ожидания, страхи, ограничения</span></div>
+      <div class="b9"><div class="n">Шаг 4</div><b>Отдать Claude</b><span>шаблон + надиктовка → заполненный бриф</span></div>
+      <div class="b9"><div class="n">Шаг 5</div><b>Внести 3–5 правок</b><span>читаешь и валидируешь глазами</span></div>
+    </div>
+    <div class="row" style="margin-top:18px">
+      <div class="col card" style="max-width:48%"><h3>🎙 WhisperFlow</h3><p style="color:var(--muted);font-size:15.5px;margin-top:4px">Ставим на компьютер, зажимаем клавишу — надиктовали. Русская речь распознаётся, экономит огромное количество времени. В конструкторе диктофон встроен в каждый блок.</p></div>
+      <div class="col card" style="max-width:48%"><h3>⚠ Лайфхак с Excel</h3><p style="color:var(--muted);font-size:15.5px;margin-top:4px">Скачивай таблицы и <b>раскрывай схлопнутые строки</b> перед загрузкой в ИИ: скрытый текст модель не видит и теряет контекст.</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/aw_awareness.png" alt="" style="height:200px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 17 CRITICAL BRIEF BLOCKS -->
+  <section class="slide">
+    <div class="kick">Шаг 0.1 · три блока, которые нельзя пропустить</div>
+    <h2>Что <span class="rd">чаще всего</span> проваливают в брифе</h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col card" style="border-color:var(--gold2)"><div class="badge" style="background:var(--gold)">1</div><h3 style="margin-top:8px">ТОП-3 результата за квартал</h3><p style="color:var(--muted);font-size:15.5px;margin-top:4px">Количественно + качественно. Это <b>якорь всей воронки</b>: тестовое, вопросы, кейсы и оффер подчиняются именно им.</p></div>
+      <div class="col card"><div class="badge">2</div><h3 style="margin-top:8px">Челленджи кандидата</h3><p style="color:var(--muted);font-size:15.5px;margin-top:4px">С чем он реально столкнётся: трудные клиенты, незрелая команда, сжатые сроки. Не проговорили — в 80% случаев уходит через 2–3 месяца.</p></div>
+      <div class="col card"><div class="badge">3</div><h3 style="margin-top:8px">Компании-доноры</h3><p style="color:var(--muted);font-size:15.5px;margin-top:4px">Где твой идеальный кандидат сидит прямо сейчас? Без ответа невозможно построить хантинг — и некуда идти за reference.</p></div>
+    </div>
+    <div class="note">В брифе есть и вопрос «человек приходит на всё готовое или создаёт с нуля» — от него зависит, какой <b>стиль управления</b> нам нужен.</div>
+    <img class="bob bobc" src="gen/bob/cut/s37_tech.png" alt="" style="height:210px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 18 TOP3 FORMULATION -->
+  <section class="slide">
+    <div class="kick">ТОП-3 результата · как формулировать</div>
+    <h2>Так, чтобы <span class="g">на хлеб намазать можно</span></h2>
+    <div class="vs">
+      <div class="p bad" style="max-width:42%"><h3 class="rd">✗ Как не надо</h3><p style="font-size:17px;margin-top:8px;color:var(--muted)">«Отсутствие ошибок» · «Скорость» · «Навести порядок» · «Выстроить инфраструктуру»</p><p class="ex">не измеряется — в конце квартала не ответишь «случилось или нет»</p></div>
+      <div class="p good" style="max-width:55%"><h3 class="grn">✓ Как надо</h3><ul style="margin-top:6px"><li style="font-size:16.5px">Перевести всю базу на новую CRM, пригодную для международного рынка</li><li style="font-size:16.5px">Привести сайты и юрдокументацию к легальному приёму заявок в 3 юрисдикциях</li><li style="font-size:16.5px">Дожать 4 зависших проекта до 98% готовности</li></ul></div>
+    </div>
+    <div class="note">Отсмартуй формулировки: <b>выше ожиданий / в рамках ожиданий / ниже ожиданий</b>. Эти же три уровня потом станут рубрикой оценки тестового и KPI испытательного срока.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_shield.png" alt="" style="height:160px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 19 SKILL PORTRAIT -->
+  <section class="slide">
+    <div class="kick">Шаг 0.2 · Портрет навыков</div>
+    <h2>Каждый навык — по грейдам<br><span class="g">Junior / Middle / Senior</span></h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col" style="max-width:54%">
+        <ul>
+          <li>Человека, у которого <b>все</b> навыки на Senior, не существует — это единорог</li>
+          <li>Выбираем <b>ТОП-5 навыков</b>, критичных именно под наши ТОП-3 результата</li>
+          <li>Комбинация навыков зависит от <b>этапа компании</b> и от того, какие проекты человек лидирует</li>
+        </ul>
+      </div>
+      <div class="col card" style="max-width:44%">
+        <h3>Стиль управления решает</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">Поставишь <b>системного администратора</b> на запуск нового направления — с вероятностью 70% проект не поедет: он будет строить архитектуру.</p>
+        <p style="color:var(--muted);font-size:16px;margin-top:8px">Поставишь <b>лончера</b> на масштабирование — он не выстроит систему.</p>
+      </div>
+    </div>
+    <div class="note">Дальше всё подчиняется портрету: вопросы анкеты, вопросы HR, тестовое, блиц, кейсы Culture Fit. Мы буквально <b>заказываем конкретного человека</b>.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_temp.png" alt="" style="height:155px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 20 SCREEN portrait -->
+  <section class="slide">
+    <div class="kick">Инструмент · шаг 0.2</div>
+    <h2>28 ролей с портретами <span class="g">уже внутри</span></h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:34%">
+        <ul>
+          <li style="font-size:17px">Выбрал роль — портрет раскрылся мгновенно, с реальными описаниями J/M/S</li>
+          <li style="font-size:17px">AI рекомендует <b>целевой грейд</b> по каждому навыку под твои ТОП-3</li>
+          <li style="font-size:17px">Нет нужной роли — «Другое», соберём по аналогии с эталоном</li>
+        </ul>
+      </div>
+      <div class="col" style="max-width:64%">
+        <div class="frame clip"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор воронки найма · портрет навыков</span></div><img src="shots/portrait.png" alt="Портрет навыков с грейдами"></div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 21 STEP 1 VACANCY -->
+  <section class="slide dark2">
+    <div class="kick">Шаг 1 · Вакансия для HH</div>
+    <h2>Пиаровский подход, <span class="g">не прямая продажа</span></h2>
+    <div class="vs">
+      <div class="p" style="max-width:44%;border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.06)"><h3 class="rd">✗ «Мы крутые»</h3><p style="font-size:17px;margin-top:6px;color:#c3cec5">«Динамично развивающаяся компания», «дружный коллектив», «стрессоустойчивость», «белая зарплата»</p></div>
+      <div class="p" style="max-width:53%;border-color:var(--gold2);background:rgba(199,154,69,.14)"><h3 class="g">✓ Через факты и цифры</h3><p style="font-size:17px;margin-top:6px;color:#f0e6cf">«Топ-1% в нише», «10 000+ учеников», «работаем с Ozon, Тинькофф, Перекрёсток», «вышли в Юго-Восточную Азию — 30% выручки»</p><p class="ex" style="color:#cbbf9f">кандидат делает вывод сам — эффект сильнее</p></div>
+    </div>
+    <div class="note">Главная ловушка — <b>обесценивание собственного продукта</b>. Если у тебя уже есть результат и бэкграунд, тебе всегда есть что рассказать. Всегда.</div>
+    <img class="bob bobc" src="gen/bob/cut/aq_acquisition.png" alt="" style="height:180px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 22 VACANCY CHECKLIST -->
+  <section class="slide">
+    <div class="kick">Шаг 1 · чеклист валидации</div>
+    <h2>Читай как <span class="g">усталый кандидат</span> с тремя офферами на руках</h2>
+    <div class="grid9" style="margin-top:20px">
+      <div class="b9"><div class="n">Объём</div><b>1 500–2 500 знаков</b><span>не перегружать</span></div>
+      <div class="b9"><div class="n">Деньги</div><b>Вилка указана честно</b><span>без неё охват падает на 40%</span></div>
+      <div class="b9"><div class="n">Заголовок</div><b>Не generic</b><span>контекст компании или результата</span></div>
+      <div class="b9"><div class="n">Первый абзац</div><b>Крючок</b><span>«почему эта роль и почему сейчас»</span></div>
+      <div class="b9"><div class="n">Доказательство</div><b>Конкретные цифры</b><span>реальные и проверенные</span></div>
+      <div class="b9"><div class="n">CTA</div><b>Призыв с фильтром</b><span>«в отклике — самый сильный кейс с цифрами»</span></div>
+    </div>
+    <div class="note grn">Что даёт вакансии уникальное звучание — <b>мотивирующее видение фаундера</b>. Есть плейбук: собирается за один подход и потом работает во всех точках касания.</div>
+    <img class="bob bobc" src="gen/bob/cut/p_thumbs.png" alt="" style="height:210px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 23 SCREEN vacancy -->
+  <section class="slide">
+    <div class="kick">Инструмент · шаг 1</div>
+    <h2>Вакансия собирается <span class="g">из брифа и портрета</span></h2>
+    <div class="frame clip" style="margin-top:14px;max-height:470px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор воронки найма · вакансия для HH</span></div><img src="shots/vacancy.png" alt="Сгенерированная вакансия"></div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 24 STEP 2 ANKETA -->
+  <section class="slide">
+    <div class="kick">Шаг 2 · Анкета-фильтр</div>
+    <h2>Один вопрос «<span class="rd">красный флаг</span>» экономит недели</h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:50%">
+        <ul>
+          <li>Прогоняем через анкету <b>всех</b> откликнувшихся, приглашаем только прошедших</li>
+          <li>Ответы падают в единую таблицу → таблица + портрет в Claude → короткий шорт-лист</li>
+          <li>Для сбора персданных в РФ — <b>Яндекс.Формы</b>, не Google Forms</li>
+          <li>Максимум 10 вопросов, у каждого — 🟢 / 🟡 / 🔴</li>
+        </ul>
+      </div>
+      <div class="col card" style="max-width:47%;border-color:#e0b6ad">
+        <h3 class="rd">Кейс: вопрос про планёрки</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">«Как часто проводите планёрки с менеджерами?»</p>
+        <p style="font-size:16px;margin-top:8px;color:var(--em)"><b>8 менеджеров × 50 звонков × 21 смена = 10 080 звонков в месяц.</b></p>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">Планёрки «1–2 раза в неделю» — этот pipeline физически не удержать. Ответ = автоматический отсев без созвона.</p>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/s2_choose.png" alt="" style="height:195px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 25 SCREEN anketa -->
+  <section class="slide">
+    <div class="kick">Инструмент · шаг 2</div>
+    <h2>Анкета со <span class="g">светофором ответов</span> + скрипт рекрутера</h2>
+    <div class="frame clip" style="margin-top:14px;max-height:470px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор воронки найма · анкета + вопросы HR</span></div><img src="shots/anketa.png" alt="Анкета со светофором"></div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 26 HR QUESTIONS -->
+  <section class="slide">
+    <div class="kick">Шаг 2 · собеседование с HR (60 минут)</div>
+    <h2>Даже <span class="g">формулировка вопроса</span> продаёт компанию</h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:46%">
+        <div class="grid9" style="grid-template-columns:1fr;gap:8px">
+          <div class="b9"><div class="n">Цель 1</div><b>Проверка на адекватность</b></div>
+          <div class="b9"><div class="n">Цель 2</div><b>Сбор первичных сведений</b></div>
+          <div class="b9"><div class="n">Цель 3</div><b>Отсев на раннем этапе</b></div>
+          <div class="b9"><div class="n">Цель 4</div><b>Первично продать компанию</b></div>
+        </div>
+      </div>
+      <div class="col" style="max-width:51%">
+        <div class="card" style="border-color:#e0b6ad"><h3 class="rd">Нейтрально</h3><p style="font-size:16.5px;margin-top:4px;color:var(--muted)">«Есть ли у вас опыт работы с международными рынками?»</p></div>
+        <div class="card" style="margin-top:10px;border-color:#bcd3c2"><h3 class="grn">Через контекст компании</h3><p style="font-size:16.5px;margin-top:4px;color:var(--em)">«Мы уже вышли в Юго-Восточную Азию — это 30% выручки, дальше идём в Барселону. Нам важен опыт выхода на международку с нуля. Какой у вас?»</p></div>
+      </div>
+    </div>
+    <div class="note">Джуниор-рекрутер так не сформулирует — он даже не думает такими категориями. Поэтому вопросы <b>пишем мы</b>, а рекрутер работает по скрипту.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_phone.png" alt="" style="height:150px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 27 AFTER INTERVIEW AI -->
+  <section class="slide dark2">
+    <div class="kick">Автоматизация после каждого собеседования</div>
+    <h2>Запись → транскрипт → <span class="g">оценка кандидата</span></h2>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Правило</div><b>Пишем ВСЁ</b><span>видео и аудио, без исключений</span></div>
+      <div class="b9"><div class="n">Транскрипт</div><b>Сервис расшифровки</b><span>лучше справляется с русской речью</span></div>
+      <div class="b9"><div class="n">Контекст в Claude</div><b>4 документа</b><span>портрет + вакансия + транскрипт + анкета</span></div>
+      <div class="b9"><div class="n">На выходе</div><b>Резюме по кандидату</b><span>оценка, риски, возможности</span></div>
+    </div>
+    <div class="row" style="margin-top:18px;max-width:96%">
+      <div class="col card"><h3>Что просим у модели</h3><ul style="margin-top:6px"><li style="font-size:16px">оценка 1–10 с цитатами из транскрипта</li><li style="font-size:16px">профиль DISC и стиль мышления</li></ul></div>
+      <div class="col card"><h3>И обязательно</h3><ul style="margin-top:6px"><li style="font-size:16px">3 сильные стороны · 3 ключевых риска найма</li><li style="font-size:16px">2–3 возможности «сверх ожиданий»</li></ul></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_roleplay.png" alt="" style="height:160px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 28 STEP 3 TEST -->
+  <section class="slide">
+    <div class="kick">Шаг 3 · Тестовое задание</div>
+    <h2>Тестовое строится <span class="g">от образа результата</span>, а не от «общих компетенций»</h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col" style="max-width:52%">
+        <ul>
+          <li>Критерий: по тестовому мы <b>с вероятностью 100%</b> понимаем, вытащит ли человек ТОП-3 результата</li>
+          <li>Проверяем те самые «мышечные группы», которые нужны под цели квартала</li>
+          <li>Объём — <b>не больше 4–6 часов</b> работы кандидата (лучше 2)</li>
+          <li>К каждому блоку — рубрика: Senior / Middle / ниже Middle</li>
+        </ul>
+      </div>
+      <div class="col card" style="max-width:45%;border-color:#e0b6ad">
+        <h3 class="rd">⛔ Отказ делать тестовое</h3>
+        <p style="color:var(--muted);font-size:16.5px;margin-top:6px">Не берём на следующий этап <b>ни при каких обстоятельствах</b>. Даже если резюме потрясающее и HR прошёл идеально.</p>
+        <p style="color:var(--muted);font-size:16.5px;margin-top:8px">Это маркер вовлечённости: не выложился на найме — в работе выложится ещё меньше.</p>
+      </div>
+    </div>
+    <div class="note grn">Готовое тестовое кандидата <b>грузим обратно в Claude вместе с рубрикой</b> — и получаем объективную оценку по критериям, а не «мне показалось».</div>
+    <img class="bob bobc" src="gen/bob/cut/s25_build.png" alt="" style="height:200px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 29 POCHERK PERA -->
+  <section class="slide">
+    <div class="kick">Шаг 3 · дополнительное тестовое</div>
+    <h2>«Почерк пера» — покажи <span class="g">свою отчётность</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:66ch">Просим 1–3 регламента и отчёта, через которые кандидат управлял командой. Цифры можно удалить — нам нужна <b class="em">архитектура управления</b>.</p>
+    <div class="row" style="margin-top:18px">
+      <div class="col card" style="border-color:#e0b6ad"><h3 class="rd">Что видно сразу</h3><ul style="margin-top:6px"><li style="font-size:16px">только запаздывающие метрики: выручка, средний чек</li><li style="font-size:16px">нет плановых значений — только факт</li><li style="font-size:16px">нет светофора и анализа отклонений</li></ul></div>
+      <div class="col card" style="border-color:#bcd3c2"><h3 class="grn">Что ищем</h3><ul style="margin-top:6px"><li style="font-size:16px">дерево метрик с опережающими показателями</li><li style="font-size:16px">план / факт / отклонение по каждой строке</li><li style="font-size:16px">точки контроля и ритм разборов</li></ul></div>
+    </div>
+    <div class="note">Отчётность говорит громче слов. Как кабинет врача: если внутри бардак, дальше можно не разговаривать.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_dashboard.png" alt="" style="height:150px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 30 STEP 4 DEEP DIVE -->
+  <section class="slide dark">
+    <div class="kick">Шаг 4 · Второе собеседование · часть 1</div>
+    <h2>Дип-дайв: режим <span class="g">аквалангиста</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:66ch">Кандидат может собрать идеальное резюме с ИИ, подготовиться к стандартному собеседованию с ИИ и даже получать подсказки на экране в реальном времени. <b class="em">Дип-дайв это не обходит.</b></p>
+    <div class="row" style="margin-top:20px;max-width:92%">
+      <div class="col card"><h3>Как это выглядит</h3><ul style="margin-top:6px"><li style="font-size:16px">«Назови ТОП-3 результата, которыми гордишься»</li><li style="font-size:16px">Берём первый и копаем 15–20 вопросов вглубь</li><li style="font-size:16px">Гипотезы, рабочая группа, роли, ритм встреч</li><li style="font-size:16px">Плановые значения, отклонения, точки контроля</li></ul></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">Зачем</h3><p style="color:#c3cec5;font-size:16px;margin-top:6px">Понять: человек <b>сделал результат сам</b> — или просто стоял рядом, пока результат происходил.</p><p style="color:#c3cec5;font-size:16px;margin-top:8px">Кто дожимал сам — тот результат выстрадал. Эти знания остаются навсегда, его невозможно смутить вопросом.</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_copilot.png" alt="" style="height:170px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 31 BLITZ -->
+  <section class="slide">
+    <div class="kick">Шаг 4 · Второе собеседование · часть 2</div>
+    <h2>Блиц-опрос: <span class="g">ни одна нейросеть</span> к этому не подготовит</h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col card" style="max-width:49%">
+        <h3>Скрипт перед блицем</h3>
+        <p class="ex" style="font-size:16px;font-style:normal;color:var(--em);margin-top:6px">«Вторая часть: я задаю вопросы строго по вашей роли. Задача — не уходить в философию и рассуждения, а называть как можно больше ответов, которые вы лично считаете правильными. Готовы?»</p>
+        <div class="note" style="margin-top:10px">Программируем формат и получаем согласие. Дальше — только скорость и содержание.</div>
+      </div>
+      <div class="col" style="max-width:49%">
+        <div class="card"><h3>Примеры для РОПа</h3><ul style="margin-top:6px"><li style="font-size:15.5px">Как догреть холодного лида через отдел продаж?</li><li style="font-size:15.5px">Как повысить дозвоняемость?</li><li style="font-size:15.5px">Как сегментировать трафик?</li><li style="font-size:15.5px">Инструменты роста среднего чека? Retention? LTV?</li></ul></div>
+      </div>
+    </div>
+    <div class="note red">Кандидат уходит в <b>треугольник Карпмана</b> (агрессия / защита / ступор)? Не указывай ему на это. Поставь галочку в голове, уважительно доведи встречу и иди дальше.</div>
+    <img class="bob bobc" src="gen/bob/cut/s6_pedals.png" alt="" style="height:190px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 32 SCREEN interview2 -->
+  <section class="slide">
+    <div class="kick">Инструмент · шаг 4</div>
+    <h2>Дип-дайв и блиц <span class="g">с эталонами ответов</span></h2>
+    <div class="frame" style="margin-top:14px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор воронки найма · 2-е собеседование</span></div><img src="shots/interview2.png" alt="Вопросы второго собеседования"></div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 33 STEP 5 REFERENCE -->
+  <section class="slide">
+    <div class="kick">Шаг 5 · Reference check</div>
+    <h2>Собираем обратную связь <span class="g">всегда</span>. Без исключений</h2>
+    <div class="grid9" style="margin-top:18px">
+      <div class="b9"><div class="n">Правило 1</div><b>Не только контакты кандидата</b><span>с вероятностью 90% дадут подставные — никто не даст контакт того, кто скажет плохое</span></div>
+      <div class="b9"><div class="n">Правило 2</div><b>Выходим в холодную</b><span>спрашиваем, открытый ли поиск — и если да, ищем прошлых руководителей сами</span></div>
+      <div class="b9"><div class="n">Правило 3</div><b>Минимум 2–3 контакта</b><span>из разных компаний: один отзыв — случайность, три — система</span></div>
+    </div>
+    <div class="card" style="margin-top:16px;border-color:var(--gold2)">
+      <h3 class="g">Хитрость на калибровку честности</h3>
+      <p style="font-size:16.5px;margin-top:6px;color:var(--em)">Сначала спрашиваем кандидата: «Какую оценку от 1 до 10 вам поставил бы прошлый руководитель? Нанял бы он вас ещё раз?» Потом задаём <b>те же два вопроса руководителю</b>.</p>
+      <p class="ex">Кандидат говорит «твёрдая десятка», руководитель — «двойка, в жизни бы не нанял». Очень показательно.</p>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/rf_referral.png" alt="" style="height:145px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 34 REFERENCE CASES -->
+  <section class="slide dark">
+    <div class="kick">Почему это не паранойя</div>
+    <h2>Реальные кейсы, которые <span class="g">всплыли</span> только на reference</h2>
+    <div class="row" style="margin-top:20px;max-width:94%">
+      <div class="col card"><h3>«Инфаркт у мамы»</h3><p style="color:#c3cec5;font-size:15.5px;margin-top:4px">Руководитель прошёл все этапы блестяще. Оплатили командировку, проживание, проезд — не приехал. Оказалось: текущему работодателю он сказал то же самое, чтобы получить деньги с обеих сторон. С мамой всё в порядке — она была в шоке.</p></div>
+      <div class="col card"><h3>Соцсети SMM-щицы</h3><p style="color:#c3cec5;font-size:15.5px;margin-top:4px">Талантливая, отличные кейсы, три этапа пройдены безупречно. В соцсетях — фотографии трупов животных. Человек может публиковать то, что нанесёт компании прямой репутационный вред.</p></div>
+    </div>
+    <p class="lead" style="margin-top:20px;max-width:66ch">Смотрим и административные нарушения, и публичные высказывания. Особенно если нанимаем руководителя, у которого в подчинении будут люди.</p>
+    <img class="bob bobc" src="gen/bob/cut/p_think.png" alt="" style="height:200px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 35 CULTURE FIT -->
+  <section class="slide">
+    <div class="kick">Шаг 6 · Culture Fit (финал с фаундером, 60 минут)</div>
+    <h2>«Готов ли я с этим человеком <span class="g">справляться</span> 2–3 года?»</h2>
+    <p class="lead" style="margin-top:12px;max-width:70ch">Именно «справляться». Человеческие качества проявляются не когда всё хорошо, а когда надо дожать результат, выкрутить требовательность и пройти через просадку.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col card" style="max-width:47%;border-color:#e0b6ad">
+        <h3 class="rd">Кейс, который стоил команды</h3>
+        <p style="color:var(--muted);font-size:15.5px;margin-top:4px">Схантили сильнейшего РОПа с рынка — топ #1 три года подряд. Через 3 недели вся команда пришла на one-to-one: душнит, хамит, агрессивен. Уволил не за профессионализм — за то, что травила атмосферу. Результаты у остальных поехали вниз.</p>
+      </div>
+      <div class="col" style="max-width:50%">
+        <div class="grid9" style="grid-template-columns:1fr;gap:8px">
+          <div class="b9"><div class="n">15 минут</div><b>Прямые вопросы на ценности</b><span>соответствие принципам компании</span></div>
+          <div class="b9" style="background:#F0F4EE;border-color:#bcd3c2"><div class="n">35 минут · сердце этапа</div><b>Бизнес-кейсы</b><span>реальные сложные ситуации вокруг наших ТОП-3</span></div>
+          <div class="b9"><div class="n">10 минут</div><b>Вопросы кандидата</b><span>закрытие встречи</span></div>
+        </div>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_disc.png" alt="" style="height:180px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 36 PRINCIPLES -->
+  <section class="slide dark2">
+    <div class="kick">Шаг 6 · принципы работы в компании</div>
+    <h2>5–7 фраз, которые становятся <span class="g">фильтром</span> при найме</h2>
+    <div class="row" style="margin-top:18px;max-width:96%">
+      <div class="col card"><h3>Кейс: «Мы — ресурс друг для друга»</h3><p style="color:#c3cec5;font-size:15.5px;margin-top:4px">Команда разрослась, ресурсов стало не хватать — и зазвучало «это не моя зона ответственности». Это точная маркировка вируса в культуре: фаундер должен реагировать на такие фразы аллергией.</p><p style="color:#c3cec5;font-size:15.5px;margin-top:8px">Сформулировали принцип в три слова, зашили в онбординг, повторяли на планёрках и дебагах. Через несколько месяцев фраза из команды пропала.</p></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">Наш действующий фильтр: AI-first</h3><p style="color:#c3cec5;font-size:15.5px;margin-top:4px">Человек понимает ценность нейросетей и готов учиться. Нанимаем по этому принципу даже sales-менеджеров.</p><p style="color:#c3cec5;font-size:15.5px;margin-top:8px">Сильному кандидату <b>оплачиваем обучение</b>, в том числе вайбкодингу — это сразу делает его на голову выше конкурентов в той же роли.</p></div>
+    </div>
+    <div class="note" style="max-width:82%">Бизнес-кейсы строим вокруг ТОП-3 результатов. Пример: «Через 2 месяца вы не успеваете по плану. Подрядчик предлагает приём, который противоречит вашим принципам, но даст +30% конверсии. Что делаете?»</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_arsenal.png" alt="" style="height:180px;right:20px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 37 SUMMARY SCORECARD -->
+  <section class="slide">
+    <div class="kick">Шаг 7.1 · Сводная по кандидатам</div>
+    <h2>Взгляд замыливается — решает <span class="g">скоркарта</span></h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:33%">
+        <ul>
+          <li style="font-size:17px">Оценка 1–10 по каждому этапу воронки</li>
+          <li style="font-size:17px">Комментарии рекрутера и нанимающего руководителя</li>
+          <li style="font-size:17px">Сумма по формуле → сортировка → <b>short-list ТОП-3</b></li>
+        </ul>
+      </div>
+      <div class="col" style="max-width:65%">
+        <div class="frame clip"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор воронки найма · сводная по кандидатам</span></div><img src="shots/summary.png" alt="Сводная по кандидатам"></div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 38 OFFER RULE -->
+  <section class="slide">
+    <div class="kick">Шаг 7.2 · Оффер</div>
+    <h2>Оффер на управленческую позицию<br><span class="rd">никогда не отправляется письмом</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:68ch">У сильного кандидата на руках 3–4 оффера. Мы конкурируем с теми, кто прогнал его через свои воронки. Оффер <b class="em">презентуется на отдельной встрече</b> — это финальная точка продажи компании.</p>
+    <table class="mt sm" style="margin-top:12px;max-width:92%">
+      <tr><th>Слайд</th><th>Содержание</th></tr>
+      <tr><td>1</td><td>Обложка — Offer Letter + слоган позиционирования компании</td></tr>
+      <tr><td>2</td><td>Условия оффера — персональная таблица с именем кандидата</td></tr>
+      <tr><td>3</td><td>Почему у нас круто работать — 5–6 реальных преимуществ</td></tr>
+      <tr><td>4</td><td>Прочие льготы — конкретные бенефиты</td></tr>
+      <tr><td>5</td><td>Миссия и большая цель — с цитатой фаундера</td></tr>
+      <tr><td>6</td><td>Ценности и культура — 3–5 ценностей с расшифровкой</td></tr>
+      <tr><td>7</td><td>Финал — «Ждём тебя!» + фото команды + контакт руководителя</td></tr>
+    </table>
+    <img class="bob bobc" src="gen/bob/cut/s41_present.png" alt="" style="height:160px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 39 OFFER DECK SCREENS -->
+  <section class="slide dark2">
+    <div class="kick">Инструмент · шаг 7</div>
+    <h2>Оффер собирается сразу как <span class="g">отправляемая дека</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:49%"><div class="frame"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Оффер · слайд 1</span></div><img src="shots/offer_cover.png" alt="Обложка оффера"></div></div>
+      <div class="col" style="max-width:49%"><div class="frame"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Оффер · слайд 2</span></div><img src="shots/offer_terms.png" alt="Условия оффера"></div></div>
+    </div>
+    <div class="note">Открыл презентацию → Cmd/Ctrl+P → «Сохранить как PDF». В условия вкладываем ссылку на <b>прогнозный расчёт дохода</b>, чтобы кандидат сам «побаловался» цифрами.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 40 STEP 8 -->
+  <section class="slide">
+    <div class="kick">Шаг 8 · после оффера</div>
+    <h2>Что должно быть готово <span class="g">до выхода</span> человека</h2>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Документ 1</div><b>Система мотивации №1</b><span>на испытательный срок, KPI по каждому месяцу</span></div>
+      <div class="b9"><div class="n">Документ 2</div><b>План онбординга</b><span>первые 90 дней по неделям</span></div>
+      <div class="b9"><div class="n">Документ 3</div><b>Принципы работы</b><span>изучает в первую неделю</span></div>
+      <div class="b9"><div class="n">Документ 4</div><b>Регламент 1:1</b><span>минимум раз в две недели</span></div>
+    </div>
+    <div class="row" style="margin-top:18px">
+      <div class="col card"><h3>Следующая встреча</h3><p style="color:var(--muted);font-size:15.5px;margin-top:4px">HR-процессы через призму people management: оргструктура найма (HR-генералист / HRD / HRBP), бенчмарки, зарплатные вилки, системы мотивации, HR в P&L.</p></div>
+      <div class="col card"><h3>Через одну</h3><p style="color:var(--muted);font-size:15.5px;margin-top:4px">Автоматизированный первичный онбординг на отдельной платформе: AI обучает новых сотрудников — начнём с менеджеров по продажам.</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/re_retention.png" alt="" style="height:140px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 41 NO COMPROMISE -->
+  <section class="slide dark">
+    <div class="kick">Правило, которое дороже всех остальных</div>
+    <h1 style="font-size:46px;max-width:20ch">Никогда не делай<br><span class="g">компромиссы в найме</span></h1>
+    <p class="lead" style="margin-top:20px;max-width:62ch">Человек «поплыл» на блице, путается в терминологии, не может привести примеры — значит, компетенцией не обладает. Иллюзий быть не должно: поблагодарили и идём дальше.</p>
+    <div class="row" style="margin-top:22px;max-width:80%">
+      <div class="col card"><h3>Как это ощущается</h3><p style="color:#c3cec5;font-size:16px;margin-top:4px">«Я как будто сам с собой борюсь». Это не компромисс — это мозг говорит «не бери».</p></div>
+      <div class="col card"><h3>Что делать вместо</h3><p style="color:#c3cec5;font-size:16px;margin-top:4px">Не получится с первого раза — получится со второго. Главное — проходить циклы быстро и калибровать воронку после каждого.</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_shield.png" alt="" style="height:180px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 42 TOOL -->
+  <section class="slide">
+    <div class="kick">Инструмент модуля · практика</div>
+    <h2>Конструктор воронки найма → <span class="g">вся воронка в Excel</span></h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:42%">
+        <ul>
+          <li style="font-size:17px">16 шагов: от брифа с диктофоном до плана-факта</li>
+          <li style="font-size:17px">Плейбуки A-Players зашиты внутрь — промпты писать не нужно</li>
+          <li style="font-size:17px">Правки к любому разделу — текстом или голосом</li>
+          <li style="font-size:17px">Работает на <b>твоём ключе Claude</b>, ничего не уходит наружу</li>
+        </ul>
+        <a class="btnlink em" href="Конструктор%20воронки%20найма%20—%20A-Players.html" target="_blank">🧭 Открыть конструктор</a>
+      </div>
+      <div class="col" style="max-width:56%">
+        <div class="frame clip"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор воронки найма · A-Players</span></div><img src="shots/start.png" alt="Стартовый экран конструктора"></div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 43 CALC -->
+  <section class="slide">
+    <div class="kick">Инструмент · планирование</div>
+    <h2>Сколько откликов нужно собрать <span class="g">под цель по найму</span></h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:36%">
+        <ul>
+          <li style="font-size:17px">Тип позиции + сколько человек нанимаем</li>
+          <li style="font-size:17px">Считает объём откликов по бенчмаркам агентства</li>
+          <li style="font-size:17px">Раскладывает по этапам: сколько дойдёт до анкеты, тестового, финала</li>
+        </ul>
+      </div>
+      <div class="col" style="max-width:62%">
+        <div class="frame clip" style="max-height:420px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Калькулятор воронки найма</span></div><img src="shots/calc.png" alt="Калькулятор откликов"></div>
+      </div>
+    </div>
+    <img class="bob" src="gen/bob/cut/bob_dashboard.png" alt="" style="left:64px;bottom:64px;height:175px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 43b REPORT BOARD -->
+  <section class="slide">
+    <div class="kick">Инструмент · отчётность рекрутинга</div>
+    <h2>Все вакансии на одном экране —<br>кликнул и <span class="g">видишь, что происходит</span></h2>
+    <div class="frame clip" style="margin-top:14px;max-height:430px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Отчётность рекрутинга · план-факт по всем вакансиям</span></div><img src="shots/report_board.png" alt="Дашборд вакансий"></div>
+    <div class="note">По каждой вакансии сразу видно: сколько дней в работе, сколько откликов из нужных, темп, прогресс — и <b>где именно просела воронка</b>.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 43c DAILY PLAN-FACT -->
+  <section class="slide">
+    <div class="kick">Инструмент · ежедневный план-факт</div>
+    <h2>Рекрутер каждый день идёт <span class="g">сверху вниз по воронке</span></h2>
+    <div class="row" style="margin-top:12px">
+      <div class="col" style="max-width:33%">
+        <ul>
+          <li style="font-size:16.5px">Колонка = день, строка = этап. Заносит факт руками</li>
+          <li style="font-size:16.5px">Дни сами складываются в <b>недели</b> с выводом по каждой</li>
+          <li style="font-size:16.5px">Накопительная воронка сравнивается с бенчмарками и подсвечивает <b>узкое место</b></li>
+          <li style="font-size:16.5px">Всё выгружается в Excel тремя листами</li>
+        </ul>
+      </div>
+      <div class="col" style="max-width:65%">
+        <div class="frame clip" style="max-height:440px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Отчётность · ежедневный план-факт по вакансии</span></div><img src="shots/report.png" alt="Ежедневный план-факт"></div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 44 HOMEWORK -->
+  <section class="slide dark">
+    <div class="kick">Домашнее задание</div>
+    <h2>Собери воронку найма под <span class="g">свою ключевую позицию</span></h2>
+    <div class="row" style="margin-top:22px;max-width:96%">
+      <div class="col card"><div class="badge" style="background:var(--gold)">1</div><h3 style="color:#fff;margin-top:8px">Портрет</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Выбери позицию, которую хочешь закрыть или перенанять. Надиктуй бриф, зафиксируй ТОП-3 результата и ТОП-5 навыков.</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">2</div><h3 style="color:#fff;margin-top:8px">Воронка</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Собери все этапы: вакансию, анкету, вопросы HR, тестовое, дип-дайв и блиц, reference, culture fit, оффер. Выгрузи одним Excel.</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">3</div><h3 style="color:#fff;margin-top:8px">Цифры</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Посчитай в калькуляторе, сколько откликов нужно под твою цель, и заведи план-факт по воронке.</p></div>
+    </div>
+    <p class="lead" style="margin-top:22px;color:#8ee0a6;font-weight:700">Принеси воронку, по которой не стыдно позвать чемпиона.</p>
+    <img class="bob bobc" src="gen/bob/cut/p_book.png" alt="" style="height:180px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 45 FINAL -->
+  <section class="slide dark2">
+    <div class="kick">Итог</div>
+    <h1 style="font-size:44px;max-width:22ch">Ты формируешь среду —<br>среда формирует результат</h1>
+    <p class="lead" style="margin-top:20px;max-width:60ch">Каждый человек, которого ты берёшь в команду, либо усилит среду, либо вытянет из неё энергию. И ты формируешь эту среду <b class="em">каждым решением о найме</b>.</p>
+    <div class="chipset" style="margin-top:22px;max-width:64%">
+      <div class="chip">🎯 Портрет до вакансии</div><div class="chip">📣 Продаём компанию всегда</div><div class="chip">🤿 Дип-дайв и блиц</div><div class="chip">📞 Reference без исключений</div><div class="chip">🤝 Culture Fit решает</div>
+    </div>
+    <p class="lead" style="margin-top:22px;color:#8ee0a6;font-weight:700;font-size:22px">Долго нанимаем — быстро увольняем. И никаких компромиссов.</p>
+    <img class="bob bobscene" src="gen/bob/cut/s47_win.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+</div>
+
+<div id="bar"></div><div id="count"></div>
+<div class="hint" id="hint">← → пробел · F — полный экран</div>
+
+<script>
+const stage=document.getElementById('stage');
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+function fit(){const s=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+  location.hash=i+1;
+  document.getElementById('hint').style.opacity=i===0?1:0;
+}
+function next(){show(i+1);}function prev(){show(i-1);}
+addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev();}
+  else if(e.key==='Home'){show(0);}else if(e.key==='End'){show(slides.length-1);}
+  else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
+});
+stage.addEventListener('click',e=>{if(e.target.closest('a'))return;const r=stage.getBoundingClientRect();if((e.clientX-r.left)/r.width<0.22)prev();else next();});
+const start=parseInt((location.hash||'').replace('#',''),10);show(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>

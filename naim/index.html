@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>A-Players · Домашнее задание — Воронка найма под A-Players</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+  --em:#143A2D;--em2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold2:#C79A45;--gold-h:#977019;
+  --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+  --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5.2vw,52px);line-height:1.05;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(23px,4vw,33px);line-height:1.1;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 3px}
+.gold{color:var(--gold-h)}b,strong{font-weight:800}.em{color:var(--em)}.rd{color:var(--red)}.grn{color:var(--green)}
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:60px 0 54px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 86% 30%,rgba(199,154,69,.18),transparent 44%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:760px}
+.hero .lead{font-size:clamp(17px,2.3vw,20px);color:rgba(239,233,218,.85);max-width:600px;margin-top:16px;font-weight:500}
+.hero .hl{color:#fff;background:linear-gradient(180deg,transparent 56%,rgba(199,154,69,.45) 56%)}
+.hero .kicker{color:var(--gold2)}
+.hero-bob{position:absolute;right:20px;bottom:-6px;height:300px;z-index:1;pointer-events:none;filter:drop-shadow(0 12px 20px rgba(0,0,0,.22))}
+@media(max-width:860px){.hero-bob{display:none}}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.badge{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold2)}
+.cta{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;font-weight:800;font-size:16px;padding:14px 22px;border-radius:12px;text-decoration:none;margin-top:24px;box-shadow:0 14px 30px -12px rgba(176,130,46,.7);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+section{padding:48px 0}section.alt{background:var(--bg2)}
+.eyebrow{margin-bottom:13px;display:inline-block}
+.lead{font-size:19px;color:var(--muted);font-weight:500}
+.deliv{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:0 16px 16px 0;padding:22px 26px;margin-top:22px}
+.deliv ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-top:8px}
+@media(max-width:640px){.deliv ul{grid-template-columns:1fr}}
+.deliv li{position:relative;padding-left:27px;font-size:16px}
+.deliv li::before{content:"✓";position:absolute;left:0;top:-1px;color:var(--green);font-weight:800}
+.stat3{display:flex;gap:30px;margin-top:18px;flex-wrap:wrap}
+.stat3 .v{font-family:var(--serif);font-weight:800;font-size:44px;color:var(--em);line-height:1}
+.stat3 .l{font-size:15px;color:var(--muted)}
+.vars{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+@media(max-width:760px){.vars{grid-template-columns:1fr}}
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;display:flex;flex-direction:column}
+.vcard.v1{border-top:5px solid var(--em)}.vcard.v2{border-top:5px solid var(--gold)}
+.vcard .vn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.vcard h3{font-size:21px;margin-top:2px}.vcard p{font-size:14.5px;color:var(--muted);margin-top:6px}
+.vcard ol{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.vcard ol li{font-size:14.5px}
+.vcard .btns{margin-top:auto;padding-top:16px;display:flex;flex-wrap:wrap;gap:9px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:11px 16px;border-radius:10px;text-decoration:none;transition:transform .15s;border:none;cursor:pointer;font-family:var(--sans)}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A}
+.btn.e{background:var(--em);color:#fff}
+.btn.g{background:transparent;border:1.5px solid var(--line);color:var(--em)}
+.road{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.rstep{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.rstep .n{width:46px;height:40px;border-radius:10px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:16px;display:grid;place-items:center}
+.rstep h4{font-family:var(--serif);font-size:18px;color:var(--em)}
+.rstep p{font-size:15px;color:var(--muted);margin-top:5px}
+.rstep .mini{font-size:13.5px;color:var(--ink);margin-top:8px;background:var(--bg2);border-radius:9px;padding:9px 12px}
+.rstep .mini b{color:var(--em)}
+.sec-box{background:#2b1512;border:1px solid #5a2b22;border-radius:18px;padding:26px 28px;margin-top:24px;color:#f3e3df;position:relative;overflow:hidden}
+.sec-box::after{content:"🔒";position:absolute;right:22px;top:18px;font-size:40px;opacity:.25}
+.sec-box h3{color:#fff;font-size:22px}
+.sec-box .rule{display:flex;gap:11px;margin-top:14px;font-size:15px}
+.sec-box .rule .i{color:#ffcf6a;font-weight:800;flex:none}
+.sec-box .big{background:rgba(255,255,255,.08);border-radius:10px;padding:11px 15px;margin-top:16px;font-weight:700;color:#ffd98a}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-top:20px}
+.fbox{flex:1;min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.fbox .ft{font-family:var(--mono);font-size:11px;color:var(--gold-h);text-transform:uppercase;letter-spacing:.06em;font-weight:700}
+.fbox b{display:block;margin-top:4px;color:var(--em);font-family:var(--serif)}
+.fbox p{font-size:13px;color:var(--muted);margin-top:4px}
+.farrow{align-self:center;color:var(--gold);font-weight:800;font-size:22px}
+@media(max-width:760px){.farrow{transform:rotate(90deg)}}
+
+/* ---- mock dashboards ---- */
+.mock{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:18px;box-shadow:0 10px 30px rgba(20,32,27,.06)}
+.mock .mh{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mstats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:640px){.mstats{grid-template-columns:1fr 1fr}}
+.ms{border-radius:12px;padding:12px 14px;border:1px solid var(--line)}
+.ms .k{font-size:11px;font-weight:700;text-transform:uppercase;opacity:.8}
+.ms .v{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1;margin-top:6px}
+.ms.idx{background:linear-gradient(160deg,#B0822E,#977019);color:#fff;border:none}
+.ms.calls{background:#F1F4F1}.ms.calls .v{color:var(--em)}
+.ms.risk{background:#FBEFEC;border-color:#e9cfc8}.ms.risk .k,.ms.risk .v{color:var(--red)}
+.ms.score{background:linear-gradient(160deg,#2f7a4e,#3E8E5E);color:#fff;border:none}
+.mtiles{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
+@media(max-width:640px){.mtiles{grid-template-columns:1fr 1fr 1fr}}
+.mt{border-radius:10px;color:#fff;padding:10px;text-align:center}
+.mt .e{font-size:16px}.mt .n{font-family:var(--serif);font-weight:800;font-size:22px}.mt .l{font-size:10px;opacity:.95;font-weight:700}
+.gg{background:linear-gradient(160deg,#3E8E5E,#2f7a4e)}.ga{background:linear-gradient(160deg,#C79A45,#B0822E)}.gr{background:linear-gradient(160deg,#C0503f,#B23B2E)}
+.mtbl{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:12px}
+.mtbl th{text-align:left;font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:700;padding:6px;border-bottom:1px solid var(--line)}
+.mtbl td{padding:7px 6px;border-bottom:1px solid var(--line)}
+.mtbl .sc{font-weight:800}.g1{color:var(--green)}.a1{color:var(--amber)}.r1{color:var(--red)}
+.risktag{color:var(--red);font-weight:800;font-size:11px}
+.callcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:8px}
+.rkbox{background:#FBEFEC;border:1px solid #e9cfc8;border-radius:10px;padding:11px 14px}
+.rkbox b{color:var(--red)}
+.stg{display:flex;gap:10px;align-items:center;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.stg .sn{width:170px;font-weight:700}.stg .ss{font-family:var(--serif);font-weight:800;font-size:18px;width:60px}
+.tg{background:#0f1c17;color:#e7efe9;border-radius:12px;padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:1.5;margin-top:10px;white-space:pre-wrap}
+.funnel{display:flex;flex-direction:column;gap:5px;max-width:520px;margin-top:6px}
+.fbar{border-radius:9px;color:#fff;font-weight:700;padding:9px 0;text-align:center;font-size:14px}
+.note-fallback{background:#FBF6EC;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:15px}
+.value{background:var(--em);color:var(--dark-ink);border-radius:12px;padding:12px 16px;margin-top:14px;font-size:15px;font-weight:600}
+.value b{color:#fff}
+.dl-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.promptbox{background:#F7F2E6;border:1px solid var(--line);border-radius:12px;padding:15px 17px;margin-top:12px;font-family:var(--mono);font-size:13px;line-height:1.5;white-space:pre-wrap}
+.crit{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-top:20px}
+.crit ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:8px}
+.crit li{position:relative;padding-left:26px;font-size:16px}
+.crit li::before{content:"☐";position:absolute;left:0;color:var(--gold-h);font-weight:800}
+footer{background:var(--em);color:var(--dark-ink);padding:26px 0}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:14px}
+footer img{height:20px}
+</style><style>
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:18px}
+.fstep{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 15px}
+.fstep .n{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.fstep b{display:block;color:var(--em);font-family:var(--serif);font-size:16px;margin-top:3px}
+.fstep span{display:block;font-size:13px;color:var(--muted);margin-top:3px;line-height:1.35}
+.fstep.zero{border-color:var(--gold2);background:#FBF6EC}
+.bmtable{width:100%;border-collapse:collapse;font-size:15px;margin-top:16px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.bmtable th{background:var(--em);color:var(--dark-ink);text-align:left;padding:9px 13px;font-size:13px;font-weight:700}
+.bmtable td{padding:8px 13px;border-top:1px solid var(--line)}
+.bmtable td:first-child{font-weight:700;color:var(--em)}
+.shot{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 12px 34px rgba(20,32,27,.10);margin-top:16px}
+.shot .bar{background:var(--bg2);padding:8px 13px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--line)}
+.shot .bar i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.shot .bar .u{margin-left:10px;font-size:12px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 11px}
+.shot img{display:block;width:100%;height:auto}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img class="hero-bob" src="gen/bob/cut/bob_medals.png" alt="">
+  <div class="wrap">
+    <div class="badges"><span class="badge">Модуль · Воронка найма</span><span class="badge">Конструктор в браузере</span><span class="badge">28 портретов навыков внутри</span></div>
+    <span class="kicker">Домашнее задание</span>
+    <h1>Собери воронку найма<br>под свою ключевую позицию</h1>
+    <p class="lead">За руку, по шагам. От брифа и портрета навыков — до презентации оффера и ежедневного плана-факта. Всё <b class="hl">на твоих данных</b> и на твоём ключе Claude.</p>
+    <a class="cta" href="#start">Начать по шагам ↓</a>
+  </div>
+</header>
+
+<!-- РЕЗУЛЬТАТ -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Что у тебя будет в итоге</span>
+    <h2>Готовая воронка найма — одним файлом</h2>
+    <div class="deliv">
+      <ul>
+        <li>Портрет должности: бриф 7 блоков + ТОП-3 результата</li>
+        <li>Портрет навыков с грейдами J/M/S и ТОП-5 под твои цели</li>
+        <li>Продающая вакансия для HH</li>
+        <li>Анкета-фильтр со светофором + вопросы и скрипт HR</li>
+        <li>Тестовое задание с рубрикой оценки</li>
+        <li>2-е собеседование: дип-дайв + блиц с эталонами ответов</li>
+        <li>Вопросы reference check и кейсы Culture Fit</li>
+        <li>Оффер-презентация (готовая дека → PDF)</li>
+        <li>Система мотивации №1 и план испытательного срока</li>
+        <li>Сводная-скоркарта по кандидатам</li>
+      </ul>
+    </div>
+    <div class="stat3">
+      <div><div class="v">7 этапов</div><div class="l">+ Шаг 0, без которого не стартуем</div></div>
+      <div><div class="v">~2 200</div><div class="l">откликов на 1 нанятого руководителя</div></div>
+      <div><div class="v">1–2 дня</div><div class="l">на сборку всей воронки</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ВОРОНКА -->
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Что именно собираем</span>
+    <h2>Восемь шагов воронки найма</h2>
+    <p class="lead" style="margin-top:8px">Правило №0: ни один найм не начинается, пока нет портрета кандидата. ТОП-3 результата за квартал — якорь, которому подчиняется всё остальное.</p>
+    <div class="fgrid">
+      <div class="fstep zero"><div class="n">Шаг 0</div><b>Бриф + портрет навыков</b><span>ожидания, челленджи, компании-доноры, грейды J/M/S, ТОП-5</span></div>
+      <div class="fstep"><div class="n">Шаг 1</div><b>Вакансия для HH</b><span>метрика — отклики. Пиаровский подход, вилка, крючок, CTA с фильтром</span></div>
+      <div class="fstep"><div class="n">Шаг 2</div><b>Анкета + вопросы HR</b><span>вопрос «красный флаг», светофор ответов, скрипт рекрутера</span></div>
+      <div class="fstep"><div class="n">Шаг 3</div><b>Тестовое задание</b><span>от образа результата + «почерк пера» (реальная отчётность)</span></div>
+      <div class="fstep"><div class="n">Шаг 4</div><b>2-е собеседование</b><span>дип-дайв в кейсы + блиц по hard skills</span></div>
+      <div class="fstep"><div class="n">Шаг 5</div><b>Reference check</b><span>минимум 2–3 контакта из разных компаний + калибровочный вопрос</span></div>
+      <div class="fstep"><div class="n">Шаг 6</div><b>Culture Fit</b><span>принципы компании + бизнес-кейсы вокруг твоих ТОП-3</span></div>
+      <div class="fstep"><div class="n">Шаг 7</div><b>Оффер</b><span>презентуется на встрече, а не отправляется письмом</span></div>
+      <div class="fstep"><div class="n">Шаг 8</div><b>Мотивация №1 + испытательный</b><span>KPI по месяцам и план первых 90 дней</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ИНСТРУМЕНТ -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Твой инструмент</span>
+    <h2>Конструктор воронки найма — открывается в браузере</h2>
+    <p class="lead" style="margin-top:8px">Работает на <b>твоём</b> ключе Claude API. Ключ вводится в браузере и хранится только у тебя — в инструменте нет ничьих чужих ключей.</p>
+    <div class="vars">
+      <div class="vcard v1">
+        <div class="vn">Инструмент</div>
+        <h3>🧭 Конструктор воронки найма</h3>
+        <p>16 шагов: от брифа с диктофоном до плана-факта. Плейбуки A-Players зашиты внутрь — промпты писать не нужно.</p>
+        <ol>
+          <li>Портрет должности голосом: жмёшь «Диктовать блок» и наговариваешь — AI разносит по вопросам</li>
+          <li>28 ролей с реальными портретами навыков и описаниями Junior / Middle / Senior</li>
+          <li>Генераторы всех этапов + правки текстом или голосом к любому разделу</li>
+          <li>Выгрузка: вся воронка одним Excel, оффер — отдельной презентацией</li>
+        </ol>
+        <div class="btns">
+          <a class="btn e" href="konstruktor.html" target="_blank" rel="noopener">🧭 Открыть конструктор</a>
+        </div>
+      </div>
+      <div class="vcard v2">
+        <div class="vn">Внутри конструктора</div>
+        <h3>📊 Калькулятор и отчётность рекрутинга</h3>
+        <p>Планируешь объём и ведёшь ежедневный план-факт по каждой открытой вакансии.</p>
+        <ol>
+          <li>Калькулятор: сколько откликов собрать под цель по найму и сколько дойдёт до каждого этапа</li>
+          <li>Дашборд вакансий: кликнул — видишь, что происходит по конкретной прямо сейчас</li>
+          <li>Ежедневный план-факт: рекрутер идёт сверху вниз по воронке и заносит факт за день</li>
+          <li>Дни сами складываются в недели, конверсии сравниваются с бенчмарками, подсвечивается узкое место</li>
+        </ol>
+        <div class="btns">
+          <a class="btn e" href="konstruktor.html#report" target="_blank" rel="noopener">📊 Открыть конструктор → «Отчётность»</a>
+        </div>
+      </div>
+    </div>
+    <div class="shot"><div class="bar"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор воронки найма · портрет навыков</span></div><img src="shots/portrait.png" alt="Портрет навыков с грейдами"></div>
+  </div>
+</section>
+
+<!-- ПО ШАГАМ -->
+<section class="alt" id="start">
+  <div class="wrap">
+    <span class="kicker eyebrow">Как пройти</span>
+    <h2>За руку — 9 шагов</h2>
+    <div class="road">
+      <div class="rstep"><div class="n">1</div><div>
+        <h4>Получи свой ключ Claude API</h4>
+        <p>Один раз: <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a> → создай ключ (начинается на <b>sk-ant-</b>). Вставь его в левое поле конструктора — он сохранится только в твоём браузере.</p>
+        <div class="mini"><b>Ключ нужен твой.</b> В инструменте не зашит ничей чужой ключ: каждый работает на своём, оплата по факту — один прогон стоит центы.</div>
+      </div></div>
+      <div class="rstep"><div class="n">2</div><div>
+        <h4>Выбери позицию и зафиксируй ТОП-3 результата</h4>
+        <p>Шаг «Старт»: компания, ниша, роль и <b>три результата за первый квартал</b> — количественно и качественно. Формулируй так, чтобы в конце квартала можно было честно ответить «случилось или нет».</p>
+        <div class="mini">Плохо: «навести порядок», «скорость». Хорошо: «дожать 4 зависших проекта до 98% готовности».</div>
+      </div></div>
+      <div class="rstep"><div class="n">3</div><div>
+        <h4>Заполни портрет должности — голосом</h4>
+        <p>Шаг «Портрет должности»: 7 блоков, ~40 вопросов. Нажми «🎙 Диктовать блок» и наговори мысли по этой части — AI сам разнесёт по вопросам. В конце — «Уточнить пробелы».</p>
+        <div class="mini">Не пропускай три блока: <b>ТОП-3 результата</b>, <b>челленджи кандидата</b> и <b>компании-доноры</b>. Без них воронка получится слабее.</div>
+      </div></div>
+      <div class="rstep"><div class="n">4</div><div>
+        <h4>Собери портрет навыков и отметь ТОП-5</h4>
+        <p>Шаг «Портрет навыков»: выбери роль из библиотеки (28 ролей) — увидишь реальные описания Junior / Middle / Senior по каждому навыку. AI порекомендует целевой грейд под твои ТОП-3. Отметь <b>5 критичных навыков</b>.</p>
+        <div class="mini">Нет нужной роли — выбери «Другое», соберём портрет по аналогии с эталоном.</div>
+      </div></div>
+      <div class="rstep"><div class="n">5</div><div>
+        <h4>Прогони все этапы воронки</h4>
+        <p>Дальше просто идёшь по шагам 1–8 и жмёшь «Собрать»: вакансия → анкета и вопросы HR → тестовое → 2-е собеседование → reference → culture fit → оффер → мотивация → испытательный срок → сводная.</p>
+        <div class="mini">Не нравится результат — «✏️ Редактировать вручную» или блок «Поправить этот раздел»: напиши или надиктуй правку, и раздел пересоберётся.</div>
+      </div></div>
+      <div class="rstep"><div class="n">6</div><div>
+        <h4>Собери оффер как презентацию</h4>
+        <p>Шаг «Оффер» → «Собрать» → «🖨 Открыть презентацию» → Cmd/Ctrl+P → «Сохранить как PDF». Готовая дека, которую презентуешь финалисту на отдельной встрече.</p>
+        <div class="mini">Правило: оффер на управленческую позицию <b>никогда не отправляется письмом</b>. У сильного кандидата на руках 3–4 оффера — это твоя финальная точка продажи компании.</div>
+      </div></div>
+      <div class="rstep"><div class="n">7</div><div>
+        <h4>Посчитай объём в калькуляторе</h4>
+        <p>Шаг «Калькулятор»: тип позиции + сколько человек нанимаем → сколько откликов нужно собрать и сколько кандидатов дойдёт до каждого этапа. Это твой план по объёму на месяц.</p>
+      </div></div>
+      <div class="rstep"><div class="n">8</div><div>
+        <h4>Заведи вакансию в отчётности и веди план-факт</h4>
+        <p>Шаг «Отчётность» → «+ Добавить вакансию». Дальше рекрутер <b>каждый день</b> нажимает «+ Сегодня» и идёт сверху вниз по воронке: просмотры → отклики → анкеты → 1-е собес → тестовое → 2-е собес → презентация → финал → найм.</p>
+        <div class="mini">Дни сами складываются в <b>недели</b> с выводом по каждой, а накопительная воронка сравнивается с бенчмарками и подсвечивает <b>узкое место</b>. Кликнул по вакансии на дашборде — сразу видишь, что по ней происходит.</div>
+      </div></div>
+      <div class="rstep"><div class="n">9</div><div>
+        <h4>Выгрузи всё в Excel</h4>
+        <p>«Мои воронки» → «⬇ Скачать всю воронку в Excel»: все этапы отдельными листами в брендированном виде. Отчётность выгружается своим файлом — дни, недели и воронка тремя листами.</p>
+        <div class="mini"><b>Готово:</b> у тебя воронка найма, по которой не стыдно позвать чемпиона, и цифры, по которым видно, где она течёт.</div>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ОТЧЁТНОСТЬ -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Как вести найм каждый день</span>
+    <h2>Отчётность рекрутинга: дашборд → день → неделя</h2>
+    <p class="lead" style="margin-top:8px">Еженедельный план-факт с командой найма ускоряет процесс, калибрует бриф и вопросы и просто дисциплинирует. Веди несколько вакансий параллельно и сверяй каждую с бенчмарками.</p>
+    <div class="shot"><div class="bar"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Отчётность · план-факт по всем вакансиям</span></div><img src="shots/report_board.png" alt="Дашборд вакансий"></div>
+    <div class="shot"><div class="bar"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Отчётность · ежедневный план-факт по вакансии</span></div><img src="shots/report.png" alt="Ежедневный план-факт"></div>
+  </div>
+</section>
+
+<!-- БЕНЧМАРКИ -->
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">С чем сверяться</span>
+    <h2>Бенчмарки агентства A-Players</h2>
+    <p class="lead" style="margin-top:8px">Реальные цифры по закрытым позициям, а не «средние по рынку». Просела конверсия на конкретном этапе — усиливай именно этот инструмент, а не «лей ещё откликов».</p>
+    <table class="bmtable">
+      <tr><th>Переход воронки</th><th>Средняя CR</th><th>Что значит, если у тебя хуже</th></tr>
+      <tr><td>Отклик → анкета</td><td>~33%</td><td>ниже 20% — анкета длинная/сложная или не тот трафик</td></tr>
+      <tr><td>Анкета → 1-е собес (HR)</td><td>~28%</td><td>ниже 15% — анкета плохо квалифицирует</td></tr>
+      <tr><td>1-е собес → тестовое</td><td>~50%</td><td>ниже 30% — тестовое пугает объёмом или непонятно</td></tr>
+      <tr><td>Тестовое → 2-е собес</td><td>~55%</td><td>ниже 35% — тестовое не отделяет сильных</td></tr>
+      <tr><td>2-е собес → презентация</td><td>~35%</td><td>выше 60% — слабо фильтруете на hard skills</td></tr>
+      <tr><td>Презентация → финал</td><td>~33%</td><td>здесь уже личная химия с фаундером</td></tr>
+      <tr><td>Финал → найм</td><td>~20%</td><td>1 нанятый из 3–9 финалистов</td></tr>
+    </table>
+    <div class="value" style="margin-top:18px"><b>Норма современного найма:</b> 1 нанятый из 1 100–2 100 откликов на линейной позиции и из 800–4 500 — на руководящей. Это не провал, это поиск золота в реке.</div>
+  </div>
+</section>
+
+<!-- КЛЮЧ -->
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Про ключ и приватность</span>
+    <h2>Твой ключ — только твой</h2>
+    <div class="sec-box">
+      <h3>🔒 Как устроена приватность</h3>
+      <div class="rule"><span class="i">1</span><div>Ключ Claude API вводишь в браузере. Он сохраняется <b>локально у тебя</b> и уходит только на <b>api.anthropic.com по твоему ключу</b>. Мы его не храним и не видим.</div></div>
+      <div class="rule"><span class="i">2</span><div>Все данные воронки — бриф, портрет, кандидаты, цифры отчётности — лежат <b>в твоём браузере</b> (localStorage). Никуда не заливаются.</div></div>
+      <div class="rule"><span class="i">3</span><div>В инструменте <b>нет ничьих чужих ключей</b> — каждый работает на своём. Оплата Claude по факту: сборка целой воронки стоит копейки.</div></div>
+      <div class="big">Правило: ключ никому не пересылай и не вставляй в общие документы. Он нужен только тебе и только в этом инструменте.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ЧТО СДАТЬ -->
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Что сдать</span>
+    <h2>Критерии готовности</h2>
+    <div class="crit">
+      <h3 class="em">Чек-лист</h3>
+      <ul>
+        <li>Выбрана ключевая позиция и зафиксированы ТОП-3 результата за квартал</li>
+        <li>Заполнен портрет должности (все блоки брифа, включая челленджи и компании-доноры)</li>
+        <li>Собран портрет навыков, отмечены ТОП-5 навыков с целевыми грейдами</li>
+        <li>Готова вакансия для HH: вилка, крючок в первом абзаце, цифры, CTA с фильтром</li>
+        <li>Собрана анкета-фильтр с вопросом «красный флаг» и вопросы HR</li>
+        <li>Тестовое привязано к ТОП-3 и имеет рубрику оценки</li>
+        <li>Готовы дип-дайв и блиц-опрос с эталонами ответов</li>
+        <li>Есть вопросы reference check и бизнес-кейсы Culture Fit</li>
+        <li>Собрана оффер-презентация и сохранена в PDF</li>
+        <li>Вся воронка выгружена одним Excel</li>
+        <li>Заведена вакансия в «Отчётности» и внесён хотя бы один день план-факта</li>
+      </ul>
+      <div class="value" style="margin-top:16px"><b>Главная задача:</b> прийти с воронкой, по которой не стыдно позвать чемпиона, и с цифрой — сколько откликов нужно собрать под твою цель по найму.</div>
+    </div>
+    <div class="dl-row">
+      <a class="btn e" href="konstruktor.html" target="_blank" rel="noopener">🧭 Конструктор воронки найма</a>
+      <a class="btn g" href="prezentaciya.html" target="_blank" rel="noopener">🖥 Презентация модуля</a>
+      <a class="btn p" href="prezentaciya.pdf" download="Воронка найма под A-Players — презентация.pdf">⬇ Презентация (PDF)</a>
+    </div>
+    <div class="note-fallback">🔑 Для работы нужен свой ключ Claude API (<a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a>) — оплата по факту, ключ хранится только у тебя. Дедлайн — до следующей встречи.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span style="display:flex;align-items:center;gap:10px"><img src="assets/logo-aplayers.png" alt="A-Players"> ПРАКТИКУМ A-PLAYERS</span>
+    <span>Модуль · Воронка найма под A-Players</span>
+  </div>
+</footer>
+
+</body>
+</html>
