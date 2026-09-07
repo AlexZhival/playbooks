@@ -1220,24 +1220,34 @@ function setFunnels(a){localStorage.setItem("apx_hire_funnels",JSON.stringify(a)
 function saveFunnel(){
   if(!S.role){alert("Заполни хотя бы роль на «Старте».");return;}
   const arr=getFunnels();const id=S._fid||("f"+Date.now());S._fid=id;
-  const snap={id,company:S.company,niche:S.niche,role:S.role,top3:S.top3,brief:S.brief,portrait:S.portrait,results:S.results,motiv:S.motiv,driveLink:(arr.find(f=>f.id===id)||{}).driveLink||"",updated:new Date().toISOString().slice(0,16).replace("T"," ")};
+  const snap={id,company:S.company,niche:S.niche,role:S.role,top3:S.top3,brief:S.brief,portrait:S.portrait,results:S.results,motiv:S.motiv,scorecard:S.scorecard||{list:[]},driveLink:(arr.find(f=>f.id===id)||{}).driveLink||"",updated:new Date().toISOString().slice(0,16).replace("T"," ")};
   const i=arr.findIndex(f=>f.id===id);if(i>=0)arr[i]=snap;else arr.unshift(snap);
   setFunnels(arr);save();renderAdmin();
 }
-function loadFunnel(id){const f=getFunnels().find(x=>x.id===id);if(!f)return;S=Object.assign(S,{company:f.company,niche:f.niche,role:f.role,top3:f.top3||["","",""],brief:f.brief||{},portrait:f.portrait||null,results:f.results||{},motiv:f.motiv,_fid:f.id});save();renderNav();go(0);}
+function loadFunnel(id){const f=getFunnels().find(x=>x.id===id);if(!f)return;S=Object.assign(S,{company:f.company,niche:f.niche,role:f.role,top3:f.top3||["","",""],brief:f.brief||{},portrait:f.portrait||null,results:f.results||{},motiv:f.motiv,scorecard:f.scorecard||{list:[]},_fid:f.id});save();renderNav();go(0);}
+function newFunnel(){
+  if(S.role){
+    const saved=getFunnels().some(f=>f.id===S._fid);
+    const q=saved?("Сохранить изменения в воронке «"+S.role+"» перед созданием новой?\n\nОК — сохранить и начать новую.\nОтмена — начать новую без сохранения (несохранённые правки пропадут).")
+                 :("Текущая воронка «"+S.role+"» ещё не сохранена в списке.\n\nОК — сохранить её и начать новую.\nОтмена — начать новую, текущая будет потеряна.");
+    if(confirm(q))saveFunnel();
+  }
+  S.company="";S.niche="";S.role="";S.top3=["","",""];S.brief={};S.portrait=null;S.results={};S.motiv=null;S.scorecard={list:[]};S._fid=null;
+  save();renderNav();go(0);
+}
 function deleteFunnel(id){if(!confirm("Удалить эту воронку из списка?"))return;setFunnels(getFunnels().filter(f=>f.id!==id));renderAdmin();}
 function setDrive(id,v){const arr=getFunnels();const f=arr.find(x=>x.id===id);if(f){f.driveLink=v;setFunnels(arr);}}
-window.saveFunnel=saveFunnel;window.loadFunnel=loadFunnel;window.deleteFunnel=deleteFunnel;window.setDrive=setDrive;
+window.saveFunnel=saveFunnel;window.newFunnel=newFunnel;window.loadFunnel=loadFunnel;window.deleteFunnel=deleteFunnel;window.setDrive=setDrive;
 function renderAdmin(){
   const arr=getFunnels();
   const rows=arr.length?arr.map(f=>{
     const nsteps=Object.keys(f.results||{}).length+(f.portrait?1:0)+(Object.keys(f.brief||{}).length?1:0);
-    return '<tr><td><b>'+esc(f.role||"—")+'</b><div class="kmini">'+esc(f.company||"")+' · '+esc(f.niche||"")+'</div></td><td>'+esc(f.updated||"")+'</td><td>'+nsteps+' шагов</td>'+
+    return '<tr'+(f.id===S._fid?' style="background:#EFF4EC"':'')+'><td><b>'+esc(f.role||"—")+'</b>'+(f.id===S._fid?' <span class="pill gold">открыта</span>':'')+'<div class="kmini">'+esc(f.company||"")+' · '+esc(f.niche||"")+'</div></td><td>'+esc(f.updated||"")+'</td><td>'+nsteps+' шагов</td>'+
     '<td><input type="text" value="'+esc(f.driveLink||"")+'" placeholder="вставь ссылку на файл в Google Drive" oninput="setDrive(\''+f.id+'\',this.value)" style="min-width:220px">'+(f.driveLink?' <a href="'+esc(f.driveLink)+'" target="_blank">↗</a>':'')+'</td>'+
     '<td class="row" style="gap:6px"><button class="btn ghost sm" onclick="loadFunnel(\''+f.id+'\')">Открыть</button><button class="btn ghost sm" onclick="deleteFunnel(\''+f.id+'\')">✕</button></td></tr>';
   }).join(""):'<tr><td colspan="5" style="color:var(--muted)">Пока нет сохранённых воронок. Заполни воронку и нажми «💾 Сохранить текущую воронку».</td></tr>';
   $("#main").innerHTML=head("Мои воронки найма","Админ-панель","Все собранные воронки найма (хранятся в этом браузере). Сохрани текущую, выгрузи её одним файлом в Excel, залей на Google Drive и вставь ссылку — чтобы лидер вакансии пошерил команде рекрутинга.")+
-  '<div class="card"><div class="row"><button class="btn primary" onclick="saveFunnel()">💾 Сохранить текущую воронку</button><button class="btn dark" onclick="assembleWorkbook()">⬇ Скачать всю воронку в Excel</button></div>'+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="saveFunnel()">💾 Сохранить текущую воронку</button><button class="btn dark" onclick="assembleWorkbook()">⬇ Скачать всю воронку в Excel</button><button class="btn ghost" onclick="newFunnel()">➕ Новая воронка</button></div><div class="note b">Сейчас открыта: <b>'+esc(S.role||"— ещё не начата —")+'</b>'+(S._fid?"":" · <span style='color:#B0822E'>не сохранена в списке</span>")+'. «➕ Новая воронка» очищает рабочие поля и начинает следующую роль с нуля — сохранённые воронки в таблице ниже остаются на месте.</div>'+
   '<div class="note">Google Drive: выгрузи собранный Excel вручную на Drive → скопируй ссылку «Доступ по ссылке» → вставь в таблице ниже. (Авто-логин и авто-загрузку добавим при деплое на домен.)</div>'+
   '<div style="overflow-x:auto"><table class="gt" style="margin-top:12px"><thead><tr><th>Роль / компания</th><th>Обновлено</th><th>Прогресс</th><th>Ссылка на собранную воронку (Google Drive)</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+navBtns();
 }
