@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<script src="gate.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Конструктор онбординга — A-Players</title>
@@ -36,6 +35,8 @@
   .snav .si{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:13px;font-weight:800;flex:none;font-family:var(--serif)}
   .snav.on .si{background:var(--gold);color:#19120A}
   .snav.done .si{background:var(--green);color:#fff}
+  .snav.part .si{background:rgba(199,154,69,.35);color:#F4F1EA;box-shadow:inset 0 0 0 1px var(--gold)}
+  .snav.part .sd{color:var(--gold)}
   .snav .st{font-size:13.5px;font-weight:600;line-height:1.25}
   .snav .sd{font-size:11px;color:#9fb0a4;margin-top:1px}
   .keybox{margin-top:18px;background:rgba(0,0,0,.16);border-radius:10px;padding:12px}
@@ -317,7 +318,20 @@ const API_URL="https://api.anthropic.com/v1/messages";
 let STEP=0;
 let S={ company:"", niche:"", role:"Менеджер отдела продаж", target:"", format:"", brief:{}, results:{} };
 try{const j=JSON.parse(localStorage.getItem(LS.state));if(j)S=Object.assign(S,j);}catch(_){}
-function save(){try{localStorage.setItem(LS.state,JSON.stringify(S));}catch(_){}}
+let SAVE_FAIL=false;
+function save(){
+  try{localStorage.setItem(LS.state,JSON.stringify(S));if(SAVE_FAIL){SAVE_FAIL=false;saveBanner(false);}return true;}
+  catch(e){SAVE_FAIL=true;saveBanner(true);return false;}
+}
+function saveBanner(on){
+  let b=document.getElementById("saveWarn");
+  if(!on){if(b)b.remove();document.title=document.title.replace(/^⚠ /,"");return;}
+  if(!b){b=document.createElement("div");b.id="saveWarn";
+    b.style.cssText="position:fixed;left:0;right:0;top:0;z-index:9999;background:#B23B2E;color:#fff;padding:10px 16px;font:600 14px/1.4 Manrope,system-ui,sans-serif;text-align:center";
+    b.innerHTML="⚠ Память браузера переполнена — работа больше НЕ сохраняется. Немедленно нажми «Скачать весь онбординг в Excel» на шаге «Мои онбординги», затем удали лишние сохранённые онбординги.";
+    document.body.appendChild(b);}
+  if(!/^⚠ /.test(document.title))document.title="⚠ "+document.title;
+}
 const $=s=>document.querySelector(s);
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
@@ -547,7 +561,7 @@ const OBENCH={
 };
 
 /* ================= ГЕНЕРАТОРЫ ================= */
-const COMMON_SCHEMA='Верни СТРОГО один валидный JSON и больше ничего: {"title":"","blocks":[{"h":"заголовок блока","kind":"list|table|text","items":["пункт"],"columns":["колонка"],"rows":[["ячейка"]],"text":"абзац"}]}. Для kind=list заполни items; для kind=table — columns и rows; для kind=text — text. Всё на русском, предметно, без воды. Максимум 9 блоков, в таблице максимум 12 строк.';
+const COMMON_SCHEMA='Верни СТРОГО один валидный JSON и больше ничего: {"title":"","blocks":[{"h":"заголовок блока","kind":"list|table|text","items":["пункт"],"columns":["колонка"],"rows":[["ячейка"]],"text":"абзац"}]}. Для kind=list заполни items; для kind=table — columns и rows; для kind=text — text. Всё на русском, предметно, без воды. Максимум 9 блоков; в таблице до 20 строк, если этого требует задание (например, тест на 14 вопросов). В поле text не используй markdown: подзаголовок — отдельной строкой ЗАГЛАВНЫМИ, перечисление — тире в начале строки. Звёздочки и решётки не ставь — они будут видны пользователю как есть.';
 const METHOD='Ты — методист по корпоративному обучению с опытом 10+ лет. Пишешь учебный контент для платформы онбординга. Правила: (1) пиши только то, что подтверждено брифом компании — ничего не выдумывай; (2) там, где данных не хватает, ставь пометку [НУЖНО УТОЧНИТЬ: что именно и у кого]; (3) язык клиента, а не маркетинга; (4) каждый урок заканчивается тем, что сотрудник УМЕЕТ, а не «ознакомился».';
 
 function layerGen(L){
@@ -670,45 +684,93 @@ async function callClaude({system,messages,max_tokens,effort,web}){
   const body={model,max_tokens:max_tokens||8000,system:[{type:"text",text:system,cache_control:{type:"ephemeral"}}],messages};
   if(effort&&(model==="claude-opus-5"||model==="claude-sonnet-5"))body.output_config={effort};
   if(web)body.tools=[{type:"web_search_20250305",name:"web_search",max_uses:8}];
-  const res=await fetch(API_URL,{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});
+  let res=null;
+  for(let attempt=0;attempt<4;attempt++){
+    try{
+      res=await fetch(API_URL,{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});
+    }catch(netErr){ if(attempt===3)throw netErr; await new Promise(r=>setTimeout(r,1200*Math.pow(2,attempt))); continue; }
+    if(res.status===429||res.status>=500){
+      if(attempt===3)break;
+      const ra=parseInt(res.headers.get("retry-after")||"",10);
+      await new Promise(r=>setTimeout(r,isFinite(ra)?ra*1000:1200*Math.pow(2,attempt)));
+      continue;
+    }
+    break;
+  }
   const data=await res.json().catch(()=>({}));
   if(!res.ok||data.type==="error")throw new Error((data.error&&data.error.message)||("HTTP "+res.status));
-  return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+  const txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+  if(data.stop_reason==="max_tokens"){const e=new Error("truncated");e.truncated=true;e.partial=txt;throw e;}
+  return txt;
 }
-function errText(e){if(e.message==="no-key")return "Вставь ключ Claude API слева.";if(/Failed to fetch|NetworkError/i.test(e.message))return "Нет связи с api.anthropic.com (открой в Chrome).";return e.message||"Ошибка.";}
+function errText(e){if(e&&e.truncated)return "Модель не уложилась в лимит и оборвала ответ на середине. Собери этот раздел ещё раз — или разбей задачу: сначала собери слой, потом отдельно попроси правкой добавить недостающее.";
+  if(e.message==="no-key")return "Вставь ключ Claude API слева.";if(/Failed to fetch|NetworkError/i.test(e.message))return "Нет связи с api.anthropic.com (открой в Chrome).";return e.message||"Ошибка.";}
 /* устойчивый парсер с починкой обрыва */
 function balanceClose(s){let inStr=false,esc=false;const st=[];for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(esc)esc=false;else if(ch==="\\")esc=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch==='{'||ch==='[')st.push(ch==='{'?'}':']');else if(ch==='}'||ch===']')st.pop();}let o=s;if(inStr)o+='"';o=o.replace(/[,\s]+$/,"");for(let i=st.length-1;i>=0;i--)o+=st[i];return o.replace(/,\s*([}\]])/g,"$1");}
 function lastTopComma(s){let inStr=false,esc=false,last=-1;for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(esc)esc=false;else if(ch==="\\")esc=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch===',')last=i;}return last;}
-function parseJSON(s){let t=String(s||"").replace(/^﻿/,"").trim().replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,"").trim();const a=t.indexOf("{");if(a>0)t=t.slice(a);const b=t.lastIndexOf("}");if(b>0){try{return JSON.parse(t.slice(0,b+1).replace(/,\s*([}\]])/g,"$1"));}catch(_){}}let w=t;for(let k=0;k<500;k++){try{return JSON.parse(balanceClose(w));}catch(_){}const c=lastTopComma(w);if(c<0)break;w=w.slice(0,c);}throw new SyntaxError("не-JSON");}
+function parseJSON(s){
+  let t=String(s||"").replace(/^﻿/,"").trim().replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,"").trim();
+  const a=t.indexOf("{");if(a>0)t=t.slice(a);
+  const b=t.lastIndexOf("}");if(b>0){try{return JSON.parse(t.slice(0,b+1).replace(/,\s*([}\]])/g,"$1"));}catch(_){}}
+  /* обрыв по токенам: отрезаем хвост до последней целой запятой и достраиваем скобки */
+  let w=t;for(let k=0;k<500;k++){try{return JSON.parse(balanceClose(w));}catch(_){}const c=lastTopComma(w);if(c<0)break;w=w.slice(0,c);}
+  /* запасной путь: модель написала фигурную скобку в преамбуле — пробуем следующие позиции */
+  for(let p=t.indexOf("{",1);p>0&&p<600;p=t.indexOf("{",p+1)){
+    const cand=t.slice(p);const b0=cand.lastIndexOf("}");
+    if(b0>0){try{return JSON.parse(cand.slice(0,b0+1).replace(/,\s*([}\]])/g,"$1"));}catch(_){}}
+  }
+  throw new SyntaxError("не-JSON");}
 
 /* ===== Диктофон (по кнопке, как диктофон — не Meet) ===== */
 let DREC=null;
 function openDictaphone(title,sub,onDone){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   const ov=document.createElement('div');ov.className='dov';
-  ov.innerHTML='<div class="doc"><h3>'+esc(title||'Диктофон')+'</h3><div class="sub">'+esc(sub||'Нажми микрофон и говори. Повторное нажатие — пауза. Потом «Вставить текст».')+'</div>'+
+  ov.innerHTML='<div class="doc"><h3>'+esc(title||'Диктофон')+'</h3><div class="sub">'+esc(sub||'Нажми микрофон и говори — можно с паузами, запись не прервётся. Повторное нажатие — пауза. Потом «Вставить текст».')+'</div>'+
     '<button class="mic" id="dmic">🎙</button>'+
-    '<div class="dtrans" id="dtrans"><span style="color:#8a8b7e">Здесь появится расшифровка…</span></div>'+
+    '<div class="dtrans" id="dtrans"><span style="color:#8a8b7e">Здесь появится расшифровка…</span></div><div id="derr"></div>'+
     '<div class="dwrap"><button class="btn ghost" id="dcancel">Отмена</button><button class="btn primary" id="dok">Вставить текст</button></div>'+
     (SR?'':'<div class="note" style="margin-top:10px">Живая расшифровка работает в Chrome. В другом браузере — надиктуй системным способом и вставь руками.</div>')+'</div>';
   document.body.appendChild(ov);
-  let text='',listening=false;
-  const trans=ov.querySelector('#dtrans'),mic=ov.querySelector('#dmic');
+  let text='',interimBuf='',listening=false,want=false;
+  const trans=ov.querySelector('#dtrans'),mic=ov.querySelector('#dmic'),errb=ov.querySelector('#derr');
   function paint(interim){trans.innerHTML=(text?esc(text):'')+(interim?'<span class="interim"> '+esc(interim)+'</span>':'')||'<span style="color:#8a8b7e">Здесь появится расшифровка…</span>';trans.scrollTop=trans.scrollHeight;}
-  function stop(){if(DREC){try{DREC.stop();}catch(_){}}listening=false;mic&&mic.classList.remove('rec');}
-  function close(){stop();DREC=null;ov.remove();}
+  function say(m){if(errb)errb.innerHTML=m?('<div class="errbox" style="margin:8px 0 0">'+esc(m)+'</div>'):'';}
+  function stop(){want=false;if(DREC){try{DREC.stop();}catch(_){}}listening=false;mic&&mic.classList.remove('rec');}
+  function close(){stop();DREC=null;document.removeEventListener('keydown',onKey);ov.remove();}
+  function full(){return (text+' '+interimBuf).replace(/\s+/g,' ').trim();}
+  function askClose(){if(full()&&!confirm('Закрыть диктофон? Надиктованное не будет вставлено.'))return;close();}
+  function onKey(e){if(e.key==='Escape'){e.preventDefault();askClose();}}
+  document.addEventListener('keydown',onKey);
+  const ERRTXT={'not-allowed':'Доступ к микрофону запрещён. Разреши его в адресной строке Chrome и нажми микрофон ещё раз.',
+    'service-not-allowed':'Браузер не даёт доступ к распознаванию. Открой страницу в Chrome по https или с локального сервера.',
+    'no-speech':'Не слышу голос. Говори ближе к микрофону — запись продолжается.',
+    'audio-capture':'Микрофон не найден. Проверь, что он подключён и выбран в настройках системы.',
+    'network':'Распознавание требует интернета — проверь соединение.',
+    'aborted':''};
   mic.onclick=()=>{
-    if(!SR){alert('Живая расшифровка доступна в Chrome.');return;}
-    if(listening){stop();return;}
+    if(!SR){alert('Живая расшифровка доступна в Chrome. В другом браузере надиктуй системным способом и вставь текст руками.');return;}
+    if(listening){stop();say('Пауза. Нажми микрофон, чтобы продолжить.');return;}
+    say('');
     DREC=new SR();DREC.lang='ru-RU';DREC.continuous=true;DREC.interimResults=true;
-    DREC.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)text+=(text?' ':'')+r[0].transcript.trim();else interim+=r[0].transcript;}paint(interim);};
-    DREC.onerror=ev=>{trans.innerHTML+='<div class="interim">⚠ '+esc(ev.error||'')+' (разреши доступ к микрофону)</div>';};
-    DREC.onend=()=>{listening=false;mic.classList.remove('rec');};
-    try{DREC.start();listening=true;mic.classList.add('rec');}catch(_){}
+    DREC.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)text+=(text?' ':'')+r[0].transcript.trim();else interim+=r[0].transcript;}interimBuf=interim;paint(interim);
+      try{sessionStorage.setItem('apx_dict_last',full());}catch(_){}};
+    DREC.onerror=ev=>{const m=ERRTXT[ev.error];if(m)say(m);else if(ev.error)say('Ошибка распознавания: '+ev.error);};
+    /* браузер обрывает распознавание на паузе — перезапускаем, пока пользователь не нажал стоп */
+    DREC.onend=()=>{
+      if(want){try{DREC.start();return;}catch(_){setTimeout(()=>{if(want){try{DREC.start();}catch(_){}}},300);return;}}
+      listening=false;mic.classList.remove('rec');
+    };
+    try{DREC.start();listening=true;want=true;mic.classList.add('rec');say('');}catch(_){say('Не удалось включить микрофон. Проверь доступ и попробуй ещё раз.');}
   };
-  ov.querySelector('#dcancel').onclick=close;
-  ov.querySelector('#dok').onclick=()=>{const t=text.trim();close();if(t&&onDone)onDone(t);};
-  ov.onclick=e=>{if(e.target===ov)close();};
+  ov.querySelector('#dcancel').onclick=askClose;
+  ov.querySelector('#dok').onclick=()=>{
+    const t=full();          /* забираем и незавершённую фразу тоже */
+    close();
+    try{sessionStorage.removeItem('apx_dict_last');}catch(_){}
+    if(t&&onDone)onDone(t);
+  };
+  ov.onclick=e=>{if(e.target===ov)askClose();};
 }
 window.openDictaphone=openDictaphone;
 
@@ -744,14 +806,34 @@ async function fget(id){const db=await fdb();return new Promise((res)=>{const t=
 async function fdel(id){const db=await fdb();return new Promise((res)=>{const t=db.transaction(FDB.store,"readwrite");t.objectStore(FDB.store).delete(id);t.oncomplete=()=>res();});}
 
 function filesState(){S.files=S.files||[];return S.files;}
+/* что реально уйдёт в промпт этого слоя — одна точка правды для контекста и для счётчиков */
+function filesForLayer(lid){return filesState().filter(f=>!lid||(f.layers||[]).includes(lid)||(!f.mapped&&!(f.layers||[]).length));}
 function fmtKB(n){return n>1048576?(n/1048576).toFixed(1)+" МБ":Math.round(n/1024)+" КБ";}
 
 /* ---- парсеры ---- */
+/* Windows-1251 и UTF-16 встречаются в выгрузках из 1С и Excel чаще, чем хотелось бы */
+function decodeText(buf){
+  const b=new Uint8Array(buf);
+  if(b.length>1&&b[0]===0xFF&&b[1]===0xFE)return new TextDecoder("utf-16le").decode(buf);
+  if(b.length>1&&b[0]===0xFE&&b[1]===0xFF)return new TextDecoder("utf-16be").decode(buf);
+  let t="";
+  try{t=new TextDecoder("utf-8",{fatal:true}).decode(buf);}
+  catch(_){try{return new TextDecoder("windows-1251").decode(buf);}catch(__){return new TextDecoder("utf-8").decode(buf);}}
+  const bad=(t.match(/\uFFFD/g)||[]).length;
+  if(bad>0&&bad/Math.max(1,t.length)>0.005){try{return new TextDecoder("windows-1251").decode(buf);}catch(_){}}
+  return t;
+}
+function unents(t){
+  return String(t||"")
+    .replace(/&#(\d+);/g,(_,d)=>{try{return String.fromCodePoint(+d);}catch(e){return _;}})
+    .replace(/&#x([0-9a-f]+);/gi,(_,h)=>{try{return String.fromCodePoint(parseInt(h,16));}catch(e){return _;}})
+    .replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&nbsp;/g," ").replace(/&amp;/g,"&");
+}
 async function parseFile(file){
   const ext=(file.name.split(".").pop()||"").toLowerCase();
   if(["txt","md","csv","json","html","htm"].includes(ext)){
-    let t=await file.text();
-    if(ext==="html"||ext==="htm")t=t.replace(/<script[\s\S]*?<\/script>/gi,"").replace(/<style[\s\S]*?<\/style>/gi,"").replace(/<[^>]+>/g," ");
+    let t=decodeText(await file.arrayBuffer());
+    if(ext==="html"||ext==="htm")t=unents(t.replace(/<script[\s\S]*?<\/script>/gi,"").replace(/<style[\s\S]*?<\/style>/gi,"").replace(/<[^>]+>/g," "));
     return t;
   }
   if(ext==="xlsx"||ext==="xls"){
@@ -764,7 +846,7 @@ async function parseFile(file){
     const zip=await JSZip.loadAsync(await file.arrayBuffer());
     const f=zip.file("word/document.xml");if(!f)throw new Error("не похоже на .docx");
     const xml=await f.async("string");
-    return xml.replace(/<w:p[ >]/g,"\n<w:p ").replace(/<w:tab\/>/g,"\t").replace(/<[^>]+>/g,"").replace(/\n{3,}/g,"\n\n").trim();
+    return unents(xml.replace(/<w:p[ >]/g,"\n<w:p ").replace(/<w:tab\/>/g,"\t").replace(/<[^>]+>/g,"")).replace(/\n{3,}/g,"\n\n").trim();
   }
   if(ext==="pptx"){
     if(!window.JSZip)throw new Error("библиотека для .pptx не загрузилась");
@@ -772,7 +854,7 @@ async function parseFile(file){
     const names=Object.keys(zip.files).filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a,b)=>(+a.match(/\d+/))-(+b.match(/\d+/)));
     const out=[];
     for(const n of names){const xml=await zip.file(n).async("string");
-      out.push("### СЛАЙД "+(n.match(/\d+/)[0])+"\n"+xml.replace(/<a:p[ >]/g,"\n<a:p ").replace(/<[^>]+>/g,"").replace(/\n{3,}/g,"\n").trim());}
+      out.push("### СЛАЙД "+(n.match(/\d+/)[0])+"\n"+unents(xml.replace(/<a:p[ >]/g,"\n<a:p ").replace(/<[^>]+>/g,"")).replace(/\n{3,}/g,"\n").trim());}
     return out.join("\n\n");
   }
   if(ext==="pdf"){
@@ -803,9 +885,10 @@ async function onFiles(input,layerId){
     }catch(e){err.push(f.name+" — "+(e.message||e));}
   }
   save();
-  if(box)box.innerHTML=(ok?'<div class="note b">✓ Загружено файлов: '+ok+'. Нажми «Разобрать материалы» — система определит, к каким слоям они относятся.</div>':'')+
-    (err.length?'<div class="errbox">Не удалось: '+err.map(esc).join("; ")+'</div>':'');
   render();
+  const box2=$("#filesStatus");
+  if(box2)box2.innerHTML=(ok?'<div class="note b">✓ Загружено файлов: '+ok+'. Нажми «🧠 Разобрать и разнести по всем слоям» — система определит, к каким слоям они относятся, и заполнит брифы.</div>':'')+
+    (err.length?'<div class="errbox"><b>Не удалось прочитать:</b> '+err.map(esc).join("; ")+'<div class="kmini" style="margin:6px 0 0">Если это PDF-скан без текстового слоя — распознай его (например, через Google Docs) и загрузи заново.</div></div>':'');
 }
 window.onFiles=onFiles;
 async function delFile(id){const F=filesState();const i=F.findIndex(f=>f.id===id);if(i<0)return;if(!confirm("Удалить материал «"+F[i].name+"»?"))return;await fdel(id);F.splice(i,1);save();render();}
@@ -816,14 +899,15 @@ window.delFile=delFile;window.toggleFileLayer=toggleFileLayer;
 /* ---- сборка контекста материалов для промпта ---- */
 const CTX_LIMIT=140000;
 async function filesContext(layerId,limit){
-  const F=filesState().filter(f=>!layerId||(f.layers||[]).includes(layerId)||(f.layers||[]).length===0);
+  const F=filesForLayer(layerId);
   if(!F.length)return "";
   const cap=limit||CTX_LIMIT;const per=Math.max(4000,Math.floor(cap/Math.max(1,F.length)));
   const parts=[];
-  for(const f of F){
+  for(let i=0;i<F.length;i++){
+    const f=F[i];
     let t=await fget(f.id);
     if(t.length>per)t=t.slice(0,per)+"\n…[файл обрезан, всего "+f.chars+" символов]";
-    parts.push("=== ФАЙЛ: "+f.name+" ===\n"+t);
+    parts.push("=== ФАЙЛ #"+(i+1)+": "+f.name+" ===\n"+t);
   }
   return "МАТЕРИАЛЫ КОМПАНИИ (используй как источник фактов, ничего не додумывай):\n\n"+parts.join("\n\n");
 }
@@ -832,18 +916,25 @@ async function filesContext(layerId,limit){
 async function mapFiles(){
   const F=filesState();if(!F.length){alert("Сначала загрузи материалы");return;}
   if(!($("#apikey").value||"").trim()){alert("Вставь ключ Claude слева — разбор делает модель");return;}
-  const box=$("#filesStatus");box.innerHTML='<div class="statusbox"><span class="spin"></span>Изучаю материалы и раскладываю по слоям…</div>';
+  const box=$("#filesStatus");if(box)box.innerHTML='<div class="statusbox"><span class="spin"></span>Изучаю материалы и раскладываю по слоям…</div>';
   const ctx=await filesContext(null,120000);
   const sys=["Ты — методист онбординга. Тебе дали материалы компании. Определи, к каким слоям базы знаний относится каждый файл и что полезного из него можно взять.",
    "Слои: "+LAYERS.map(l=>l.id+" = Слой "+l.n+" "+l.title+" ("+l.sub+")").join(" · ")+" · company = общая информация о компании.",
-   'Верни СТРОГО JSON: {"files":[{"name":"точное имя файла","layers":["l2","l4"],"what":"что именно ценного внутри, 1-2 фразы","quality":"богатый|средний|слабый"}],"summary":"чего в материалах критично не хватает для сборки онбординга, 2-3 фразы"}',
+   'Верни СТРОГО JSON: {"files":[{"i":1,"name":"имя файла","layers":["l2","l4"],"what":"что именно ценного внутри, 1-2 фразы","quality":"богатый|средний|слабый"}],"summary":"чего в материалах критично не хватает для сборки онбординга, 2-3 фразы"}. Поле i — номер файла из заголовка «=== ФАЙЛ #N», он обязателен.',
    "Один файл может относиться к нескольким слоям. Если файл бесполезен — layers пустой массив и quality «слабый»."].join("\n");
   try{
     const r=parseJSON(await callClaude({system:sys,messages:[{role:"user",content:ctx+"\n\nРазложи файлы по слоям."}],max_tokens:12000,effort:"low"}));
-    (r.files||[]).forEach(x=>{const f=F.find(y=>y.name===x.name);if(f){f.layers=(x.layers||[]).filter(Boolean);f.note=x.what||"";f.quality=x.quality||"";}});
+    (r.files||[]).forEach(x=>{
+    let f=null;
+    const idx=parseInt(x.i,10);
+    if(isFinite(idx)&&idx>=1&&idx<=F.length)f=F[idx-1];
+    if(!f&&x.name){const norm=v=>String(v||"").toLowerCase().replace(/\s+/g," ").trim();
+      f=F.find(y=>norm(y.name)===norm(x.name))||F.find(y=>norm(y.name).indexOf(norm(x.name))>=0)||F.find(y=>norm(x.name).indexOf(norm(y.name))>=0);}
+    if(f){f.layers=(x.layers||[]).filter(Boolean);f.note=x.what||"";f.quality=x.quality||"";}
+  });F.forEach(z=>{z.mapped=1;});
     save();render();
     const s=$("#filesStatus");if(s)s.innerHTML='<div class="note b">✓ Материалы разложены по слоям. '+(r.summary?esc(r.summary):"")+'</div>';
-  }catch(e){box.innerHTML='<div class="errbox">Не удалось разобрать: '+esc(errText(e))+'</div>';}
+  }catch(e){const b2=$("#filesStatus");if(b2)b2.innerHTML='<div class="errbox">Не удалось разобрать: '+esc(errText(e))+'</div>';}
 }
 window.mapFiles=mapFiles;
 
@@ -909,6 +1000,8 @@ async function runResearch(lid){
     const raw=await callClaude({system:sys,messages:[{role:"user",content:user}],max_tokens:20000,effort:"medium",web:true});
     S.results[lid+"_research"]=parseJSON(raw);save();render();
   }catch(e){
+    const noWeb=/tool|web_search|not supported|unsupported|invalid_request/i.test(String(e&&e.message||""));
+    if(!noWeb){const s0=$("#rsStatus");if(s0)s0.innerHTML='<div class="errbox">Не удалось: '+esc(errText(e))+' <button class="btn ghost sm" onclick="runResearch(\''+lid+'\')">↻ Повторить</button></div>';return;}
     try{const raw=await callClaude({system:sys,messages:[{role:"user",content:user}],max_tokens:18000,effort:"low"});
       S.results[lid+"_research"]=parseJSON(raw);save();render();
       const s=$("#rsStatus");if(s)s.innerHTML='<div class="note">Веб-поиск недоступен на твоём ключе — ресерч собран по знаниям модели. Проверь цифры и названия перед использованием.</div>';
@@ -928,7 +1021,7 @@ async function distributeAll(){
   let filled=0,skipped=[];
   for(let i=0;i<LAYERS.length;i++){
     const L=LAYERS[i];
-    const has=filesState().filter(f=>(f.layers||[]).includes(L.id)).length;
+    const has=filesForLayer(L.id).length;
     step("Шаг "+(i+2)+" из 8 · Слой "+L.n+" «"+L.title+"»: "+(has?"вытаскиваю факты из "+has+" материал"+(has>4?"ов":has>1?"ов":"а"):"материалов нет, пропускаю")+"…");
     if(!has){skipped.push("Слой "+L.n+" "+L.title);continue;}
     try{await fillLayerBriefSilent(L.id);filled++;}catch(e){skipped.push("Слой "+L.n+" — ошибка");}
@@ -945,10 +1038,17 @@ async function mapFilesSilent(){
   const ctx=await filesContext(null,120000);
   const sys=["Ты — методист онбординга. Тебе дали материалы компании. Определи, к каким слоям базы знаний относится каждый файл и что полезного из него можно взять.",
    "Слои: "+LAYERS.map(l=>l.id+" = Слой "+l.n+" "+l.title+" ("+l.sub+")").join(" · ")+" · company = общая информация о компании.",
-   'Верни СТРОГО JSON: {"files":[{"name":"точное имя файла","layers":["l2","l4"],"what":"что внутри ценного, 1-2 фразы","quality":"богатый|средний|слабый"}],"summary":"чего критично не хватает"}',
+   'Верни СТРОГО JSON: {"files":[{"i":1,"name":"имя файла","layers":["l2","l4"],"what":"что внутри ценного, 1-2 фразы","quality":"богатый|средний|слабый"}],"summary":"чего критично не хватает"}. Поле i — номер файла из заголовка «=== ФАЙЛ #N», он обязателен.',
    "Один файл может относиться к нескольким слоям."].join("\n");
   const r=parseJSON(await callClaude({system:sys,messages:[{role:"user",content:ctx+"\n\nРазложи файлы по слоям."}],max_tokens:12000,effort:"low"}));
-  (r.files||[]).forEach(x=>{const f=F.find(y=>y.name===x.name);if(f){f.layers=(x.layers||[]).filter(Boolean);f.note=x.what||"";f.quality=x.quality||"";}});
+  (r.files||[]).forEach(x=>{
+    let f=null;
+    const idx=parseInt(x.i,10);
+    if(isFinite(idx)&&idx>=1&&idx<=F.length)f=F[idx-1];
+    if(!f&&x.name){const norm=v=>String(v||"").toLowerCase().replace(/\s+/g," ").trim();
+      f=F.find(y=>norm(y.name)===norm(x.name))||F.find(y=>norm(y.name).indexOf(norm(x.name))>=0)||F.find(y=>norm(x.name).indexOf(norm(y.name))>=0);}
+    if(f){f.layers=(x.layers||[]).filter(Boolean);f.note=x.what||"";f.quality=x.quality||"";}
+  });F.forEach(z=>{z.mapped=1;});
   save();
 }
 async function fillLayerBriefSilent(lid){
@@ -997,18 +1097,29 @@ function renderNav(){
   let out="",cur="";
   STEPS.forEach((st,i)=>{
     if(st.sec!==cur){cur=st.sec;out+='<div class="secl">'+esc(cur)+'</div>';}
-    const done=stepDone(st.id);
-    out+='<div class="snav'+(i===STEP?' on':'')+(done?' done':'')+'" onclick="go('+i+')"><div class="si">'+(done&&i!==STEP?'✓':st.icon)+'</div><div><div class="st">'+st.t+'</div><div class="sd">'+st.d+'</div></div></div>';
+    const done=stepDone(st.id);const part=!done&&stepPart(st.id);
+    out+='<div class="snav'+(i===STEP?' on':'')+(done?' done':'')+(part?' part':'')+'" onclick="go('+i+')"><div class="si">'+(done&&i!==STEP?'✓':st.icon)+'</div><div><div class="st">'+st.t+'</div><div class="sd">'+(part?'бриф заполняется':st.d)+'</div></div></div>';
   });
   $("#steps").innerHTML=out;
 }
+let EDITBUF=null,CUREDIT=null;
 function stepDone(id){
   if(id==="start")return !!(S.company&&S.role);
   if(id==="files")return (S.files||[]).length>0;
-  if(id==="brief")return Object.keys(S.brief).length>0;
+  if(id==="brief")return BRIEF.some(bl=>(S.brief[bl.id]||[]).some(a=>String(a||"").trim()));
   return !!S.results[id];
 }
-function go(i){STEP=Math.max(0,Math.min(STEPS.length-1,i));renderNav();render();window.scrollTo(0,0);}
+/* слой начат: бриф заполняется, но контент ещё не собран */
+function stepPart(id){
+  if(stepDone(id))return false;
+  if(id==="brief"){const t=BRIEF.reduce((a,b)=>a+b.qs.length,0);const n=BRIEF.reduce((a,b)=>a+(S.brief[b.id]||[]).filter(x=>String(x||"").trim()).length,0);return n>0&&n<t;}
+  if(typeof layerById==="function"&&layerById(id))return lbFill(id).n>0;
+  return false;
+}
+function go(i){
+  if(EDITBUF&&CUREDIT&&!confirm("В разделе есть несохранённые ручные правки. Уйти и потерять их?"))return;
+  EDITBUF=null;CUREDIT=null;
+  STEP=Math.max(0,Math.min(STEPS.length-1,i));renderNav();render();window.scrollTo(0,0);}
 window.go=go;
 
 /* ================= RENDER MAIN ================= */
@@ -1129,7 +1240,7 @@ function layerBriefHTML(L){
     '<div class="mlab" style="margin-top:14px">После слоя сотрудник умеет</div><ul class="li">'+L.kpi.map(k=>'<li>'+esc(k)+'</li>').join("")+'</ul>'+
     '<div class="mlab" style="margin-top:14px">Структура: '+L.lessons+' уроков — что обязательно внутри каждого</div>'+blocks+
     '<div class="mlab" style="margin-top:14px">Как учат этому слою в мире</div><div class="prac">'+esc(L.practice||"")+'</div>'+'<div class="kmini">Таксономия Блума: '+esc(L.bloom)+' · стандарты качества применяются ко всем урокам</div></div>'+
-    '<div class="card"><div class="row" style="justify-content:space-between;align-items:center" onclick="toggleStd()" style="cursor:pointer"><h3 style="margin:0">Стандарты качества и чек-лист приёмки</h3><button class="btn ghost sm" onclick="toggleStd()">показать / скрыть</button></div>'+
+    '<div class="card"><div class="row" style="justify-content:space-between;align-items:center;cursor:pointer" onclick="toggleStd()"><h3 style="margin:0">Стандарты качества и чек-лист приёмки</h3><button class="btn ghost sm" onclick="event.stopPropagation();toggleStd()">показать / скрыть</button></div>'+
     '<div id="stdBox" class="hidden"><div class="mlab" style="margin-top:10px">Как писать уроки</div><ul class="li">'+STANDARDS.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>'+
     '<div class="mlab" style="margin-top:14px">Чек-лист перед загрузкой на платформу</div><ul class="li">'+QA_CHECK.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div></div>';
 }
@@ -1195,17 +1306,19 @@ window.obAdd=obAdd;window.obDel=obDel;window.obName=obName;window.obField=obFiel
 
 /* ---- АДМИН ---- */
 function getProjects(){try{return JSON.parse(localStorage.getItem("apx_onb_projects"))||[];}catch(_){return [];}}
-function setProjects(a){localStorage.setItem("apx_onb_projects",JSON.stringify(a));}
+function setProjects(a){try{localStorage.setItem("apx_onb_projects",JSON.stringify(a));return true;}catch(e){SAVE_FAIL=true;saveBanner(true);return false;}}
 function saveProject(){
   if(!S.role){alert("Заполни компанию и роль на «Старте».");return;}
-  const arr=getProjects();const id=S._pid||("p"+Date.now());S._pid=id;
+  const arr=getProjects();const id=S._pid||("p"+Date.now().toString(36)+Math.random().toString(36).slice(2,6));S._pid=id;
   const snap={id,company:S.company,niche:S.niche,role:S.role,target:S.target,format:S.format,brief:S.brief,results:S.results,onb:S.onb,
+    files:S.files||[],lbrief:S.lbrief||{},research:S.research||{},
     driveLink:(arr.find(f=>f.id===id)||{}).driveLink||"",updated:new Date().toISOString().slice(0,16).replace("T"," ")};
   const i=arr.findIndex(f=>f.id===id);if(i>=0)arr[i]=snap;else arr.unshift(snap);
   setProjects(arr);save();renderAdmin();
 }
 function loadProject(id){const f=getProjects().find(x=>x.id===id);if(!f)return;
-  S=Object.assign(S,{company:f.company,niche:f.niche,role:f.role,target:f.target,format:f.format,brief:f.brief||{},results:f.results||{},onb:f.onb||{list:[]},_pid:f.id});
+  S=Object.assign(S,{company:f.company,niche:f.niche,role:f.role,target:f.target,format:f.format,brief:f.brief||{},results:f.results||{},onb:f.onb||{list:[]},
+    files:f.files||[],lbrief:f.lbrief||{},research:f.research||{},_pid:f.id});
   save();renderNav();go(0);}
 function newProject(){
   if(S.role){
@@ -1213,11 +1326,29 @@ function newProject(){
     const q=saved?("Сохранить изменения в онбординге «"+S.role+"» перед созданием нового?\n\nОК — сохранить и начать новый.\nОтмена — начать новый без сохранения.")
                  :("Текущий онбординг «"+S.role+"» ещё не сохранён.\n\nОК — сохранить и начать новый.\nОтмена — начать новый, текущий будет потерян.");
     if(confirm(q))saveProject();
+    else if(!confirm("Точно начать новый онбординг без сохранения? Текущий «"+S.role+"» со всеми материалами и брифами будет потерян безвозвратно."))return;
   }
-  S.company="";S.niche="";S.role="";S.target="";S.format="";S.brief={};S.results={};S.onb={list:[]};S._pid=null;
+  S.company="";S.niche="";S.role="";S.target="";S.format="";S.brief={};S.results={};S.onb={list:[]};
+  S.files=[];S.lbrief={};S.research={};S._pid=null;
   save();renderNav();go(0);
 }
-function delProject(id){if(!confirm("Удалить этот онбординг из списка?"))return;setProjects(getProjects().filter(f=>f.id!==id));renderAdmin();}
+function delProject(id){if(!confirm("Удалить этот онбординг из списка? Прикреплённые к нему материалы тоже будут стёрты."))return;
+  const gone=(getProjects().find(f=>f.id===id)||{}).files||[];
+  setProjects(getProjects().filter(f=>f.id!==id));
+  purgeOrphanFiles();
+  if(S._pid===id)S._pid=null;
+  save();renderAdmin();}
+/* тексты файлов лежат в IndexedDB — чистим те, на которые больше никто не ссылается */
+async function purgeOrphanFiles(){
+  try{
+    const live=new Set();
+    (S.files||[]).forEach(f=>live.add(f.id));
+    getProjects().forEach(p=>(p.files||[]).forEach(f=>live.add(f.id)));
+    const db=await fdb();
+    const ids=await new Promise(res=>{const t=db.transaction(FDB.store,"readonly");const q=t.objectStore(FDB.store).getAllKeys();q.onsuccess=()=>res(q.result||[]);q.onerror=()=>res([]);});
+    for(const k of ids){if(!live.has(k))await fdel(k);}
+  }catch(_){}
+}
 function setDrive(id,v){const arr=getProjects();const f=arr.find(x=>x.id===id);if(f){f.driveLink=v;setProjects(arr);}}
 window.saveProject=saveProject;window.loadProject=loadProject;window.newProject=newProject;window.delProject=delProject;window.setDrive=setDrive;
 function renderAdmin(){
@@ -1250,21 +1381,52 @@ async function assembleWorkbook(){
   BRIEF.forEach(bl=>{const ans=S.brief[bl.id]||[];const any=bl.qs.some((q,i)=>ans[i]);if(!any)return;
     xSection(ws,bl.name+" (спросить у: "+bl.who+")",2);bl.qs.forEach((q,i)=>{if(ans[i])xData(ws,[q,ans[i]]);});ws.addRow([]);});
   Object.keys(GEN).forEach(id=>{const r=S.results[id];if(!r)return;
-    const g=GEN[id];const w=wb.addWorksheet(sheetName(g.title));wsWidths(w,[26,40,40,40,30,30]);
+    const g=GEN[id];const w=wb.addWorksheet(uniqSheet(wb,g.title));wsWidths(w,[26,40,40,40,30,30]);
     xTitle(w,(r.title||g.title).toUpperCase(),6);
     const L=layerById(id);
     if(L){xSection(w,"Параметры слоя",6);xData(w,["Уроков",L.lessons,"Время",L.min+" мин","Тест",L.quiz+" вопр. · порог "+L.thr+"%"]);xData(w,["Место в плане",L.days,"","","",""],1);w.addRow([]);}
     xBlocks(w,r.blocks);});
+  // Результаты глубокого ресерча по слоям
+  LAYERS.forEach(L=>{const rr=S.results[L.id+"_research"];if(!rr)return;
+    const w=wb.addWorksheet(uniqSheet(wb,"Ресерч · слой "+L.n));wsWidths(w,[26,40,40,40,30,30]);
+    xTitle(w,("РЕСЕРЧ · СЛОЙ "+L.n+" · "+L.title).toUpperCase(),6);xBlocks(w,rr.blocks,6);});
+  // Брифы слоёв — что вытащено из материалов и на что ещё нужен ответ
+  const anyLB=LAYERS.some(L=>lbFill(L.id).n>0);
+  if(anyLB){
+    const w=wb.addWorksheet(uniqSheet(wb,"Брифы слоёв"));wsWidths(w,[52,60,18,22]);
+    xTitle(w,"БРИФЫ СЕМИ СЛОЁВ — ЧТО СОБРАНО И ЧТО ЕЩЁ НУЖНО",4);
+    LAYERS.forEach(L=>{
+      const b=(S.lbrief||{})[L.id]||{};const f=lbFill(L.id);
+      xSection(w,"Слой "+L.n+" · "+L.title+" — заполнено "+f.n+" из "+f.total,4);
+      xHeader(w,["Вопрос брифа","Ответ","Статус","Источник"]);
+      L.brief.forEach((q,i)=>{
+        const v=String(b[i]||"").trim();
+        xData(w,[q,v||"— нужен ответ от руководителя —",v?(b["_c"+i]||"из материалов"):"ПРОБЕЛ",b["_s"+i]||""],i%2);
+      });
+      w.addRow([]);
+    });
+  }
+  // Материалы, на которых собран онбординг
+  if((S.files||[]).length){
+    const w=wb.addWorksheet(uniqSheet(wb,"Материалы"));wsWidths(w,[38,14,12,22,50]);
+    xTitle(w,"МАТЕРИАЛЫ, НА КОТОРЫХ СОБРАН ОНБОРДИНГ",5);
+    xHeader(w,["Файл","Размер","Символов","Слои","Что внутри"]);
+    S.files.forEach((f,i)=>xData(w,[f.name,fmtKB(f.size),f.chars,(f.layers||[]).map(x=>{const L=layerById(x);return L?("С"+L.n):x;}).join(", ")||"—",f.note||""],i%2));
+  }
   if(S.onb&&S.onb.list&&S.onb.list.length){
-    const w=wb.addWorksheet("Прогресс новичков");wsWidths(w,[24,14].concat(LAYERS.map(()=>7)).concat([12]));
+    const w=wb.addWorksheet(uniqSheet(wb,"Прогресс новичков"));wsWidths(w,[24,14].concat(LAYERS.map(()=>7)).concat([12]));
     xTitle(w,"ПРОГРЕСС НОВИЧКОВ",LAYERS.length+3);
     xHeader(w,["Новичок","Старт"].concat(LAYERS.map(L=>"С"+L.n)).concat(["Аттестация"]));
     S.onb.list.forEach((p,i)=>xData(w,[p.name||"",p.start||""].concat(LAYERS.map(L=>(p.layers||{})[L.id]?"✓":"")).concat([p.att||""]),i%2));
   }
+  // Чек-лист внедрения
+  const w9=wb.addWorksheet(uniqSheet(wb,"Чек-лист внедрения"));wsWidths(w9,[8,60,20,16,16]);
+  xTitle(w9,"ЧЕК-ЛИСТ ВНЕДРЕНИЯ ОНБОРДИНГА — 8 НЕДЕЛЬ",5);
+  xHeader(w9,["№","Что сделать","Кто отвечает","Срок","Готово"]);
+  LAUNCH_CHECK.forEach((r,i)=>xData(w9,[i+1,r[0],r[1],r[2],""],i%2));
   await xlsxDownload(wb,"Онбординг — "+(S.company||"")+" "+(S.role||"роль")+".xlsx");
 }
 window.assembleWorkbook=assembleWorkbook;
-function sheetName(t){return String(t).replace(/[\\/?*:\[\]]/g,"").slice(0,30);}
 
 /* ---- ШАГ «МАТЕРИАЛЫ» ---- */
 function renderFiles(){
@@ -1332,7 +1494,12 @@ function dictateLayer(lid){
       S.lbrief=S.lbrief||{};S.lbrief[lid]=S.lbrief[lid]||{};
       (r.answers||[]).forEach((a,i)=>{if(a&&String(a).trim()){S.lbrief[lid][i]=(S.lbrief[lid][i]?S.lbrief[lid][i]+" ":"")+a;S.lbrief[lid]["_c"+i]="ручной";}});
       save();render();
-    }catch(e){const s=$("#lbStatus");if(s)s.innerHTML='<div class="errbox">'+esc(errText(e))+'</div>';}
+    }catch(e){
+      S.lbrief=S.lbrief||{};S.lbrief[lid]=S.lbrief[lid]||{};
+      S.lbrief[lid][0]=((S.lbrief[lid][0]||"")+" "+txt).trim();S.lbrief[lid]["_c0"]="ручной";
+      save();render();
+      const s2=$("#lbStatus");if(s2)s2.innerHTML='<div class="errbox">Не удалось разложить по вопросам ('+esc(errText(e))+'). Текст сохранён целиком в первый вопрос — ничего не потеряно, разнеси руками или попробуй ещё раз.</div>';
+    }
   });
 }
 window.dictateLayer=dictateLayer;
@@ -1378,7 +1545,7 @@ function renderGen(id){
   $("#main").innerHTML=head(L?("Слой "+L.n+" из 7"):("Шаг · "+g.title),L?(esc(L.title)+" — <span style=\"color:#B0822E\">"+esc(L.sub)+"</span>"):g.title,
     L?"Собирается по плейбуку Слоя "+L.n+": контент по каждому уроку, тест с порогом и практическое задание — за один прогон.":"Собирается по зашитому плейбуку A-Players на основе твоего брифа компании.")+
   (L?layerBriefHTML(L)+layerFilesHTML(L)+layerBriefFormHTML(L)+layerResearchHTML(L)+(L.id==="l1"?visionHTML():""):"")+
-  '<div class="card"><div class="row"><button class="btn primary" onclick="runGen(\''+id+'\')" id="genBtn">✨ Собрать: '+esc(g.title)+'</button>'+(r?'<button class="btn ghost sm" onclick="exportGen(\''+id+'\')">⬇ В Excel</button>':'')+(r?'<button class="btn ghost sm" onclick="editGen(\''+id+'\')">✏️ Редактировать вручную</button>':'')+'</div><div class="kmini">Опирается на бриф компании и плейбук слоя. Нужен ключ Claude.</div><div id="genStatus"></div></div>'+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="runGen(\''+id+'\')" id="genBtn">✨ Собрать: '+esc(g.title)+'</button>'+(r?'<button class="btn ghost sm" onclick="exportBrandedBlocks(\''+id+'\')">⬇ В Excel</button>':'')+(r?'<button class="btn ghost sm" onclick="editGen(\''+id+'\')">✏️ Редактировать вручную</button>':'')+'</div><div class="kmini">Опирается на бриф компании и плейбук слоя. Нужен ключ Claude.</div><div id="genStatus"></div></div>'+
   '<div id="genOut">'+(r?blocksHTML(r)+fixboxHTML(id):"")+'</div>'+navBtns();
 }
 function fixboxHTML(id){return '<div class="fixbox"><h4>✏️ Поправить этот раздел</h4><textarea id="fix_'+id+'" placeholder="Что изменить? Напр.: добавь урок про работу с рассрочкой; сделай тест сложнее; убери воду из урока 2.3. Можно надиктовать голосом."></textarea><div class="row" style="margin-top:10px"><button class="btn primary sm" onclick="runGenFix(\''+id+'\')">Применить правку</button><button class="btn ghost sm" onclick="dictateFix(\''+id+'\')">🎙 Надиктовать правку</button></div></div>';}
@@ -1386,22 +1553,30 @@ function blocksHTML(r){
   let h='<div class="card"><h2 style="margin-top:0">'+esc(r.title||"")+'</h2>';
   (r.blocks||[]).forEach(b=>{
     h+='<h3 style="margin-top:16px">'+esc(b.h||"")+'</h3>';
-    if(b.kind==="table"&&b.columns){h+='<div style="overflow-x:auto"><table class="gt"><thead><tr>'+b.columns.map(c=>'<th>'+esc(c)+'</th>').join("")+'</tr></thead><tbody>'+(b.rows||[]).map(row=>'<tr>'+(row||[]).map(c=>'<td>'+esc(c)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';}
-    else if(b.kind==="list"){h+='<ul class="li">'+(b.items||[]).map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>';}
-    else{h+='<div style="white-space:pre-wrap;font-size:14.5px;margin-top:4px">'+esc(b.text||(b.items||[]).join("\n"))+'</div>';}
+    if(b.kind==="table"&&(b.columns||b.rows)){
+      const cols=Array.isArray(b.columns)?b.columns:[];
+      const rows=(Array.isArray(b.rows)?b.rows:[]).map(r=>Array.isArray(r)?r:(r&&typeof r==="object"?Object.values(r):[r]));
+      h+='<div style="overflow-x:auto"><table class="gt">'+(cols.length?'<thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join("")+'</tr></thead>':'')+
+        '<tbody>'+rows.map(row=>'<tr>'+row.map(c=>'<td>'+esc(typeof c==="object"?JSON.stringify(c):c)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';}
+    else if(b.kind==="list"){const it=Array.isArray(b.items)?b.items:(b.items?[b.items]:[]);
+      h+='<ul class="li">'+it.map(x=>'<li>'+esc(typeof x==="object"?JSON.stringify(x):x)+'</li>').join("")+'</ul>';}
+    else{const it=Array.isArray(b.items)?b.items:(b.items?[b.items]:[]);
+      h+='<div style="white-space:pre-wrap;font-size:14.5px;margin-top:4px">'+esc(b.text||it.join("\n"))+'</div>';}
   });
   return h+'</div>';
 }
 async function runGen(id,correction){
   const g=GEN[id];
   if(!($("#apikey").value||"").trim()){$("#genStatus").innerHTML='<div class="errbox">Вставь ключ Claude слева.</div>';return;}
-  if(!S.role){$("#genStatus").innerHTML='<div class="errbox">Сначала заполни «Старт» (роль + ТОП-3) и бриф.</div>';return;}
+  if(!S.role){$("#genStatus").innerHTML='<div class="errbox">Сначала заполни «Старт»: компанию и роль.</div>';return;}
   const btn=$("#genBtn");if(btn)btn.disabled=true;$("#genStatus").innerHTML='<div class="statusbox"><span class="spin"></span>'+(correction?'Вношу правку в «':'Собираю «')+esc(g.title)+'» по плейбуку…</div>';
   let sys=g.sys(),user=ctxText(id);
   try{const fc=await filesContext(layerById(id)?id:null,110000);if(fc)user=fc+"\n\n"+user;}catch(_){}
-  if(correction){sys=g.sys()+"\n\nЭто ПРАВКА уже собранного раздела. Ниже — текущий результат (JSON) и правка пользователя. Внеси правку и верни ОБНОВЛЁННЫЙ ПОЛНЫЙ JSON в той же схеме, сохранив корректным всё остальное.";user=ctxText()+"\n\nТЕКУЩИЙ РЕЗУЛЬТАТ (JSON):\n"+JSON.stringify(S.results[id]||{})+"\n\nПРАВКА ПОЛЬЗОВАТЕЛЯ:\n"+correction;}
-  try{const raw=await callClaude({system:sys,messages:[{role:"user",content:user}],max_tokens:14000,effort:"low"});
-    S.results[id]=parseJSON(raw);save();renderNav();renderGen(id);
+  if(correction){sys=g.sys()+"\n\nЭто ПРАВКА уже собранного раздела. Ниже — материалы, бриф, текущий результат (JSON) и правка пользователя. Внеси правку и верни ОБНОВЛЁННЫЙ ПОЛНЫЙ JSON в той же схеме, сохранив корректным всё остальное и не потеряв факты из материалов.";
+    user=user+"\n\nТЕКУЩИЙ РЕЗУЛЬТАТ (JSON):\n"+JSON.stringify(S.results[id]||{})+"\n\nПРАВКА ПОЛЬЗОВАТЕЛЯ:\n"+correction;}
+  const cap=layerById(id)?28000:16000;   /* слой просит уроки + тест — 14k не вмещало */
+  try{const raw=await callClaude({system:sys,messages:[{role:"user",content:user}],max_tokens:cap,effort:"low"});
+    S.results[id]=parseJSON(raw);save();renderNav();render();
   }catch(e){$("#genStatus").innerHTML='<div class="errbox">Не удалось: '+esc(errText(e))+' <button class="btn ghost sm" onclick="runGen(\''+id+'\')">↻ Повторить</button></div>';if(btn)btn.disabled=false;}
 }
 window.runGen=runGen;
@@ -1409,7 +1584,6 @@ function runGenFix(id){const el=$("#fix_"+id);const t=(el&&el.value||"").trim();
 function dictateFix(id){openDictaphone('Надиктуй правку','Скажи, что изменить в этом разделе — затем «Применить правку».',(txt)=>{const el=$("#fix_"+id);if(el){el.value=(el.value?el.value+" ":"")+txt;el.focus();}});}
 window.runGenFix=runGenFix;window.dictateFix=dictateFix;
 /* ---- ручное редактирование раздела (правишь текст прямо в полях) ---- */
-let EDITBUF=null,CUREDIT=null;
 function editGen(id){CUREDIT=id;EDITBUF=JSON.parse(JSON.stringify(S.results[id]||{title:"",blocks:[]}));$("#genOut").innerHTML=editGenHTML(id);const c=document.querySelector('.card.edit');if(c)c.scrollIntoView({behavior:"smooth",block:"start"});}
 function editGenHTML(id){
   const r=EDITBUF;let h='<div class="card edit"><div class="row" style="justify-content:space-between"><h2 style="margin:0">✏️ Редактирование вручную</h2><span class="kmini">Меняй текст прямо в полях. Можно добавлять и удалять пункты и строки. Потом «Сохранить».</span></div>';
@@ -1444,7 +1618,7 @@ function reEdit(){if(CUREDIT)$("#genOut").innerHTML=editGenHTML(CUREDIT);}
 function saveEdit(id){if(EDITBUF)S.results[id]=EDITBUF;EDITBUF=null;save();renderNav();renderGen(id);}
 function cancelEdit(id){EDITBUF=null;renderGen(id);}
 window.editGen=editGen;window.edTitle=edTitle;window.edH=edH;window.edText=edText;window.edItem=edItem;window.edDelItem=edDelItem;window.edAddItem=edAddItem;window.edCol=edCol;window.edCell=edCell;window.edDelRow=edDelRow;window.edAddRow=edAddRow;window.saveEdit=saveEdit;window.cancelEdit=cancelEdit;
-function exportGen(id){const r=S.results[id];if(!r)return;const wb=XLSX.utils.book_new();let n=0;(r.blocks||[]).forEach(b=>{let rows=[];if(b.kind==="table"&&b.columns){rows=[b.columns].concat(b.rows||[]);}else if(b.kind==="list"){rows=[[b.h]].concat((b.items||[]).map(x=>[x]));}else{rows=[[b.h]].concat(String(b.text||"").split("\n").map(x=>[x]));}const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=(rows[0]||[""]).map(()=>({wch:40}));XLSX.utils.book_append_sheet(wb,ws,(b.h||("Блок "+(++n))).slice(0,28).replace(/[\\/?*:\[\]]/g,""));});XLSX.writeFile(wb,(r.title||GEN[id].title).slice(0,28)+".xlsx");}
+function exportGen(id){const r=S.results[id];if(!r)return;const wb=XLSX.utils.book_new();let n=0;(r.blocks||[]).forEach(b=>{let rows=[];if(b.kind==="table"&&b.columns){rows=[b.columns].concat(b.rows||[]);}else if(b.kind==="list"){rows=[[b.h]].concat((b.items||[]).map(x=>[x]));}else{rows=[[b.h]].concat(String(b.text||"").split("\n").map(x=>[x]));}const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=(rows[0]||[""]).map(()=>({wch:40}));let nm=(b.h||("Блок "+(++n))).slice(0,26).replace(/[\\/?*:\[\]]/g,"")||("Блок "+(++n));while(wb.SheetNames.indexOf(nm)>=0)nm=nm.slice(0,24)+" "+(++n);XLSX.utils.book_append_sheet(wb,ws,nm);});XLSX.writeFile(wb,(r.title||GEN[id].title).slice(0,28)+".xlsx");}
 window.exportGen=exportGen;
 
 /* ================= БРЕНДИРОВАННЫЙ EXCEL (ExcelJS) ================= */
@@ -1455,15 +1629,38 @@ function xTitle(ws,text,span){const row=ws.addRow([text]);ws.mergeCells(row.numb
 function xHeader(ws,arr){const row=ws.addRow(arr);row.eachCell(c=>{c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.GOLD}};c.font={bold:true,color:{argb:XC.WHITE},size:11};c.alignment={vertical:"middle",wrapText:true,indent:1};c.border=xBorder();});row.height=22;}
 function xData(ws,arr,z){const row=ws.addRow(arr);row.eachCell(c=>{c.alignment={vertical:"top",wrapText:true,indent:1};c.border=xBorder();if(z)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.ZEBRA}};});}
 function xSection(ws,text,span){const row=ws.addRow([text]);if(span>1)ws.mergeCells(row.number,1,row.number,span);const c=row.getCell(1);c.font={bold:true,size:12,color:{argb:XC.EM}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.SEC}};c.alignment={vertical:"middle",indent:1};row.height=20;}
-function xBullets(ws,arr,span){(arr||[]).forEach(x=>{const row=ws.addRow(["•  "+x]);if(span>1)ws.mergeCells(row.number,1,row.number,span);row.getCell(1).alignment={wrapText:true,vertical:"top",indent:1};});}
+function xBullets(ws,arr,span){const a=Array.isArray(arr)?arr:(arr?[arr]:[]);a.forEach(x=>{const row=ws.addRow(["•  "+(typeof x==="object"?JSON.stringify(x):x)]);if(span>1)ws.mergeCells(row.number,1,row.number,span);row.getCell(1).alignment={wrapText:true,vertical:"top",indent:1};});}
 function xText(ws,txt,span){String(txt||"").split("\n").forEach(line=>{const row=ws.addRow([line]);if(span>1)ws.mergeCells(row.number,1,row.number,span);row.getCell(1).alignment={wrapText:true,vertical:"top",indent:1};});}
 /* блоки {h,kind,items,columns,rows,text} → лист */
-function xBlocks(ws,blocks){
+const LAUNCH_CHECK=[
+ ["Назначен владелец онбординга (не «HR вообще», а конкретный человек с именем)","Собственник","Неделя 1"],
+ ["Собран бриф компании и брифы семи слоёв, пробелы закрыты ответами руководителей","Владелец онбординга","Неделя 1–2"],
+ ["Проведены интервью с лучшими сотрудниками, речь оцифрована в скрипт и возражения","РОП","Неделя 2"],
+ ["Снят реестр конфликтов: имена продуктов, цифры, стоп-слова, зона владения лидом","Владелец онбординга","Неделя 2"],
+ ["Слои 1–3 собраны, вычитаны и подтверждены руководителем (статус «подтверждено»)","Руководитель","Неделя 3"],
+ ["Слои 4–7 собраны, вычитаны и подтверждены; тесты проверены на реальных вопросах","РОП","Неделя 4"],
+ ["Контент залит в LMS, включено последовательное прохождение и блокировка до сдачи теста","Владелец онбординга","Неделя 5"],
+ ["Записано приветственное видео первого лица (3–5 минут, без пафоса, про смысл работы)","Собственник","Неделя 5"],
+ ["Назначены наставники, у каждого — чек-лист наблюдения за звонками на дни 3 / 7 / 14","РОП","Неделя 5"],
+ ["Собрана ролевая аттестация: чек-лист на 100 баллов, порог 80, кто принимает","РОП","Неделя 6"],
+ ["Заведена карта контроля 30-60-90 с числовыми KPI и критериями прохождения ИС","Руководитель","Неделя 6"],
+ ["Пилот на одном новичке: пройти весь путь, зафиксировать, где он спотыкается","Владелец онбординга","Неделя 7"],
+ ["Правки по итогам пилота внесены, спорные места переписаны","Владелец онбординга","Неделя 7"],
+ ["Запущен поток: отчётность ведётся еженедельно, срывы сроков видны сразу","РОП","Неделя 8"],
+ ["Назначен цикл обновления контента: кто и как часто актуализирует прайс, скрипты, конкурентов","Владелец онбординга","Неделя 8"],
+];
+function uniqSheet(wb,t){let base=sheetName(t),n=base,i=2;while(wb.getWorksheet(n)){const suf=" ("+i+")";n=base.slice(0,31-suf.length)+suf;i++;}return n;}
+function xBlocks(ws,blocks,span){
+  span=span||6;
   (blocks||[]).forEach(b=>{
-    xSection(ws,b.h||"",Math.max(1,(b.columns||[]).length||1));
-    if(b.kind==="table"&&b.columns){xHeader(ws,b.columns);(b.rows||[]).forEach((r,i)=>xData(ws,r,i%2));}
-    else if(b.kind==="list"){xBullets(ws,b.items||[],1);}
-    else{xText(ws,b.text||(b.items||[]).join("\n"),1);}
+    xSection(ws,b.h||"",Math.max(span,(b.columns||[]).length||1));
+    if(b.kind==="table"&&(b.columns||b.rows)){
+      const cols=Array.isArray(b.columns)?b.columns:[];
+      if(cols.length)xHeader(ws,cols);
+      (Array.isArray(b.rows)?b.rows:[]).forEach((r,i)=>xData(ws,Array.isArray(r)?r:(r&&typeof r==="object"?Object.values(r):[r]),i%2));
+    }
+    else if(b.kind==="list"){xBullets(ws,b.items,span);}
+    else{const it=Array.isArray(b.items)?b.items:(b.items?[b.items]:[]);xText(ws,b.text||it.join("\n"),span);}
     ws.addRow([]);
   });
 }
@@ -1474,42 +1671,13 @@ function sheetName(s){return String(s||"Лист").replace(/[\\/?*:\[\]]/g,"").s
 /* экспорт одного раздела (генератора) — оформленный */
 async function exportBrandedBlocks(id){
   const r=S.results[id];if(!r){return;}
-  if(!window.ExcelJS){return exportGenPlain(id);}
+  if(!window.ExcelJS){return exportGen(id);}
   const wb=new ExcelJS.Workbook();wb.creator="A-Players";
   const ws=wb.addWorksheet(sheetName(GEN[id].title));wsWidths(ws,[26,40,40,40,30,30]);
   xTitle(ws,(r.title||GEN[id].title).toUpperCase(),6);xBlocks(ws,r.blocks);
   await xlsxDownload(wb,(r.title||GEN[id].title).slice(0,40)+".xlsx");
 }
-/* портрет навыков — оформленный */
-async function exportPortraitBranded(){
-  if(!S.portrait)return; if(!window.ExcelJS)return exportPortraitPlain();
-  const wb=new ExcelJS.Workbook();wb.creator="A-Players";const ws=wb.addWorksheet(sheetName("Портрет навыков"));wsWidths(ws,[26,42,42,42,15,8]);
-  xTitle(ws,"ПОРТРЕТ НАВЫКОВ · "+((S.portrait.role||S.role||"").toUpperCase()),6);
-  xHeader(ws,["Навык","Junior","Middle","Senior","Целевой грейд","ТОП-5"]);
-  (S.portrait.skills||[]).forEach((sk,i)=>xData(ws,[sk.name,sk.junior,sk.middle,sk.senior,(S.portrait.sel||{})[sk.name]||sk.targetGrade||"",(S.portrait.top5||[]).includes(sk.name)?"да":""],i%2));
-  await xlsxDownload(wb,"Портрет навыков — "+(S.role||"роль").slice(0,26)+".xlsx");
-}
-/* единый файл — ВСЯ ВОРОНКА одним workbook */
-async function assembleWorkbook(){
-  if(!window.ExcelJS){alert("ExcelJS не загрузился (нужен интернет).");return;}
-  const wb=new ExcelJS.Workbook();wb.creator="A-Players";
-  // 0. Обзор
-  let ws=wb.addWorksheet("Воронка найма");wsWidths(ws,[26,70]);
-  xTitle(ws,"ВОРОНКА НАЙМА — "+((S.role||"роль").toUpperCase()),2);
-  [["Компания",S.company],["Ниша",S.niche],["Роль",S.role]].forEach((kv,i)=>xData(ws,kv,i%2));
-  ws.addRow([]);xSection(ws,"ТОП-3 результата за 1-й квартал",2);xBullets(ws,S.top3.filter(Boolean),2);
-  // Бриф
-  ws=wb.addWorksheet("Бриф");wsWidths(ws,[40,60]);xTitle(ws,"БРИФ ДОЛЖНОСТИ",2);
-  BRIEF.forEach(bl=>{const ans=S.brief[bl.id]||[];const any=bl.qs.some((q,i)=>ans[i]);if(!any)return;xSection(ws,bl.name,2);bl.qs.forEach((q,i)=>{if(ans[i])xData(ws,[q,ans[i]]);});ws.addRow([]);});
-  // Портрет
-  if(S.portrait&&S.portrait.skills){ws=wb.addWorksheet("Портрет навыков");wsWidths(ws,[26,42,42,42,15,8]);xTitle(ws,"ПОРТРЕТ НАВЫКОВ",6);xHeader(ws,["Навык","Junior","Middle","Senior","Целевой грейд","ТОП-5"]);S.portrait.skills.forEach((sk,i)=>xData(ws,[sk.name,sk.junior,sk.middle,sk.senior,(S.portrait.sel||{})[sk.name]||sk.targetGrade||"",(S.portrait.top5||[]).includes(sk.name)?"да":""],i%2));}
-  // Каждый собранный раздел
-  Object.keys(GEN).forEach(id=>{const r=S.results[id];if(!r)return;const w=wb.addWorksheet(sheetName(GEN[id].title));wsWidths(w,[26,40,40,40,30,30]);xTitle(w,(r.title||GEN[id].title).toUpperCase(),6);xBlocks(w,r.blocks);});
-  // Мотивация-калькулятор (с формулами)
-  motivationSheet(wb);
-  await xlsxDownload(wb,"Воронка найма — "+(S.company||"")+" "+(S.role||"роль")+".xlsx");
-}
-window.assembleWorkbook=assembleWorkbook;window.exportPortraitBranded=exportPortraitBranded;window.exportBrandedBlocks=exportBrandedBlocks;
+window.exportBrandedBlocks=exportBrandedBlocks;
 
 /* ================= INIT ================= */
 $("#apikey").value=localStorage.getItem(LS.key)||"";

@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<script src="gate.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Онбординг и Завод A-Players · Практикум</title>
@@ -106,6 +105,15 @@
   .dark .note,.dark2 .note{background:rgba(199,154,69,.14);color:#f0e6cf;border-color:var(--gold2)}
   .note.red{border-color:var(--red);background:rgba(178,59,46,.09);color:#7d2b21}
   .note.grn{border-color:var(--green);background:rgba(62,142,94,.1);color:#255c3c}
+  /* цветные плашки на тёмных слайдах — иначе тёмный текст на тёмном фоне */
+  .dark .note.red,.dark2 .note.red{border-color:#E08575;background:rgba(224,133,117,.16);color:#F6D3CC}
+  .dark .note.grn,.dark2 .note.grn{border-color:#6FCB95;background:rgba(111,203,149,.15);color:#CFEEDC}
+  .dark .tlb,.dark2 .tlb{color:var(--ink)}
+  .dark .tlb .h,.dark2 .tlb .h{color:inherit}
+  .dark .tlg .h,.dark2 .tlg .h{color:#2C7A50}
+  .dark .tly .h,.dark2 .tly .h{color:#9A5C11}
+  .dark .tlr .h,.dark2 .tlr .h{color:#963022}
+  .dark .vs .bad,.dark2 .vs .bad,.dark .vs .good,.dark2 .vs .good{color:var(--ink)}
   .badge{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.02em;background:var(--em);color:#EFE9DA;border-radius:8px;padding:4px 11px}
   .ex{font-size:14px;color:var(--muted);font-style:italic;margin-top:6px}
   .arrow{color:var(--gold-h);font-weight:800}
@@ -136,14 +144,13 @@
 </head>
 <body>
 <div id="stage">
-
   <!-- 1 -->
   <section class="slide dark2 active">
     <div class="kick">A-Players · Практикум · Модуль 12</div>
     <h1 style="max-width:19ch">Онбординг<br>и Завод A&#8209;Players</h1>
     <p class="lead" style="margin-top:20px;max-width:58ch">Новичок выходит на самостоятельность за <span class="hl">3–4 недели вместо 3 месяцев</span>. Не потому что старается, а потому что попадает в систему: семь слоёв знаний, пороги, аттестация и наставник с чек-листом.</p>
     <div class="stat" style="margin-top:26px">
-      <div class="s"><div class="v">7 слоёв</div><div class="l">жёсткая последовательность, пороги 75–90%</div></div>
+      <div class="s"><div class="v">1,68 млн ₽</div><div class="l">вы перестаёте терять на каждом новичке</div></div>
       <div class="s"><div class="v">−50%</div><div class="l">отсева на испытательном сроке</div></div>
       <div class="s"><div class="v">−60%</div><div class="l">времени руководителя на ввод новичка</div></div>
     </div>
@@ -174,17 +181,140 @@
   <!-- 3 -->
   <section class="slide dark">
     <div class="kick">Цена вопроса</div>
-    <h2 style="max-width:24ch">Половина потерь от плохого найма — это не «взяли не того»</h2>
-    <p class="lead" style="margin-top:16px;max-width:62ch">Это <b class="em">«взяли того и не ввели»</b>. Человек уходит на третьем месяце не потому, что слабый, а потому что три месяца угадывал, как у вас всё устроено.</p>
-    <div class="row" style="margin-top:24px;max-width:88%">
-      <div class="col card"><h3>Без системы</h3><ul style="margin-top:6px"><li style="font-size:16px">3 месяца до самостоятельности</li><li style="font-size:16px">каждый учит по-своему</li><li style="font-size:16px">руководитель тратит до 40% времени</li><li style="font-size:16px">ушёл сильный — унёс знание</li></ul></div>
-      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">С системой</h3><ul style="margin-top:6px"><li style="font-size:16px">3–4 недели до самостоятельности</li><li style="font-size:16px">один стандарт для всех</li><li style="font-size:16px">обучение вынесено в систему</li><li style="font-size:16px">знание остаётся в компании</li></ul></div>
+    <h2 style="max-width:26ch">Половина потерь от плохого найма — это <span class="g">«взяли того и не ввели»</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:64ch">Человек уходит на третьем месяце не потому, что слабый, а потому что три месяца угадывал, как у вас всё устроено. И почти все эти потери невидимы: они не проходят через кассу.</p>
+    <div class="stat" style="margin-top:22px">
+      <div class="s"><div class="v">20%</div><div class="l">всей текучки приходится на первые <b>45 дней</b></div></div>
+      <div class="s"><div class="v">44%</div><div class="l">новичков жалеют о выходе уже через <b>неделю</b></div></div>
+      <div class="s"><div class="v">86%</div><div class="l">решают, остаться или уйти, <b>за первые полгода</b></div></div>
     </div>
-    <img class="bob bobc" src="gen/bob/cut/bob_scale.png" alt="" style="height:190px">
+    <div class="row" style="margin-top:22px;max-width:92%">
+      <div class="col card"><h3>Без системы</h3><ul style="margin-top:6px"><li style="font-size:15.5px">3 месяца до самостоятельности</li><li style="font-size:15.5px">каждый учит по-своему</li><li style="font-size:15.5px">76 часов руководителя на одного</li><li style="font-size:15.5px">ушёл сильный — унёс знание</li></ul></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">С системой</h3><ul style="margin-top:6px"><li style="font-size:15.5px">3–4 недели до самостоятельности</li><li style="font-size:15.5px">один стандарт для всех</li><li style="font-size:15.5px">28 часов руководителя</li><li style="font-size:15.5px">знание остаётся в компании</li></ul></div>
+    </div>
+    <div class="note">Дальше — три слайда, на которых мы переведём это в рубли. Без них весь модуль остаётся разговором про пользу.</div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
   <!-- 4 -->
+  <section class="slide dark">
+    <div class="kick">Единая валюта модуля</div>
+    <h2 style="max-width:26ch">Один день, пока новичок разгоняется, стоит вам <span class="g" style="white-space:nowrap">51 700 ₽</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:64ch">Не «долго адаптируется». Не «пока вникает». Конкретная сумма в день — и дальше вся презентация меряется только в ней.</p>
+    <div class="row" style="margin-top:20px;align-items:flex-start">
+      <div class="col card" style="max-width:52%">
+        <h3>Формула</h3>
+        <div style="font-size:16px;line-height:1.6;margin-top:8px">
+          <b>Цена дня</b> = ( План × Маржа × (1 − Продуктивность) + Полная стоимость сотрудника ) ÷ 21
+        </div>
+        <div class="note" style="margin-top:10px;font-size:14px">Полная стоимость = оклад × 1,5. Взносы 30%, рабочее место, техника, лицензия CRM, доля HR. Оклад — не вся цена человека.</div>
+      </div>
+      <div class="col card" style="max-width:46%">
+        <h3>Типовой менеджер</h3>
+        <table class="mt sm" style="margin-top:6px">
+          <tr><td>План</td><td>3 000 000 ₽ / мес</td></tr>
+          <tr><td>Маржа</td><td>40% → 1 200 000 ₽</td></tr>
+          <tr><td>Оклад</td><td>80 000 → полная 125 000 ₽</td></tr>
+          <tr><td>Первый месяц</td><td>продуктивность 20%</td></tr>
+        </table>
+        <div style="margin-top:10px;font-size:17px">(3 000 000 × 0,4 × 0,8 + 125 000) ÷ 21 =</div>
+        <div class="big" style="margin-top:4px">51 700 ₽ в день</div>
+      </div>
+    </div>
+    <div class="note grn" style="margin-top:14px">Неделя — <b>258 500 ₽</b>. Посчитайте свою цифру прямо сейчас: план × маржу разделите на 21 и прибавьте оклад × 1,5 ÷ 21. Это займёт две минуты и изменит все ваши дальнейшие решения по срокам.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kick">Как считать по-взрослому</div>
+    <h2 style="max-width:27ch">Онбординг меряется не сроком, а <span class="g">площадью под кривой</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">«Вышел на самостоятельность за 3 месяца» — это не метрика. Метрика — сколько месяцев плана человек <b>не сделал</b>, пока разгонялся.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col">
+        <table class="mt sm">
+          <thead><tr><th>% от плана по месяцам</th><th>М1</th><th>М2</th><th>М3</th><th>М4</th><th>М5</th><th>Недобор</th></tr></thead>
+          <tr><td>Без системы</td><td>20%</td><td>35%</td><td>55%</td><td>75%</td><td>90%</td><td><b class="rd">2,25 мес плана</b></td></tr>
+          <tr><td>С системой</td><td>40%</td><td>80%</td><td>95%</td><td>100%</td><td>100%</td><td><b class="grn">0,85 мес плана</b></td></tr>
+        </table>
+        <div class="note" style="margin-top:12px">Разница — <b>1,4 месяца плана на каждого новичка</b>. В марже это 1,68 млн ₽. При 12 наймах в год — <b>20 млн ₽</b>, которые сейчас не видит ни один ваш отчёт, потому что недополученную выручку никто не проводит по бухгалтерии.</div>
+      </div>
+      <div class="col" style="max-width:34%">
+        <div class="card">
+          <h3>Что здесь важно</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:16px">Главная статья расходов на онбординг — <b>не обучение</b></li>
+            <li style="font-size:16px">Это недополученная маржа, и она в 5–10 раз больше</li>
+            <li style="font-size:16px">Считать надо <b>по когортам</b>, а не средним по компании</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/s8_money.png" alt="" style="height:150px;right:20px;bottom:14px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide dark2">
+    <div class="kick">Цена ошибки</div>
+    <h2 style="max-width:28ch">Менеджер, ушедший на 75-й день, стоит <span class="g">5 миллионов</span>. Деньгами ушло 517 тысяч</h2>
+    <p class="lead" style="margin-top:12px;max-width:64ch">Именно поэтому решение «ну не подошёл, возьмём следующего» кажется дешёвым: из кассы вышла десятая часть суммы. Остальное — время руководителя и деньги, которые вы не заработали. Складывать эти три вида потерь в одну цифру нельзя — на этом ловят.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:58%">
+        <table class="mt sm">
+          <thead><tr><th>Статья</th><th>Расчёт</th><th>Сумма</th></tr></thead>
+          <tr><td>Подбор</td><td>реклама + время HR</td><td>80 000 ₽</td></tr>
+          <tr><td>ФОТ с налогами</td><td>125 000 × 3,5 мес</td><td>437 500 ₽</td></tr>
+          <tr><td>Время руководителя</td><td>200 ч × 2 000 ₽/ч</td><td>400 000 ₽</td></tr>
+          <tr><td>Недополученная маржа</td><td>1,9 мес × 1,2 млн</td><td>2 280 000 ₽</td></tr>
+          <tr><td>Простой слота</td><td>1,5 мес × 1,2 млн</td><td>1 800 000 ₽</td></tr>
+          <tr><td><b>Итого</b></td><td>деньгами из кассы 517 500 ₽ · временем 400 000 ₽ · не заработали 4 080 000 ₽</td><td><b>≈ 5 000 000 ₽</b></td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:40%">
+        <div class="card"><h3>Сверка с рынком</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15.5px">517 500 ₽ прямых денег = <b>6,5 месячных окладов</b>. РФ-ориентир стоимости замены — 6–9 окладов: сходится</li>
+            <li style="font-size:15.5px">SHRM: 50–200% годового дохода. Наши 6,5 окладов — это 54%, нижняя граница</li>
+            <li style="font-size:15.5px">Норма текучести на ИС — до 40%. Выше 60% — проблема в найме и вводе, а не в людях</li>
+          </ul>
+        </div>
+        <div class="note">Разница между вашей внутренней оценкой («потеряли пару окладов») и реальностью — примерно в 20 раз.</div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kick">Против рынка</div>
+    <h2 style="max-width:29ch">Рынок разгоняет продавца <span class="g">5,7 месяца</span> — и с каждым годом дольше</h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">За пять лет средний ramp в B2B вырос на треть: 4,3 → 5,7 месяца. Продукт усложнился, покупатель поумнел, у руководителя не осталось времени на коучинг. Идти против этого тренда — редкое конкурентное преимущество.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:56%">
+        <table class="mt sm">
+          <thead><tr><th>Роль / сегмент</th><th>Срок до 80% плана</th></tr></thead>
+          <tr><td>SDR, квалификатор</td><td>3,1–3,2 месяца</td></tr>
+          <tr><td>Менеджер, малый бизнес</td><td>3–4 месяца</td></tr>
+          <tr><td>Менеджер, средний бизнес</td><td>5–7 месяцев</td></tr>
+          <tr><td>Enterprise</td><td>9–12 месяцев</td></tr>
+        </table>
+        <div class="note red" style="margin-top:12px">Средний срок жизни менеджера в компании — <b>2,2 года</b>. При рампе 5,7 месяца он четверть своей карьеры у вас не окупается.</div>
+      </div>
+      <div class="col" style="max-width:42%">
+        <div class="card"><h3>Две разные даты</h3>
+          <div style="font-size:16px;line-height:1.5;margin-top:6px">
+            <b class="em">Самостоятельность</b> — работает без наставника, не портит лиды. Наш норматив: <b>3–4 недели</b>.<br><br>
+            <b class="em">Выход на план</b> — устойчиво держит 100%. Считается от длины <b>вашей</b> сделки: онбординг + 90 дней + средний цикл.
+          </div>
+          <div class="note" style="margin-top:10px;font-size:14px">Смешивать их нельзя: при цикле сделки 4 месяца никакой онбординг не даст выручку на 30-й день. Это не провал системы, это арифметика.</div>
+        </div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 8 -->
   <section class="slide">
     <div class="kick">Главная идея модуля</div>
     <h2>Онбординг — это <span class="g">продукт</span>,<br>а не адаптация</h2>
@@ -197,7 +327,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 5 -->
+  <!-- 9 -->
   <section class="slide">
     <div class="kick">Второй принцип</div>
     <h2>Знание должно жить <span class="g">в системе</span>, а не в головах</h2>
@@ -211,7 +341,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 6 -->
+  <!-- 10 -->
   <section class="slide dark2">
     <div class="kick">Третий принцип</div>
     <h2>Наставничество не масштабируется.<br><span class="g">Записи масштабируются</span></h2>
@@ -224,24 +354,58 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 7 -->
+  <!-- 11 -->
   <section class="slide">
     <div class="kick">Нормативы системного онбординга</div>
     <h2>С чем сверять <span class="g">свои цифры</span></h2>
-    <table class="mt" style="margin-top:12px">
-      <tr><th>Показатель</th><th>Норма</th><th>Комментарий</th></tr>
-      <tr><td>Срок теоретической части</td><td class="grn"><b>до 21 дня</b></td><td>3 недели · 7 слоёв по 2–3 дня</td></tr>
-      <tr><td>До первого самостоятельного контакта</td><td class="grn"><b>5–7 дней</b></td><td>под контролем наставника</td></tr>
-      <tr><td>Выход на самостоятельность</td><td class="grn"><b>3–4 недели</b></td><td>вместо 3 месяцев без системы</td></tr>
-      <tr><td>Отсев на испытательном сроке</td><td class="grn"><b>−50%</b></td><td>к уровню без системы онбординга</td></tr>
-      <tr><td>Время руководителя на ввод</td><td class="grn"><b>−60%</b></td><td>обучение переносится в систему</td></tr>
+    <table class="mt sm" style="margin-top:10px">
+      <tr><th>Показатель</th><th>Норма</th><th>Откуда цифра</th></tr>
+      <tr><td>Теоретическая часть</td><td class="grn"><b>до 21 дня</b></td><td>7 слоёв по 2–3 дня — конструкция методики</td></tr>
+      <tr><td>До первого самостоятельного контакта</td><td class="grn"><b>5–7 дней</b></td><td>под супервизией наставника</td></tr>
+      <tr><td><b>Выход на самостоятельность</b></td><td class="grn"><b>3–4 недели</b></td><td>работает без наставника и не портит лиды</td></tr>
+      <tr><td><b>Выход на план</b></td><td class="grn"><b>онбординг + 90 дней + цикл сделки</b></td><td>это другая дата — зависит от длины вашей сделки</td></tr>
+      <tr><td>Рынок: средний ramp в B2B</td><td><b>5,3–5,7 мес</b></td><td>вырос с 4,3 мес за пять лет — тренд против вас</td></tr>
+      <tr><td>Отсев на испытательном</td><td class="grn"><b>−50%</b></td><td>структурированный онбординг даёт −25…−30% текучки первого года</td></tr>
+      <tr><td>Время руководителя на ввод</td><td class="grn"><b>−60%</b></td><td>76 → 28 часов на одного новичка</td></tr>
     </table>
-    <div class="note">Если ваш новичок выходит на результат дольше — проблема не в нём. Проблема в том, что он учится сам.</div>
-    <img class="bob bobc" src="gen/bob/cut/bob_cjm.png" alt="" style="height:155px">
+    <div class="row" style="margin-top:10px">
+      <div class="col card" style="padding:10px 14px"><div style="font-size:14.5px;line-height:1.4"><b>Эффект воспроизводится чужими руками:</b> Corning — <b class="grn">+69%</b> к вероятности остаться на три года после структурированной программы · Texas Instruments — на <b class="grn">2 месяца</b> раньше выход на полную производительность · Bank of America — <b class="grn">12%</b> провалов дорогих наймов против 40% по отрасли. И рыночный фон: 93% компаний проводят «ориентацию», системный уровень — примерно у 20%, а довольны онбордингом <b class="rd">12%</b> сотрудников.</div></div>
+    </div>
+    <div class="note red">Главная ошибка при постановке целей: смешать две даты. «Самостоятельность за 3–4 недели» — это про качество работы. «Выход на план» при цикле сделки 4 месяца не может случиться на 30-й день ни при каком онбординге.</div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 8 -->
+  <!-- 12 -->
+  <section class="slide dark">
+    <div class="kick">Откуда берётся −60%</div>
+    <h2 style="max-width:28ch">Руководитель не перестаёт заниматься новичком. Он <span class="g">перестаёт повторять одно и то же</span></h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col">
+        <table class="mt sm">
+          <thead><tr><th>На что уходит время РОПа</th><th>Было</th><th>Стало</th></tr></thead>
+          <tr><td>Рассказать про продукт, клиента, CRM</td><td>28 ч</td><td class="grn">0 ч — в системе</td></tr>
+          <tr><td>Ответы на повторяющиеся вопросы</td><td>20 ч</td><td class="grn">4 ч — остальное в базе</td></tr>
+          <tr><td>Ролевые и отработка возражений</td><td>12 ч</td><td>8 ч — наставник и тренажёр</td></tr>
+          <tr><td>Разбор звонков</td><td>10 ч</td><td>10 ч — <b>это остаётся</b></td></tr>
+          <tr><td>Решения: допуск, ИС, план</td><td>6 ч</td><td>6 ч — <b>это остаётся</b></td></tr>
+          <tr><td><b>Итого на одного новичка</b></td><td><b>76 ч</b></td><td><b class="grn">28 ч</b></td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:34%">
+        <div class="card"><h3>Что нельзя делегировать</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:16px">Разбор реальных звонков</li>
+            <li style="font-size:16px">Решение по испытательному сроку</li>
+            <li style="font-size:16px">Постановка плана и обратная связь</li>
+          </ul>
+        </div>
+        <div class="note">Норма управляемости на рампе — <b>не больше 4–5 новичков</b> на одного руководителя одновременно. Это прямо ограничивает темп найма.</div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 13 -->
   <section class="slide">
     <div class="kick">Ключевая цель модуля</div>
     <h2 style="max-width:26ch">Собрать систему онбординга<br>под <span class="g">свою ключевую роль</span></h2>
@@ -254,23 +418,42 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 9 -->
+  <!-- 14 -->
   <section class="slide dark2">
     <div class="kick">Карта модуля</div>
-    <h2>Пять фаз сборки</h2>
-    <div class="steps7" style="grid-template-columns:repeat(5,1fr);margin-top:22px">
-      <div class="st7 zero"><div class="n">1</div><b>Подготовка</b><span>материалы, брифы, конфликты, интервью с топами</span></div>
+    <h2>Шесть фаз сборки — и <span class="g">нулевая важнее всех</span></h2>
+    <div class="steps7" style="grid-template-columns:repeat(6,1fr);margin-top:22px">
+      <div class="st7 zero"><div class="n">0</div><b>Замер</b><span>час в CRM: ваш настоящий ramp, отсев и цена дня</span></div>
+      <div class="st7 zero"><div class="n">1</div><b>Подготовка</b><span>материалы, брифы, конфликты, интервью с топами, фонотека</span></div>
       <div class="st7"><div class="n">2</div><b>База знаний</b><span>семь слоёв с тестами и порогами</span></div>
-      <div class="st7"><div class="n">3</div><b>Программа</b><span>лестница, аттестация, 30-60-90, наставник</span></div>
+      <div class="st7"><div class="n">3</div><b>Программа</b><span>пребординг, первая неделя, лестница, аттестация, 30-60-90</span></div>
       <div class="st7"><div class="n">4</div><b>Тренировка</b><span>арсенал, диагностика, ролевки, чек-листы</span></div>
       <div class="st7"><div class="n">5</div><b>Запуск</b><span>план на 8 недель, отчётность, контроль</span></div>
     </div>
-    <p class="lead" style="margin-top:26px;max-width:68ch">Это оглавление презентации и одновременно структура инструмента, которым вы всё это соберёте.</p>
+    <p class="lead" style="margin-top:24px;max-width:70ch">Это оглавление презентации и одновременно структура инструмента, которым вы всё соберёте. Фаза 0 занимает один час и определяет, будет ли через квартал с чем сравнить результат.</p>
     <img class="bob bobc" src="gen/bob/cut/s9_map.png" alt="">
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 10 -->
+  <!-- 15 -->
+  <section class="slide">
+    <div class="kick">Задание 0 · до первого урока</div>
+    <h2 style="max-width:28ch">Один час в CRM — и вы знаете <span class="g">свой настоящий ramp</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">Без этой цифры вся система строится на вере. С ней через квартал будет что с чем сравнить — и разговор с финдиром пойдёт по-другому.</p>
+    <div class="steps7" style="grid-template-columns:repeat(3,1fr)">
+      <div class="st7"><div class="n">1</div><b>Список всех, кто вышел за 12 месяцев</b><span>ФИО, дата выхода, дата ухода или «работает»</span></div>
+      <div class="st7"><div class="n">2</div><b>Первый месяц с ≥80% плана</b><span>по каждому — на каком месяце стажа это случилось</span></div>
+      <div class="st7"><div class="n">3</div><b>Дата первой самостоятельной сделки</b><span>без участия руководителя в переговорах</span></div>
+      <div class="st7"><div class="n">4</div><b>Кто не дожил до 90 дней</b><span>доля отсева на испытательном сроке</span></div>
+      <div class="st7"><div class="n">5</div><b>Часы руководителя на одного новичка</b><span>честная оценка по календарю, а не по ощущению</span></div>
+      <div class="st7"><div class="n">6</div><b>Цена дня по вашей формуле</b><span>план × маржа и полная стоимость сотрудника</span></div>
+    </div>
+    <div class="note red" style="margin-top:14px">Осторожно со средним. Чем хуже онбординг, тем <b>красивее</b> выглядит средний ramp: те, кто не разогнался, уволились и в среднее не попали. Считайте медиану по когорте и отдельно — долю не доехавших.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_dashboard.png" alt="" style="height:150px;right:26px;bottom:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 16 -->
   <section class="slide dark">
     <div class="kick">Фаза 1 · Подготовка</div>
     <h2>Онбординг разваливается не от лени.<br>Он разваливается от <span class="g">противоречий внутри</span></h2>
@@ -284,7 +467,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 11 -->
+  <!-- 17 -->
   <section class="slide">
     <div class="kick">Убийца 1 · слипание имён</div>
     <h2>Одно название — <span class="rd">три разные сущности</span></h2>
@@ -306,7 +489,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 12 -->
+  <!-- 18 -->
   <section class="slide">
     <div class="kick">Убийца 2 · несведённые цифры</div>
     <h2>Одна метрика — <span class="rd">четыре значения</span> в четырёх документах</h2>
@@ -322,7 +505,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 13 -->
+  <!-- 19 -->
   <section class="slide">
     <div class="kick">Убийца 3 · стоп-слова и зона владения</div>
     <h2>Есть слова, которые <span class="rd">меняют сам предмет сделки</span></h2>
@@ -343,7 +526,34 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 14 -->
+  <!-- 20 -->
+  <section class="slide">
+    <div class="kick">Убийца 4 · нечего оцифровывать</div>
+    <h2 style="max-width:28ch">Если записей звонков нет — первые две недели вы собираете <span class="g">не контент, а фонотеку</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">На записях держатся Слой 7, тренажёр, чек-лист наставника и вся ролевая аттестация. Без них система собирается наполовину и на выдуманных примерах.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col card"><h3 class="rd">Что не годится</h3>
+        <ul style="margin-top:6px">
+          <li style="font-size:16px">«Мы примерно так говорим» — пересказ по памяти</li>
+          <li style="font-size:16px">Идеальный скрипт, написанный маркетологом</li>
+          <li style="font-size:16px">Только успешные звонки: без провалов не видно, где ломается</li>
+        </ul>
+      </div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">Минимальный комплект за 2 недели</h3>
+        <ul style="margin-top:6px">
+          <li style="font-size:16px"><b>10 выигранных</b> звонков разных типов сделок</li>
+          <li style="font-size:16px"><b>5 проигранных</b> — как антипримеры</li>
+          <li style="font-size:16px"><b>3 сложных</b>: возражение по цене, конкурент, отказ</li>
+          <li style="font-size:16px">Один 60-минутный разбор от лучшего: «почему я сказал именно это»</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note grn" style="margin-top:14px">Включите запись разговоров сегодня, даже если систему будете собирать через месяц. Две недели записей — это актив, который потом невозможно восстановить задним числом.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_phone.png" alt="" style="height:145px;right:22px;bottom:14px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 21 -->
   <section class="slide dark2">
     <div class="kick">Правило, которое держит всю систему</div>
     <h2>ИИ пишет черновик.<br>В обучение уходит только <span class="g">подтверждённое</span></h2>
@@ -357,7 +567,33 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 15 -->
+  <!-- 22 -->
+  <section class="slide dark2">
+    <div class="kick">Почему системы умирают через год</div>
+    <h2 style="max-width:28ch">У каждого слоя есть <span class="g">фамилия владельца</span> и дата, после которой он считается протухшим</h2>
+    <p class="lead" style="margin-top:12px;max-width:64ch">Контент не устаревает внезапно. Он устаревает потому, что у него нет владельца и нет триггера пересборки — и через год новичок учится по прайсу, которого больше нет.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col">
+        <table class="mt sm">
+          <thead><tr><th>Слой</th><th>Владелец</th><th>Пересборка</th><th>Триггер вне графика</th></tr></thead>
+          <tr><td>2 · Продукт</td><td>продакт</td><td>раз в квартал</td><td>изменение прайса или линейки</td></tr>
+          <tr><td>4 · Продажи</td><td>РОП</td><td>раз в квартал</td><td>новое возражение у трёх менеджеров</td></tr>
+          <tr><td>5 · CRM</td><td>админ CRM</td><td>раз в полгода</td><td>смена статусов или полей</td></tr>
+          <tr><td>6 · Конкуренты</td><td>маркетинг</td><td>раз в квартал</td><td>конкурент сменил цену или позиционирование</td></tr>
+          <tr><td>7 · Практики</td><td>РОП</td><td>раз в месяц</td><td>появился новый эталонный звонок</td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:32%">
+        <div class="card"><h3>Правило двух вопросов</h3>
+          <div style="font-size:16px;line-height:1.5;margin-top:6px">Вопрос, который задали <b>два разных новичка</b>, автоматически становится уроком или пунктом FAQ. Так база растёт из реальных пробелов, а не из фантазии автора курса.</div>
+        </div>
+        <div class="note">Ожидаемо: 15–30 вопросов на когорту → 5–10 новых уроков.</div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 23 -->
   <section class="slide">
     <div class="kick">Фаза 2 · База знаний</div>
     <h2>Порядок слоёв — не оглавление,<br>а <span class="g">методика</span></h2>
@@ -376,9 +612,10 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 16 -->
+  <!-- 24 -->
   <section class="slide">
     <div class="kick">Слой 1 · Компания</div>
+    <div style="position:absolute;right:60px;top:52px;text-align:right"><div class="big" style="font-size:38px">10 / 23 / 64%</div><div style="font-size:13px;color:var(--muted);max-width:22ch;line-height:1.35">решают уйти в первый день / за первую неделю / за первый месяц</div></div>
     <h2>Новичок решает «я здесь свой»<br>за <span class="g">первые три дня</span></h2>
     <div class="row" style="margin-top:16px">
       <div class="col" style="max-width:52%">
@@ -398,7 +635,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 17 -->
+  <!-- 25 -->
   <section class="slide dark2">
     <div class="kick">Если миссии нет</div>
     <h2>Слой 1 без видения превращается<br>в <span class="g">набор лозунгов</span></h2>
@@ -413,7 +650,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 18 -->
+  <!-- 26 -->
   <section class="slide">
     <div class="kick">Слой 2 · Продукт</div>
     <h2>Незнание продукта = неуверенность в голосе<br>= <span class="rd">потерянная сделка</span></h2>
@@ -434,7 +671,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 19 -->
+  <!-- 27 -->
   <section class="slide dark">
     <div class="kick">Слой 3 · Клиент</div>
     <h2>Поворотный момент всего онбординга</h2>
@@ -448,7 +685,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 20 -->
+  <!-- 28 -->
   <section class="slide">
     <div class="kick">Слой 4 · Продажи · порог 85%</div>
     <h2>Скрипт — это <span class="g">алгоритм с развилками</span>,<br>а не монолог для заучивания</h2>
@@ -467,7 +704,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 21 -->
+  <!-- 29 -->
   <section class="slide">
     <div class="kick">Слой 5 · CRM · порог 90%</div>
     <h2>CRM — это не надзор.<br>Это <span class="g">операционная нервная система</span></h2>
@@ -488,7 +725,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 22 -->
+  <!-- 30 -->
   <section class="slide">
     <div class="kick">Слой 6 · Конкуренты</div>
     <h2>Кто знает конкурентов, но не знает свой продукт, —<br><span class="rd">продаёт конкурентов</span></h2>
@@ -502,7 +739,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 23 -->
+  <!-- 31 -->
   <section class="slide dark2">
     <div class="kick">Слой 7 · Лучшие практики</div>
     <h2>Сотрудник перестаёт изобретать велосипед<br>и начинает <span class="g">воспроизводить</span></h2>
@@ -517,23 +754,61 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 24 -->
+  <!-- 32 -->
   <section class="slide">
     <div class="kick">Как учат сотрудников в мире</div>
-    <h2>Десять принципов, зашитых <span class="g">в каждый урок</span></h2>
-    <div class="grid9" style="margin-top:18px">
+    <h2>Принципы, у каждого из которых <span class="g">есть цифра</span></h2>
+    <div class="grid9" style="margin-top:16px">
       <div class="b9"><div class="n">70-20-10</div><b>Контент — только 10%</b><span>20% — обратная связь, 70% — практика на реальных задачах</span></div>
-      <div class="b9"><div class="n">Retrieval</div><b>Извлечение, не перечитывание</b><span>вопрос по памяти в конце урока</span></div>
-      <div class="b9"><div class="n">Spaced</div><b>Повторение на 7-й и 30-й день</b><span>ценности и SLA не учатся один раз</span></div>
-      <div class="b9"><div class="n">Scenario</div><b>«Вот ситуация, что сделаешь»</b><span>вместо «запомни правило»</span></div>
-      <div class="b9"><div class="n">Worked examples</div><b>Сначала эталон, потом повтор</b><span>обратный порядок ломает новичка</span></div>
-      <div class="b9"><div class="n">Feedback 24h</div><b>Обратная связь в сутки</b><span>позже она уже не работает</span></div>
+      <div class="b9"><div class="n">Retrieval · testing effect</div><b>Извлечение сильнее перечитывания</b><span>вопрос по памяти учит больше, чем второй проход текста</span></div>
+      <div class="b9"><div class="n">Spaced · 70% / 24 ч</div><b>Повтор на 7-й и 30-й день</b><span>без него от урока остаётся 13% через неделю</span></div>
+      <div class="b9"><div class="n">Interleaving · 63% vs 20%</div><b>Вперемешку, а не блоками</b><span>втрое лучше удержание через неделю</span></div>
+      <div class="b9"><div class="n">Cognitive load · 4 элемента</div><b>Одна мысль на урок</b><span>рабочая память держит четыре элемента, не десять</span></div>
+      <div class="b9"><div class="n">Worked examples</div><b>Сначала эталон, потом сам</b><span>для скрипта — эталон первым; для понимания клиента — сначала своя попытка</span></div>
+      <div class="b9"><div class="n">Scaffolding · fading</div><b>Опора снимается по графику</b><span>а не «когда почувствуем»: дни 3 / 7 / 14 прописаны заранее</span></div>
+      <div class="b9"><div class="n">Feedback 24 h</div><b>Обратная связь в сутки</b><span>треть обратной связи ухудшает результат — та, что про личность, а не про действие</span></div>
+      <div class="b9"><div class="n">Transfer · 10–20%</div><b>Обучение само не переносится</b><span>переносит применение, разбор и спрос — не качество слайдов</span></div>
     </div>
-    <div class="note">Плюс: одна мысль на урок, справочник под рукой вместо памяти, лучшие сотрудники как источник контента.</div>
+    <div class="note">Аудитория обычно слышит эти слова от HR-подрядчиков без единой цифры. Разница между принципом и цифрой в том, что цифру можно проверить у себя через месяц.</div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 25 -->
+  <!-- 33 -->
+  <section class="slide dark">
+    <div class="kick">Почему «мы же его обучали» не работает</div>
+    <h2 style="max-width:28ch">70% забывается за сутки. <span class="g">87% — за неделю</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:64ch">Это не про плохих сотрудников. Это физиология памяти, одинаковая у всех. Без подкрепления к третьему месяцу от урока остаётся около 15%.</p>
+    <div class="stat" style="margin-top:22px">
+      <div class="s"><div class="v">70%</div><div class="l">забыто за 24 часа без повтора</div></div>
+      <div class="s"><div class="v">87%</div><div class="l">забыто за неделю</div></div>
+      <div class="s"><div class="v">84%</div><div class="l">потеряно за 3 месяца</div></div>
+      <div class="s"><div class="v">87%</div><div class="l">продавцов забывают материал за месяц <span style="opacity:.7">(Gartner)</span></div></div>
+    </div>
+    <div class="note" style="margin-top:20px"><b>Прямое следствие для вашей системы:</b> аттестация на 90% на второй неделе <b>не доказывает</b> знание на шестой. Нужен ре-тест — те же вопросы на 30-й и 90-й день, тот же порог. Это стоит ноль рублей и сразу показывает, кто просел.</div>
+    <div class="row" style="margin-top:14px">
+      <div class="col card"><h3>День 1–14</h3><span style="font-size:15px;color:#c3cec5">обучение + тест с порогом</span></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">День 30</h3><span style="font-size:15px;color:#c3cec5">ре-тест по слоям 2, 4, 5 — те же вопросы</span></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">День 90</h3><span style="font-size:15px;color:#c3cec5">ре-тест + разбор: что забылось, то не применялось</span></div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 34 -->
+  <section class="slide">
+    <div class="kick">Главный контринтуитивный факт модуля</div>
+    <h2 style="max-width:29ch">Тест — это не шлагбаум. Это <span class="g">самый сильный способ обучения</span> из существующих</h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">Достать знание из головы — упражнение более мощное, чем перечитать. Поэтому вопросы в нашей системе стоят не только в конце слоя, а внутри каждого урока.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col card"><h3>Retrieval practice · 61% против 40%</h3><div style="font-size:15.5px;line-height:1.45;margin-top:4px">Через неделю группа, которую <b>тестировали</b>, помнит 61% материала; группа, которая <b>перечитывала</b>, — 40%. Перечитывание даёт иллюзию знания: текст знаком — значит, «знаю».</div></div>
+      <div class="col card"><h3>Вперемешку, а не блоками</h3><div style="font-size:15.5px;line-height:1.45;margin-top:4px">Ролевые вперемешку (цена, конкурент, сомнение) вместо десяти подряд про цену: <b class="grn">63%</b> удержания через неделю против <b class="rd">20%</b>. На тренировке это выглядит хуже — в поле работает втрое лучше.</div></div>
+      <div class="col card"><h3>Гладкий прогон — плохой знак</h3><div style="font-size:15.5px;line-height:1.45;margin-top:4px">Если ролевая прошла легко, чаще всего вы тренировали не то. Ошибка на тренировке дешевле ошибки на клиенте в 50 раз.</div></div>
+    </div>
+    <div class="note grn" style="margin-top:14px">Отсюда правило: <b>«Понял?» — бесполезный вопрос.</b> Люди системно переоценивают своё усвоение. Вместо него — «объясни клиенту своими словами, я послушаю».</div>
+    <img class="bob bobc" src="gen/bob/cut/p_book.png" alt="" style="height:145px;right:22px;bottom:14px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 35 -->
   <section class="slide">
     <div class="kick">Стандарт урока</div>
     <h2>Онбординг — не корпоративная библия.<br><span class="g">Перегруз даёт отторжение</span></h2>
@@ -549,7 +824,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 26 -->
+  <!-- 36 -->
   <section class="slide">
     <div class="kick">Тесты</div>
     <h2>Учит не вопрос. Учит <span class="g">объяснение ответа</span></h2>
@@ -565,13 +840,44 @@
       </div>
     </div>
     <div class="note">Итого эталон программы: <b>37 уроков и 76 тестовых вопросов</b> на семь слоёв.</div>
+    <div class="note grn">Пороги обоснованы деньгами, а не экспертным мнением: где ошибка стоит сделки — 80%, где ошибка стоит доверия клиента — 85%, где ошибка стоит данных и денег в CRM — <b>90%</b>. И один и тот же тест возвращается на 30-й и 90-й день: сдал в феврале — не значит знает в апреле.</div>
     <img class="bob bobc" src="gen/bob/cut/bob_temp.png" alt="" style="height:160px;right:18px">
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 27 -->
+  <!-- 37 -->
+  <section class="slide dark2">
+    <div class="kick">Два края, о которых забывают</div>
+    <h2 style="max-width:30ch">Сильный проходит за 5 дней. Слабый виден <span class="g">на 10-й, а не на 60-й</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">Онбординг обычно проектируют под среднего — и он одновременно слишком медленный для сильного и слишком быстрый для слабого. Первыми уходят те, ради кого всё строилось.</p>
+    <div class="vs" style="margin-top:16px">
+      <div class="p" style="border-color:var(--gold2);background:rgba(199,154,69,.12);flex:1">
+        <h3 class="g">↑ Ускоренный трек</h3>
+        <div style="font-size:15.5px;line-height:1.45;margin-top:6px;color:#EFE9DA">
+          Сдал входной тест слоя на <b>95%</b> — уроки пропускает, идёт сразу к практике.<br>
+          Для него порог <b>выше</b>, а не ниже: 95 вместо 80.<br>
+          Экономия 5–7 дней и главное — уважение к его опыту.<br>
+          <span style="opacity:.75">Не даёт пропустить: Слой 5 (CRM) и реестр конфликтов — они про вашу компанию, а не про профессию.</span>
+        </div>
+      </div>
+      <div class="p" style="border-color:#e0b6ad;background:rgba(178,59,46,.14);flex:1">
+        <h3 class="rd">↓ Правило остановки</h3>
+        <div style="font-size:15.5px;line-height:1.45;margin-top:6px;color:#EFE9DA">
+          Провалил один и тот же тест <b>дважды</b> — стоп, разбор с руководителем, а не третья попытка.<br>
+          Отстаёт от графика когорты на <b>&gt;3 дня</b> без причины — разговор на 10-й день.<br>
+          Не сдал ролевую с двух попыток — вопрос не в обучении, а в найме.<br>
+          <span style="opacity:.75">Расставание на 15-й день стоит 780 тыс ₽. На 75-й — 5 млн.</span>
+        </div>
+      </div>
+    </div>
+    <div class="note">Онбординг не чинит ошибку найма. Но именно он делает её <b>видимой и оплаченной вовремя</b> — на второй неделе вместо третьего месяца.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 38 -->
   <section class="slide dark2">
     <div class="kick">Фаза 3 · Программа</div>
+    <div class="note" style="position:absolute;right:56px;top:48px;max-width:24ch;margin:0;font-size:13.5px"><b>Ступень −1 · день −14…0:</b> пребординг. Слой 1 сдан на 80% ещё до выхода — первый день освобождается под людей, а не под чтение.</div>
     <h2>Лестница из <span class="g">пяти этапов</span> до самостоятельности</h2>
     <div class="fun" style="margin-top:16px;max-width:82%">
       <div class="fbar" style="width:100%;background:var(--em)">Этап 0–1 · Знания и инструменты — контент, скрипт, CRM</div>
@@ -584,31 +890,117 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 28 -->
-  <section class="slide">
-    <div class="kick">Первый день</div>
-    <h2>Что новичок держит открытым <span class="g">с первого часа</span></h2>
+  <!-- 39 -->
+  <section class="slide dark">
+    <div class="kick">Точка, которой нет ни у кого</div>
+    <h2 style="max-width:30ch">Онбординг начинается <span class="g">в момент оффера</span>, а не в первый рабочий день</h2>
+    <p class="lead" style="margin-top:12px;max-width:64ch">Между «согласен» и «вышел» проходит две-четыре недели. Для кандидата это время сомнений, для вас — бесплатное окно, в которое почти никто не заходит.</p>
     <div class="row" style="margin-top:16px">
-      <div class="col" style="max-width:50%">
-        <div class="grid9" style="grid-template-columns:1fr;gap:8px">
-          <div class="b9"><div class="n">Окно 1</div><b>CRM — главное рабочее окно</b></div>
-          <div class="b9"><div class="n">Окно 2</div><b>Боевой скрипт</b></div>
-          <div class="b9"><div class="n">Окно 3</div><b>Справочник статусов</b></div>
-          <div class="b9"><div class="n">Окно 4</div><b>Банк возражений</b></div>
-          <div class="b9"><div class="n">Окно 5</div><b>Арсенал: все ссылки в одном месте</b></div>
-        </div>
+      <div class="col" style="max-width:56%">
+        <table class="mt sm">
+          <thead><tr><th>Когда</th><th>Что делает компания</th></tr></thead>
+          <tr><td>День оффера</td><td>письмо с датой выхода, именем наставника и планом первой недели</td></tr>
+          <tr><td>−10 дней</td><td>доступ к Слою 1: кто мы, куда идём, как принимаем решения</td></tr>
+          <tr><td>−7 дней</td><td>звонок будущего руководителя на 15 минут — без задач, просто «ждём»</td></tr>
+          <tr><td>−3 дня</td><td>всё готово: почта, CRM, техника, стол, чат-каналы</td></tr>
+          <tr><td>−1 день</td><td>сообщение от buddy: «завтра встречаю в 9:45 у входа»</td></tr>
+        </table>
       </div>
-      <div class="col card" style="max-width:47%">
-        <h3>Ритм дня с первого дня</h3>
-        <p style="color:var(--muted);font-size:16px;margin-top:6px">Сколько контактов в день, когда отчёты, за какое время первое касание нового лида. Новичок должен знать не только что делать, но и <b>в каком темпе</b>.</p>
-        <div class="note" style="margin-top:10px">Отдельным блоком — <b>красные линии</b>: что нельзя нарушать никогда, с последствием по каждому пункту.</div>
+      <div class="col" style="max-width:42%">
+        <div class="card"><h3>Зачем это вам</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15.5px">Снимает контроффер: человек уже начал работать головой у вас</li>
+            <li style="font-size:15.5px">Слой 1 пройден до выхода — первый день освобождается под людей</li>
+            <li style="font-size:15.5px">Пребординг есть у меньшинства компаний. На рынке труда это заметное отличие</li>
+          </ul>
+        </div>
+        <div class="note">Стоимость: пять писем и один звонок. Возврат: часть тех, кто иначе не вышел бы, доходит до первого дня — а невыход после принятого оффера обнуляет всю работу воронки найма и возвращает вас на два месяца назад.</div>
       </div>
     </div>
-    <img class="bob bobc" src="gen/bob/cut/bob_arsenal.png" alt="" style="height:160px;right:18px">
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 29 -->
+  <!-- 40 -->
+  <section class="slide">
+    <div class="kick">Смена ответственности</div>
+    <h2 style="max-width:30ch">Не готовы — <span class="g">переносим дату выхода</span>. Готовность компании это gate, а не пожелание</h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">Обычно проверяют готовность новичка. Проверять надо готовность компании: человек в первый день не должен ждать, пока ему заведут почту.</p>
+    <div class="steps7" style="grid-template-columns:repeat(4,1fr);margin-top:14px">
+      <div class="st7 zero"><div class="n">✓</div><b>Доступы</b><span>почта, CRM, телефония, чаты, база знаний — работают и проверены входом</span></div>
+      <div class="st7 zero"><div class="n">✓</div><b>Рабочее место</b><span>техника, гарнитура, стол, пропуск</span></div>
+      <div class="st7 zero"><div class="n">✓</div><b>Имена</b><span>наставник, buddy и руководитель назначены и предупреждены</span></div>
+      <div class="st7 zero"><div class="n">✓</div><b>План первой недели</b><span>расписан по дням и отправлен новичку</span></div>
+      <div class="st7 zero"><div class="n">✓</div><b>Что продавать</b><span>лиды или территория выделены до выхода, а не «разберёмся»</span></div>
+      <div class="st7 zero"><div class="n">✓</div><b>Контент слоёв</b><span>слои 1–3 подтверждены руководителем, не в статусе «черновик»</span></div>
+      <div class="st7 zero"><div class="n">✓</div><b>Первая победа</b><span>назначено, что считается ранней победой и к какой дате</span></div>
+      <div class="st7 zero"><div class="n">✓</div><b>Календарь</b><span>встречи с buddy и 1:1 с руководителем уже стоят в календаре на 90 дней</span></div>
+    </div>
+    <div class="note red" style="margin-top:14px">Правило: не закрыто <b>три и более</b> пункта — дата выхода переносится. Один потерянный первый день дороже недели ожидания: 20% всей текучки приходится на первые 45 дней, и первое впечатление там формируется за часы.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 41 -->
+  <section class="slide">
+    <div class="kick">Самая дорогая точка онбординга</div>
+    <h2 style="max-width:30ch">Первый день по часам: <span class="g">ни минуты на бумаги</span> и ни минуты в одиночестве</h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:58%">
+        <table class="mt sm">
+          <thead><tr><th>Время</th><th>Что происходит</th><th>Кто</th></tr></thead>
+          <tr><td>9:45</td><td>встреча у входа — не ресепшн, живой человек</td><td>buddy</td></tr>
+          <tr><td>10:00</td><td>рабочее место готово, всё уже включается по его логину</td><td>buddy</td></tr>
+          <tr><td>10:30</td><td>разговор с руководителем: зачем взяли, что считается успехом</td><td>РОП</td></tr>
+          <tr><td>11:30</td><td>знакомство с 5 людьми поимённо — кто чем поможет</td><td>buddy</td></tr>
+          <tr><td>12:30</td><td>обед с командой, не в одиночку</td><td>команда</td></tr>
+          <tr><td>14:00</td><td>слушает три реальных звонка из фонотеки</td><td>сам</td></tr>
+          <tr><td>15:30</td><td>первая маленькая победа: делает что-то полезное сегодня</td><td>наставник</td></tr>
+          <tr><td>17:30</td><td>15 минут с руководителем: что было непонятно</td><td>РОП</td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:40%">
+        <div class="card"><h3 class="rd">Чего в этом дне нет</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15.5px">Кадровых документов — всё подписано до выхода</li>
+            <li style="font-size:15.5px">Восьмичасового чтения регламентов</li>
+            <li style="font-size:15.5px">Фразы «осмотрись пока»</li>
+          </ul>
+        </div>
+        <div class="note grn"><b>44%</b> новичков жалеют о выходе уже через неделю. Решение уходить принимается не на испытательном сроке, а в первые дни — и почти всегда по эмоциональным, а не рабочим причинам.</div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 42 -->
+  <section class="slide dark2">
+    <div class="kick">Первая неделя</div>
+    <h2 style="max-width:30ch">Первая победа <span class="g">назначается заранее</span>, а не случается</h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:56%">
+        <table class="mt sm">
+          <thead><tr><th>День</th><th>Что новичок делает</th><th>Что он получает</th></tr></thead>
+          <tr><td>1</td><td>люди, место, три звонка из фонотеки</td><td>«меня ждали»</td></tr>
+          <tr><td>2</td><td>Слой 2 — продукт, тест 80%</td><td>«я понимаю, что продаю»</td></tr>
+          <tr><td>3</td><td>Слой 3 — клиент; слушает 5 звонков; <b>наблюдение №1</b></td><td>«я понимаю, кому продаю»</td></tr>
+          <tr><td>4</td><td>первая ролевая с наставником, разбор в тот же день</td><td>«я это уже говорил вслух»</td></tr>
+          <tr><td>5</td><td><b>первый самостоятельный контакт</b> под супервизией</td><td>ранняя победа</td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:42%">
+        <div class="card"><h3>Что считается ранней победой</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15.5px">Не сделка. Первый <b>квалифицированный</b> разговор</li>
+            <li style="font-size:15.5px">Победа должна быть одержана <b>вашим способом</b> — по скрипту, а не «как-нибудь»</li>
+            <li style="font-size:15.5px">Не больше 3–4 фокусов на первый месяц. Больше — размывается всё</li>
+          </ul>
+        </div>
+        <div class="note">Ранняя победа — это не мотивация, а инженерия уверенности: человек получает доказательство, что здесь у него получается. Без него он к третьей неделе решает, что «не его».</div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 43 -->
   <section class="slide">
     <div class="kick">Аттестация</div>
     <h2>Тест проверяет, что прочитал.<br>Ролевка проверяет, что <span class="g">умеет</span></h2>
@@ -623,7 +1015,34 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 30 -->
+  <!-- 44 -->
+  <section class="slide dark">
+    <div class="kick">Два вопроса, которые вы зададите третьим и четвёртым</div>
+    <h2 style="max-width:31ch">Тренажёр — безопасная зона. Аттестация — <span class="g">зона решений</span>. Мерить их одним инструментом нельзя</h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col card"><h3 class="g">Где ИИ работает</h3>
+        <ul style="margin-top:6px">
+          <li style="font-size:15.5px">Черновик контента — с обязательным подтверждением руководителя</li>
+          <li style="font-size:15.5px">Ролевые: 20 репетиций вместо двух — снимается ограничение по времени наставника</li>
+          <li style="font-size:15.5px">Ответы по базе знаний — 24/7, вместо очереди к наставнику</li>
+          <li style="font-size:15.5px">Оценка <b>всех</b> звонков вместо трёх, которые успел послушать наставник</li>
+        </ul>
+        <div class="note grn" style="margin-top:10px">Прирост от ИИ максимален именно у новичка и почти нулевой у ветерана: он подтягивает нижнюю половину до медианы.</div>
+      </div>
+      <div class="col card"><h3 class="rd">Где ИИ не решает</h3>
+        <ul style="margin-top:6px">
+          <li style="font-size:15.5px"><b>Аттестация идёт без ИИ.</b> Иначе вы аттестуете умение пользоваться ИИ</li>
+          <li style="font-size:15.5px">Балл ИИ-судьи плывёт между версиями — если он влияет на допуск, судью надо калибровать и версионировать</li>
+          <li style="font-size:15.5px">RAG не спасает от выдумок: ломается не модель, а база — противоречивые документы дают уверенные неверные ответы</li>
+          <li style="font-size:15.5px">ИИ забирает у новичка ровно ту работу, на которой раньше набивалась рука</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note" style="margin-top:14px">Про данные: платформа работает <b>на вашем ключе</b>, материалы остаются в вашем браузере и в вашем контуре. Это не косметика — это ответ на вопрос, который вам задаст служба безопасности.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 45 -->
   <section class="slide">
     <div class="kick">Ролевая аттестация · как считается</div>
     <h2>Сто баллов за <span class="g">наблюдаемые действия</span>, а не за впечатление</h2>
@@ -639,62 +1058,283 @@
       <tr><td>Закрытие: техника, призыв и молчание после цены</td><td>8</td></tr>
       <tr><td>Зафиксировал следующий шаг и завёл в CRM</td><td>7</td></tr>
     </table>
-    <div class="note grn">Порог 80. Такой чек-лист одновременно и экзамен, и инструмент постоянного контроля качества — по нему же слушают боевые звонки.</div>
+    <div class="note grn">Порог 80. Тот же чек-лист используется и для боевых звонков — экзамен и контроль качества это один инструмент.</div>
+    <div class="note red"><b>Кто ставит баллы:</b> руководитель и один независимый оценщик, независимо друг от друга. Расхождение больше 10 баллов — пересдача. Наставник ученика в оценке <b>не участвует</b>. ИИ может дать предварительный балл и разбор, но решение о допуске к клиентам подписывает человек.</div>
     <img class="bob bobc" src="gen/bob/cut/bob_medals.png" alt="" style="height:160px;right:18px">
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 31 -->
+  <!-- 46 -->
   <section class="slide dark">
     <div class="kick">Карта контроля</div>
     <h2>KPI новичка — это число.<br>«Хорошо влился в команду» — <span class="g">не KPI</span></h2>
-    <div class="row" style="margin-top:22px;max-width:96%">
-      <div class="col card"><div class="badge" style="background:var(--gold)">30 дней</div><h3 style="color:#fff;margin-top:8px">Прошёл систему</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">все слои сданы, аттестация пройдена, первые самостоятельные контакты под контролем, базовая активность на норме</p></div>
-      <div class="col card"><div class="badge" style="background:var(--gold)">60 дней</div><h3 style="color:#fff;margin-top:8px">Вышел на траекторию</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">около 70% личного плана, конверсия на нижней границе нормы, работает без сопровождения</p></div>
-      <div class="col card"><div class="badge" style="background:var(--gold)">90 дней</div><h3 style="color:#fff;margin-top:8px">Закрыл испытательный</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">100% плана, целевая конверсия, средний чек на норме, оценка качества в зелёной зоне</p></div>
-    </div>
-    <div class="note">Отдельно — <b>красные флаги</b>: по каким признакам уже на 30-й и 60-й день видно, что человек не дойдёт, и что делать руководителю.</div>
+    <table class="mt sm" style="margin-top:12px">
+      <tr><th>Точка</th><th>Знания и допуск</th><th>Коммерция</th><th>Связи</th><th>Решение</th></tr>
+      <tr><td><b>30 дней</b></td><td>все 7 слоёв сданы, аттестация ≥80 баллов</td><td>RAQA 90–110% от плана месяца 1 (25%)</td><td>10–12 имён из 3 подразделений</td><td>допуск к самостоятельной работе</td></tr>
+      <tr><td><b>60 дней</b></td><td>ре-тест по слоям 2, 4, 5 на том же пороге</td><td>RAQA 90–110% от плана месяца 2 (50%)</td><td>знает, к кому идти по типу вопроса</td><td>продление или разбор</td></tr>
+      <tr><td><b>90 дней</b></td><td>чек-лист звонка ≥80 баллов на трёх подряд</td><td>RAQA 90–110% от плана месяца 3 (75%)</td><td>сам стал источником ответов для следующих</td><td>решение по испытательному</td></tr>
+      <tr><td><b>6–12 мес</b></td><td>ре-тест на 90-й день и далее раз в полгода</td><td>устойчивые 100% три периода подряд</td><td>сеть уровня старожила — критическая точка ~9 мес</td><td>грейд и зона роста</td></tr>
+    </table>
+    <div class="note red" style="margin-top:12px">Карта, которая обрывается на 90-м дне, закрывает только первый слой риска. Сильные уходят на шестом–девятом месяце — там, где обычно уже никто не смотрит.</div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 32 -->
-  <section class="slide">
-    <div class="kick">Наставник</div>
-    <h2>Наставник отвечает не за обучение,<br>а за <span class="g">перенос в работу</span></h2>
+  <!-- 47 -->
+  <section class="slide dark">
+    <div class="kick">Коммерческий контур новичка</div>
+    <h2 style="max-width:30ch">Рамп-квота: <span class="g">25 → 50 → 75 → 100%</span>, опубликована в оффере</h2>
+    <p class="lead" style="margin-top:12px;max-width:64ch">Здесь рушится половина онбордингов: человек прошёл обучение — и с первого месяца стоит полный план. Через шесть недель он либо демотивирован, либо уволен, хотя объективно шёл в графике.</p>
     <div class="row" style="margin-top:16px">
       <div class="col" style="max-width:50%">
-        <ul>
-          <li>Обучение — на платформе. Наставник — про <b>применение</b></li>
-          <li>Свой чек-лист по дням: что проверить, что объяснить, что подтвердить</li>
-          <li>Три контрольные точки прослушки: <b>день 3, день 7, день 14</b></li>
+        <table class="mt sm">
+          <thead><tr><th>Месяц</th><th>План</th><th>От чего считается выполнение</th></tr></thead>
+          <tr><td>Месяц 1</td><td>25%</td><td>от прорейтед-плана, не от полного</td></tr>
+          <tr><td>Месяц 2</td><td>50%</td><td>от прорейтед-плана</td></tr>
+          <tr><td>Месяц 3</td><td>75%</td><td>от прорейтед-плана</td></tr>
+          <tr><td>Месяц 4</td><td>100%</td><td>обычный режим</td></tr>
+        </table>
+        <div class="note" style="margin-top:10px">Три правила: считать от <b>прорейтед</b>-плана; публиковать график <b>в оффере</b>, до выхода; не растягивать «по доброте» — размытый график читается как «планов тут нет».</div>
+      </div>
+      <div class="col" style="max-width:48%">
+        <div class="card"><h3 class="g">RAQA — метрика, закрывающая спор</h3>
+          <div style="font-size:16px;line-height:1.5;margin-top:6px">
+            <b>RAQA = Факт ÷ (Полный план × Ramp-фактор месяца)</b><br><br>
+            Пример: план 3 млн, второй месяц, фактор 80% → база 2,4 млн. Сделал 2,1 млн.<br>
+            Против полного плана это <b class="rd">70%</b> и выглядит как провал.<br>
+            RAQA = <b class="grn">88%</b> — человек в графике.
+          </div>
+          <div class="note grn" style="margin-top:10px">Норма 90–110%. Ниже 80% два месяца подряд — красный флаг: вмешательство или расставание. Решение перестаёт приниматься на ощущение.</div>
+        </div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 48 -->
+  <section class="slide">
+    <div class="kick">Неудобная правда про внедрение</div>
+    <h2 style="max-width:31ch">Половину результата новичка определяет не обучение, а <span class="g">то, что вы дали ему в руки</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">Идеально собранный Завод покажет плохие цифры, если новичку выдали остатки базы, которые никто не берёт. Это не отменяет систему — это четыре рычага, которые работают параллельно ей.</p>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:16px">
+      <div class="b9"><div class="n">Рычаг 1</div><b>Территория и лиды</b><span>какого качества аккаунты он получает в день выхода. Не «что осталось»</span></div>
+      <div class="b9"><div class="n">Рычаг 2</div><b>Чёткость ICP</b><span>может ли он механически отсортировать, кому звонить первым</span></div>
+      <div class="b9"><div class="n">Рычаг 3</div><b>Норма управляемости</b><span>1:4–1:5 на период рампа вместо обычных 1:6–1:8</span></div>
+      <div class="b9"><div class="n">Рычаг 4</div><b>Доступ к данным</b><span>видит свой кусок пайплайна и историю по аккаунтам, а не пустой экран</span></div>
+    </div>
+    <div class="note red" style="margin-top:16px">Проверка честности: если вы не готовы отдать новичку нормальные лиды — вы не тестируете человека, вы тестируете свою готовность в него вложиться. Результат такого теста известен заранее.</div>
+    <div class="row" style="margin-top:12px">
+      <div class="col card"><h3>Дозировка коучинга</h3><div style="font-size:15.5px;margin-top:4px">Разбор еженедельно — план выполняют <b class="grn">76%</b>. Ежемесячно — 56%. Раз в квартал — <b class="rd">47%</b>. Руководители, тратящие 3+ часа в неделю на коучинг, выводят команду на ~94%.</div></div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 49 -->
+  <section class="slide">
+    <div class="kick">Пустой блок в 9 онбордингах из 10</div>
+    <h2 style="max-width:30ch">Люди проваливаются не на навыках, а на связях — и <span class="g">у этого есть ценник</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">Вероятность ухода падает примерно на <b>40%</b>, когда у человека выстроена внутренняя сеть. Это не «мягкая тема» — это управляемая метрика, которую можно поставить в карту 30-60-90.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:52%">
+        <div class="card"><h3>Карта знакомств как артефакт</h3>
+          <table class="mt sm" style="margin-top:6px">
+            <thead><tr><th>Точка</th><th>Норматив</th></tr></thead>
+            <tr><td>День 5</td><td>5 имён: кто чем помогает</td></tr>
+            <tr><td>День 30</td><td>10–12 имён из 3 подразделений</td></tr>
+            <tr><td>День 90</td><td>знает, к кому идти по любому типу вопроса</td></tr>
+          </table>
+          <div class="note" style="margin-top:10px">Список имён — проверяемый артефакт. Спросить «с кем ты уже познакомился» можно на любом 1:1, в отличие от «как ты себя чувствуешь в команде».</div>
+        </div>
+      </div>
+      <div class="col" style="max-width:46%">
+        <div class="card"><h3>Что стоит знать про горизонт</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15.5px">Чтобы построить сеть уровня сильного сотрудника, среднему нужно <b>3–5 лет</b>. Быстрым — 9–12 месяцев</li>
+            <li style="font-size:15.5px">Разрыв в связях между новичками и старожилами держится <b>дольше полугода</b></li>
+            <li style="font-size:15.5px">Отсюда тихие увольнения сильных на 6–9 месяце, которые списывают на деньги</li>
+          </ul>
+        </div>
+        <div class="note red">Карта 30-60-90 закрывает только первый слой. Полный горизонт удержания — <b>12 месяцев</b>, и точка 9 месяцев не менее критична, чем 90 дней.</div>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/re_retention.png" alt="" style="height:140px;right:20px;bottom:14px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 50 -->
+  <section class="slide">
+    <div class="kick">Почему наставничество «не работает»</div>
+    <h2 style="max-width:30ch">Три роли — <span class="g">три разных человека</span>. Смешал — сломал</h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">У большинства эти роли назначены на одного. Итог предсказуем: человек, который решает твою судьбу, не тот, кому признаются в незнании — и новичок прячет пробелы до дня увольнения.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col card"><h3>Buddy</h3>
+        <div style="font-size:15px;color:var(--muted);margin-top:2px">равный по грейду, не в подчинении</div>
+        <ul style="margin-top:8px">
+          <li style="font-size:15.5px">Отвечает на «глупые» вопросы</li>
+          <li style="font-size:15.5px">Объясняет неписаные правила</li>
+          <li style="font-size:15.5px">Знакомит с людьми</li>
         </ul>
       </div>
-      <div class="col card" style="max-width:47%">
-        <h3>Чек-лист наблюдения за звонками</h3>
-        <p style="color:var(--muted);font-size:15.5px;margin-top:6px"><b>День 3</b> — усвоил стандарты, структуру и дисциплину.<br><b>День 7</b> — уверенность в диалоге, потребность, возражения.<br><b>День 14</b> — готовность к самостоятельной работе.</p>
-        <p class="ex">По 8 наблюдаемых критериев на точку, оценка «да / частично / нет», в конце — заключение из трёх вариантов.</p>
+      <div class="col card"><h3>Наставник</h3>
+        <div style="font-size:15px;color:var(--muted);margin-top:2px">носитель ремесла</div>
+        <ul style="margin-top:8px">
+          <li style="font-size:15.5px">Слушает звонки по чек-листу</li>
+          <li style="font-size:15.5px">Ведёт ролевые</li>
+          <li style="font-size:15.5px">Разбирает ошибки в 24 часа</li>
+        </ul>
+      </div>
+      <div class="col card"><h3>Руководитель</h3>
+        <div style="font-size:15px;color:var(--muted);margin-top:2px">решения и ресурсы</div>
+        <ul style="margin-top:8px">
+          <li style="font-size:15.5px">Цели и план</li>
+          <li style="font-size:15.5px">Решение по испытательному сроку</li>
+          <li style="font-size:15.5px">Разбор реальных сделок</li>
+        </ul>
+      </div>
+    </div>
+    <div class="note red" style="margin-top:14px">Два жёстких правила: у наставника <b>ноль голосов</b> на аттестации ученика, и наставник с учеником <b>не пересекаются по лидам</b>. Иначе включается конфликт интересов, и наставничество превращается в имитацию.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 51 -->
+  <section class="slide dark">
+    <div class="kick">Наставничество — это доза</div>
+    <h2 style="max-width:30ch">Три касания дают 73%. <span class="g">Восемь дают 97%</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:64ch">Microsoft померил связь «сколько встреч с buddy за 90 дней» → «помог ли он быстро выйти на продуктивность». Получилась чистая кривая дозы, а не «наставничество полезно».</p>
+    <div class="row" style="margin-top:18px">
+      <div class="col" style="max-width:52%">
+        <table class="mt sm">
+          <thead><tr><th>Встреч за 90 дней</th><th>Доля тех, кому это помогло</th></tr></thead>
+          <tr><td>1 встреча</td><td class="rd">56%</td></tr>
+          <tr><td>2–3 встречи</td><td>73%</td></tr>
+          <tr><td>4–8 встреч</td><td>86%</td></tr>
+          <tr><td>8+ встреч</td><td class="grn"><b>97%</b></td></tr>
+        </table>
+        <div class="note" style="margin-top:10px">При активно включённом руководителе новичок в <b>3,5 раза</b> чаще доволен онбордингом. Пилот на 600 сотрудниках.</div>
+      </div>
+      <div class="col" style="max-width:46%">
+        <div class="card"><h3>График, который даёт 12–16 касаний</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15.5px">Неделя 1 — ежедневно по 10–15 минут</li>
+            <li style="font-size:15.5px">Недели 2–4 — дважды в неделю по 30 минут</li>
+            <li style="font-size:15.5px">Недели 5–12 — раз в неделю по 30 минут</li>
+          </ul>
+          <div class="note grn" style="margin-top:10px">Цена вопроса — <b>6–10 часов за квартал</b> времени сильного менеджера. Это снимает возражение «у меня некому этим заниматься»: речь не про выделенного человека, а про десять часов.</div>
+        </div>
+      </div>
+    </div>
+    <div class="note" style="margin-top:12px">Наш чек-лист наблюдения на дни 3 / 7 / 14 — это три касания, то есть <b>73% эффекта</b>. Дыра между днём 14 и днём 30 закрывается еженедельной получасовой встречей до 12-й недели.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 52 -->
+  <section class="slide">
+    <div class="kick">Против интуиции</div>
+    <h2 style="max-width:30ch">Наставник — не лучший продавец, а <span class="g">самый объяснимый</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">У топ-1 метод свернулся в интуицию: «я просто чувствую клиента». Это не переносится. Плюс его результат часто стоит на личной базе, накопленной за десять лет, — а её новичку не выдать.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:48%">
+        <div class="card"><h3>Пять критериев отбора</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15.5px">Результат <b>выше медианы</b> отдела — не обязательно топ-1</li>
+            <li style="font-size:15.5px">Метод воспроизводим: из воронки и регулярности, а не из личных связей</li>
+            <li style="font-size:15.5px">Готов отдать записи своих звонков. Отказался — не наставник</li>
+            <li style="font-size:15.5px">Спокойно переносит наблюдение за собой</li>
+            <li style="font-size:15.5px">Не конкурирует с учеником за территорию</li>
+          </ul>
+          <div class="note" style="margin-top:10px">Тест на 40 минут: пусть объяснит свою последнюю сделку, а вы попросите новичка пересказать. Что пересказалось — то переносимо.</div>
+        </div>
+      </div>
+      <div class="col" style="max-width:50%">
+        <div class="card"><h3>Чем платить: за результат ученика, не за часы</h3>
+          <table class="mt sm" style="margin-top:6px">
+            <tr><td>Доля от сделок</td><td>небольшой % с продаж ученика в период рампа</td></tr>
+            <tr><td>Бонус за майлстоун</td><td>сдал аттестацию на 80+ · вышел на план к 60-му дню</td></tr>
+            <tr><td>Грейд</td><td>наставничество вшито в роль «старшего», а не подвиг</td></tr>
+            <tr><td>Статус</td><td>голос при отборе кандидатов, доступ к лучшим лидам</td></tr>
+          </table>
+        </div>
+        <div class="note grn">Если лучший всё равно не хочет — разберите роль: пусть станет <b>донором контента</b>. Десять записанных звонков с комментариями и один разбор на 60 минут, и дальше ролевые ведёт другой.</div>
       </div>
     </div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 33 -->
-  <section class="slide">
-    <div class="kick">Что ломает новичка</div>
-    <h2>Восемь провалов, которые <span class="rd">повторяются у всех</span></h2>
-    <div class="grid9" style="margin-top:18px">
-      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 1</div><b>Слабая рамка</b><span>скатывается в «продавца» — клиент защищается</span></div>
-      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 2</div><b>Не зафиксировал потребность</b><span>презентация бьёт мимо</span></div>
-      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 3</div><b>Прошёл разбор как отчёт</b><span>нет эмоции — нечего закрывать</span></div>
-      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 4</div><b>Рассказал всё сразу</b><span>лекция вместо диалога, клиент устал</span></div>
-      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 5</div><b>Назвал цену слишком рано</b><span>возражения сыплются уже после цены</span></div>
-      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 6</div><b>Заполнил паузу после цены</b><span>сбил решение клиента</span></div>
+  <!-- 53 -->
+  <section class="slide dark2">
+    <div class="kick">Самое дешёвое улучшение во всём модуле</div>
+    <h2 style="max-width:30ch">Письмо руководителю в воскресенье вечером — <span class="g">минус месяц рампа</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:64ch">Google не стал строить регламент на сорок страниц. Он сделал автоматическое напоминание руководителю накануне выхода новичка — с пятью задачами. Результат: <b>−25%</b> времени до продуктивности.</p>
+    <div class="steps7" style="grid-template-columns:repeat(5,1fr);margin-top:18px">
+      <div class="st7 zero"><div class="n">1</div><b>Роль и зона ответственности</b><span>обсудить в первый день, не «по ходу»</span></div>
+      <div class="st7 zero"><div class="n">2</div><b>Назначить buddy</b><span>конкретное имя, не «кто-нибудь поможет»</span></div>
+      <div class="st7 zero"><div class="n">3</div><b>Кого с кем познакомить</b><span>список из 5 имён на первую неделю</span></div>
+      <div class="st7 zero"><div class="n">4</div><b>Поставить 1:1</b><span>ежемесячно на первые 6 месяцев — сразу в календарь</span></div>
+      <div class="st7 zero"><div class="n">5</div><b>Обсудить ожидания</b><span>что считается успехом на 30, 60, 90 день</span></div>
     </div>
-    <div class="note">Плюс два: не зафиксировал следующий шаг и не довёл материалы до клиента — сделка остывает без единой ошибки в разговоре.</div>
+    <div class="note grn" style="margin-top:18px">Механика работает не потому, что руководители не знают этих пяти пунктов. Она работает потому, что напоминание приходит <b>за 24 часа до момента, когда действие ещё возможно</b>. Заведите это письмо у себя завтра — оно ничего не стоит.</div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 34 -->
+  <!-- 54 -->
+  <section class="slide">
+    <div class="kick">Что ломает новичка</div>
+    <h2>Провалы бывают двух видов. <span class="rd">Половина из них — не его</span></h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:49%">
+        <div class="card"><h3 class="rd">Провалы новичка</h3>
+          <table class="mt sm" style="margin-top:6px">
+            <tr><td>Слабая рамка</td><td>скатился в «продавца» — клиент защищается</td></tr>
+            <tr><td>Не зафиксировал потребность</td><td>презентация била мимо</td></tr>
+            <tr><td>Рассказал всё сразу</td><td>лекция вместо диалога</td></tr>
+            <tr><td>Рано назвал цену</td><td>возражения посыпались после неё</td></tr>
+            <tr><td>Заполнил паузу после цены</td><td>сбил решение клиента</td></tr>
+            <tr><td>Не зафиксировал следующий шаг</td><td>сделка остыла без ошибок в разговоре</td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="col" style="max-width:49%">
+        <div class="card" style="border-color:#e0b6ad"><h3 class="rd">Провалы компании и руководителя</h3>
+          <table class="mt sm" style="margin-top:6px">
+            <tr><td>Полный план с первого месяца</td><td>формально «не выполняет» четыре месяца подряд</td></tr>
+            <tr><td>Мусорные лиды новичку</td><td>тестируем не человека, а свою готовность вложиться</td></tr>
+            <tr><td>Наставник = руководитель</td><td>новичок прячет пробелы до дня увольнения</td></tr>
+            <tr><td>Обратная связь про личность</td><td>треть такой обратной связи ухудшает результат</td></tr>
+            <tr><td>Наставничество кончилось на дне 14</td><td>три касания дают 73% эффекта вместо 97%</td></tr>
+            <tr><td>Обучили и не спросили</td><td>переносится в работу 10–20%, остальное решает спрос</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="note red" style="margin-top:12px">Разбирать надо оба столбца. Компания, которая работает только с левым, через год получает вывод «нам не везёт с людьми».</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 55 -->
+  <section class="slide">
+    <div class="kick">Пять способов угробить хорошую систему</div>
+    <h2 style="max-width:30ch">Онбординги проваливаются не в обучении. Они проваливаются <span class="g">в первые 90 дней после запуска</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:62%">
+        <table class="mt sm">
+          <thead><tr><th>Причина</th><th>Как выглядит</th><th>Что снимает</th></tr></thead>
+          <tr><td>Руководителю некогда</td><td>«потом посмотрю», обучение уходит в фон</td><td>спрос за онбординг в его KPI, а не просьба</td></tr>
+          <tr><td>Нет владельца контента</td><td>через год учат по прайсу, которого нет</td><td>паспорт слоя: фамилия и срок протухания</td></tr>
+          <tr><td>Курс не дочитывают</td><td>20–30% доходимости на добровольном</td><td>обязательность + блокировка перехода до теста</td></tr>
+          <tr><td>Бюрократия вместо работы</td><td>58% программ построены вокруг бумаг</td><td>всё кадровое — до дня 1</td></tr>
+          <tr><td>Разрыв «знает — делает»</td><td>тест сдал, на звонке всё забыл</td><td>наблюдение, ролевые, обратная связь в 24 часа</td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:36%">
+        <div class="card"><h3 class="rd">Главная цифра</h3>
+          <div style="font-size:16px;line-height:1.5;margin-top:4px">Обучение переносится в работу примерно на <b>10–20%</b>. Всё остальное решает не качество контента, а то, что происходит <b>после</b>: применяется ли, разбирается ли, спрашивают ли.</div>
+        </div>
+        <div class="note">Поэтому в системе одинаково важны две половины: база знаний — и наблюдение с обратной связью. Первая без второй даёт образованного новичка, который не продаёт.</div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 56 -->
   <section class="slide dark2">
     <div class="kick">Платформа Завод A-Players</div>
     <h2>Курс — это то, что проходят.<br>Завод — это то, <span class="g">где работают</span></h2>
@@ -712,7 +1352,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 35 -->
+  <!-- 57 -->
   <section class="slide">
     <div class="kick">Платформа · AI-наставник</div>
     <h2>Отвечает по <span class="g">вашей базе</span> — и не выдумывает</h2>
@@ -733,7 +1373,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 36 -->
+  <!-- 58 -->
   <section class="slide">
     <div class="kick">Платформа · тренажёр</div>
     <h2>Тренажёр не проверяет знание скрипта.<br>Он <span class="g">снимает страх</span> первого звонка</h2>
@@ -747,7 +1387,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 37 -->
+  <!-- 59 -->
   <section class="slide dark">
     <div class="kick">Платформа · диагностика</div>
     <h2>Показывает не «слабый или сильный»,<br>а <span class="g">сколько процентов результата теряется</span></h2>
@@ -760,7 +1400,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 38 -->
+  <!-- 60 -->
   <section class="slide">
     <div class="kick">Фаза 4–5 · Инструмент</div>
     <h2>Конструктор онбординга: <span class="g">26 шагов</span> в пяти фазах</h2>
@@ -779,7 +1419,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 39 -->
+  <!-- 61 -->
   <section class="slide">
     <div class="kick">Инструмент · материалы</div>
     <h2>Загружаешь всё, что есть —<br>система <span class="g">сама разносит по слоям</span></h2>
@@ -788,7 +1428,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 40 -->
+  <!-- 62 -->
   <section class="slide">
     <div class="kick">Инструмент · слой</div>
     <h2>Внутри слоя — методичка, свой бриф<br>и <span class="g">подсветка пробелов</span></h2>
@@ -796,7 +1436,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 41 -->
+  <!-- 63 -->
   <section class="slide">
     <div class="kick">Инструмент · бриф слоя</div>
     <h2>Что нашлось в материалах,<br>а на что нужен <span class="g">твой ответ</span></h2>
@@ -815,7 +1455,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 42 -->
+  <!-- 64 -->
   <section class="slide dark2">
     <div class="kick">Инструмент · ресерч</div>
     <h2>Сначала уточняющие вопросы,<br>потом <span class="g">глубокий ресерч</span></h2>
@@ -829,7 +1469,7 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 43 -->
+  <!-- 65 -->
   <section class="slide">
     <div class="kick">Инструмент · отчётность</div>
     <h2>Кто где идёт и <span class="g">кто буксует</span></h2>
@@ -837,64 +1477,154 @@
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 44 -->
+  <!-- 66 -->
   <section class="slide">
     <div class="kick">Контроль прохождения</div>
     <h2>Слишком быстро — не читал.<br>Слишком долго — <span class="g">буксует</span></h2>
-    <div class="row" style="margin-top:18px">
-      <div class="col card" style="max-width:32%"><h3>Скорость</h3><p style="color:var(--muted);font-size:15.5px;margin-top:6px">Прошёл четыре слоя за два дня — почти наверняка листал. Система подсвечивает такие случаи отдельно.</p></div>
-      <div class="col card" style="max-width:32%"><h3>Застревание</h3><p style="color:var(--muted);font-size:15.5px;margin-top:6px">Выбился из целевого срока — сигнал наставнику, а не повод ждать до испытательного.</p></div>
-      <div class="col card" style="max-width:32%"><h3>Где теряются</h3><p style="color:var(--muted);font-size:15.5px;margin-top:6px">Есть нормативы по каждому переходу: где новички отваливаются чаще всего и что это значит.</p></div>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:62%">
+        <table class="mt sm">
+          <thead><tr><th>Переход</th><th>Норма</th><th>Если ниже — что это значит</th></tr></thead>
+          <tr><td>Начал → дошёл до Слоя 4</td><td>85%</td><td>первые слои перегружены текстом</td></tr>
+          <tr><td>Слой 4 → сдал тест 85%</td><td>75%</td><td>скрипт написан абстрактно, без реальных реплик</td></tr>
+          <tr><td>Прошёл слои → допуск к ролевой</td><td>90%</td><td>наставник не успевает, очередь на ролевую</td></tr>
+          <tr><td>Ролевая → сдал на 80 баллов</td><td>70%</td><td>тренировались не на тех сценариях</td></tr>
+          <tr><td>Аттестация → первый контакт</td><td>95%</td><td>нет лидов или нет доступа — организационная дыра</td></tr>
+          <tr><td>90 дней → закрыл ИС</td><td>80%</td><td>ошибка на входе воронки найма, а не в обучении</td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:36%">
+        <div class="card"><h3>Норма скорости</h3><div style="font-size:15.5px;line-height:1.45;margin-top:4px">Слой — <b>2–3 дня</b>. Быстрее одного дня на слой — листал: система помечает отдельно. Медленнее пяти — буксует: сигнал наставнику в тот же день, а не на испытательном.</div></div>
+        <div class="note">Одна и та же цифра читается по-разному: провал на первом переходе — вина контента, на последнем — вина найма.</div>
+      </div>
     </div>
-    <div class="note">Если ниже нормы на переходе «начал → дошёл до Слоя 4» — значит первые слои перегружены текстом. Если на «прошёл → сдал аттестацию» — тесты не соответствуют контенту.</div>
-    <img class="bob bobc" src="gen/bob/cut/bob_dashboard.png" alt="" style="height:150px;right:16px">
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 45 -->
+  <!-- 67 -->
+  <section class="slide dark2">
+    <div class="kick">Управление вместо констатации</div>
+    <h2 style="max-width:31ch">Шесть опережающих цифр вместо трёх <span class="g">запоздавших</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:64ch">Выручка появляется позже момента, когда надо вмешиваться. Провал, который виден собственнику на 60-й день, был решаем на пятый.</p>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:58%">
+        <table class="mt sm">
+          <thead><tr><th>#</th><th>Что мерим</th><th>Когда виден сигнал</th></tr></thead>
+          <tr><td>1</td><td>Сдал ли тест слоя с первой попытки</td><td>день 3–5</td></tr>
+          <tr><td>2</td><td>Активность против нормы когорты</td><td>день 7–10</td></tr>
+          <tr><td>3</td><td>Время до первой самостоятельной встречи</td><td>день 10–14</td></tr>
+          <tr><td>4</td><td>Время до первого квалифицированного КП</td><td>день 20–30</td></tr>
+          <tr><td>5</td><td>Время до первой сделки</td><td>день 30–60</td></tr>
+          <tr><td>6</td><td>Устойчивые ≥80% плана три периода подряд</td><td>месяц 3–4</td></tr>
+        </table>
+      </div>
+      <div class="col" style="max-width:40%">
+        <div class="card"><h3 class="g">Пять красных флагов первой недели</h3>
+          <ul style="margin-top:6px">
+            <li style="font-size:15px">Провалил тест с первой попытки дважды</li>
+            <li style="font-size:15px">Не задал ни одного вопроса за три дня</li>
+            <li style="font-size:15px">Не познакомился ни с кем сам</li>
+            <li style="font-size:15px">Пролистал уроки быстрее нормы вдвое</li>
+            <li style="font-size:15px">Отменил или перенёс встречу с наставником</li>
+          </ul>
+        </div>
+        <div class="note">Сравнивать надо <b>с когортой</b>, а не с лучшим в отделе. Лучший — это не норма, это исключение.</div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 68 -->
+  <section class="slide">
+    <div class="kick">Неочевидный первый шаг</div>
+    <h2 style="max-width:31ch">Первая когорта — <span class="g">не новички, а ваш действующий отдел</span></h2>
+    <p class="lead" style="margin-top:12px;max-width:66ch">Собрали систему — прогоняйте по ней тех, кто уже работает. Это даёт три вещи сразу, и ни одна из них не про новичков.</p>
+    <div class="row" style="margin-top:16px">
+      <div class="col card"><h3>1 · Проверка контента</h3><div style="font-size:15.5px;line-height:1.45;margin-top:4px">Действующие менеджеры мгновенно скажут, где написана неправда. Новичок этого не заметит и выучит ошибку.</div></div>
+      <div class="col card"><h3>2 · Честная картина</h3><div style="font-size:15.5px;line-height:1.45;margin-top:4px">Половина отдела не знает продукт так, как вы думаете. Тест на 80% покажет это за час — без обвинений, просто цифрой.</div></div>
+      <div class="col card"><h3>3 · Снятие сопротивления</h3><div style="font-size:15.5px;line-height:1.45;margin-top:4px">Пока систему проходят все, она не «для новеньких, потому что мы им не доверяем», а общий стандарт.</div></div>
+    </div>
+    <div class="card" style="margin-top:16px"><h3>Пять фраз, которые вы услышите на первой планёрке — и что отвечать</h3>
+      <table class="mt sm" style="margin-top:6px">
+        <tr><td>«У меня нет времени на курсы»</td><td>4 часа один раз против 20 часов на объяснения новичкам в этом году</td></tr>
+        <tr><td>«Я это и так знаю»</td><td>отлично: сдай входной тест на 95% и пропусти уроки</td></tr>
+        <tr><td>«Это для новичков»</td><td>проходят все, включая руководителя. Иначе это не стандарт</td></tr>
+        <tr><td>«У нас всё индивидуально»</td><td>покажи запись звонка, где скрипт мешал. Разберём и поправим скрипт</td></tr>
+        <tr><td>«Вы нас контролируете»</td><td>разбираем звонки, а не людей. Оценка идёт по чек-листу действий</td></tr>
+      </table>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 69 -->
+  <section class="slide dark2">
+    <div class="kick">Честно, до того как спросят из зала</div>
+    <h2 style="max-width:31ch">Где онбординг <span class="g">не окупается</span></h2>
+    <p class="lead" style="margin-top:6px;max-width:70ch;font-size:17px">Система стоит примерно 78 часов вашей команды. Это окупается не всегда — и лучше понять это сейчас, чем на пятой неделе сборки.</p>
+    <div class="card" style="margin-top:10px;padding:12px 16px"><h3 class="g">Ускорение рампа превращается в деньги только через одну из трёх дверей</h3>
+      <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:8px">
+        <div class="b9"><div class="n">Дверь 1</div><b>Непокрытый спрос</b><span>есть свободные лиды, необработанная база, очередь. Ускорение = прямой рост выручки</span></div>
+        <div class="b9"><div class="n">Дверь 2</div><b>План роста численности</b><span>тот же объём делают меньшим числом людей. Считается как ФОТ сэкономленных ставок</span></div>
+        <div class="b9"><div class="n">Дверь 3</div><b>Текучка</b><span>работает всегда: вы перестаёте по кругу оплачивать разгон одних и тех же вакансий</span></div>
+      </div>
+      <div class="note red" style="margin-top:10px">Ни одной двери нет — эффект сводится к снижению отсева и высвобождению времени руководителя. Это тоже деньги, но примерно втрое меньше, и обещать 20 миллионов в этом случае нельзя.</div>
+    </div>
+    <div class="tl" style="margin-top:12px">
+      <div class="tlb tlr"><div class="h">Не окупится</div>
+        <div style="font-size:15px;line-height:1.4">Вы нанимаете <b>1–2 человека в год</b> и не планируете рост. Дешевле вводить руками — просто делайте это по чек-листу первой недели.</div></div>
+      <div class="tlb tly"><div class="h">Окупится частично</div>
+        <div style="font-size:15px;line-height:1.4">Продукт меняется <b>каждый месяц</b>. Собирайте только устойчивые слои: компания, клиент, CRM, практики. Продукт держите в одном живом документе.</div></div>
+      <div class="tlb tlg"><div class="h">Окупится точно</div>
+        <div style="font-size:15px;line-height:1.4">Нанимаете <b>от 5 человек в год</b>, либо текучка на ИС выше 30%, либо руководитель тратит на ввод больше 40 часов на человека.</div></div>
+    </div>
+    <div class="note" style="margin-top:10px;margin-bottom:16px;font-size:13.5px;line-height:1.38">И ещё одна честная граница: <b>онбординг не чинит ошибку найма</b> — он лишь делает её видимой на второй неделе вместо третьего месяца. Разница 4,2 млн ₽, но это экономия на ошибке, а не спасение кандидата. Точка окупаемости считается не в месяцах, а <b>в новичках</b>: 78 часов сборки против 1,68 млн ₽ на каждом — система окупается на первом же человеке, прошедшем её целиком.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 70 -->
   <section class="slide">
     <div class="kick">Запуск</div>
-    <h2>План внедрения на <span class="g">восемь недель</span></h2>
-    <div class="steps7" style="margin-top:16px">
-      <div class="st7 zero"><div class="n">1–2</div><b>Аудит</b><span>интервью с РОПом и лучшими, прослушка звонков, аудит CRM</span></div>
-      <div class="st7"><div class="n">3–4</div><b>База знаний</b><span>семь слоёв, валидация с руководителем</span></div>
-      <div class="st7"><div class="n">5</div><b>Платформа</b><span>структура курса, загрузка, тесты</span></div>
-      <div class="st7"><div class="n">6</div><b>AI и тренажёры</b><span>наставник по базе, ролевки, диагностика</span></div>
-    </div>
-    <div class="steps7" style="margin-top:10px;grid-template-columns:repeat(3,1fr)">
-      <div class="st7"><div class="n">7</div><b>Контроль</b><span>карта 30-60-90, чек-листы, роль наставника</span></div>
-      <div class="st7"><div class="n">8</div><b>Запуск</b><span>обучение руководителя, пилот на 1–2 новичках</span></div>
-      <div class="st7"><div class="n">✓</div><b>Передача</b><span>система работает без вас</span></div>
-    </div>
-    <div class="note">Первые две недели — самые важные. Без аудита и интервью с лучшими вы соберёте красивый курс, который учит не тому, как у вас на самом деле продают.</div>
-    <img class="bob bobc" src="gen/bob/cut/s9_map.png" alt="" style="height:175px;right:18px">
+    <h2>План внедрения на <span class="g">восемь недель</span> — с часами и фамилиями</h2>
+    <table class="mt sm" style="margin-top:10px">
+      <thead><tr><th>Недели</th><th>Что делаем</th><th>Кто</th><th>Часы</th></tr></thead>
+      <tr><td>1–2</td><td>Аудит: интервью с лучшими, прослушка звонков, реестр конфликтов, фонотека</td><td>владелец онбординга + РОП</td><td>16 ч</td></tr>
+      <tr><td>3–4</td><td>Семь слоёв: сборка в конструкторе, вычитка и подтверждение руководителем</td><td>владелец + руководители слоёв</td><td>24 ч</td></tr>
+      <tr><td>5</td><td>Заливка в LMS: последовательное прохождение, блокировка до сдачи теста</td><td>владелец онбординга</td><td>10 ч</td></tr>
+      <tr><td>6</td><td>Ролевые, чек-лист на 100 баллов, приветственное видео первого лица</td><td>РОП + собственник</td><td>8 ч</td></tr>
+      <tr><td>7</td><td>Пилот на одном новичке: пройти путь целиком, зафиксировать, где спотыкается</td><td>владелец + наставник</td><td>12 ч</td></tr>
+      <tr><td>8</td><td>Правки по пилоту, запуск потока, еженедельная отчётность</td><td>РОП</td><td>8 ч</td></tr>
+      <tr><td><b>Итого</b></td><td>окупается на первом же новичке, прошедшем систему целиком</td><td></td><td><b>78 ч</b></td></tr>
+    </table>
+    <div class="note red" style="margin-top:12px">Финальный пункт — не «система работает без вас», а <b>«у системы появился владелец с фамилией»</b>. Без имени в этой строке онбординг умирает за год: контент протухает, руководители перестают спрашивать, новички начинают учиться у соседа.</div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 46 -->
+  <!-- 71 -->
   <section class="slide dark">
     <div class="kick">Домашнее задание</div>
-    <h2>Собери онбординг под <span class="g">свою ключевую роль</span></h2>
-    <div class="row" style="margin-top:22px;max-width:96%">
-      <div class="col card"><div class="badge" style="background:var(--gold)">1</div><h3 style="color:#fff;margin-top:8px">Материалы</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Загрузи всё, что есть по роли, нажми «разнести по слоям» и посмотри карту покрытия — где пусто</p></div>
-      <div class="col card"><div class="badge" style="background:var(--gold)">2</div><h3 style="color:#fff;margin-top:8px">База знаний</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Закрой пробелы в брифах слоёв, собери все семь слоёв с тестами, выгрузи одним файлом</p></div>
-      <div class="col card"><div class="badge" style="background:var(--gold)">3</div><h3 style="color:#fff;margin-top:8px">Программа</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Собери лестницу, аттестацию и карту 30-60-90. Заведи первого новичка в отчётность</p></div>
+    <h2>Сначала цифра, <span class="g">потом контент</span></h2>
+    <div class="row" style="margin-top:18px;max-width:98%">
+      <div class="col card" style="border-color:var(--gold2)"><div class="badge" style="background:var(--gold)">0 · час</div><h3 style="color:#fff;margin-top:8px">Замер «как есть»</h3><p style="color:#c3cec5;font-size:14.5px;margin-top:4px">Достань из CRM за 12 месяцев: срок до первого месяца с 80% плана, долю отсева на ИС, часы руководителя. Посчитай свою цену дня. Без этой цифры сравнивать будет не с чем</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">1 · 2 часа</div><h3 style="color:#fff;margin-top:8px">Материалы</h3><p style="color:#c3cec5;font-size:14.5px;margin-top:4px">Загрузи всё, что есть по роли, нажми «разнести по слоям», посмотри карту покрытия — где пусто. Заодно включи запись звонков, если её нет</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">2 · 6 часов</div><h3 style="color:#fff;margin-top:8px">База знаний</h3><p style="color:#c3cec5;font-size:14.5px;margin-top:4px">Закрой оранжевые пробелы в брифах слоёв, собери семь слоёв с тестами, выгрузи одним файлом. Черновики не идут в обучение — только подтверждённое</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">3 · 3 часа</div><h3 style="color:#fff;margin-top:8px">Программа</h3><p style="color:#c3cec5;font-size:14.5px;margin-top:4px">Лестница, аттестация, карта 30-60-90 с рамп-квотой, чек-лист готовности компании. Заведи первого новичка в отчётность</p></div>
     </div>
-    <p class="lead" style="margin-top:22px;color:#8ee0a6;font-weight:700">Принеси систему, по которой новичок дойдёт до результата без тебя.</p>
-    <img class="bob bobc" src="gen/bob/cut/p_book.png" alt="" style="height:175px">
+    <div class="note" style="margin-top:16px">Если времени мало — делай <b>задание 0 и первый слой</b>. Одна цифра и один рабочий слой дают больше, чем семь слоёв, собранных наспех и никем не подтверждённых.</div>
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
-  <!-- 47 -->
+  <!-- 72 -->
   <section class="slide dark2">
     <div class="kick">Итог</div>
-    <h1 style="font-size:44px;max-width:24ch">Новичок не должен угадывать,<br>как у вас работают</h1>
-    <p class="lead" style="margin-top:20px;max-width:64ch">Найм доводит сильного человека до двери. Онбординг решает, станет он A-игроком или просто ещё одним сотрудником, который «не подошёл».</p>
-    <div class="chipset" style="margin-top:22px;max-width:66%">
-      <div class="chip">🧱 7 слоёв с порогами</div><div class="chip">🪜 Лестница до автономии</div><div class="chip">🎯 Аттестация на 100 баллов</div><div class="chip">📊 Карта 30-60-90</div><div class="chip">🎤 Тренажёр и диагностика</div>
+    <h1 style="font-size:42px;max-width:26ch">Новичок не должен угадывать,<br>как у вас работают</h1>
+    <p class="lead" style="margin-top:16px;max-width:64ch">Найм доводит сильного человека до двери. Онбординг решает, станет он A-игроком или просто ещё одним сотрудником, который «не подошёл».</p>
+    <div class="row" style="margin-top:18px">
+      <div class="col card" style="max-width:31%"><h3 class="g">Что вы уносите</h3><div style="font-size:15px;line-height:1.4;margin-top:4px;color:#CBD3C4">Свою цену дня. Свой ramp из CRM. Конструктор на 26 шагов и книгу Excel со всеми слоями, брифами и чек-листом внедрения</div></div>
+      <div class="col card" style="max-width:31%"><h3 class="g">Что меняется в понедельник</h3><div style="font-size:15px;line-height:1.4;margin-top:4px;color:#CBD3C4">Включена запись звонков. Заведено письмо руководителю накануне выхода. Назначен владелец онбординга с фамилией</div></div>
+      <div class="col card" style="max-width:34%"><h3 class="g">Чем меряем через квартал</h3><div style="font-size:15px;line-height:1.4;margin-top:4px;color:#CBD3C4">Дни до самостоятельности · RAQA новичков · доля дошедших до 90 дня · часы руководителя на одного</div></div>
     </div>
-    <p class="lead" style="margin-top:20px;color:#8ee0a6;font-weight:700;font-size:22px">Три недели вместо трёх месяцев — это не про скорость. Это про то, что человек успевает поверить в компанию, пока ещё горит.</p>
-    <img class="bob bobscene" src="gen/bob/cut/s47_win.png" alt="">
+    <p class="lead" style="margin-top:18px;color:#8ee0a6;font-weight:700;font-size:21px">Три недели вместо трёх месяцев — это не про скорость. Это про то, что человек успевает поверить в компанию, пока ещё горит. И про 1,68 миллиона на каждом, которые вы перестаёте терять молча.</p>
+    <img class="bob bobscene" src="gen/bob/cut/s47_win.png" alt="" style="height:400px">
     <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
   </section>
 
