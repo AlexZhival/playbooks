@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Конструктор онбординга — A-Players</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+  :root{
+    --cream:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+    --em:#143A2D;--em2:#1C4C3B;--gold:#B0822E;--gold-h:#977019;--gold2:#C79A45;
+    --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+    --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+  a{color:var(--em)}
+  .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+  /* sidebar */
+  .side{background:var(--em);color:#EFE9DA;padding:22px 18px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .brand{font-family:var(--serif);font-weight:800;font-size:18px;color:#fff;display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--gold2)}
+  .side .sub{font-size:12px;color:#a9bcaf;margin-bottom:18px}
+  .steps{display:flex;flex-direction:column;gap:3px}
+  .snav{display:flex;gap:11px;align-items:flex-start;padding:9px 11px;border-radius:10px;cursor:pointer;color:#cdd8ce;transition:.12s}
+  .snav:hover{background:rgba(255,255,255,.06)}
+  .snav.on{background:rgba(199,154,69,.16);color:#fff}
+  .snav .si{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:13px;font-weight:800;flex:none;font-family:var(--serif)}
+  .snav.on .si{background:var(--gold);color:#19120A}
+  .snav.done .si{background:var(--green);color:#fff}
+  .snav .st{font-size:13.5px;font-weight:600;line-height:1.25}
+  .snav .sd{font-size:11px;color:#9fb0a4;margin-top:1px}
+  .keybox{margin-top:18px;background:rgba(0,0,0,.16);border-radius:10px;padding:12px}
+  .keybox label{font-size:11px;color:#a9bcaf;display:block;margin-bottom:5px}
+  .keybox input,.keybox select{width:100%;background:rgba(255,255,255,.95);border:none;border-radius:7px;padding:8px 10px;font-size:13px;color:#16201B;margin-bottom:7px}
+  /* main */
+  .main{padding:34px 52px 90px;max-width:2400px;margin-inline:auto;width:100%}
+  @media(min-width:2100px){.main{padding:44px 76px 120px}}
+  .kick{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-h);font-weight:800}
+  h1{font-family:var(--serif);font-weight:800;font-size:30px;letter-spacing:-.4px;margin:4px 0 6px}
+  h2{font-family:var(--serif);font-weight:800;font-size:21px;color:var(--em);margin:22px 0 10px}
+  h3{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--em)}
+  p.lead{color:var(--muted);font-size:16px;max-width:74ch}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:14px;box-shadow:0 6px 20px rgba(20,32,27,.05)}
+  label.fl{font-size:13px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],input[type=number],textarea,select{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14.5px;font-family:inherit;color:var(--ink)}
+  textarea{min-height:90px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--em);box-shadow:0 0 0 3px rgba(20,58,45,.12)}
+  .fg{margin-bottom:14px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:820px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.two{grid-template-columns:1fr}}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;padding:11px 18px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:.14s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.primary{background:var(--gold);color:#fff}
+  .btn.dark{background:var(--em);color:#fff}
+  .btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--em)}
+  .btn.sm{padding:8px 13px;font-size:13px}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .rec{display:inline-flex;align-items:center;gap:7px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;font-weight:700;font-size:13.5px;cursor:pointer;color:var(--em)}
+  .rec.on{background:#fbe9e6;border-color:var(--red);color:var(--red)}
+  .rec .d{width:11px;height:11px;border-radius:50%;background:var(--red)}
+  .rec.on .d{animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer}
+  .chip.on{border-color:var(--em);background:#EFF4EC;color:var(--em)}
+  .statusbox{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:12px 15px;font-size:14px;margin-top:12px;display:flex;align-items:center;gap:10px}
+  .errbox{background:#fbecea;border:1px solid #e6c7c0;border-left:4px solid var(--red);border-radius:10px;padding:12px 15px;font-size:14px;margin-top:12px;color:#7a2318}
+  .spin{width:16px;height:16px;border:2.5px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;flex:none}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .note{background:#FBF6EC;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13.5px;color:#6a4e17;margin-top:12px}
+  .note.b{background:#EFF4EC;color:#1d3b2c;border-color:#c3d6c8}
+  table.gt{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:8px}
+  table.gt th{background:var(--em);color:#EFE9DA;text-align:left;padding:8px 11px;font-size:12px;font-weight:700}
+  table.gt td{padding:8px 11px;border-top:1px solid var(--line);vertical-align:top;min-width:112px}
+  table.gt.narrow td{min-width:0}
+  table.gt tr:nth-child(even) td{background:#faf7f0}
+  .g{color:var(--green);font-weight:800}.y{color:var(--amber);font-weight:800}.r{color:var(--red);font-weight:800}
+  ul.li{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:6px}
+  ul.li li{position:relative;padding-left:22px;font-size:14px}
+  ul.li li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:2px;background:var(--gold);transform:rotate(45deg)}
+  .brief-block{border:1px solid var(--line);border-radius:12px;margin-top:12px;overflow:hidden;background:#fff}
+  .bb-h{background:var(--bg2);padding:11px 15px;font-weight:800;color:var(--em);font-size:14.5px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+  .bb-body{padding:6px 15px 14px}
+  .qa{padding:9px 0;border-bottom:1px dashed var(--line)}
+  .qa:last-child{border-bottom:none}
+  .qa .q{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:4px}
+  .skill{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-top:10px;background:#fff}
+  .skill .sh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .skill .sname{font-weight:800;color:var(--em);font-size:14.5px}
+  .grades{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px}
+  .grade{border:1.5px solid var(--line);border-radius:9px;padding:9px 11px;font-size:12.5px;cursor:pointer;background:#fdfcf8}
+  .grade .gl{font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--gold-h);margin-bottom:3px}
+  .grade.on{border-color:var(--em);background:#EFF4EC}
+  .grade.on .gl{color:var(--em)}
+  .top5{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer}
+  .top5 input{width:16px;height:16px}
+  .pill{display:inline-block;font-size:11px;font-weight:800;border-radius:20px;padding:3px 9px}
+  .pill.gold{background:rgba(176,130,46,.16);color:var(--gold-h)}
+  .hidden{display:none}
+  .out{margin-top:16px}
+  .kmini{font-size:11px;color:var(--muted);margin-top:8px}
+  /* устойчивая сетка статов */
+  .statgrid{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0}
+  .stat-tile{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 18px;min-width:180px}
+  .stat-tile .n{font-family:var(--serif);font-weight:800;font-size:30px;line-height:1.05}
+  .stat-tile .l{font-size:12px;color:var(--muted)}
+  /* рекомендация грейда */
+  .recbadge{font-size:10.5px;font-weight:800;background:rgba(62,142,94,.16);color:var(--green);border-radius:20px;padding:2px 8px}
+  .grade.grec{box-shadow:inset 0 0 0 2px var(--green);background:#EFF4EC}
+  .grade.grec .gl{color:var(--green)}
+  .reason{font-size:12px;color:var(--muted);margin-top:6px;font-style:italic}
+  /* блок правок в каждом разделе */
+  .fixbox{background:#FBF6EC;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:14px}
+  .fixbox h4{font-family:var(--serif);color:var(--em);font-size:15px;margin-bottom:8px}
+  .fixbox textarea{min-height:64px}
+  .card.edit{border:2px solid var(--gold2)}
+  /* ---- скоркарта кандидатов ---- */
+  table.sctable td{padding:6px 8px;min-width:0;vertical-align:middle}
+  table.sctable th{white-space:nowrap}
+  table.sctable td.scname input{width:150px;padding:7px 9px;font-size:13.5px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-weight:700;color:var(--em)}
+  table.sctable td.sccell{padding:4px 5px}
+  table.sctable td.sccell input{width:56px;padding:6px;font-size:13.5px;text-align:center;border:1px solid var(--line);border-radius:7px;font-family:inherit}
+  table.sctable td.sccell input:focus,table.sctable td.scname input:focus{border-color:var(--gold);outline:none}
+  table.sctable td.scsum,table.sctable td.scavg{font-family:var(--serif);font-weight:800;color:var(--em);text-align:center;background:#F4F1EA}
+  table.sctable td.scnote textarea{width:210px;min-height:44px;padding:6px 8px;font-size:12.5px;border:1px solid var(--line);border-radius:8px;font-family:inherit;resize:vertical}
+  .shortlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin-top:6px}
+  .b9x{display:flex;gap:11px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .b9x .nn{width:30px;height:30px;flex:none;border-radius:9px;background:linear-gradient(160deg,#C79A45,#B0822E);color:#fff;font-family:var(--serif);font-weight:800;display:flex;align-items:center;justify-content:center}
+  .b9x b{display:block;color:var(--em);font-size:14.5px}
+  .b9x span{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+  /* ---- отчётность: дашборд вакансий ---- */
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:14px}
+  .vcard2{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;gap:10px}
+  .vcard2:hover{border-color:var(--gold2);transform:translateY(-2px);box-shadow:0 12px 30px rgba(20,32,27,.10)}
+  .vc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .vc-name{font-family:var(--serif);font-weight:800;font-size:17px;color:var(--em);line-height:1.2}
+  .vc-sub{font-size:11.5px;color:var(--muted);margin-top:3px}
+  .vc-bars{display:flex;align-items:flex-end;gap:4px;height:38px;padding:2px 0;border-bottom:1px solid var(--line)}
+  .vc-bars i{flex:1;background:linear-gradient(180deg,var(--gold2),var(--gold));border-radius:3px 3px 0 0;display:block}
+  .vc-stats{display:flex;gap:16px}
+  .vc-stats div{display:flex;flex-direction:column}
+  .vc-stats b{font-family:var(--serif);font-size:20px;color:var(--em);line-height:1}
+  .vc-stats span{font-size:11px;color:var(--muted);margin-top:2px}
+  .vc-prog{height:6px;border-radius:4px;background:#EFE9D9;overflow:hidden}
+  .vc-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold))}
+  .vc-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:11.5px}
+  .vc-foot .r{font-weight:700}
+  .vc-open{color:var(--gold-h);font-weight:800;white-space:nowrap}
+  /* ---- отчётность: дневной журнал ---- */
+  .dayscroll{overflow-x:auto;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  table.dayt{margin-top:0;border:none;border-radius:0}
+  table.dayt th.stick,table.dayt td.stick{position:sticky;left:0;z-index:2;min-width:190px;background:#fff;font-weight:700;color:var(--em);box-shadow:1px 0 0 var(--line)}
+  table.dayt th.stick{background:var(--em);color:#EFE9DA}
+  table.dayt tr:nth-child(even) td.stick{background:#faf7f0}
+  table.dayt th.dh{text-align:center;min-width:76px;white-space:nowrap}
+  table.dayt th.dh span{display:block;font-size:10px;opacity:.55;cursor:pointer;font-weight:600}
+  table.dayt th.dh span:hover{opacity:1;color:#ffb4a6}
+  table.dayt td.dc{padding:4px 5px;min-width:0}
+  table.dayt td.dc input{width:66px;padding:6px 7px;font-size:13px;text-align:center;border:1px solid var(--line);border-radius:7px;font-family:inherit}
+  table.dayt td.dc input:focus{border-color:var(--gold);outline:none}
+  table.dayt th.dtot,table.dayt td.dtot{background:#F4F1EA;font-weight:800;color:var(--em);text-align:center;min-width:74px}
+  table.dayt th.dtot{background:var(--gold);color:#fff}
+  .edblock{border:1px solid var(--line);border-radius:11px;padding:12px 14px;margin-top:12px;background:#fdfcf8}
+  .edblock .edh{font-weight:800;color:var(--em);margin-bottom:2px}
+  .edblock textarea{min-height:38px}
+  .edlist .row textarea{flex:1}
+  /* диктофон-модалка */
+  .dov{position:fixed;inset:0;z-index:9999;background:rgba(14,27,21,.55);display:flex;align-items:center;justify-content:center}
+  .doc{background:var(--card);border-radius:18px;padding:26px 26px 22px;width:520px;max-width:92vw;box-shadow:0 30px 80px rgba(0,0,0,.4);text-align:center}
+  .doc h3{font-size:19px}
+  .doc .sub{font-size:13px;color:var(--muted);margin:4px 0 16px}
+  .mic{width:88px;height:88px;border-radius:50%;border:none;cursor:pointer;background:var(--em);color:#fff;font-size:34px;margin:0 auto;display:grid;place-items:center;transition:.15s}
+  .mic.rec{background:var(--red);animation:mic 1.1s infinite}
+  @keyframes mic{0%,100%{box-shadow:0 0 0 0 rgba(178,59,46,.5)}50%{box-shadow:0 0 0 16px rgba(178,59,46,0)}}
+  .dtrans{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;min-height:96px;max-height:200px;overflow-y:auto;text-align:left;font-size:14px;margin:16px 0 6px;white-space:pre-wrap}
+  .dtrans .interim{color:var(--muted)}
+  .dwrap{display:flex;gap:10px;justify-content:center;margin-top:12px}
+
+  .hidden{display:none}
+  .secl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(199,154,69,.85);font-weight:800;padding:14px 12px 5px;border-top:1px solid rgba(255,255,255,.08);margin-top:6px}
+  .secl:first-child{border-top:none;margin-top:0;padding-top:6px}
+  .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px;margin-top:12px}
+  .lcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .lcard .ln{font-family:var(--serif);font-size:11.5px;font-weight:800;color:var(--gold-h);letter-spacing:.05em;text-transform:uppercase}
+  .lcard b{display:block;font-family:var(--serif);font-size:16.5px;color:var(--em);margin-top:2px}
+  .lcard span{display:block;font-size:12px;color:var(--muted);line-height:1.3;margin-top:2px}
+  .lcard .lmeta{font-size:11.5px;color:var(--muted);margin-top:8px;border-top:1px solid var(--line);padding-top:7px}
+  .lcard .lmeta b{display:inline;font-family:var(--sans);font-size:11.5px;color:var(--gold-h)}
+  .lcard .ldays{font-size:11px;color:var(--gold-h);font-weight:700;margin-top:4px}
+  .card.meth{border-left:4px solid var(--gold)}
+  .meth .mh{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+  .meth .mn{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-h);font-weight:800}
+  .meth .mmeta{display:flex;flex-wrap:wrap;gap:6px}
+  .meth .mmeta span{font-size:11.5px;font-weight:700;background:#F4F1EA;border:1px solid var(--line);border-radius:20px;padding:4px 10px;color:var(--muted)}
+  .meth .mmeta .thr{background:rgba(176,130,46,.16);border-color:var(--gold2);color:var(--gold-h)}
+  .meth .mwhy{font-size:15.5px;line-height:1.5;color:var(--ink);margin-top:10px;max-width:82ch}
+  .mlab{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800;margin-bottom:4px}
+  .lb{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 14px;margin-top:8px}
+  .lbh{display:flex;align-items:baseline;gap:9px}
+  .lbn{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--em);border-radius:5px;padding:2px 7px;flex:none}
+  .lbh b{font-family:var(--serif);font-size:15.5px;color:var(--em)}
+  .lbneed,.lbask{font-size:13px;line-height:1.45;color:var(--ink);margin-top:6px}
+  .lbask{color:var(--muted)}
+  .lbneed span,.lbask span{font-weight:800;color:var(--gold-h);font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin-right:5px}
+  .bar{height:7px;border-radius:4px;background:#EFE9D9;overflow:hidden;min-width:80px}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold))}
+  .gapb{background:#FBF6EC;border:1px solid var(--line);border-radius:11px;padding:11px 14px;margin-top:9px}
+  .gapb b{color:var(--em)}
+  .brief-block .who{font-size:11px;font-weight:600;color:var(--muted);margin-left:10px}
+  table.obt td{padding:5px 7px;min-width:0;vertical-align:middle}
+  table.obt td.pname input{width:150px;padding:7px 9px;font-size:13.5px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-weight:700;color:var(--em)}
+  table.obt td input[type=date]{padding:6px 8px;font-size:12.5px;border:1px solid var(--line);border-radius:7px;font-family:inherit}
+  table.obt td.lc{text-align:center}
+  table.obt td.lc input{width:17px;height:17px;accent-color:#B0822E;cursor:pointer}
+  table.obt td.pp{min-width:110px}
+  table.obt td.pp span{font-size:11.5px;font-weight:800;color:var(--em);margin-left:6px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="dot"></span> A-Players</div>
+    <div class="sub">Конструктор онбординга</div>
+    <div class="steps" id="steps"></div>
+    <div class="keybox">
+      <label>Claude API-ключ (твой)</label>
+      <input id="apikey" type="password" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+      <label>Модель</label>
+      <select id="model">
+        <option value="claude-opus-5">Opus 5 (точнее)</option>
+        <option value="claude-sonnet-5">Sonnet 5 (быстрее)</option>
+      </select>
+      <div style="font-size:10.5px;color:#9fb0a4;line-height:1.4">Ключ хранится только в твоём браузере. Без ключа доступен пример.</div>
+    </div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+
+<script>
+/* ================= STATE ================= */
+const LS={key:"apx_onb_key",model:"apx_onb_model",state:"apx_onb_state"};
+const API_URL="https://api.anthropic.com/v1/messages";
+let STEP=0;
+let S={ company:"", niche:"", role:"Менеджер отдела продаж", target:"", format:"", brief:{}, results:{} };
+try{const j=JSON.parse(localStorage.getItem(LS.state));if(j)S=Object.assign(S,j);}catch(_){}
+function save(){try{localStorage.setItem(LS.state,JSON.stringify(S));}catch(_){}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ================= БРИФ КОМПАНИИ (по рабочей тетради «Завод A-Players») ================= */
+const BRIEF=[
+ {id:"base",name:"1 · Общая информация о компании",who:"CEO",qs:[
+   "Полное название компании и сфера деятельности",
+   "Сколько лет компания на рынке",
+   "Количество сотрудников: всего / в отделе, куда нанимаем",
+   "География присутствия (города, регионы, страны)",
+   "Основные продукты и услуги — кратко",
+   "Средний чек / LTV клиента",
+   "Текущая выручка и план на год"]},
+ {id:"l1",name:"2 · Слой 1 — Компания",who:"CEO / HR",qs:[
+   "История компании: когда основана, кто основатель и почему создал именно это",
+   "«Момент X» — событие или поворот, который сформировал компанию",
+   "3–5 ключевых вех с датами и цифрами",
+   "Миссия компании (если сформулирована)",
+   "Ценности компании (3–7) — и что каждая означает в ежедневной работе",
+   "Чем компания принципиально отличается на рынке",
+   "Культура и нормы: как общаемся, как принимаем решения, что не терпим",
+   "Планы развития на ближайший год",
+   "Тезисы приветственного слова CEO для новичка"]},
+ {id:"l2",name:"3 · Слой 2 — Продукт",who:"Маркетинг / CEO",qs:[
+   "Полный перечень продуктов и услуг",
+   "Описание каждого продукта: для кого, что решает, цена",
+   "Ключевые УТП по каждому продукту — языком клиента, не маркетинга",
+   "Правило 80/20: какие продукты дают основную выручку",
+   "Кейсы клиентов (3–5): ситуация → решение → результат в цифрах",
+   "Топ-7 возражений по продукту и проверенные ответы",
+   "Есть ли сезонность в спросе"]},
+ {id:"l3",name:"4 · Слой 3 — Клиент",who:"РОП / Маркетинг",qs:[
+   "ICP: портрет идеального клиента — детально",
+   "Сегменты клиентов: чем отличаются, что ценят, как работать по-разному",
+   "JTBD: какие «работы» клиент нанимает продукт выполнять",
+   "CJM: путь клиента от осознания проблемы до покупки",
+   "ЛПР и ЛВР: кто решает, кто влияет",
+   "Что клиент боится и что его останавливает перед покупкой",
+   "Как быстро квалифицировать лид: признаки горячего и холодного"]},
+ {id:"l4",name:"5 · Слой 4 — Продажи",who:"РОП",qs:[
+   "Описание воронки продаж: этапы и критерии перехода",
+   "Скрипты продаж (входящий / исходящий / мессенджеры)",
+   "Скрипт встречи или демо",
+   "Топ-10 возражений и проверенные ответы",
+   "Техники закрытия сделки, которые реально работают",
+   "Follow-up: шаблоны сообщений и тайминг касаний",
+   "Записи звонков лучших менеджеров (3–5 примеров)",
+   "Регламент работы отдела"]},
+ {id:"l5",name:"6 · Слой 5 — CRM",who:"РОП / IT",qs:[
+   "Какая CRM используется",
+   "Полный список статусов сделок с описанием",
+   "SLA: стандарты скорости обработки по каждому статусу",
+   "Правила заполнения карточки клиента: обязательные поля",
+   "Политика страйков за нарушение стандартов CRM",
+   "Что считается критической ошибкой в CRM"]},
+ {id:"l6",name:"7 · Слой 6 — Конкуренты",who:"Маркетинг / РОП",qs:[
+   "5–7 ключевых конкурентов и одно предложение про каждого",
+   "Сравнение по 3–5 решающим для клиента критериям",
+   "Как отвечаем на «у X дешевле / лучше / то же самое»",
+   "Что мы можем, чего конкуренты повторить не могут — с цифрами"]},
+ {id:"l7",name:"8 · Слой 7 — Лучшие практики",who:"РОП / лучшие МОП",qs:[
+   "Что делает топ-1 менеджер иначе — разбор паттернов",
+   "Нестандартные приёмы, которые дают результат",
+   "Ошибки новичков, которые повторяются чаще всего",
+   "Цитаты и инсайты от лучших менеджеров команды",
+   "3–5 записей эталонных звонков с разбором"]},
+ {id:"onb",name:"9 · Параметры онбординга",who:"CEO / РОП",qs:[
+   "Максимально допустимый срок обучения новичка (дней)",
+   "Предпочтительный формат: видео / текст / тесты / микс",
+   "Будет ли закреплён наставник за новичком",
+   "Кто будет администратором платформы обучения",
+   "KPI новичка к 30 дню",
+   "KPI новичка к 60 дню",
+   "KPI новичка к 90 дню (конец испытательного срока)",
+   "Критерии прохождения испытательного срока"]},
+];
+
+/* ================= СТАНДАРТЫ КАЧЕСТВА (из плейбуков A-Players) ================= */
+const STANDARDS=[
+ "Один урок = одна мысль = 300–600 слов. Онбординг — не корпоративная библия: перегруз даёт отторжение.",
+ "Подзаголовок каждые 150–200 слов. Три и более пункта — оформляй списком, а не сплошным текстом.",
+ "Каждый урок заканчивается выводом и открытым вопросом для рефлексии (не оценивается, но запускает мышление).",
+ "После каждого блока — связка с работой: «для тебя как менеджера это значит…». Иначе сотрудник думает «ок, интересно, и что?».",
+ "Пиши от первого лица компании («мы верим», «наша команда»), без канцелярита: не «осуществляем деятельность», а «делаем».",
+ "Конкретность: цифры, имена, даты. Они делают текст живым и проверяемым.",
+ "Минимум одно изображение или схема в каждом уроке. Идеал для Слоя 1 — видео CEO.",
+ "Ничего не выдумывать. Чего нет в брифе — помечать [НУЖНО УТОЧНИТЬ: что именно и у кого].",
+ "Тест: 70% вопросов — выбор одного варианта. Неправильные варианты правдоподобные, без абсурда и двойных отрицаний. 3 попытки.",
+ "Минимум 2 вопроса теста на каждый урок. Нет вопросов, которые угадываются с вероятностью выше 50%."
+];
+const QA_CHECK=[
+ "Все факты подтверждены брифом — нет утверждений, которых компания не подтверждала",
+ "Все пометки [НУЖНО УТОЧНИТЬ] закрыты или осознанно оставлены заказчику",
+ "Объём каждого урока в пределах 300–600 слов",
+ "В каждом уроке есть вопрос для рефлексии",
+ "Каждая ценность / отличие / техника подкреплены примером, а не декларацией",
+ "Тест покрывает все уроки: минимум 2 вопроса на урок",
+ "Порог теста выставлен, попыток — 3, переход к следующему слою заблокирован до сдачи",
+ "Контент согласован с РОПом или CEO до загрузки на платформу"
+];
+
+/* ================= 7 СЛОЁВ — методология и структура блоков ================= */
+const LAYERS=[
+ {id:"l1",n:1,title:"Компания",sub:"Миссия · Ценности · История · Культура",
+  lessons:5,min:"45–75",quiz:12,thr:80,days:"День 1–2",bloom:"Запомнить · Понять · Применить",
+  why:"Новичок в первые три дня решает: «я здесь свой» или «мне здесь неловко». Менеджер, который верит в компанию, продаёт с гордостью — это слышно в звонке. Ценности — это скрытые критерии решений в нестандартных ситуациях. Без Слоя 1 остальные шесть — просто инструкции.",
+  mistake:"Копировать текст с сайта. Сайт написан для клиентов, а не для сотрудника — другой контекст и другая задача. Факты берём, но переписываем: «ты теперь часть команды, которая…». И ценности без кейса — просто слова, они не западают.",
+  blocks:[
+   {t:"1.1 История и DNA компании",need:"Дата основания и «как всё начиналось» · кто основатель и почему создал именно это · «Момент X» — событие, сформировавшее компанию · таймлайн 3–5 вех, не больше · текущий масштаб · «почему мы существуем» в 1–2 предложениях",ask:"Интервью с основателем «расскажите историю создания», раздел «О нас», презентации для партнёров, публичные интервью"},
+   {t:"1.2 Миссия и видение",need:"Официальная формулировка миссии · расшифровка простыми словами: что это значит на практике · видение на 3–5 лет · связь с работой менеджера: «когда ты продаёшь — ты делаешь вот это» · примеры проявления миссии в ситуациях с клиентами",ask:"Формулировка миссии из стратегических документов, ответ основателя на «зачем вы создали эту компанию», примеры решений «потому что это наша миссия»"},
+   {t:"1.3 Ценности и принципы работы",need:"3–7 ценностей, не больше · по каждой: название + что означает + 1–2 поведенческих примера · кейс-история, как ценность проявилась в реальной ситуации · anti-values: что у нас НЕ принято · связь ценностей именно с работой в продажах",ask:"Список ценностей от CEO, реальные истории по каждой, примеры того, что в компании не терпят"},
+   {t:"1.4 Компания сегодня: масштаб и достижения",need:"Ключевые цифры: клиенты, команда, регионы, выручка если открыто · топ-3 достижения за 2–3 года · награды, рейтинги, публикации · знаковые клиенты · планы на год",ask:"Открытые цифры, что можно публиковать; достижения и признания; список клиентов, которых можно раскрывать"},
+   {t:"1.5 Культура и команда",need:"Как общаемся и принимаем решения · ритуалы и нормы · что приветствуем и что не терпим · кто есть кто: ключевые люди и роли · к кому идти с каким вопросом",ask:"Описание культуры от CEO/HR, оргструктура, фото команды, правила общения"}],
+  kpi:["Своими словами рассказать историю компании за 60–90 секунд","Назвать 3–5 ценностей и привести пример каждой","Объяснить, чем компания отличается, на уровне «почему мы»","Ответить клиенту на «расскажите о вашей компании»"]},
+
+ {id:"l2",n:2,title:"Продукт",sub:"Портфель · Продукты · 80/20 · Кейсы · Возражения · Демо",
+  lessons:6,min:"60–90",quiz:12,thr:80,days:"День 3–5",bloom:"Запомнить · Понять · Применить · частично Анализировать",
+  why:"Менеджер, который не знает продукт, теряет доверие на первом же техническом вопросе. Незнание продукта = неуверенность в голосе = потерянная сделка. Знание на уровне «объясню выгоду, а не характеристику» — это и есть то, что отличает A-игрока от середняка. Слои 3–7 без Слоя 2 не осваиваются.",
+  mistake:"Начинать с деталей продукта, не дав общую карту: сначала лес, потом деревья. И выдуманные кейсы — клиент их проверит, а менеджер почувствует, что его учат на фикции. Только реальные, при необходимости анонимизированные.",
+  blocks:[
+   {t:"2.1 Обзор продуктового портфеля",need:"Общая логика портфеля схемой или таблицей · количество продуктов/линеек цифрой · категоризация и логика деления · 1–3 флагмана и почему именно они · объём 250–350 слов, это обзорный урок",ask:"Внутренний каталог или прайс · ответ на «если бы продавали только 3 продукта — какие и почему» · есть ли продукты, которые продавать не нужно"},
+   {t:"2.2 Детальный разбор продуктов",need:"Карточка на каждый ключевой продукт: официальное название + как называют клиенты · что это в 1–2 предложениях без жаргона · как работает · для кого · цена или диапазон · главное УТП · связка «характеристика → преимущество → выгода»",ask:"Описания продуктов, техчасть, актуальные цены, кто целевой по каждому продукту"},
+   {t:"2.3 Правило 80/20: топ-продукты",need:"Какие продукты дают основную выручку · на чём фокусируется новичок в первые 30 дней · приоритетные связки и допродажи · 300–400 слов",ask:"Выручка в разрезе продуктов, приоритетные связки, план по фокусу"},
+   {t:"2.4 Кейсы клиентов",need:"3–5 историй в формате ситуация → решение → результат в цифрах · только реальные клиенты и реальные цифры · по кейсу на каждый ключевой продукт",ask:"Реальные кейсы с цифрами, разрешение на использование, отзывы"},
+   {t:"2.5 Возражения по продукту",need:"Минимум 5–7 реальных возражений · по каждому: что за ним стоит на самом деле → ответ дословно → пример · собираются у лучших менеджеров, а не выдумываются",ask:"Топ-возражения от РОПа и лучших МОП, дословные рабочие ответы"},
+   {t:"2.6 Демо и презентация продукта",need:"Структура показа продукта · что акцентировать под разные сегменты · чего избегать · как переводить характеристику в выгоду в реальном диалоге",ask:"Записи демо лучших менеджеров, презентационные материалы"}],
+  kpi:["Объяснить любой продукт языком выгоды за 60 секунд","Назвать топ-3 возражения по каждому продукту и ответить","Рассказать 1–2 кейса по каждому ключевому продукту","Отличить свой продукт от конкурента по 3+ параметрам"]},
+
+ {id:"l3",n:3,title:"Клиент",sub:"Сегменты · Портреты · JTBD · CJM · Квалификация",
+  lessons:6,min:"65–85",quiz:12,thr:80,days:"День 6–9",bloom:"Запомнить · Понять · Применить · частично Анализировать",
+  why:"Поворотный момент онбординга. Слои 1–2 учат пассивно — читай и запоминай. Слой 3 — первый слой активного применения: менеджер начинает думать не «как я продам», а «почему этот человек должен купить». Сдвиг с продуктовой логики на клиентскую — он и отделяет A-игрока от среднего. Без Слоя 3 скрипты Слоя 4 звучат шаблонно.",
+  mistake:"Смешивать сегмент и портрет человека. Сегмент — группа похожих клиентов, портрет ЛПР — конкретная роль внутри неё. Путаница создаёт у менеджера ощущение «все клиенты разные», и он перестаёт искать закономерности.",
+  blocks:[
+   {t:"3.1 Карта клиентов: сегменты и ICP",need:"Логика сегментации: по какому принципу делим рынок · 3–7 сегментов, у каждого название и строка описания · критерии, по которым менеджер определяет сегмент ДО звонка · приоритетность сегментов · анти-ICP: с кем не работаем",ask:"Все типы клиентов за 2 года · топ-10 лучших сделок и чем клиент был особенный · с кем работать не стоит"},
+   {t:"3.2 Портреты клиентов: кто решает и чем живёт",need:"По каждому ключевому сегменту портрет ЛПР: роль, что у него болит, чем меряет успех, чего боится · отличие ЛПР от ЛВР и как работать с каждым · язык, на котором он говорит",ask:"Интервью с лучшими МОП: «опиши своего типичного покупателя» · записи звонков с разными типами"},
+   {t:"3.3 JTBD: что клиент «нанимает» продукт делать",need:"3–5 «работ» с расшифровкой: функциональная, эмоциональная, социальная · за каждой работой — реальная фраза клиента · чем «работа» отличается от характеристики продукта",ask:"«Что на самом деле покупает клиент — не продукт, а что глубже?» у лучших менеджеров · дословные формулировки клиентов"},
+   {t:"3.4 CJM: путь клиента к покупке",need:"5 ключевых этапов от осознания проблемы до покупки · что клиент думает, чувствует и делает на каждом · где он чаще всего отваливается · что менеджер делает на каждом этапе",ask:"Путь клиента от маркетинга · аналитика точек отвала · наблюдения РОПа"},
+   {t:"3.5 Квалификация: определить «своего» за 5 минут",need:"Конкретные критерии квалифицированного лида, а не абстрактное описание · признаки горячего и холодного · ABC-логика с порогами · где фиксируется сегмент в CRM · вопросы, которые квалифицируют быстро",ask:"«По каким признакам за первые минуты понимаешь, что человек скорее купит?» у лучших МОП · критерии квала от РОПа"},
+   {t:"3.6 Применение: как знание клиента меняет разговор",need:"Практический разбор: один и тот же продукт трём разным сегментам · как меняются первый вопрос, аргумент и темп · практическое задание: квалифицировать 3 реальных кейса",ask:"Реальные кейсы для разбора · примеры удачной подстройки под сегмент"}],
+  kpi:["Назвать 3–5 сегментов с критериями квалификации","По каждому сегменту — 2–3 ключевых JTBD","Объяснить, чем мотивация ЛПР отличается от ЛВР","Определить категорию нового контакта за 5 минут"]},
+
+ {id:"l4",n:4,title:"Продажи",sub:"Воронка · Discovery · Питч · Возражения · Закрытие · Follow-up",
+  lessons:7,min:"80–100",quiz:14,thr:85,days:"День 10–14",bloom:"Все уровни, кроме «Создавать»",
+  why:"Здесь знания превращаются в действие. Воронка — это общий язык команды: если менеджер не знает, на каком этапе сделка и что зафиксировать, его pipeline непрозрачен и для него самого, и для РОПа. Порог 85% выше базового: ошибка на этом слое стоит сделки, а не оценки.",
+  mistake:"Давать скрипт как текст для заучивания — скрипт это алгоритм с развилками, а не монолог, иначе менеджер ломается на первом нестандартном ответе. И описывать воронку в отрыве от CRM: если в обучении «этап X», а в системе он называется иначе — новичок путается.",
+  blocks:[
+   {t:"4.1 Воронка продаж: этапы, переходы, обязательные поля",need:"Все этапы точно так, как называются в CRM · по каждому: что должно произойти для перехода, обязательные действия, обязательные поля, SLA, вероятность в Forecast · правило перехода конкретным критерием, не «клиент заинтересован», а «получено подтверждение и назначена дата» · различие Воронки 1 и Воронки 2",ask:"Схема воронки из CRM с точными названиями · регламент ОП · SLA по этапам"},
+   {t:"4.2 Discovery-звонок: выявление потребности",need:"Структура звонка по этапам · блок вопросов SPIN или аналог · вопросы, после которых клиент сам себя дожимает · как «раскачать» боль · дословные формулировки открытия",ask:"«Скажи дословно первые 2–3 фразы» и «какие вопросы задаёшь, чтобы понять боль» у лучших МОП · записи discovery-звонков"},
+   {t:"4.3 Презентация и питч под конкретного ЛПР",need:"Как показывать продукт под боль конкретного человека, а не как рекламу · что акцентировать и что не говорить · как менять питч под сегмент · работа с ценой: когда и как называешь стоимость, как подаёшь рассрочку",ask:"«Как показываешь продукт, чтобы било в боль?» · «Как работаешь с ценой?» у лучших МОП"},
+   {t:"4.4 Возражения: топ-5 по продукту, цене и конкурентам",need:"Таблица: возражение → что за ним стоит → ответ дословно → пример · схема отработки (например «СУО»: согласие — уточнение — обработка) · отдельно ценовые и конкурентные · правило «ценность до цены»",ask:"Топ-5 возражений с дословными ответами у каждого из лучших менеджеров · записи отработки возражений"},
+   {t:"4.5 Закрытие сделки: мягкие техники без давления",need:"3–5 рабочих техник с дословными формулировками и указанием, когда какую применять · разница между дожимом и давлением · что говорить, когда человек почти готов, но колеблется · работа с дедлайнами и ограничениями без «впаривания»",ask:"«Какими приёмами дожимаешь до оплаты?» · «Вспомни сложную сделку, которую вытащил — что стало переломным?»"},
+   {t:"4.6 Follow-up: система касаний",need:"Сколько касаний, через какие каналы, с каким интервалом · шаблоны сообщений по каждому касанию · что делать, когда клиент сказал «подумаю» и пропал · как возвращать в работу",ask:"Реальные шаблоны и переписки лучших менеджеров · регламент касаний"},
+   {t:"4.7 Критические ошибки продаж",need:"Топ-6 ошибок, которые ведут к потере сделки, с объяснением механики · как проверить себя · что делать, если ошибка уже допущена",ask:"«Какие ошибки чаще всего совершают новички?» у лучших МОП и РОПа"}],
+  kpi:["Знать структуру воронки и критерии перехода","Провести discovery-звонок без подсказок","Отработать топ-5 возражений каждого типа","Соблюдать правило «ценность до цены» и отправлять КП в срок"]},
+
+ {id:"l5",n:5,title:"CRM",sub:"Сущности · Воронки · Квалификация · SLA · Страйки",
+  lessons:6,min:"60–90",quiz:12,thr:90,days:"День 3–7",bloom:"Запомнить · Понять · Применить",
+  why:"CRM — операционная нервная система продаж. Менеджер, который не умеет в ней работать, теряет сделки, даже если отлично ведёт переговоры. Слой решает три задачи: операционная точность, прозрачность воронки для руководителя и культура данных — понимание, что CRM это не надзор, а инструмент собственного успеха. Порог 90%, самый высокий в программе.",
+  mistake:"Писать «нажми кнопку Сохранить» вместо реальных названий полей и статусов конкретной системы. Инструкция должна дословно повторять интерфейс, иначе новичок не найдёт и начнёт делать по-своему.",
+  blocks:[
+   {t:"5.1 Архитектура CRM: четыре сущности",need:"Определение Лида, Сделки, Контакта, Компании · когда создаётся каждая и как они связаны · практический пример: один клиент на разных этапах · типичные ошибки путаницы и их последствия (дубли, потеря истории)",ask:"Логика и названия сущностей в вашей CRM · примеры правильно заведённых карточек"},
+   {t:"5.2 Воронка 1: работа с новыми лидами",need:"Полный путь лида от создания до конвертации или брака · по каждому этапу: название, что происходит, обязательные действия и поля · критерий перехода · как создаётся лид автоматически и вручную · когда и как забраковывать с указанием причины · правило: лид не остаётся без следующего действия",ask:"Скриншоты воронки, список этапов, правила браковки"},
+   {t:"5.3 Квалификация и ABC-сегментация",need:"Конкретные критерии квалифицированного лида · логика ABC для нового и действующего клиента · таблица критериев по сегментам · где в карточке фиксируется сегмент · связь сегмента с приоритетом работы",ask:"Критерии сегментации, поле в CRM, приоритеты по сегментам"},
+   {t:"5.4 Воронка 2 и аккаунт-менеджмент",need:"Чем Воронка 2 отличается от первой: логика, цели, метрики · что поддерживается в карточке действующего клиента · правило последнего касания: максимум дней без контакта · апсейл-логика · как формировать прогноз",ask:"Регламент работы с базой, правило TLT, апсейл-матрица"},
+   {t:"5.5 SLA, дела и задачи",need:"Нормативы времени по каждому этапу и что происходит при нарушении · разница между делом и задачей · правило следующего шага: каждый контакт = новое запланированное действие · как вести переписку через CRM · напоминания на закрытые сделки",ask:"Таблица SLA, регламент коммуникации, правила по мессенджерам"},
+   {t:"5.6 Страйки и контроль качества",need:"Полный список нарушений, за которые начисляются страйки · порог и последствия · топ-6 критических ошибок с объяснением, почему ведут к потере сделки · признаки качественно заполненной карточки · как исправить уже допущенную ошибку",ask:"Политика страйков (если нет — сформулировать с РОПом), примеры нарушений"}],
+  kpi:["Создать лид, квалифицировать и конвертировать в сделку без подсказок","Знать все этапы и критерии перехода","Фиксировать каждое касание и соблюдать SLA","Объяснить разницу между Лидом, Сделкой, Контактом и Компанией"]},
+
+ {id:"l6",n:6,title:"Конкуренты",sub:"Карта рынка · Отстройка · Боевые карточки · Возражения",
+  lessons:4,min:"40–55",quiz:8,thr:80,days:"День 15–16",bloom:"Понять · Применить · Анализировать",
+  why:"Слой стоит именно здесь не случайно. Менеджер, не знающий свой продукт, но знающий конкурентов, — продаёт конкурентов. Сначала Слои 2–5, и только тогда конкурентная карта становится инструментом, а не источником неуверенности. Цель не «разгромить конкурента», а честно объяснить, в каких задачах мы выигрываем и почему.",
+  mistake:"Три ловушки: слишком много конкурентов — менеджер запомнит 3–4, остальное шум; сравнение по 20 параметрам вместо 3–5 решающих для клиента; и «говорить плохо о конкурентах» — клиент читает это как неуверенность и непрофессионализм.",
+  blocks:[
+   {t:"6.1 Карта конкурентного поля",need:"Карта рынка: кто игроки и как рынок сегментирован · наша позиция на этой карте и почему · тренды, влияющие на расстановку сил · триггеры, при которых клиент начинает нас сравнивать",ask:"Анализ конкурентов от маркетинга · где чаще всего сталкиваемся в поле"},
+   {t:"6.2 Наши ключевые отличия",need:"3–5 отличий не списком фич, а через ценность · по каждому: факт → доказательство, которое можно проверить → выгода клиента · честная карта ограничений «чего мы НЕ делаем» — она строит доверие сильнее, чем «мы лучше во всём» · формулировка на 10 секунд",ask:"Отличия с доказательствами и цифрами · честный список ограничений"},
+   {t:"6.3 Боевые карточки конкурентов",need:"Отдельная карточка на каждого из 5–7 ключевых: кто это в одном предложении · их сильные стороны честно, 3–4 пункта · их слабые стороны только фактами, без домыслов · когда мы выигрываем · как отвечать, если клиент сравнивает",ask:"Данные по конкурентам, реальные случаи сравнения, обратная связь от клиентов, которые перешли"},
+   {t:"6.4 Работа с конкурентными возражениями",need:"Формула ответа «согласен — факт — выгода» с примерами · разбор «у X дешевле», «у Y то же самое», «мы уже работаем с Z» · правило: выигрываем фактами о себе, не атакуя чужие слабости",ask:"Реальные конкурентные возражения и рабочие ответы у лучших МОП"}],
+  kpi:["Назвать 5–7 конкурентов и охарактеризовать каждого одним предложением","Объяснить 3–5 отличий без бумажки","Ответить на конкурентное возражение по формуле «согласен — факт — выгода»","Использовать боевую карточку в реальном разговоре"]},
+
+ {id:"l7",n:7,title:"Лучшие практики",sub:"Эталонные звонки · Паттерны · Чек-лист · Самооценка",
+  lessons:4,min:"30–50",quiz:8,thr:75,days:"День 17–18",bloom:"Анализировать · Оценивать",
+  why:"Слои 1–6 дают знания и инструменты. Слой 7 показывает, как это выглядит в действии у лучших людей команды. Менеджер перестаёт изобретать велосипед и начинает воспроизводить то, что уже работает. Это встроенное наставничество в масштабе: не один РОП объясняет одному новичку, а лучшие менеджеры обучают всех одновременно через записи.",
+  mistake:"Давать записи без тайм-кодов и разбора — новичок должен видеть не «хороший звонок», а «на 3:40 он сделал X, поэтому клиент раскрылся». И заменять реальные записи придуманными примерами: если записей нет, это не повод их сочинить — это повод запросить у РОПа.",
+  blocks:[
+   {t:"7.1 Лучшие звонки: разбор с тайм-кодами",need:"3–5 записей лучших звонков · по каждой контекст: тип клиента, этап воронки, сложность · тайм-коды с комментариями «0:45 — техника X, потому что Y» · дословные цитаты с объяснением, почему работают · антипример: тот же момент из среднего звонка рядом",ask:"У РОПа: кто топ-1 и топ-2, их записи за последние 90 дней, разные типы звонков, согласие менеджера на использование"},
+   {t:"7.2 Паттерны победы: что лучшие делают иначе",need:"7–10 паттернов конкретными поведенческими отличиями, не «они харизматичны», а «задают уточняющий вопрос перед презентацией» · по каждому: название, описание, пример со ссылкой на тайм-код · антипаттерны: топ-5 ошибок новичков и во что они обходятся · таблица «топ-МОП vs средний» по этапам звонка",ask:"Интервью с 2–3 топ-МОП: «что делаешь иначе», «какой момент в звонке самый важный», «назови 3 своих принципа» · у РОПа: «что отличает лучших» и «какие ошибки новички делают чаще всего»"},
+   {t:"7.3 Чек-лист идеального звонка",need:"20–25 пунктов по этапам: открытие / диагностика / презентация / возражения / закрытие · по каждому пункту: что проверяем, пример правильного поведения, пример ошибки · система баллов с интерпретацией: до 60% нужна работа, 60–80% хорошо, 80%+ готов к автономной работе · формат для скачивания",ask:"Существующие чек-листы оценки звонка, критерии ОКК"},
+   {t:"7.4 Практическое задание: самооценка",need:"Пошагово: запиши свой звонок → прослушай → оцени себя по чек-листу → найди 3 сильных момента → найди 3 точки роста → сдай наставнику · критерии оценки задания для наставника: сдана реальная запись, самооценка не только позитивная, точки роста конкретны, менеджер может объяснить выбор голосом",ask:"Готовность РОПа принимать самооценки и давать обратную связь"}],
+  kpi:["Знать топ-паттерны лучших менеджеров и воспроизводить их","Самостоятельно оценивать свои звонки по чек-листу","Находить в своём звонке 3 конкретные точки роста","Сдать самооценку наставнику и объяснить свой выбор"]}
+];
+function layerById(id){return LAYERS.find(l=>l.id===id);}
+
+/* ================= ЭТАЛОН ДИАГНОСТИКИ РОЛИ (менеджер ОП, платформа Завод) ================= */
+const DIAG_REF=`Диагностика A-игрока для роли «Менеджер отдела продаж» — 18 моделей поведения, сгруппированных по 4 группам (Клиент и коммуникация · Процесс и дисциплина · Результат и деньги · Развитие и команда).
+Шкала одинакова для всех моделей: A — делаю на уровне эксперта · B — делаю уверенно, сам · C — делаю по инструкции · D — нужна помощь · E — только с руководством.
+Баллы: A=5, B=4, C=3, D=2, E=1. У каждой модели свой вес (0.8–1.5) — чем сильнее модель влияет на результат роли, тем выше вес.
+Каждая модель содержит: группу, название навыка, вес, focus (одна фраза — что именно человек делает), пять развёрнутых формулировок A/B/C/D/E от лица сотрудника (не оценочно, а описательно: «за первые минуты считываю психотип…»), и dev — конкретное действие для роста на один уровень.
+Итог: процент от максимума → уровень (A-Player ≥85% «эталон отдела, копируют тебя», B ≥70%, C ≥55%, D ≥40%, E ниже). Плюс loss_pct — сколько процентов результата теряется на каждом уровне (A=0, B=5, C=15, D=30, E=40).
+Пример модели: группа «Клиент и коммуникация», навык «Сегментация клиента и подстройка», вес 1.3, focus «Определять психотип и сегмент клиента за первые минуты и менять под него подачу». Вариант A: «За первые минуты считываю психотип (доминантный/тщательный/постоянный/инициативный), теплоту и частоту, и осознанно меняю темп и аргументы». Вариант E: «Не разделяю клиентов по типам, подстройки под собеседника у меня почти нет». dev: «Разбирай 3 записи своих звонков в неделю с РОПом на предмет — какой это был психотип и где я не подстроился».`;
+
+/* ================= БЕНЧМАРКИ ОНБОРДИНГА ================= */
+const OBENCH={
+  stages:[
+    {k:"invited",label:"Приглашены на онбординг"},
+    {k:"started",label:"Начали обучение"},
+    {k:"l4",label:"Дошли до Слоя 4 (Продажи)"},
+    {k:"finished",label:"Прошли все 7 слоёв"},
+    {k:"attested",label:"Сдали аттестацию (тест + ролевка)"},
+    {k:"d30",label:"Прошли точку 30 дней"},
+    {k:"d90",label:"Прошли испытательный срок"}
+  ],
+  cr:[
+    {stage:"Приглашён → начал",cr:0.95,low:0.85,hint:"ниже 85% — новичок не получил доступ вовремя или не понял, что это обязательно"},
+    {stage:"Начал → дошёл до Слоя 4",cr:0.85,low:0.70,hint:"ниже 70% — слои 1–3 перегружены текстом, теряется мотивация"},
+    {stage:"Слой 4 → прошёл все 7",cr:0.90,low:0.75,hint:"ниже 75% — не хватает контроля наставника на второй неделе"},
+    {stage:"Прошёл → сдал аттестацию",cr:0.80,low:0.60,hint:"ниже 60% — тесты не соответствуют контенту либо ролевка не отрепетирована"},
+    {stage:"Аттестация → точка 30 дней",cr:0.85,low:0.70,hint:"ниже 70% — разрыв между обучением и реальной работой"},
+    {stage:"30 дней → прошёл ИС",cr:0.75,low:0.55,hint:"ниже 55% — проблема в найме, а не в онбординге: смотри воронку найма"}
+  ],
+  norms:[
+    ["Срок теоретической части","до 21 дня","3 недели · 7 слоёв по 2–3 дня"],
+    ["Срок до первого самостоятельного звонка","5–7 дней","под контролем наставника"],
+    ["Выход на самостоятельность","3–4 недели","вместо 3 месяцев без системы"],
+    ["Отсев на испытательном сроке","−50%","к уровню без системы онбординга"],
+    ["Время РОПа на ввод новичка","−60%","обучение переносится в систему"]
+  ]
+};
+
+/* ================= ГЕНЕРАТОРЫ ================= */
+const COMMON_SCHEMA='Верни СТРОГО один валидный JSON и больше ничего: {"title":"","blocks":[{"h":"заголовок блока","kind":"list|table|text","items":["пункт"],"columns":["колонка"],"rows":[["ячейка"]],"text":"абзац"}]}. Для kind=list заполни items; для kind=table — columns и rows; для kind=text — text. Всё на русском, предметно, без воды. Максимум 9 блоков, в таблице максимум 12 строк.';
+const METHOD='Ты — методист по корпоративному обучению с опытом 10+ лет. Пишешь учебный контент для платформы онбординга. Правила: (1) пиши только то, что подтверждено брифом компании — ничего не выдумывай; (2) там, где данных не хватает, ставь пометку [НУЖНО УТОЧНИТЬ: что именно и у кого]; (3) язык клиента, а не маркетинга; (4) каждый урок заканчивается тем, что сотрудник УМЕЕТ, а не «ознакомился».';
+
+function layerGen(L){
+  return {icon:String(L.n),title:"Слой "+L.n+" · "+L.title,desc:L.sub,
+    sys:()=>[METHOD,
+      "Создай учебный контент Слоя "+L.n+" «"+L.title+"» ("+L.sub+") для онбординга роли «"+(S.role||"сотрудник")+"» в компании «"+(S.company||"")+"» (ниша: "+(S.niche||"—")+").",
+      "СТРУКТУРА — ровно "+L.lessons+" уроков, один блок = один урок. По каждому блоку указано, что ОБЯЗАТЕЛЬНО должно быть внутри:\n"+
+        L.blocks.map((b,i)=>"УРОК "+(i+1)+" — "+b.t+"\n   обязательные элементы: "+b.need).join("\n"),
+      "Параметры модуля: "+L.min+" минут прохождения, тест "+L.quiz+" вопросов, порог "+L.thr+"%, 3 попытки, место в плане — "+L.days+".",
+      "ЗАЧЕМ ЭТОТ СЛОЙ (держи в голове при написании): "+L.why,
+      "ТИПИЧНАЯ ОШИБКА, которую нельзя допустить: "+L.mistake,
+      "ПОСЛЕ СЛОЯ сотрудник должен уметь: "+L.kpi.join("; ")+".",
+      "СТАНДАРТЫ КАЧЕСТВА (соблюдай все):\n— "+STANDARDS.join("\n— "),
+      "СТАТУС КАЖДОГО УРОКА: в конце текста урока поставь строку «Статус: подтверждено» (данные есть в брифе) / «Статус: черновик — ждёт подтверждения РОПа» (собрано по косвенным данным) / «Статус: данных нет» (и что именно запросить). Ничего не выдавай за подтверждённое, если этого не было в брифе.",
+      "БЛОКИ ОТВЕТА: по одному блоку на каждый урок (kind=text — развёрнутый учебный текст 300–600 слов с подзаголовками, связкой «для тебя как сотрудника это значит…» и вопросом для рефлексии в конце; либо kind=table, если урок табличный по природе — карточки продуктов, этапы воронки, боевые карточки, возражения). Затем блок «Тест по слою» на "+L.quiz+" вопросов, минимум 2 на урок. "+QUIZ_SPEC+" Затем блок «Практическое задание» (kind=text). Затем блок «Что проверяет наставник» (kind=list). Затем блок «Чего не хватило в брифе» (kind=list) — все [НУЖНО УТОЧНИТЬ] с указанием, у кого запросить.",
+      COMMON_SCHEMA].join("\n")};
+}
+const GEN={};
+LAYERS.forEach(L=>{GEN[L.id]=layerGen(L);});
+
+GEN.course={icon:"8",title:"Архитектура курса",desc:"карта · первая неделя · аттестация",
+ sys:()=>[METHOD,
+  "Все 7 слоёв готовы. Собери итоговый документ «Архитектура онбординга» для роли «"+(S.role||"сотрудник")+"».",
+  "Блоки: (1) «Карта курса» — kind=table, columns=[Слой, Название, Уроков, Время, Тест и порог, Ключевой навык после прохождения], строки по всем 7 слоям. (2) «Программа первой недели» — kind=table, columns=[День, Что проходит, Время, Что сдаёт]. (3) «Чек-лист наставника по дням» — kind=table, columns=[День, Что проверить, Что объяснить, Что подтвердить]. (4) «Финальная аттестация» — kind=text: структура из трёх частей — тест, ролевая игра с руководителем, устная часть. (5) «Правила прохождения» — kind=list: последовательность слоёв, блокировка перехода до сдачи теста, что делать при провале, контроль времени прохождения.",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.kpi3060={icon:"9",title:"Карта 30-60-90",desc:"KPI новичка и критерии ИС",
+ sys:()=>[METHOD,
+  "Собери карту контроля новичка на роли «"+(S.role||"сотрудник")+"» в компании «"+(S.company||"")+"».",
+  "Блоки: (1) «KPI к 30 дню» — kind=table, columns=[Показатель, Целевое значение, Как измеряем, Кто проверяет]. (2) «KPI к 60 дню» — та же структура. (3) «KPI к 90 дню (конец ИС)» — та же структура. (4) «Критерии прохождения испытательного срока» — kind=list, 5–7 пунктов, каждый проверяемый. (5) «Красные флаги» — kind=table, columns=[Сигнал, Когда виден, Что делать]: по каким признакам на 30-м и 60-м дне видно, что человек не дойдёт. (6) «Разговор на 30/60/90» — kind=text: как руководителю проводить контрольную встречу.",
+  "Правило: каждый KPI — число или проверяемый факт. Никаких «хорошо влился в команду».",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.mentor={icon:"10",title:"Наставник и welcome",desc:"регламент + приветствие CEO",
+ sys:()=>[METHOD,
+  "Собери блок наставничества и приветствия для онбординга роли «"+(S.role||"сотрудник")+"».",
+  "Блоки: (1) «Роль наставника» — kind=list: зачем нужен, кого назначаем, сколько времени в день, за что отвечает и за что не отвечает. (2) «Ритм наставника» — kind=table, columns=[Когда, Формат, Повестка, Длительность]: ежедневные и недельные точки первого месяца. (3) «Трекер наставника» — kind=table, columns=[День, Задача новичка, Что подтверждает наставник, Статус]. (4) «Текст приветствия CEO» — kind=text: готовый текст на 140 слов (около 2 минут) по структуре — приветствие и благодарность за выбор, зачем существует компания, что значит быть частью команды, личное напутствие, призыв к действию. Тон тёплый и искренний, не корпоративный. (5) «Как снять видео или собрать ИИ-аватар» — kind=list: краткая инструкция.",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.diag={icon:"11",title:"Диагностика роли",desc:"модели поведения A–E",
+ sys:()=>[METHOD,
+  "Собери диагностику A-игрока для роли «"+(S.role||"сотрудник")+"» по эталону A-Players.",
+  "ЭТАЛОН МЕТОДИКИ (следуй ему точно):\n"+DIAG_REF,
+  "Сделай 12–18 моделей поведения именно под эту роль и нишу «"+(S.niche||"")+"», сгруппированных по 3–4 группам.",
+  "Блоки: (1) «Как работает диагностика» — kind=text: шкала, баллы, веса, уровни и потери в процентах. (2) по одному блоку на каждую ГРУППУ моделей — kind=table, columns=[Навык, Вес, Что делает (focus), Вариант A, Вариант C, Вариант E]. (3) «Уровни и что они значат» — kind=table, columns=[Уровень, Порог %, Что это значит, Теряет результата %]. (4) «План развития» — kind=table, columns=[Навык, Действие для роста на уровень, Срок].",
+  "Формулировки A/B/C/D/E пиши от первого лица сотрудника, описательно, без оценок «плохо/хорошо».",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.roleplay={icon:"12",title:"Ролевки для тренажёра",desc:"сценарии под свой скрипт",
+ sys:()=>[METHOD,
+  "Собери сценарии ролевых игр для AI-тренажёра под роль «"+(S.role||"сотрудник")+"» и наши скрипты.",
+  "Блоки: (1) «Как проводить ролевку» — kind=text: правила, длительность, кто играет клиента, что фиксируем. (2) «Сценарии» — kind=table, columns=[Сценарий, Портрет клиента (сегмент, психотип, настроение), Задача менеджера, Возражение, Что считаем успехом]: 8–10 сценариев от простого к сложному, включая холодного клиента, «дорого», «я подумаю», сравнение с конкурентом, агрессивного и молчаливого. (3) «Чек-лист оценки ролевки» — kind=table, columns=[Критерий, Что считаем зачётом, Балл]. (4) «Промпт для AI-тренажёра» — kind=text: готовый системный промпт, который заставит модель играть клиента по нашему сценарию и в конце выдать разбор.",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.gantt={icon:"13",title:"План внедрения",desc:"8 недель по этапам",
+ sys:()=>[METHOD,
+  "Собери план внедрения системы онбординга в компании «"+(S.company||"")+"» на 8 недель.",
+  "Опорные этапы: аудит и диагностика (интервью с РОП и лучшими менеджерами, прослушка 15–20 звонков, аудит CRM и текущих материалов) → база знаний 7 слоёв → программа онбординга и загрузка на платформу → AI-наставник и тренажёры → карта контроля 30-60-90 → усилители (welcome-видео, welcome-страница) → запуск и передача (обучение РОПа, пилот на 1–2 новичках).",
+  "Блоки: (1) «План по неделям» — kind=table, columns=[Неделя, Этап, Задачи, Ответственный, Результат недели]. (2) «Контрольные точки» — kind=table, columns=[Milestone, Когда, Критерий готовности]. (3) «Что нужно от компании» — kind=list: доступы, люди, материалы. (4) «Риски внедрения» — kind=table, columns=[Риск, Признак, Что делать].",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.interview={icon:"И",title:"Гайд интервью с лучшими",desc:"оцифровать, как продают топы",
+ sys:()=>[METHOD,
+  "Собери гайд live-интервью с лучшими сотрудниками на роли «"+(S.role||"сотрудник")+"» в компании «"+(S.company||"")+"» (ниша: "+(S.niche||"—")+").",
+  "ЗАЧЕМ: вытащить из голов топов их реальные приёмы, логику мышления и дословные формулировки — и зафиксировать в базе знаний. Эти интервью напрямую наполняют Слой 3 (клиент), Слой 4 (продажи) и Слой 7 (лучшие практики), а также дают фактуру для Слоёв 2 и 5.",
+  "Блоки: (1) «Правила проведения» — kind=list: запись обязательна (без записи интервью не считается проведённым — нужны дословные формулировки), 60–90 минут один на один, живой разговор а не допрос по списку, попросить прийти с примерами сделок. (2) «Как копать» — kind=list: топы отвечают общими словами, задача превратить в конкретику — по 2–3 уточняющих на каждый общий ответ («приведи последний случай», «какими именно словами ты это говоришь, скажи дословно», «а что сделал бы средний менеджер и чем ты отличаешься», «как ты понял, что сработало»). (3) «Блок A. Разогрев и контекст» — kind=list, 4 вопроса. (4) «Блок B. Клиент — кто покупает и почему» — kind=list, 6 вопросов под Слой 3. (5) «Блок C. Процесс продажи по этапам» — kind=list, 5 вопросов под Слой 4. (6) «Блок D. Возражения и закрытие» — kind=list, 5 вопросов под Слой 4. (7) «Блок E. Специфика компании» — kind=list, 4 вопроса под особенности этого бизнеса. (8) «Блок F. CRM и рутина» — kind=list, 3 вопроса под Слой 5. (9) «Блок G. Что отличает топа» — kind=list, 5 вопросов под Слой 7 — самый ценный блок. (10) «Артефакты попросить после интервью» — kind=list.",
+  "К каждому блоку добавляй в конце строку «Что собрать: …» — какой именно материал должен появиться из ответов.",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.callcheck={icon:"Ч",title:"Чек-лист звонков новичка",desc:"контроль день 3 / 7 / 14",
+ sys:()=>[METHOD,
+  "Собери чек-лист наблюдения за звонками новичка на роли «"+(S.role||"сотрудник")+"» — инструмент наставника на три контрольные точки.",
+  "Логика: День 3 — базовая проверка (усвоил стандарты общения, структуру скрипта, дисциплину звонка). День 7 — промежуточная (уверенность в диалоге, выявление потребности, работа с возражениями). День 14 — итоговая (готовность к самостоятельной работе).",
+  "Блоки: (1) «Как пользоваться» — kind=text: оценка по каждому критерию Да / Частично / Нет, сколько звонков слушать, кто проверяет. (2) «День 3 — базовая проверка» — kind=table, columns=[№, Критерий, Что считаем «Да», Красный флаг]: 8 критериев. (3) «День 7 — промежуточная» — та же структура, 8 критериев. (4) «День 14 — итоговая» — та же структура, 8 критериев, ориентированных на самостоятельность и стабильность показателей. (5) «Итоговое заключение» — kind=list: три варианта решения — готов к самостоятельной работе / нужен дополнительный период адаптации / нужно доучить конкретные навыки. (6) «Что делать с результатом» — kind=text: как давать обратную связь новичку.",
+  "Критерии пиши наблюдаемыми: не «хорошо общается», а «не допускает пауз дольше N секунд», «фиксирует итог звонка в карточке в тот же день».",
+  COMMON_SCHEMA].join("\n")};
+
+/* ===== Уроки тестов: единый формат под платформу ===== */
+const QUIZ_SPEC='Формат теста: kind=table, columns=[Вопрос, Варианты ответа (через «|»), Правильный ответ, Почему именно так]. Последняя колонка обязательна — это объяснение, которое новичок видит после ответа, и именно оно учит. Распределение типов: 70% выбор одного варианта из четырёх, 20% множественный выбор, 10% сопоставление. Запрещены вопросы-ловушки, двойные отрицания и вариант «все ответы верны». Неправильные варианты — правдоподобные.';
+
+GEN.conflicts={icon:"К",title:"Реестр конфликтов и пробелов",desc:"что «слипается» и где цифры не сходятся",
+ sys:()=>[METHOD,
+  "Проверь материалы компании «"+(S.company||"")+"» на конфликты, из-за которых онбординг разваливается уже после запуска. Это самая частая причина провала: контент написан красиво, но внутри противоречия, и новичок получает разные ответы в разных местах.",
+  "ТИПЫ КОНФЛИКТОВ, которые надо искать (проверь каждый):\n1. СЛИПАНИЕ ИМЁН — одно название носят несколько сущностей (компания / флагманский продукт / мини-продукт), или у одного продукта два имени в разных документах. Это корень путаницы: механическая замена ломает смысл, решение принимает только владелец.\n2. НЕСВЕДЁННЫЕ ЦИФРЫ — возраст компании, средний чек, цены и пакеты, рассрочка, конверсии, нормы касаний. Одна метрика с разными значениями в разных источниках.\n3. ОДНОФАМИЛЬЦЫ И ТЁЗКИ — разные люди, которых новичок сольёт в одного.\n4. СТОП-СЛОВА — термин, который у одного продукта флагманский, а у другого запрещён; слова, меняющие сам предмет сделки; медицинские, юридические или гарантийные формулировки, которые сотруднику произносить нельзя.\n5. ЗОНА ВЛАДЕНИЯ — кто что продаёт: первичка против работы по базе, кто ведёт кросс и продления, за кем закреплён клиент и на какой срок.\n6. ПРОБЕЛЫ — где данных нет вовсе: цены, записи звонков, регламенты, политики.",
+  "Блоки ответа: (1) «Слипание имён» — kind=table, columns=[Имя, Какие сущности его носят, Где так названо, Что решить владельцу]. (2) «Несведённые цифры» — kind=table, columns=[Метрика, Значения в источниках, Какое берём, Кто подтверждает]. (3) «Люди, которых спутают» — kind=list. (4) «Стоп-слова: что нельзя говорить» — kind=table, columns=[Нельзя сказать, Почему, Как сказать вместо]. (5) «Зона владения» — kind=table, columns=[Что продаём, Кто ведёт, Первичка или база, Правило закрепления]. (6) «Пробелы: данных нет» — kind=table, columns=[Чего нет, Для какого слоя, У кого запросить, Можно ли запускать без этого]. (7) «Красные решения владельца» — kind=list: что обязан закрыть CEO или РОП до старта сборки, без этого контент чинить бессмысленно.",
+  "Правило: не выдумывай решения за владельца. Твоя работа — вскрыть противоречие и показать развилку.",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.ladder={icon:"Л",title:"Лестница онбординга",desc:"5 этапов до самостоятельности",
+ sys:()=>[METHOD,
+  "Собери программу выхода новичка на роли «"+(S.role||"сотрудник")+"» на самостоятельность. Целевой срок: "+(S.target||"3–4 недели")+".",
+  "МЕТОДИКА A-PLAYERS — пять этапов строго в этом порядке, каждый следующий не начинается без закрытия предыдущего:\nЭтап 0. Знания — контент платформы, продукт, рамка, метрики. Чек: тест.\nЭтап 1. Инструменты — скрипт поблочно, CRM, рабочие сервисы. Чек: самостоятельный прогон на тестовых кейсах.\nЭтап 2. Наблюдение — 3–5 эталонных звонков или встреч с разбором «где сработало и почему». Чек: письменный конспект.\nЭтап 3. Ролевые игры — минимум 5 полных прогонов на разных типах клиента, каждый с обратной связью по чек-листу. Чек: ролевая аттестация.\nЭтап 4. Под супервизией — первые 3–5 боевых контактов с наставником на линии или в записи, разбор после каждого.\nЭтап 5. Самостоятельно + контроль качества — выборочная прослушка, еженедельный разбор конверсии.",
+  "Блоки: (1) «Принцип» — kind=text: почему порядок именно такой и что ломается при перепрыгивании этапов. (2) «Пять этапов» — kind=table, columns=[Этап, Дни, Что делает новичок, Чем закрывается (чек), Кто отвечает]. (3) «Что нужно подготовить заранее» — kind=list: эталонные записи, тестовые кейсы, доступы, кто играет клиента. (4) «Красные флаги на каждом этапе» — kind=table, columns=[Этап, Сигнал что идёт не так, Действие руководителя].",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.attest={icon:"А",title:"Аттестация",desc:"теория + ролевая + боевые",
+ sys:()=>[METHOD,
+  "Собери систему аттестации новичка на роли «"+(S.role||"сотрудник")+"». Сотрудник допускается к самостоятельной работе только после всех блоков.",
+  "СТРУКТУРА (методика A-Players): C1 — теория, знание продукта и рамки, порог 90%. C2 — ролевая игра, главная аттестация, балльный чек-лист на 100 баллов, порог 80. C3 — боевые контакты в испытательный период с выборочным контролем. C4 — постоянный контроль качества и ре-аттестация раз в квартал или при падении конверсии.",
+  "Блоки: (1) «C1. Теория» — kind=table, columns=[Тема, Что должен сформулировать своими словами, Вес]: 6–8 тем под нашу роль и продукт, порог 90%. (2) «C2. Ролевая аттестация» — kind=table, columns=[Критерий, Что считаем зачётом, Баллы]: 8–10 критериев, сумма ровно 100, порог 80. Критерии — наблюдаемые действия, а не впечатления. (3) «Как проводить ролевую» — kind=text: кто играет клиента, какой архетип выбирает экзаменатор, длительность, что фиксируется. (4) «C3. Боевые контакты» — kind=list: сколько первых контактов под контролем и критерии прохождения испытательного. (5) «C4. Постоянный контроль» — kind=list: выборочная прослушка, ритм разборов, когда ре-аттестация. (6) «Что делать при провале» — kind=text: доработка слабых критериев и пересдача, а не «ну ладно, пусть работает».",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.arsenal={icon:"Ар",title:"Арсенал сотрудника",desc:"всё нужное в одном месте",
+ sys:()=>[METHOD,
+  "Собери «арсенал» — единый список рабочих материалов, которые сотрудник на роли «"+(S.role||"сотрудник")+"» держит под рукой каждый день.",
+  "Блоки: (1) «Что держать открытым в первый день» — kind=table, columns=[Инструмент, Зачем, Где взять]: 5–7 позиций — CRM, боевой скрипт, справочник статусов, банк возражений, прайс. (2) «Арсенал по группам» — kind=table, columns=[Группа, Материал, Зачем нужен, Статус]: группы — скрипты, возражения, продукт и цены, CRM и регламенты, эталонные записи, шаблоны сообщений, обучающие материалы. Статус: есть / нужно собрать / нет данных. (3) «Ритм рабочего дня» — kind=text: структура дня новичка — сколько контактов, когда отчёты, за какое время первое касание нового лида. (4) «Красные линии» — kind=list: что нельзя нарушать никогда, с последствием по каждому пункту.",
+  "Правило: если материала нет — так и пиши, со статусом «нужно собрать» и указанием, у кого. Не выдумывай ссылки.",
+  COMMON_SCHEMA].join("\n")};
+
+GEN.failures={icon:"П",title:"Провалы новичков",desc:"топ-8 и как их снять",
+ sys:()=>[METHOD,
+  "Собери разбор типичных провалов новичка на роли «"+(S.role||"сотрудник")+"» в первые 90 дней — и что делает система, чтобы их предотвратить.",
+  "Блоки: (1) «Топ-8 провалов» — kind=table, columns=[Провал, Как выглядит в работе, К чему приводит, Что снимает его в системе]: провалы формулируй наблюдаемо — не «не старается», а «не зафиксировал потребность, поэтому презентация била мимо». (2) «Провалы руководителя» — kind=table, columns=[Ошибка руководителя, Последствие, Как правильно]: 5 пунктов — что чаще всего ломает онбординг со стороны компании. (3) «Ранние сигналы» — kind=table, columns=[День, Сигнал, Что делать]: по чему на 3-й, 7-й и 14-й день видно, что человек не дойдёт. (4) «Что говорить новичку» — kind=text: как давать обратную связь, чтобы он не закрылся.",
+  COMMON_SCHEMA].join("\n")};
+
+/* ================= CLAUDE ================= */
+async function callClaude({system,messages,max_tokens,effort}){
+  const key=($("#apikey").value||"").trim();if(!key)throw new Error("no-key");
+  const model=$("#model").value;
+  const body={model,max_tokens:max_tokens||8000,system:[{type:"text",text:system,cache_control:{type:"ephemeral"}}],messages};
+  if(effort&&(model==="claude-opus-5"||model==="claude-sonnet-5"))body.output_config={effort};
+  const res=await fetch(API_URL,{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok||data.type==="error")throw new Error((data.error&&data.error.message)||("HTTP "+res.status));
+  return (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+}
+function errText(e){if(e.message==="no-key")return "Вставь ключ Claude API слева.";if(/Failed to fetch|NetworkError/i.test(e.message))return "Нет связи с api.anthropic.com (открой в Chrome).";return e.message||"Ошибка.";}
+/* устойчивый парсер с починкой обрыва */
+function balanceClose(s){let inStr=false,esc=false;const st=[];for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(esc)esc=false;else if(ch==="\\")esc=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch==='{'||ch==='[')st.push(ch==='{'?'}':']');else if(ch==='}'||ch===']')st.pop();}let o=s;if(inStr)o+='"';o=o.replace(/[,\s]+$/,"");for(let i=st.length-1;i>=0;i--)o+=st[i];return o.replace(/,\s*([}\]])/g,"$1");}
+function lastTopComma(s){let inStr=false,esc=false,last=-1;for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(esc)esc=false;else if(ch==="\\")esc=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch===',')last=i;}return last;}
+function parseJSON(s){let t=String(s||"").replace(/^﻿/,"").trim().replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,"").trim();const a=t.indexOf("{");if(a>0)t=t.slice(a);const b=t.lastIndexOf("}");if(b>0){try{return JSON.parse(t.slice(0,b+1).replace(/,\s*([}\]])/g,"$1"));}catch(_){}}let w=t;for(let k=0;k<500;k++){try{return JSON.parse(balanceClose(w));}catch(_){}const c=lastTopComma(w);if(c<0)break;w=w.slice(0,c);}throw new SyntaxError("не-JSON");}
+
+/* ===== Диктофон (по кнопке, как диктофон — не Meet) ===== */
+let DREC=null;
+function openDictaphone(title,sub,onDone){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const ov=document.createElement('div');ov.className='dov';
+  ov.innerHTML='<div class="doc"><h3>'+esc(title||'Диктофон')+'</h3><div class="sub">'+esc(sub||'Нажми микрофон и говори. Повторное нажатие — пауза. Потом «Вставить текст».')+'</div>'+
+    '<button class="mic" id="dmic">🎙</button>'+
+    '<div class="dtrans" id="dtrans"><span style="color:#8a8b7e">Здесь появится расшифровка…</span></div>'+
+    '<div class="dwrap"><button class="btn ghost" id="dcancel">Отмена</button><button class="btn primary" id="dok">Вставить текст</button></div>'+
+    (SR?'':'<div class="note" style="margin-top:10px">Живая расшифровка работает в Chrome. В другом браузере — надиктуй системным способом и вставь руками.</div>')+'</div>';
+  document.body.appendChild(ov);
+  let text='',listening=false;
+  const trans=ov.querySelector('#dtrans'),mic=ov.querySelector('#dmic');
+  function paint(interim){trans.innerHTML=(text?esc(text):'')+(interim?'<span class="interim"> '+esc(interim)+'</span>':'')||'<span style="color:#8a8b7e">Здесь появится расшифровка…</span>';trans.scrollTop=trans.scrollHeight;}
+  function stop(){if(DREC){try{DREC.stop();}catch(_){}}listening=false;mic&&mic.classList.remove('rec');}
+  function close(){stop();DREC=null;ov.remove();}
+  mic.onclick=()=>{
+    if(!SR){alert('Живая расшифровка доступна в Chrome.');return;}
+    if(listening){stop();return;}
+    DREC=new SR();DREC.lang='ru-RU';DREC.continuous=true;DREC.interimResults=true;
+    DREC.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)text+=(text?' ':'')+r[0].transcript.trim();else interim+=r[0].transcript;}paint(interim);};
+    DREC.onerror=ev=>{trans.innerHTML+='<div class="interim">⚠ '+esc(ev.error||'')+' (разреши доступ к микрофону)</div>';};
+    DREC.onend=()=>{listening=false;mic.classList.remove('rec');};
+    try{DREC.start();listening=true;mic.classList.add('rec');}catch(_){}
+  };
+  ov.querySelector('#dcancel').onclick=close;
+  ov.querySelector('#dok').onclick=()=>{const t=text.trim();close();if(t&&onDone)onDone(t);};
+  ov.onclick=e=>{if(e.target===ov)close();};
+}
+window.openDictaphone=openDictaphone;
+
+/* контекст для генераторов */
+function ctxText(){
+  let t="КОМПАНИЯ: "+(S.company||"—")+" · НИША: "+(S.niche||"—")+" · РОЛЬ: "+(S.role||"—")+"\n";
+  t+="ТОП-3 РЕЗУЛЬТАТА ЗА КВАРТАЛ: "+(S.top3.filter(Boolean).join(" | ")||"—")+"\n\n";
+  t+="БРИФ ДОЛЖНОСТИ:\n";
+  BRIEF.forEach(bl=>{const ans=(S.brief[bl.id]||[]);bl.qs.forEach((q,i)=>{if(ans[i])t+="• "+q+": "+ans[i]+"\n";});});
+  if(S.portrait&&S.portrait.skills){t+="\nПОРТРЕТ НАВЫКОВ (выбранные грейды):\n";S.portrait.skills.forEach(sk=>{const g=(S.portrait.sel&&S.portrait.sel[sk.name])||"";const top=(S.portrait.top5||[]).includes(sk.name)?" [ТОП-5]":"";if(g)t+="• "+sk.name+": целевой грейд "+g+top+"\n";});}
+  return t;
+}
+
+
+/* ================= STEPS ================= */
+const STEPS=[
+ {id:"start",icon:"0",t:"Старт",d:"компания и роль",sec:"Подготовка"},
+ {id:"brief",icon:"Б",t:"Бриф компании",d:"9 блоков + голос",sec:"Подготовка"},
+ {id:"audit",icon:"Д",t:"Диагностика материалов",d:"что есть / чего нет",sec:"Подготовка"},
+ {id:"conflicts",icon:"К",t:"Реестр конфликтов",d:"слипание, цифры, стоп-слова",sec:"Подготовка"},
+ {id:"interview",icon:"И",t:"Интервью с топами",d:"оцифровать лучших",sec:"Подготовка"},
+ {id:"l1",icon:"1",t:"Слой 1 · Компания",d:"миссия, ценности",sec:"База знаний · 7 слоёв"},
+ {id:"l2",icon:"2",t:"Слой 2 · Продукт",d:"портфель, УТП, кейсы",sec:"База знаний · 7 слоёв"},
+ {id:"l3",icon:"3",t:"Слой 3 · Клиент",d:"ICP, JTBD, CJM",sec:"База знаний · 7 слоёв"},
+ {id:"l4",icon:"4",t:"Слой 4 · Продажи",d:"скрипт, возражения",sec:"База знаний · 7 слоёв"},
+ {id:"l5",icon:"5",t:"Слой 5 · CRM",d:"статусы, SLA, страйки",sec:"База знаний · 7 слоёв"},
+ {id:"l6",icon:"6",t:"Слой 6 · Конкуренты",d:"отстройка, карточки",sec:"База знаний · 7 слоёв"},
+ {id:"l7",icon:"7",t:"Слой 7 · Практики",d:"эталонные звонки",sec:"База знаний · 7 слоёв"},
+ {id:"course",icon:"8",t:"Архитектура курса",d:"карта + первый день",sec:"Программа"},
+ {id:"ladder",icon:"Л",t:"Лестница онбординга",d:"5 этапов до автономии",sec:"Программа"},
+ {id:"attest",icon:"А",t:"Аттестация",d:"теория + ролевая + бой",sec:"Программа"},
+ {id:"kpi3060",icon:"9",t:"Карта 30-60-90",d:"KPI и критерии ИС",sec:"Программа"},
+ {id:"mentor",icon:"10",t:"Наставник и welcome",d:"регламент + видео CEO",sec:"Программа"},
+ {id:"arsenal",icon:"Ар",t:"Арсенал сотрудника",d:"что держать открытым",sec:"Тренировка"},
+ {id:"diag",icon:"11",t:"Диагностика роли",d:"модели A–E",sec:"Тренировка"},
+ {id:"roleplay",icon:"12",t:"Ролевки",d:"сценарии тренажёра",sec:"Тренировка"},
+ {id:"callcheck",icon:"Ч",t:"Чек-лист звонков",d:"день 3 / 7 / 14",sec:"Тренировка"},
+ {id:"failures",icon:"П",t:"Провалы новичков",d:"топ-8 и как снять",sec:"Тренировка"},
+ {id:"gantt",icon:"13",t:"План внедрения",d:"8 недель",sec:"Запуск"},
+ {id:"report",icon:"📊",t:"Отчётность",d:"прогресс новичков",sec:"Запуск"},
+ {id:"admin",icon:"🗂",t:"Мои онбординги",d:"панель + Excel",sec:"Запуск"},
+];
+function renderNav(){
+  let out="",cur="";
+  STEPS.forEach((st,i)=>{
+    if(st.sec!==cur){cur=st.sec;out+='<div class="secl">'+esc(cur)+'</div>';}
+    const done=stepDone(st.id);
+    out+='<div class="snav'+(i===STEP?' on':'')+(done?' done':'')+'" onclick="go('+i+')"><div class="si">'+(done&&i!==STEP?'✓':st.icon)+'</div><div><div class="st">'+st.t+'</div><div class="sd">'+st.d+'</div></div></div>';
+  });
+  $("#steps").innerHTML=out;
+}
+function stepDone(id){
+  if(id==="start")return !!(S.company&&S.role);
+  if(id==="brief")return Object.keys(S.brief).length>0;
+  return !!S.results[id];
+}
+function go(i){STEP=Math.max(0,Math.min(STEPS.length-1,i));renderNav();render();window.scrollTo(0,0);}
+window.go=go;
+
+/* ================= RENDER MAIN ================= */
+function render(){
+  const id=STEPS[STEP].id;
+  if(id==="start")return renderStart();
+  if(id==="brief")return renderBrief();
+  if(id==="audit")return renderAudit();
+  if(id==="conflicts")return renderGen("conflicts");
+  if(id==="report")return renderReport();
+  if(id==="admin")return renderAdmin();
+  return renderGen(id);
+}
+function head(kick,h1,lead){return '<div class="kick">'+kick+'</div><h1>'+h1+'</h1>'+(lead?'<p class="lead">'+lead+'</p>':'');}
+function navBtns(){const b=[];if(STEP>0)b.push('<button class="btn ghost" onclick="go('+(STEP-1)+')">← Назад</button>');if(STEP<STEPS.length-1)b.push('<button class="btn dark" onclick="go('+(STEP+1)+')">Дальше →</button>');return '<div class="row" style="margin-top:22px">'+b.join("")+'</div>';}
+
+/* ---- 0. СТАРТ ---- */
+function renderStart(){
+  $("#main").innerHTML=head("Конструктор онбординга","Собери систему онбординга<br>под свою роль","Семь слоёв базы знаний, тесты с порогами, программа первой недели, карта 30-60-90, диагностика роли и ролевки для тренажёра. Всё на твоём ключе Claude.")+
+  '<div class="card"><div class="two"><div class="fg"><label class="fl">Компания</label><input type="text" id="f_company" value="'+esc(S.company)+'" placeholder="напр. A-Players"></div>'+
+  '<div class="fg"><label class="fl">Ниша</label><input type="text" id="f_niche" value="'+esc(S.niche)+'" placeholder="напр. онлайн-образование / B2B-услуги"></div></div>'+
+  '<div class="fg"><label class="fl">Роль, под которую строим онбординг</label><input type="text" id="f_role" value="'+esc(S.role)+'" placeholder="напр. Менеджер отдела продаж"></div>'+
+  '<div class="two"><div class="fg"><label class="fl">Целевой срок онбординга</label><input type="text" id="f_target" value="'+esc(S.target||"")+'" placeholder="напр. 21 день теории + аттестация"></div>'+
+  '<div class="fg"><label class="fl">Формат обучения</label><input type="text" id="f_format" value="'+esc(S.format||"")+'" placeholder="напр. текст + видео + тесты + ролевки"></div></div>'+
+  '<div class="note b">Правило №1: онбординг — это <b>продукт, а не адаптация</b>. У него есть структура, пороги, аттестация и метрика. Правило №2: контент собирает ИИ, но <b>подтверждает руководитель</b> — ничего не уходит в обучение со статусом «черновик».</div>'+
+  '<div class="row" style="margin-top:16px"><button class="btn primary" onclick="saveStart()">Сохранить и продолжить →</button></div></div>'+
+  layersMapHTML();
+}
+function saveStart(){S.company=$("#f_company").value.trim();S.niche=$("#f_niche").value.trim();S.role=$("#f_role").value.trim();S.target=$("#f_target").value.trim();S.format=$("#f_format").value.trim();save();renderNav();go(1);}
+window.saveStart=saveStart;
+function layersMapHTML(){
+  const cards=LAYERS.map(L=>'<div class="lcard"><div class="ln">Слой '+L.n+'</div><b>'+esc(L.title)+'</b><span>'+esc(L.sub)+'</span>'+
+   '<div class="lmeta">'+L.lessons+' уроков · '+L.min+' мин · тест '+L.quiz+' вопр. · порог <b>'+L.thr+'%</b></div>'+
+   '<div class="ldays">'+esc(L.days)+'</div></div>').join("");
+  return '<div class="card"><h3 style="margin:0">Архитектура: 7 слоёв в жёсткой последовательности</h3><div class="kmini" style="margin:3px 0 0">Следующий слой открывается только после сдачи теста предыдущего. Пороги разные — там, где ошибка стоит денег, порог выше.</div><div class="lgrid">'+cards+'</div></div>';
+}
+
+/* ---- 1. БРИФ ---- */
+function renderBrief(){
+  const blocks=BRIEF.map(bl=>{
+    const ans=S.brief[bl.id]||[];
+    const qas=bl.qs.map((q,i)=>'<div class="qa"><div class="q">'+esc(q)+'</div><textarea data-b="'+bl.id+'" data-i="'+i+'" style="min-height:52px" oninput="briefEdit(this)">'+esc(ans[i]||"")+'</textarea></div>').join("");
+    return '<div class="brief-block"><div class="bb-h">'+esc(bl.name)+'<span class="who">спросить у: '+esc(bl.who)+'</span><span class="rec sm" onclick="dictate(\''+bl.id+'\')"><span class="d"></span>🎙 Диктовать блок</span></div><div class="bb-body">'+qas+'</div></div>';
+  }).join("");
+  const total=BRIEF.reduce((a,b)=>a+b.qs.length,0);
+  $("#main").innerHTML=head("Шаг 0 · Бриф компании","Один бриф — <span style=\"color:#B0822E\">все семь слоёв</span>","Заполняется один раз. Из него ИИ соберёт контент каждого слоя. Нажми «🎙 Диктовать блок» и надиктуй мысли — система сама разнесёт по вопросам. Не знаешь ответ — оставь пустым, на шаге «Диагностика» увидишь, что и у кого запросить.")+
+  '<div class="row" style="margin-top:8px"><span class="pill gold">'+BRIEF.length+' блоков · '+total+' вопросов</span><span class="kmini" id="voiceHint"></span></div>'+
+  '<div id="briefStatus"></div>'+blocks+
+  '<div class="row" style="margin-top:16px"><button class="btn dark" onclick="go(2)">🔎 Перейти к диагностике материалов →</button></div>'+navBtns();
+  if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window))$("#voiceHint").textContent="Голосовой ввод работает в Chrome. Иначе — впиши текстом.";
+}
+function briefEdit(el){const b=el.dataset.b,i=+el.dataset.i;S.brief[b]=S.brief[b]||[];S.brief[b][i]=el.value;save();renderNav();}
+window.briefEdit=briefEdit;
+function dictate(bid){
+  const bl=BRIEF.find(b=>b.id===bid);
+  openDictaphone("Диктовка · "+bl.name,"Говори свободно про этот блок — потом нажми «Вставить текст», и AI разложит сказанное по вопросам.",async(txt)=>{
+    if(!txt.trim())return;
+    $("#briefStatus").innerHTML='<div class="statusbox"><span class="spin"></span>Раскладываю надиктованное по вопросам блока «'+esc(bl.name)+'»…</div>';
+    await sortDictation(bid,txt);
+  });
+}
+window.dictate=dictate;
+async function sortDictation(bid,raw){
+  const bl=BRIEF.find(b=>b.id===bid);
+  if(!($("#apikey").value||"").trim()){
+    const cur=S.brief[bid]||[];cur[0]=((cur[0]||"")+" "+raw).trim();S.brief[bid]=cur;save();renderBrief();
+    $("#briefStatus").innerHTML='<div class="note">Без ключа текст вставлен целиком в первый вопрос. Вставь ключ Claude — и надиктовка разложится по вопросам сама.</div>';return;
+  }
+  const sys=["Ты — ассистент, который раскладывает устную речь по вопросам брифа. Ничего не выдумывай: используй только сказанное.",
+   "Вопросы блока «"+bl.name+"»:\n"+bl.qs.map((q,i)=>(i+1)+". "+q).join("\n"),
+   'Верни СТРОГО JSON: {"answers":["ответ на вопрос 1","ответ на вопрос 2", ...]} — ровно '+bl.qs.length+' элементов. Если про вопрос ничего не сказано — пустая строка.'].join("\n");
+  try{const r=parseJSON(await callClaude({system:sys,messages:[{role:"user",content:"Надиктовка:\n"+raw}],max_tokens:8000,effort:"low"}));
+    const cur=S.brief[bid]||[];
+    (r.answers||[]).forEach((a,i)=>{if(a&&String(a).trim())cur[i]=(cur[i]?cur[i]+" ":"")+String(a).trim();});
+    S.brief[bid]=cur;save();renderBrief();
+    $("#briefStatus").innerHTML='<div class="note b">✓ Надиктовка разложена по вопросам блока «'+esc(bl.name)+'». Проверь и поправь.</div>';
+  }catch(e){
+    const cur=S.brief[bid]||[];cur[0]=((cur[0]||"")+" "+raw).trim();S.brief[bid]=cur;save();renderBrief();
+    $("#briefStatus").innerHTML='<div class="errbox">Не удалось разложить ('+esc(errText(e))+'). Текст вставлен целиком в первый вопрос.</div>';
+  }
+}
+
+/* ---- 2. ДИАГНОСТИКА МАТЕРИАЛОВ ---- */
+function briefFill(){
+  return BRIEF.map(bl=>{const a=S.brief[bl.id]||[];const filled=bl.qs.filter((q,i)=>(a[i]||"").trim()).length;
+    return {id:bl.id,name:bl.name,who:bl.who,n:bl.qs.length,filled:filled,gaps:bl.qs.filter((q,i)=>!(a[i]||"").trim())};});
+}
+function renderAudit(){
+  const f=briefFill();
+  const rows=f.map(b=>{const pct=Math.round(b.filled/b.n*100);
+    const st=pct>=80?'<span class="g">✓ готов</span>':pct>=40?'<span class="y">частично</span>':'<span class="r">⚠ пусто</span>';
+    return '<tr><td><b>'+esc(b.name)+'</b></td><td>'+b.filled+' / '+b.n+'</td><td><div class="bar"><i style="width:'+pct+'%"></i></div></td><td>'+st+'</td><td style="font-size:12px;color:var(--muted)">'+esc(b.who)+'</td></tr>';}).join("");
+  const gaps=f.filter(b=>b.gaps.length).map(b=>'<div class="gapb"><b>'+esc(b.name)+'</b><div class="kmini" style="margin:2px 0 6px">запросить у: '+esc(b.who)+'</div><ul class="li">'+b.gaps.slice(0,8).map(q=>'<li>'+esc(q)+'</li>').join("")+(b.gaps.length>8?'<li>…ещё '+(b.gaps.length-8)+'</li>':'')+'</ul></div>').join("");
+  const r=S.results.audit;
+  $("#main").innerHTML=head("Шаг 0.2 · Диагностика материалов","Что уже есть, а чего <span style=\"color:#B23B2E\">не хватает</span>","Правило Завода: сначала диагностика, потом контент. Генерировать слой, где нет данных, — значит получить красивый текст, который новичок прочитает и ничему не научится.")+
+  '<div class="card"><h3 style="margin:0">Готовность брифа по блокам</h3><div style="overflow-x:auto"><table class="gt narrow" style="margin-top:10px"><thead><tr><th>Блок</th><th>Заполнено</th><th></th><th>Статус</th><th>У кого запросить</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+
+  (gaps?'<div class="card"><h3 style="margin:0">Чего не хватает — список запросов</h3><div class="kmini" style="margin:2px 0 8px">Отправь это письмом или в чат ответственным. Пока блок пуст, слой на нём собирать нельзя.</div>'+gaps+'</div>':'<div class="card"><div class="note b">Бриф заполнен полностью — можно собирать слои.</div></div>')+
+  '<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><div><h3 style="margin:0">Разбор материалов через AI</h3><div class="kmini" style="margin:2px 0 0">Модель прочитает бриф и скажет, где данных достаточно для качественного контента, а где формально заполнено, но по сути пусто.</div></div><button class="btn primary sm" onclick="runGen(\'audit\')" id="genBtn">✨ Проверить материалы</button></div><div id="genStatus"></div></div>'+
+  '<div id="genOut">'+(r?blocksHTML(r)+fixboxHTML("audit"):"")+'</div>'+navBtns();
+}
+GEN.audit={icon:"Д",title:"Диагностика материалов",desc:"что есть / чего нет",
+ sys:()=>[METHOD,
+  "Проанализируй бриф компании и оцени готовность материалов к сборке онбординга роли «"+(S.role||"сотрудник")+"».",
+  "Блоки: (1) «Готовность по слоям» — kind=table, columns=[Слой, Данных достаточно?, Что есть, Чего критично не хватает, У кого запросить]: по всем 7 слоям. (2) «Формально заполнено, но пусто» — kind=list: где ответы есть, но они общие и на их основе получится вода. (3) «Что запросить в первую очередь» — kind=table, columns=[Приоритет, Что запросить, У кого, Зачем это нужно]: 5–8 позиций. (4) «Что можно собирать уже сейчас» — kind=list: слои, которые готовы к генерации.",
+  "Будь честным и жёстким: лучше сказать «данных нет», чем сгенерировать красивый бесполезный текст.",
+  COMMON_SCHEMA].join("\n")};
+
+/* ---- методичка слоя над генератором ---- */
+function layerBriefHTML(L){
+  const blocks=L.blocks.map((b,i)=>'<div class="lb"><div class="lbh"><span class="lbn">Урок '+(i+1)+'</span><b>'+esc(b.t)+'</b></div>'+
+    '<div class="lbneed"><span>Обязательно внутри:</span> '+esc(b.need)+'</div>'+
+    '<div class="lbask"><span>Что собрать:</span> '+esc(b.ask)+'</div></div>').join("");
+  return '<div class="card meth"><div class="mh"><div><div class="mn">Методология слоя</div><h3 style="margin:2px 0 0">Почему Слой '+L.n+' стоит именно здесь</h3></div>'+
+    '<div class="mmeta"><span>'+L.lessons+' уроков</span><span>'+L.min+' мин</span><span>тест '+L.quiz+' вопр.</span><span class="thr">порог '+L.thr+'%</span><span>3 попытки</span><span>'+esc(L.days)+'</span></div></div>'+
+    '<p class="mwhy">'+esc(L.why)+'</p>'+
+    '<div class="note" style="border-left-color:#B23B2E;background:rgba(178,59,46,.07);color:#7d2b21"><b>Типичная ошибка:</b> '+esc(L.mistake)+'</div>'+
+    '<div class="mlab" style="margin-top:14px">После слоя сотрудник умеет</div><ul class="li">'+L.kpi.map(k=>'<li>'+esc(k)+'</li>').join("")+'</ul>'+
+    '<div class="mlab" style="margin-top:14px">Структура: '+L.lessons+' уроков — что обязательно внутри каждого</div>'+blocks+
+    '<div class="kmini">Таксономия Блума: '+esc(L.bloom)+' · стандарты качества применяются ко всем урокам</div></div>'+
+    '<div class="card"><div class="row" style="justify-content:space-between;align-items:center" onclick="toggleStd()" style="cursor:pointer"><h3 style="margin:0">Стандарты качества и чек-лист приёмки</h3><button class="btn ghost sm" onclick="toggleStd()">показать / скрыть</button></div>'+
+    '<div id="stdBox" class="hidden"><div class="mlab" style="margin-top:10px">Как писать уроки</div><ul class="li">'+STANDARDS.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>'+
+    '<div class="mlab" style="margin-top:14px">Чек-лист перед загрузкой на платформу</div><ul class="li">'+QA_CHECK.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul></div></div>';
+}
+function toggleStd(){const b=$("#stdBox");if(b)b.classList.toggle("hidden");}
+window.toggleStd=toggleStd;
+
+/* ---- ОТЧЁТНОСТЬ ОНБОРДИНГА ---- */
+function obState(){S.onb=S.onb||{list:[]};return S.onb;}
+function obNum(x){const v=parseFloat(x);return isFinite(v)?v:0;}
+function renderReport(){
+  const R=obState();
+  const rows=R.list.map((p,i)=>{
+    const done=LAYERS.filter(L=>(p.layers||{})[L.id]).length;
+    const pct=Math.round(done/LAYERS.length*100);
+    return '<tr><td class="pname"><input type="text" value="'+esc(p.name||"")+'" oninput="obName('+i+',this.value)" placeholder="Имя новичка"></td>'+
+    '<td><input type="date" value="'+esc(p.start||"")+'" oninput="obField('+i+',\'start\',this.value)"></td>'+
+    LAYERS.map(L=>'<td class="lc"><input type="checkbox" '+((p.layers||{})[L.id]?"checked":"")+' onchange="obLayer('+i+',\''+L.id+'\',this.checked)" title="Слой '+L.n+'"></td>').join("")+
+    '<td class="pp"><div class="bar"><i style="width:'+pct+'%"></i></div><span>'+pct+'%</span></td>'+
+    '<td><input type="number" min="0" max="100" value="'+esc(p.att||"")+'" oninput="obField('+i+',\'att\',this.value)" placeholder="—" style="width:62px;text-align:center"></td>'+
+    '<td id="obv_'+i+'"></td>'+
+    '<td><button class="btn ghost sm" onclick="obDel('+i+')">✕</button></td></tr>';
+  }).join("");
+  $("#main").innerHTML=head("Отчётность онбординга","Кто где идёт и <span style=\"color:#B0822E\">кто буксует</span>","Отмечай сданные слои и балл аттестации. Система сама покажет прогресс, темп и тех, кто выпадает из срока. Контроль времени тоже важен: слишком быстро — не читал, слишком долго — буксует.")+
+  '<div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Новички в онбординге</h3><button class="btn primary sm" onclick="obAdd()">+ Новичок</button></div>'+
+  (R.list.length?'<div style="overflow-x:auto"><table class="gt narrow obt"><thead><tr><th>Новичок</th><th>Старт</th>'+LAYERS.map(L=>'<th title="'+esc(L.title)+'">'+L.n+'</th>').join("")+'<th>Прогресс</th><th>Аттест.</th><th>Статус</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+   :'<div class="note b">Добавь новичка — и отмечай сданные слои по мере прохождения.</div>')+
+  '<div class="kmini">Целевой срок: '+esc(S.target||"21 день теории + аттестация")+'. Аттестация считается сданной от 80 баллов.</div></div>'+
+  obNormsHTML()+navBtns();
+  obRefresh();
+}
+function obRefresh(){
+  const R=obState();
+  R.list.forEach((p,i)=>{
+    const el=$("#obv_"+i);if(!el)return;
+    const done=LAYERS.filter(L=>(p.layers||{})[L.id]).length;
+    const att=obNum(p.att);
+    let days=null;
+    if(p.start){days=Math.max(0,Math.round((Date.now()-new Date(p.start))/86400000));}
+    let v='<span class="kmini" style="margin:0">идёт</span>';
+    if(done===LAYERS.length&&att>=80)v='<span class="g">✓ аттестован</span>';
+    else if(done===LAYERS.length&&att>0&&att<80)v='<span class="r">аттестация не сдана</span>';
+    else if(done===LAYERS.length)v='<span class="y">ждёт аттестации</span>';
+    else if(days!==null&&days>21&&done<LAYERS.length)v='<span class="r">⚠ выбился из срока ('+days+' дн.)</span>';
+    else if(days!==null&&days<=2&&done>=4)v='<span class="y">слишком быстро — проверь</span>';
+    else if(days!==null)v='<span class="kmini" style="margin:0">'+days+' дн. · слоёв '+done+'/7</span>';
+    el.innerHTML=v;
+  });
+}
+function obNormsHTML(){
+  const norms=OBENCH.norms.map(n=>'<tr><td><b>'+esc(n[0])+'</b></td><td class="g">'+esc(n[1])+'</td><td style="color:var(--muted)">'+esc(n[2])+'</td></tr>').join("");
+  const cr=OBENCH.cr.map(c=>'<tr><td><b>'+esc(c.stage)+'</b></td><td class="g">'+(c.cr*100).toFixed(0)+'%</td><td style="font-size:12.5px;color:var(--muted)">'+esc(c.hint)+'</td></tr>').join("");
+  return '<div class="card"><h3 style="margin:0">Нормативы системного онбординга</h3><div class="kmini" style="margin:2px 0 6px">Ориентиры A-Players — с чем сверять свои цифры.</div>'+
+   '<div style="overflow-x:auto"><table class="gt narrow"><thead><tr><th>Показатель</th><th>Норма</th><th>Комментарий</th></tr></thead><tbody>'+norms+'</tbody></table></div>'+
+   '<h3 style="margin-top:18px">Где обычно теряются новички</h3>'+
+   '<div style="overflow-x:auto"><table class="gt narrow"><thead><tr><th>Переход</th><th>Норма</th><th>Что значит, если у тебя ниже</th></tr></thead><tbody>'+cr+'</tbody></table></div></div>';
+}
+function obAdd(){obState().list.push({name:"",start:new Date().toISOString().slice(0,10),layers:{},att:""});save();renderReport();}
+function obDel(i){if(!confirm("Убрать новичка из отчётности?"))return;obState().list.splice(i,1);save();renderReport();}
+function obName(i,v){obState().list[i].name=v;save();}
+function obField(i,k,v){obState().list[i][k]=v;save();obRefresh();}
+function obLayer(i,lid,on){const p=obState().list[i];p.layers=p.layers||{};if(on)p.layers[lid]=1;else delete p.layers[lid];save();renderReport();}
+window.obAdd=obAdd;window.obDel=obDel;window.obName=obName;window.obField=obField;window.obLayer=obLayer;
+
+/* ---- АДМИН ---- */
+function getProjects(){try{return JSON.parse(localStorage.getItem("apx_onb_projects"))||[];}catch(_){return [];}}
+function setProjects(a){localStorage.setItem("apx_onb_projects",JSON.stringify(a));}
+function saveProject(){
+  if(!S.role){alert("Заполни компанию и роль на «Старте».");return;}
+  const arr=getProjects();const id=S._pid||("p"+Date.now());S._pid=id;
+  const snap={id,company:S.company,niche:S.niche,role:S.role,target:S.target,format:S.format,brief:S.brief,results:S.results,onb:S.onb,
+    driveLink:(arr.find(f=>f.id===id)||{}).driveLink||"",updated:new Date().toISOString().slice(0,16).replace("T"," ")};
+  const i=arr.findIndex(f=>f.id===id);if(i>=0)arr[i]=snap;else arr.unshift(snap);
+  setProjects(arr);save();renderAdmin();
+}
+function loadProject(id){const f=getProjects().find(x=>x.id===id);if(!f)return;
+  S=Object.assign(S,{company:f.company,niche:f.niche,role:f.role,target:f.target,format:f.format,brief:f.brief||{},results:f.results||{},onb:f.onb||{list:[]},_pid:f.id});
+  save();renderNav();go(0);}
+function newProject(){
+  if(S.role){
+    const saved=getProjects().some(f=>f.id===S._pid);
+    const q=saved?("Сохранить изменения в онбординге «"+S.role+"» перед созданием нового?\n\nОК — сохранить и начать новый.\nОтмена — начать новый без сохранения.")
+                 :("Текущий онбординг «"+S.role+"» ещё не сохранён.\n\nОК — сохранить и начать новый.\nОтмена — начать новый, текущий будет потерян.");
+    if(confirm(q))saveProject();
+  }
+  S.company="";S.niche="";S.role="";S.target="";S.format="";S.brief={};S.results={};S.onb={list:[]};S._pid=null;
+  save();renderNav();go(0);
+}
+function delProject(id){if(!confirm("Удалить этот онбординг из списка?"))return;setProjects(getProjects().filter(f=>f.id!==id));renderAdmin();}
+function setDrive(id,v){const arr=getProjects();const f=arr.find(x=>x.id===id);if(f){f.driveLink=v;setProjects(arr);}}
+window.saveProject=saveProject;window.loadProject=loadProject;window.newProject=newProject;window.delProject=delProject;window.setDrive=setDrive;
+function renderAdmin(){
+  const arr=getProjects();
+  const rows=arr.length?arr.map(f=>{
+    const n=Object.keys(f.results||{}).length;
+    return '<tr'+(f.id===S._pid?' style="background:#EFF4EC"':'')+'><td><b>'+esc(f.role||"—")+'</b>'+(f.id===S._pid?' <span class="pill gold">открыт</span>':'')+'<div class="kmini">'+esc(f.company||"")+' · '+esc(f.niche||"")+'</div></td><td>'+esc(f.updated||"")+'</td><td>'+n+' разделов</td>'+
+    '<td><input type="text" value="'+esc(f.driveLink||"")+'" placeholder="ссылка на файл в Google Drive" oninput="setDrive(\''+f.id+'\',this.value)" style="min-width:220px">'+(f.driveLink?' <a href="'+esc(f.driveLink)+'" target="_blank">↗</a>':'')+'</td>'+
+    '<td class="row" style="gap:6px"><button class="btn ghost sm" onclick="loadProject(\''+f.id+'\')">Открыть</button><button class="btn ghost sm" onclick="delProject(\''+f.id+'\')">✕</button></td></tr>';
+  }).join(""):'<tr><td colspan="5" style="color:var(--muted)">Пока нет сохранённых онбордингов. Собери контент и нажми «💾 Сохранить текущий онбординг».</td></tr>';
+  $("#main").innerHTML=head("Мои онбординги","Админ-панель","Все собранные системы онбординга (хранятся в этом браузере). Сохрани текущую, выгрузи одним файлом и залей на платформу обучения.")+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="saveProject()">💾 Сохранить текущий онбординг</button><button class="btn dark" onclick="assembleWorkbook()">⬇ Скачать весь онбординг в Excel</button><button class="btn ghost" onclick="newProject()">➕ Новый онбординг</button></div>'+
+  '<div class="note b">Сейчас открыт: <b>'+esc(S.role||"— ещё не начат —")+'</b>'+(S._pid?"":" · <span style='color:#B0822E'>не сохранён в списке</span>")+'. «➕ Новый онбординг» очищает рабочие поля под следующую роль — сохранённые остаются в таблице.</div>'+
+  '<div class="note">Что делать с выгрузкой: каждый слой — отдельный лист. Заливаешь в Teachbase (или другую LMS) как 7 модулей, включаешь последовательное прохождение и блокировку перехода до сдачи теста. Или отдаёшь команде внедрения Завода A-Players.</div>'+
+  '<div style="overflow-x:auto"><table class="gt" style="margin-top:12px"><thead><tr><th>Роль / компания</th><th>Обновлено</th><th>Собрано</th><th>Ссылка на собранный онбординг</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+navBtns();
+}
+
+/* ---- ВЫГРУЗКА ВСЕГО ---- */
+async function assembleWorkbook(){
+  if(!window.ExcelJS){alert("ExcelJS не загрузился (нужен интернет).");return;}
+  const wb=new ExcelJS.Workbook();wb.creator="A-Players";
+  let ws=wb.addWorksheet("Онбординг");wsWidths(ws,[30,70]);
+  xTitle(ws,"СИСТЕМА ОНБОРДИНГА — "+((S.role||"роль").toUpperCase()),2);
+  [["Компания",S.company],["Ниша",S.niche],["Роль",S.role],["Целевой срок",S.target],["Формат",S.format]].forEach((kv,i)=>xData(ws,kv,i%2));
+  ws.addRow([]);
+  xSection(ws,"Карта слоёв",2);
+  xHeader(ws,["Слой","Уроков · время · тест · порог"]);
+  LAYERS.forEach((L,i)=>xData(ws,["Слой "+L.n+" · "+L.title+" — "+L.sub,L.lessons+" уроков · "+L.min+" мин · "+L.quiz+" вопросов · порог "+L.thr+"% · "+L.days],i%2));
+  ws=wb.addWorksheet("Бриф компании");wsWidths(ws,[46,60]);xTitle(ws,"БРИФ КОМПАНИИ",2);
+  BRIEF.forEach(bl=>{const ans=S.brief[bl.id]||[];const any=bl.qs.some((q,i)=>ans[i]);if(!any)return;
+    xSection(ws,bl.name+" (спросить у: "+bl.who+")",2);bl.qs.forEach((q,i)=>{if(ans[i])xData(ws,[q,ans[i]]);});ws.addRow([]);});
+  Object.keys(GEN).forEach(id=>{const r=S.results[id];if(!r)return;
+    const g=GEN[id];const w=wb.addWorksheet(sheetName(g.title));wsWidths(w,[26,40,40,40,30,30]);
+    xTitle(w,(r.title||g.title).toUpperCase(),6);
+    const L=layerById(id);
+    if(L){xSection(w,"Параметры слоя",6);xData(w,["Уроков",L.lessons,"Время",L.min+" мин","Тест",L.quiz+" вопр. · порог "+L.thr+"%"]);xData(w,["Место в плане",L.days,"","","",""],1);w.addRow([]);}
+    xBlocks(w,r.blocks);});
+  if(S.onb&&S.onb.list&&S.onb.list.length){
+    const w=wb.addWorksheet("Прогресс новичков");wsWidths(w,[24,14].concat(LAYERS.map(()=>7)).concat([12]));
+    xTitle(w,"ПРОГРЕСС НОВИЧКОВ",LAYERS.length+3);
+    xHeader(w,["Новичок","Старт"].concat(LAYERS.map(L=>"С"+L.n)).concat(["Аттестация"]));
+    S.onb.list.forEach((p,i)=>xData(w,[p.name||"",p.start||""].concat(LAYERS.map(L=>(p.layers||{})[L.id]?"✓":"")).concat([p.att||""]),i%2));
+  }
+  await xlsxDownload(wb,"Онбординг — "+(S.company||"")+" "+(S.role||"роль")+".xlsx");
+}
+window.assembleWorkbook=assembleWorkbook;
+function sheetName(t){return String(t).replace(/[\\/?*:\[\]]/g,"").slice(0,30);}
+
+function renderGen(id){
+  const g=GEN[id];const r=S.results[id];
+  const L=layerById(id);
+  $("#main").innerHTML=head(L?("Слой "+L.n+" из 7"):("Шаг · "+g.title),L?(esc(L.title)+" — <span style=\"color:#B0822E\">"+esc(L.sub)+"</span>"):g.title,
+    L?"Собирается по плейбуку Слоя "+L.n+": контент по каждому уроку, тест с порогом и практическое задание — за один прогон.":"Собирается по зашитому плейбуку A-Players на основе твоего брифа компании.")+
+  (L?layerBriefHTML(L):"")+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="runGen(\''+id+'\')" id="genBtn">✨ Собрать: '+esc(g.title)+'</button>'+(r?'<button class="btn ghost sm" onclick="exportGen(\''+id+'\')">⬇ В Excel</button>':'')+(r?'<button class="btn ghost sm" onclick="editGen(\''+id+'\')">✏️ Редактировать вручную</button>':'')+'</div><div class="kmini">Опирается на бриф компании и плейбук слоя. Нужен ключ Claude.</div><div id="genStatus"></div></div>'+
+  '<div id="genOut">'+(r?blocksHTML(r)+fixboxHTML(id):"")+'</div>'+navBtns();
+}
+function fixboxHTML(id){return '<div class="fixbox"><h4>✏️ Поправить этот раздел</h4><textarea id="fix_'+id+'" placeholder="Что изменить? Напр.: добавь урок про работу с рассрочкой; сделай тест сложнее; убери воду из урока 2.3. Можно надиктовать голосом."></textarea><div class="row" style="margin-top:10px"><button class="btn primary sm" onclick="runGenFix(\''+id+'\')">Применить правку</button><button class="btn ghost sm" onclick="dictateFix(\''+id+'\')">🎙 Надиктовать правку</button></div></div>';}
+function blocksHTML(r){
+  let h='<div class="card"><h2 style="margin-top:0">'+esc(r.title||"")+'</h2>';
+  (r.blocks||[]).forEach(b=>{
+    h+='<h3 style="margin-top:16px">'+esc(b.h||"")+'</h3>';
+    if(b.kind==="table"&&b.columns){h+='<div style="overflow-x:auto"><table class="gt"><thead><tr>'+b.columns.map(c=>'<th>'+esc(c)+'</th>').join("")+'</tr></thead><tbody>'+(b.rows||[]).map(row=>'<tr>'+(row||[]).map(c=>'<td>'+esc(c)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';}
+    else if(b.kind==="list"){h+='<ul class="li">'+(b.items||[]).map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>';}
+    else{h+='<div style="white-space:pre-wrap;font-size:14.5px;margin-top:4px">'+esc(b.text||(b.items||[]).join("\n"))+'</div>';}
+  });
+  return h+'</div>';
+}
+async function runGen(id,correction){
+  const g=GEN[id];
+  if(!($("#apikey").value||"").trim()){$("#genStatus").innerHTML='<div class="errbox">Вставь ключ Claude слева.</div>';return;}
+  if(!S.role){$("#genStatus").innerHTML='<div class="errbox">Сначала заполни «Старт» (роль + ТОП-3) и бриф.</div>';return;}
+  const btn=$("#genBtn");if(btn)btn.disabled=true;$("#genStatus").innerHTML='<div class="statusbox"><span class="spin"></span>'+(correction?'Вношу правку в «':'Собираю «')+esc(g.title)+'» по плейбуку…</div>';
+  let sys=g.sys(),user=ctxText();
+  if(correction){sys=g.sys()+"\n\nЭто ПРАВКА уже собранного раздела. Ниже — текущий результат (JSON) и правка пользователя. Внеси правку и верни ОБНОВЛЁННЫЙ ПОЛНЫЙ JSON в той же схеме, сохранив корректным всё остальное.";user=ctxText()+"\n\nТЕКУЩИЙ РЕЗУЛЬТАТ (JSON):\n"+JSON.stringify(S.results[id]||{})+"\n\nПРАВКА ПОЛЬЗОВАТЕЛЯ:\n"+correction;}
+  try{const raw=await callClaude({system:sys,messages:[{role:"user",content:user}],max_tokens:14000,effort:"low"});
+    S.results[id]=parseJSON(raw);save();renderNav();renderGen(id);
+  }catch(e){$("#genStatus").innerHTML='<div class="errbox">Не удалось: '+esc(errText(e))+' <button class="btn ghost sm" onclick="runGen(\''+id+'\')">↻ Повторить</button></div>';if(btn)btn.disabled=false;}
+}
+window.runGen=runGen;
+function runGenFix(id){const el=$("#fix_"+id);const t=(el&&el.value||"").trim();if(!t){alert("Опиши или надиктуй, что изменить");return;}runGen(id,t);}
+function dictateFix(id){openDictaphone('Надиктуй правку','Скажи, что изменить в этом разделе — затем «Применить правку».',(txt)=>{const el=$("#fix_"+id);if(el){el.value=(el.value?el.value+" ":"")+txt;el.focus();}});}
+window.runGenFix=runGenFix;window.dictateFix=dictateFix;
+/* ---- ручное редактирование раздела (правишь текст прямо в полях) ---- */
+let EDITBUF=null,CUREDIT=null;
+function editGen(id){CUREDIT=id;EDITBUF=JSON.parse(JSON.stringify(S.results[id]||{title:"",blocks:[]}));$("#genOut").innerHTML=editGenHTML(id);const c=document.querySelector('.card.edit');if(c)c.scrollIntoView({behavior:"smooth",block:"start"});}
+function editGenHTML(id){
+  const r=EDITBUF;let h='<div class="card edit"><div class="row" style="justify-content:space-between"><h2 style="margin:0">✏️ Редактирование вручную</h2><span class="kmini">Меняй текст прямо в полях. Можно добавлять и удалять пункты и строки. Потом «Сохранить».</span></div>';
+  h+='<label class="fl" style="margin-top:12px">Заголовок раздела</label><input type="text" value="'+esc(r.title||"")+'" oninput="edTitle(this.value)">';
+  (r.blocks||[]).forEach((b,bi)=>{
+    h+='<div class="edblock"><input class="edh" type="text" value="'+esc(b.h||"")+'" oninput="edH('+bi+',this.value)" placeholder="Заголовок блока">';
+    if(b.kind==="table"&&b.columns){
+      h+='<div style="overflow-x:auto"><table class="gt narrow" style="margin-top:8px"><thead><tr>'+b.columns.map((c,ci)=>'<th><input type="text" value="'+esc(c)+'" oninput="edCol('+bi+','+ci+',this.value)" style="min-width:90px;background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff;font-weight:700;padding:4px 6px"></th>').join("")+'<th style="min-width:30px"></th></tr></thead><tbody>'+
+        (b.rows||[]).map((row,ri)=>'<tr>'+b.columns.map((c,ci)=>'<td><textarea rows="2" oninput="edCell('+bi+','+ri+','+ci+',this.value)" style="min-height:40px;font-size:13px">'+esc((row&&row[ci])||"")+'</textarea></td>').join("")+'<td><button class="btn ghost sm" onclick="edDelRow('+bi+','+ri+')" title="Удалить строку">✕</button></td></tr>').join("")+
+        '</tbody></table></div><button class="btn ghost sm" style="margin-top:8px" onclick="edAddRow('+bi+')">+ строка</button>';
+    } else if(b.kind==="list"){
+      h+='<div class="edlist">'+(b.items||[]).map((x,ii)=>'<div class="row" style="margin-top:6px;flex-wrap:nowrap"><textarea rows="1" oninput="edItem('+bi+','+ii+',this.value)">'+esc(x)+'</textarea><button class="btn ghost sm" onclick="edDelItem('+bi+','+ii+')" title="Удалить пункт">✕</button></div>').join("")+'</div><button class="btn ghost sm" style="margin-top:8px" onclick="edAddItem('+bi+')">+ пункт</button>';
+    } else {
+      h+='<textarea style="margin-top:8px;min-height:120px" oninput="edText('+bi+',this.value)">'+esc(b.text||(b.items||[]).join("\n"))+'</textarea>';
+    }
+    h+='</div>';
+  });
+  h+='<div class="row" style="margin-top:16px"><button class="btn primary" onclick="saveEdit(\''+id+'\')">✓ Сохранить изменения</button><button class="btn ghost" onclick="cancelEdit(\''+id+'\')">Отмена</button></div></div>';
+  return h;
+}
+function edTitle(v){EDITBUF.title=v;}
+function edH(bi,v){EDITBUF.blocks[bi].h=v;}
+function edText(bi,v){EDITBUF.blocks[bi].text=v;EDITBUF.blocks[bi].kind="text";}
+function edItem(bi,ii,v){EDITBUF.blocks[bi].items[ii]=v;}
+function edDelItem(bi,ii){EDITBUF.blocks[bi].items.splice(ii,1);reEdit();}
+function edAddItem(bi){(EDITBUF.blocks[bi].items=EDITBUF.blocks[bi].items||[]).push("");reEdit();}
+function edCol(bi,ci,v){EDITBUF.blocks[bi].columns[ci]=v;}
+function edCell(bi,ri,ci,v){const b=EDITBUF.blocks[bi];b.rows=b.rows||[];b.rows[ri]=b.rows[ri]||[];b.rows[ri][ci]=v;}
+function edDelRow(bi,ri){EDITBUF.blocks[bi].rows.splice(ri,1);reEdit();}
+function edAddRow(bi){const b=EDITBUF.blocks[bi];b.rows=b.rows||[];b.rows.push((b.columns||[]).map(()=>""));reEdit();}
+function reEdit(){if(CUREDIT)$("#genOut").innerHTML=editGenHTML(CUREDIT);}
+function saveEdit(id){if(EDITBUF)S.results[id]=EDITBUF;EDITBUF=null;save();renderNav();renderGen(id);}
+function cancelEdit(id){EDITBUF=null;renderGen(id);}
+window.editGen=editGen;window.edTitle=edTitle;window.edH=edH;window.edText=edText;window.edItem=edItem;window.edDelItem=edDelItem;window.edAddItem=edAddItem;window.edCol=edCol;window.edCell=edCell;window.edDelRow=edDelRow;window.edAddRow=edAddRow;window.saveEdit=saveEdit;window.cancelEdit=cancelEdit;
+function exportGen(id){const r=S.results[id];if(!r)return;const wb=XLSX.utils.book_new();let n=0;(r.blocks||[]).forEach(b=>{let rows=[];if(b.kind==="table"&&b.columns){rows=[b.columns].concat(b.rows||[]);}else if(b.kind==="list"){rows=[[b.h]].concat((b.items||[]).map(x=>[x]));}else{rows=[[b.h]].concat(String(b.text||"").split("\n").map(x=>[x]));}const ws=XLSX.utils.aoa_to_sheet(rows);ws["!cols"]=(rows[0]||[""]).map(()=>({wch:40}));XLSX.utils.book_append_sheet(wb,ws,(b.h||("Блок "+(++n))).slice(0,28).replace(/[\\/?*:\[\]]/g,""));});XLSX.writeFile(wb,(r.title||GEN[id].title).slice(0,28)+".xlsx");}
+window.exportGen=exportGen;
+
+/* ================= БРЕНДИРОВАННЫЙ EXCEL (ExcelJS) ================= */
+const XC={EM:"FF143A2D",GOLD:"FFB0822E",LINE:"FFDCD4C2",CREAM:"FFEFE9DA",ZEBRA:"FFF7F3E9",SEC:"FFEFE9D9",WHITE:"FFFFFFFF"};
+function xThin(){return {style:"thin",color:{argb:XC.LINE}};}
+function xBorder(){const t=xThin();return {top:t,left:t,bottom:t,right:t};}
+function xTitle(ws,text,span){const row=ws.addRow([text]);ws.mergeCells(row.number,1,row.number,span);const c=row.getCell(1);c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.EM}};c.font={name:"Arial",bold:true,size:14,color:{argb:XC.CREAM}};c.alignment={vertical:"middle",indent:1};row.height=28;ws.addRow([]);}
+function xHeader(ws,arr){const row=ws.addRow(arr);row.eachCell(c=>{c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.GOLD}};c.font={bold:true,color:{argb:XC.WHITE},size:11};c.alignment={vertical:"middle",wrapText:true,indent:1};c.border=xBorder();});row.height=22;}
+function xData(ws,arr,z){const row=ws.addRow(arr);row.eachCell(c=>{c.alignment={vertical:"top",wrapText:true,indent:1};c.border=xBorder();if(z)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.ZEBRA}};});}
+function xSection(ws,text,span){const row=ws.addRow([text]);if(span>1)ws.mergeCells(row.number,1,row.number,span);const c=row.getCell(1);c.font={bold:true,size:12,color:{argb:XC.EM}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.SEC}};c.alignment={vertical:"middle",indent:1};row.height=20;}
+function xBullets(ws,arr,span){(arr||[]).forEach(x=>{const row=ws.addRow(["•  "+x]);if(span>1)ws.mergeCells(row.number,1,row.number,span);row.getCell(1).alignment={wrapText:true,vertical:"top",indent:1};});}
+function xText(ws,txt,span){String(txt||"").split("\n").forEach(line=>{const row=ws.addRow([line]);if(span>1)ws.mergeCells(row.number,1,row.number,span);row.getCell(1).alignment={wrapText:true,vertical:"top",indent:1};});}
+/* блоки {h,kind,items,columns,rows,text} → лист */
+function xBlocks(ws,blocks){
+  (blocks||[]).forEach(b=>{
+    xSection(ws,b.h||"",Math.max(1,(b.columns||[]).length||1));
+    if(b.kind==="table"&&b.columns){xHeader(ws,b.columns);(b.rows||[]).forEach((r,i)=>xData(ws,r,i%2));}
+    else if(b.kind==="list"){xBullets(ws,b.items||[],1);}
+    else{xText(ws,b.text||(b.items||[]).join("\n"),1);}
+    ws.addRow([]);
+  });
+}
+function wsWidths(ws,w){ws.columns=w.map(x=>({width:x}));}
+async function xlsxDownload(wb,fname){const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});const u=URL.createObjectURL(blob);const a=document.createElement("a");a.href=u;a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove();},400);}
+function sheetName(s){return String(s||"Лист").replace(/[\\/?*:\[\]]/g,"").slice(0,31)||"Лист";}
+
+/* экспорт одного раздела (генератора) — оформленный */
+async function exportBrandedBlocks(id){
+  const r=S.results[id];if(!r){return;}
+  if(!window.ExcelJS){return exportGenPlain(id);}
+  const wb=new ExcelJS.Workbook();wb.creator="A-Players";
+  const ws=wb.addWorksheet(sheetName(GEN[id].title));wsWidths(ws,[26,40,40,40,30,30]);
+  xTitle(ws,(r.title||GEN[id].title).toUpperCase(),6);xBlocks(ws,r.blocks);
+  await xlsxDownload(wb,(r.title||GEN[id].title).slice(0,40)+".xlsx");
+}
+/* портрет навыков — оформленный */
+async function exportPortraitBranded(){
+  if(!S.portrait)return; if(!window.ExcelJS)return exportPortraitPlain();
+  const wb=new ExcelJS.Workbook();wb.creator="A-Players";const ws=wb.addWorksheet(sheetName("Портрет навыков"));wsWidths(ws,[26,42,42,42,15,8]);
+  xTitle(ws,"ПОРТРЕТ НАВЫКОВ · "+((S.portrait.role||S.role||"").toUpperCase()),6);
+  xHeader(ws,["Навык","Junior","Middle","Senior","Целевой грейд","ТОП-5"]);
+  (S.portrait.skills||[]).forEach((sk,i)=>xData(ws,[sk.name,sk.junior,sk.middle,sk.senior,(S.portrait.sel||{})[sk.name]||sk.targetGrade||"",(S.portrait.top5||[]).includes(sk.name)?"да":""],i%2));
+  await xlsxDownload(wb,"Портрет навыков — "+(S.role||"роль").slice(0,26)+".xlsx");
+}
+/* единый файл — ВСЯ ВОРОНКА одним workbook */
+async function assembleWorkbook(){
+  if(!window.ExcelJS){alert("ExcelJS не загрузился (нужен интернет).");return;}
+  const wb=new ExcelJS.Workbook();wb.creator="A-Players";
+  // 0. Обзор
+  let ws=wb.addWorksheet("Воронка найма");wsWidths(ws,[26,70]);
+  xTitle(ws,"ВОРОНКА НАЙМА — "+((S.role||"роль").toUpperCase()),2);
+  [["Компания",S.company],["Ниша",S.niche],["Роль",S.role]].forEach((kv,i)=>xData(ws,kv,i%2));
+  ws.addRow([]);xSection(ws,"ТОП-3 результата за 1-й квартал",2);xBullets(ws,S.top3.filter(Boolean),2);
+  // Бриф
+  ws=wb.addWorksheet("Бриф");wsWidths(ws,[40,60]);xTitle(ws,"БРИФ ДОЛЖНОСТИ",2);
+  BRIEF.forEach(bl=>{const ans=S.brief[bl.id]||[];const any=bl.qs.some((q,i)=>ans[i]);if(!any)return;xSection(ws,bl.name,2);bl.qs.forEach((q,i)=>{if(ans[i])xData(ws,[q,ans[i]]);});ws.addRow([]);});
+  // Портрет
+  if(S.portrait&&S.portrait.skills){ws=wb.addWorksheet("Портрет навыков");wsWidths(ws,[26,42,42,42,15,8]);xTitle(ws,"ПОРТРЕТ НАВЫКОВ",6);xHeader(ws,["Навык","Junior","Middle","Senior","Целевой грейд","ТОП-5"]);S.portrait.skills.forEach((sk,i)=>xData(ws,[sk.name,sk.junior,sk.middle,sk.senior,(S.portrait.sel||{})[sk.name]||sk.targetGrade||"",(S.portrait.top5||[]).includes(sk.name)?"да":""],i%2));}
+  // Каждый собранный раздел
+  Object.keys(GEN).forEach(id=>{const r=S.results[id];if(!r)return;const w=wb.addWorksheet(sheetName(GEN[id].title));wsWidths(w,[26,40,40,40,30,30]);xTitle(w,(r.title||GEN[id].title).toUpperCase(),6);xBlocks(w,r.blocks);});
+  // Мотивация-калькулятор (с формулами)
+  motivationSheet(wb);
+  await xlsxDownload(wb,"Воронка найма — "+(S.company||"")+" "+(S.role||"роль")+".xlsx");
+}
+window.assembleWorkbook=assembleWorkbook;window.exportPortraitBranded=exportPortraitBranded;window.exportBrandedBlocks=exportBrandedBlocks;
+
+/* ================= INIT ================= */
+$("#apikey").value=localStorage.getItem(LS.key)||"";
+$("#model").value=localStorage.getItem(LS.model)||"claude-opus-5";
+$("#apikey").addEventListener("change",()=>localStorage.setItem(LS.key,$("#apikey").value.trim()));
+$("#model").addEventListener("change",()=>localStorage.setItem(LS.model,$("#model").value));
+(function(){var h=(location.hash||"").replace("#","").trim();if(!h)return;var i=STEPS.findIndex(function(x){return x.id===h;});if(i>=0)STEP=i;})();
+renderNav();render();
+</script>
+</body>
+</html>
