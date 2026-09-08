@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Онбординг и Завод A-Players · Практикум</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F4F1EA; --bg2:#EFE9D9; --card:#FCFAF4; --ink:#16201B; --muted:#5A6056;
+    --line:#DCD4C2; --em:#143A2D; --em2:#1C4C3B; --gold:#B0822E; --gold-h:#977019; --gold2:#C79A45;
+    --green:#3E8E5E; --red:#B23B2E; --amber:#C77A22;
+    --serif:"Roboto Slab",Georgia,serif; --sans:"Manrope",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#0e1b15;overflow:hidden;font-family:var(--sans)}
+  #stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center;background:var(--cream);overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,.5)}
+  .slide{position:absolute;inset:0;display:none;flex-direction:column;padding:52px 64px;color:var(--ink)}
+  .slide.active{display:flex}
+  .slide.dark{background:var(--em);color:#EFE9DA}
+  .slide.dark2{background:linear-gradient(150deg,#17402f,#122f24);color:#EFE9DA}
+  h1{font-family:var(--serif);font-weight:800;font-size:52px;line-height:1.04;letter-spacing:-.5px}
+  h2{font-family:var(--serif);font-weight:800;font-size:37px;line-height:1.08;letter-spacing:-.4px}
+  h3{font-family:var(--serif);font-weight:700;font-size:23px}
+  .kick{font-family:var(--sans);font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-h);font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .kick::before{content:"";width:26px;height:3px;background:var(--gold);border-radius:2px}
+  .dark .kick,.dark2 .kick{color:var(--gold2)}
+  .lead{font-size:20px;color:var(--muted);font-weight:500;line-height:1.45;max-width:62ch}
+  .dark .lead,.dark2 .lead{color:#CBD3C4}
+  .em{color:var(--em)}.dark .em,.dark2 .em{color:#fff}
+  .g{color:var(--gold-h)}.grn{color:var(--green)}.rd{color:var(--red)}
+  .dark .g,.dark2 .g{color:var(--gold2)}
+  b,strong{font-weight:800}
+  .hl{background:linear-gradient(180deg,transparent 58%,rgba(176,130,46,.34) 58%);padding:0 3px;font-weight:800;color:#0f2b20}
+  .dark .hl,.dark2 .hl{background:linear-gradient(180deg,transparent 58%,rgba(199,154,69,.42) 58%);color:#fff}
+  ul{list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:8px}
+  li{position:relative;padding-left:30px;font-size:19px;line-height:1.4}
+  li::before{content:"";position:absolute;left:0;top:9px;width:11px;height:11px;border-radius:3px;background:var(--gold);transform:rotate(45deg)}
+  .dark li::before,.dark2 li::before{background:var(--gold2)}
+  .row{display:flex;gap:24px}
+  .col{flex:1;min-width:0}
+  .bob{position:absolute;pointer-events:none;filter:drop-shadow(0 12px 20px rgba(0,0,0,.16))}
+  .bobc{right:36px;bottom:22px;height:230px}
+  .bobscene{right:44px;bottom:0;height:480px}
+  .bobmid{right:60px;top:50%;transform:translateY(-50%);height:380px}
+  .num{font-family:var(--serif);font-weight:800;font-size:110px;line-height:.9;color:var(--gold-h)}
+  .dark .num,.dark2 .num{color:var(--gold2)}
+  .chipset{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:9px 14px;font-size:16px;font-weight:600}
+  .chip.on{border-color:var(--em);background:#F0F4EE;color:var(--em);font-weight:800}
+  .chip.sm{font-size:14px;padding:7px 11px}
+  .dark .chip,.dark2 .chip{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:#EFE9DA}
+  .dark2 .chip.on{background:rgba(199,154,69,.2);border-color:var(--gold2);color:#fff}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:0 8px 24px rgba(20,32,27,.05)}
+  .card h3{color:var(--em)}
+  .dark .card,.dark2 .card{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#EFE9DA}
+  .dark .card h3,.dark2 .card h3{color:#fff}
+  .grid9{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px}
+  .b9{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:15px}
+  .b9 .n{font-family:var(--serif);font-weight:800;color:var(--gold-h);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+  .b9 b{display:block;font-size:16px;margin-top:2px;color:var(--em)}
+  .b9 span{display:block;font-size:13px;color:var(--muted);line-height:1.3;margin-top:3px}
+  .dark .b9,.dark2 .b9{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16)}
+  .dark .b9 b,.dark2 .b9 b{color:#fff}
+  .dark .b9 span,.dark2 .b9 span{color:#c3cec5}
+  .dark .b9 .n,.dark2 .b9 .n{color:var(--gold2)}
+  .stat{display:flex;gap:26px;margin-top:10px}
+  .stat .s .v{font-family:var(--serif);font-weight:800;font-size:42px;color:var(--em)}
+  .dark .stat .s .v,.dark2 .stat .s .v{color:#fff}
+  .stat .s .l{font-size:14px;color:var(--muted)}
+  .dark .stat .s .l,.dark2 .stat .s .l{color:#c3cec5}
+  .brand{position:absolute;left:64px;bottom:22px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:600}
+  .dark .brand,.dark2 .brand{color:#9fb0a4}
+  .brand img{height:17px;opacity:.9}
+  #bar{position:absolute;left:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--gold2),var(--gold));width:0;transition:width .25s;z-index:5}
+  #count{position:absolute;right:22px;bottom:20px;font-size:13px;color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+  .dark #count,.dark2 #count{color:#9fb0a4}
+  .hint{position:absolute;left:50%;bottom:9px;transform:translateX(-50%);font-size:12px;color:#7f8a80;z-index:9}
+  /* funnel */
+  .fun{display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:4px}
+  .fbar{border-radius:9px;color:#fff;font-weight:700;padding:8px 0;text-align:center;font-size:15px;display:flex;justify-content:center;align-items:center;gap:10px}
+  .fbar .cv{font-size:12px;font-weight:700;opacity:.85}
+  /* mini table */
+  .mt{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .mt th{background:var(--em);color:#EFE9DA;text-align:left;padding:8px 12px;font-size:13px;font-weight:700}
+  .mt td{padding:7px 12px;border-top:1px solid var(--line);vertical-align:top}
+  .mt td:first-child{font-weight:800;color:var(--em)}
+  .mt.sm{font-size:13.5px}
+  .mt.sm td{padding:5px 10px}
+  .mt.sm th{padding:6px 10px;font-size:12px}
+  .dark .mt,.dark2 .mt{color:var(--ink)}
+  /* browser frame for tool shots */
+  .frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 14px 40px rgba(20,32,27,.14)}
+  .frame .top{background:var(--bg2);padding:8px 13px;display:flex;align-items:center;gap:7px;border-bottom:1px solid var(--line)}
+  .frame .top i{width:10px;height:10px;border-radius:50%;display:inline-block}
+  .frame .top .u{margin-left:10px;font-size:11.5px;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:6px;padding:3px 11px}
+  .frame img{display:block;width:100%;height:auto}
+  .frame.clip{max-height:430px}
+  .frame.clip img{object-fit:cover;object-position:top}
+  .btnlink{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#fff;text-decoration:none;font-weight:800;font-size:16px;padding:11px 18px;border-radius:11px;margin-top:14px}
+  .btnlink.em{background:var(--em)}
+  .note{border-left:3px solid var(--gold);background:rgba(176,130,46,.09);padding:11px 14px;border-radius:8px;font-size:15px;color:#6a4e17;line-height:1.4;margin-top:12px}
+  .dark .note,.dark2 .note{background:rgba(199,154,69,.14);color:#f0e6cf;border-color:var(--gold2)}
+  .note.red{border-color:var(--red);background:rgba(178,59,46,.09);color:#7d2b21}
+  .note.grn{border-color:var(--green);background:rgba(62,142,94,.1);color:#255c3c}
+  .badge{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.02em;background:var(--em);color:#EFE9DA;border-radius:8px;padding:4px 11px}
+  .ex{font-size:14px;color:var(--muted);font-style:italic;margin-top:6px}
+  .arrow{color:var(--gold-h);font-weight:800}
+  .quote{font-family:var(--serif);font-size:26px;line-height:1.42;color:var(--em);border-left:4px solid var(--gold);padding-left:20px;max-width:60ch}
+  .dark .quote,.dark2 .quote{color:#fff;border-color:var(--gold2)}
+  /* traffic light */
+  .tl{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:10px}
+  .tlb{border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.35;border:1.5px solid}
+  .tlb .h{font-weight:800;font-size:15px;margin-bottom:4px}
+  .tlg{border-color:#bcd3c2;background:#F0F6F1}.tlg .h{color:var(--green)}
+  .tly{border-color:#e6d4a5;background:#FCF7E9}.tly .h{color:var(--amber)}
+  .tlr{border-color:#e0b6ad;background:#FBF0EE}.tlr .h{color:var(--red)}
+  /* 7 steps strip */
+  .steps7{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+  .st7{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px}
+  .st7 .n{width:24px;height:24px;border-radius:7px;background:var(--em);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-bottom:6px}
+  .st7 b{display:block;font-size:15.5px;color:var(--em)}
+  .st7 span{display:block;font-size:12.5px;color:var(--muted);line-height:1.3;margin-top:2px}
+  .st7.zero .n{background:var(--gold)}
+  .vs{display:flex;gap:16px;margin-top:14px}
+  .vs .p{flex:1;border-radius:14px;padding:14px 16px;border:1.5px solid}
+  .vs .bad{border-color:#e0b6ad;background:#FBF0EE}
+  .vs .good{border-color:#bcd3c2;background:#F0F6F1}
+  .vs h3{font-size:19px}
+  .big{font-family:var(--serif);font-weight:800;font-size:52px;line-height:1;color:var(--gold-h);white-space:nowrap}
+  .dark .big,.dark2 .big{color:var(--gold2)}
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- 1 -->
+  <section class="slide dark2 active">
+    <div class="kick">A-Players · Практикум · Модуль 12</div>
+    <h1 style="max-width:19ch">Онбординг<br>и Завод A&#8209;Players</h1>
+    <p class="lead" style="margin-top:20px;max-width:58ch">Новичок выходит на самостоятельность за <span class="hl">3–4 недели вместо 3 месяцев</span>. Не потому что старается, а потому что попадает в систему: семь слоёв знаний, пороги, аттестация и наставник с чек-листом.</p>
+    <div class="stat" style="margin-top:26px">
+      <div class="s"><div class="v">7 слоёв</div><div class="l">жёсткая последовательность, пороги 75–90%</div></div>
+      <div class="s"><div class="v">−50%</div><div class="l">отсева на испытательном сроке</div></div>
+      <div class="s"><div class="v">−60%</div><div class="l">времени руководителя на ввод новичка</div></div>
+    </div>
+    <img class="bob bobscene" src="gen/bob/cut/re_retention.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide">
+    <div class="kick">Где мы в траектории</div>
+    <h2>Нанял. Человек вышел.<br>Дальше начинается <span class="g">самое дорогое</span></h2>
+    <div class="chipset" style="margin-top:22px">
+      <div class="chip">Коммерческая функция</div>
+      <div class="chip">Воронка найма под A-Players</div>
+      <div class="chip on">→ Онбординг и Завод A-Players</div>
+      <div class="chip">Финансы и бюджет-холдеры</div>
+      <div class="chip">Плейбуки и передача</div>
+    </div>
+    <ul style="margin-top:24px;max-width:70%">
+      <li>Воронку найма закрыли: научились доводить до оффера сильного</li>
+      <li>Но сильный кандидат в слабой системе становится <b>средним сотрудником</b></li>
+      <li>Сегодня строим то, что превращает нанятого в работающего</li>
+    </ul>
+    <img class="bob bobc" src="gen/bob/cut/p_point.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide dark">
+    <div class="kick">Цена вопроса</div>
+    <h2 style="max-width:24ch">Половина потерь от плохого найма — это не «взяли не того»</h2>
+    <p class="lead" style="margin-top:16px;max-width:62ch">Это <b class="em">«взяли того и не ввели»</b>. Человек уходит на третьем месяце не потому, что слабый, а потому что три месяца угадывал, как у вас всё устроено.</p>
+    <div class="row" style="margin-top:24px;max-width:88%">
+      <div class="col card"><h3>Без системы</h3><ul style="margin-top:6px"><li style="font-size:16px">3 месяца до самостоятельности</li><li style="font-size:16px">каждый учит по-своему</li><li style="font-size:16px">руководитель тратит до 40% времени</li><li style="font-size:16px">ушёл сильный — унёс знание</li></ul></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">С системой</h3><ul style="margin-top:6px"><li style="font-size:16px">3–4 недели до самостоятельности</li><li style="font-size:16px">один стандарт для всех</li><li style="font-size:16px">обучение вынесено в систему</li><li style="font-size:16px">знание остаётся в компании</li></ul></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_scale.png" alt="" style="height:190px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide">
+    <div class="kick">Главная идея модуля</div>
+    <h2>Онбординг — это <span class="g">продукт</span>,<br>а не адаптация</h2>
+    <div class="vs">
+      <div class="p bad" style="max-width:44%"><h3 class="rd">✗ Адаптация</h3><p style="font-size:17px;margin-top:6px;color:var(--muted)">«Посиди рядом с Машей, посмотри, как она работает». Есть доброжелательный коллега и нет ничего больше.</p></div>
+      <div class="p good" style="max-width:53%"><h3 class="grn">✓ Продукт</h3><p style="font-size:17px;margin-top:6px;color:var(--em)">Есть структура, пороги прохождения, аттестация, метрика и срок. Его можно измерить, улучшить и передать другому.</p></div>
+    </div>
+    <div class="note">Проверка на честность: если завтра ваш лучший сотрудник уйдёт — что останется в компании, кроме его памяти? Ответ на этот вопрос и есть уровень вашего онбординга.</div>
+    <img class="bob bobc" src="gen/bob/cut/s25_build.png" alt="" style="height:185px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide">
+    <div class="kick">Второй принцип</div>
+    <h2>Знание должно жить <span class="g">в системе</span>, а не в головах</h2>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:22px">
+      <div class="b9"><div class="n">Пока знание в голове</div><b>Оно уходит с человеком</b><span>увольнение обнуляет отдел</span></div>
+      <div class="b9"><div class="n">Пока знание в голове</div><b>Оно не масштабируется</b><span>каждый новичок начинает с нуля</span></div>
+      <div class="b9"><div class="n">Пока знание в голове</div><b>Оно не улучшается</b><span>нельзя починить то, что не записано</span></div>
+    </div>
+    <div class="note grn">Онбординг — это способ вынуть знание из голов лучших и положить его туда, откуда его возьмёт любой следующий. Побочный эффект: вы наконец видите, из чего на самом деле состоит работа.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_arsenal.png" alt="" style="height:180px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide dark2">
+    <div class="kick">Третий принцип</div>
+    <h2>Наставничество не масштабируется.<br><span class="g">Записи масштабируются</span></h2>
+    <div class="row" style="margin-top:22px;max-width:92%">
+      <div class="col card"><h3>Как обычно</h3><p style="color:#c3cec5;font-size:16px;margin-top:6px">Один руководитель объясняет одному новичку. Второму новичку — заново. Третьему — уже устало и короче.</p></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">Как в системе</h3><p style="color:#c3cec5;font-size:16px;margin-top:6px">Лучшие сотрудники обучают всех одновременно — через записи своих звонков с разбором. Их приёмы становятся стандартом, а не личным секретом.</p></div>
+    </div>
+    <p class="lead" style="margin-top:22px;max-width:66ch">Это и есть Слой 7 — встроенное наставничество в масштабе. Побочный эффект: для лучших это статус и признание, а не «отвлекают от работы».</p>
+    <img class="bob bobc" src="gen/bob/cut/bob_disc.png" alt="" style="height:170px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide">
+    <div class="kick">Нормативы системного онбординга</div>
+    <h2>С чем сверять <span class="g">свои цифры</span></h2>
+    <table class="mt" style="margin-top:12px">
+      <tr><th>Показатель</th><th>Норма</th><th>Комментарий</th></tr>
+      <tr><td>Срок теоретической части</td><td class="grn"><b>до 21 дня</b></td><td>3 недели · 7 слоёв по 2–3 дня</td></tr>
+      <tr><td>До первого самостоятельного контакта</td><td class="grn"><b>5–7 дней</b></td><td>под контролем наставника</td></tr>
+      <tr><td>Выход на самостоятельность</td><td class="grn"><b>3–4 недели</b></td><td>вместо 3 месяцев без системы</td></tr>
+      <tr><td>Отсев на испытательном сроке</td><td class="grn"><b>−50%</b></td><td>к уровню без системы онбординга</td></tr>
+      <tr><td>Время руководителя на ввод</td><td class="grn"><b>−60%</b></td><td>обучение переносится в систему</td></tr>
+    </table>
+    <div class="note">Если ваш новичок выходит на результат дольше — проблема не в нём. Проблема в том, что он учится сам.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_cjm.png" alt="" style="height:155px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide">
+    <div class="kick">Ключевая цель модуля</div>
+    <h2 style="max-width:26ch">Собрать систему онбординга<br>под <span class="g">свою ключевую роль</span></h2>
+    <div class="row" style="margin-top:22px;max-width:96%">
+      <div class="col card"><div class="badge">Артефакт 1</div><h3 style="margin-top:8px">База знаний из 7 слоёв</h3><p style="color:var(--muted);font-size:15px;margin-top:4px">37 уроков, 76 тестовых вопросов, пороги 75–90%, готово к заливке на платформу</p></div>
+      <div class="col card"><div class="badge">Артефакт 2</div><h3 style="margin-top:8px">Программа и аттестация</h3><p style="color:var(--muted);font-size:15px;margin-top:4px">Лестница из 5 этапов, первая неделя по дням, аттестация в трёх блоках</p></div>
+      <div class="col card"><div class="badge">Артефакт 3</div><h3 style="margin-top:8px">Контроль и тренировка</h3><p style="color:var(--muted);font-size:15px;margin-top:4px">Карта 30-60-90, чек-лист наставника, диагностика роли, сценарии ролевок</p></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_medals.png" alt="" style="height:175px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide dark2">
+    <div class="kick">Карта модуля</div>
+    <h2>Пять фаз сборки</h2>
+    <div class="steps7" style="grid-template-columns:repeat(5,1fr);margin-top:22px">
+      <div class="st7 zero"><div class="n">1</div><b>Подготовка</b><span>материалы, брифы, конфликты, интервью с топами</span></div>
+      <div class="st7"><div class="n">2</div><b>База знаний</b><span>семь слоёв с тестами и порогами</span></div>
+      <div class="st7"><div class="n">3</div><b>Программа</b><span>лестница, аттестация, 30-60-90, наставник</span></div>
+      <div class="st7"><div class="n">4</div><b>Тренировка</b><span>арсенал, диагностика, ролевки, чек-листы</span></div>
+      <div class="st7"><div class="n">5</div><b>Запуск</b><span>план на 8 недель, отчётность, контроль</span></div>
+    </div>
+    <p class="lead" style="margin-top:26px;max-width:68ch">Это оглавление презентации и одновременно структура инструмента, которым вы всё это соберёте.</p>
+    <img class="bob bobc" src="gen/bob/cut/s9_map.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide dark">
+    <div class="kick">Фаза 1 · Подготовка</div>
+    <h2>Онбординг разваливается не от лени.<br>Он разваливается от <span class="g">противоречий внутри</span></h2>
+    <p class="lead" style="margin-top:16px;max-width:66ch">Контент написан красиво, тесты сданы — а новичок в поле получает разные ответы в разных местах и перестаёт доверять системе. Это лечится один раз, до сборки контента.</p>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Убийца 1</div><b>Слипание имён</b><span>одно название носят несколько сущностей</span></div>
+      <div class="b9"><div class="n">Убийца 2</div><b>Несведённые цифры</b><span>одна метрика в трёх версиях</span></div>
+      <div class="b9"><div class="n">Убийца 3</div><b>Стоп-слова</b><span>фраза, которая меняет предмет сделки</span></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_badscript.png" alt="" style="height:170px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 11 -->
+  <section class="slide">
+    <div class="kick">Убийца 1 · слипание имён</div>
+    <h2>Одно название — <span class="rd">три разные сущности</span></h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col" style="max-width:52%">
+        <div class="grid9" style="grid-template-columns:1fr;gap:8px">
+          <div class="b9"><div class="n">Сущность 1</div><b>Название всей компании</b></div>
+          <div class="b9"><div class="n">Сущность 2</div><b>Флагманский продукт</b></div>
+          <div class="b9"><div class="n">Сущность 3</div><b>Дешёвый мини-продукт</b></div>
+        </div>
+        <div class="note red">Механическая замена ломает смысл: имя уже занято двумя другими сущностями. Решение принимает только владелец — это развилка, а не опечатка.</div>
+      </div>
+      <div class="col card" style="max-width:45%">
+        <h3 class="rd">Что происходит с новичком</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">В Слое 2 он читает одно, в скрипте видит другое, в CRM третье. На звонке клиент спрашивает «а это тот курс или другой» — и менеджер плывёт.</p>
+        <p style="color:var(--muted);font-size:16px;margin-top:8px">Реальный случай: у одного продукта было два имени в разных документах, и обучение месяц учило людей путанице.</p>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 12 -->
+  <section class="slide">
+    <div class="kick">Убийца 2 · несведённые цифры</div>
+    <h2>Одна метрика — <span class="rd">четыре значения</span> в четырёх документах</h2>
+    <table class="mt sm" style="margin-top:12px">
+      <tr><th>Метрика</th><th>Что находим в источниках</th><th>Чем это опасно</th></tr>
+      <tr><td>Возраст компании</td><td>6 лет / 8 лет / 13 лет / 18 лет</td><td>звучит на звонке, ловится клиентом</td></tr>
+      <tr><td>Средний чек</td><td>25 000 / 28 000 / 34 000 / 35 000</td><td>ломает расчёт плана и мотивации</td></tr>
+      <tr><td>Цена пакета</td><td>45 000 в одном документе, 49 990 в другом</td><td>прямой конфликт с клиентом</td></tr>
+      <tr><td>Норма касаний</td><td>5–12 / 12 / 8 по доскам / 60 в день</td><td>новичок не знает, что от него хотят</td></tr>
+    </table>
+    <div class="note">Правило: одна метрика — одно значение и один владелец, который его подтвердил. Всё спорное помечается как черновик и не уходит в обучение.</div>
+    <img class="bob bobc" src="gen/bob/cut/p_think.png" alt="" style="height:150px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 13 -->
+  <section class="slide">
+    <div class="kick">Убийца 3 · стоп-слова и зона владения</div>
+    <h2>Есть слова, которые <span class="rd">меняют сам предмет сделки</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col card" style="max-width:49%;border-color:#e0b6ad">
+        <h3 class="rd">Стоп-слова</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">Сотрудник говорит «идеальное тело» — и продал то, чего компания не продаёт. Говорит медицинский термин — и поставил диагноз, на что не имеет права.</p>
+        <p class="ex">Отдельный случай: слово, которое у одного продукта флагманское, а у другого прямо запрещено экспертом.</p>
+      </div>
+      <div class="col card" style="max-width:49%">
+        <h3>Зона владения</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">Кто продаёт первичку, кто ведёт базу, кто делает кросс и продления. За кем закреплён клиент и на какой срок.</p>
+        <p class="ex">Без этого правила два сотрудника звонят одному клиенту — и он уходит к конкуренту.</p>
+      </div>
+    </div>
+    <div class="note grn">В конструкторе это отдельный шаг — «Реестр конфликтов». Он вскрывает противоречия и показывает развилки, но решение оставляет владельцу.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_dozhim.png" alt="" style="height:185px;right:18px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 14 -->
+  <section class="slide dark2">
+    <div class="kick">Правило, которое держит всю систему</div>
+    <h2>ИИ пишет черновик.<br>В обучение уходит только <span class="g">подтверждённое</span></h2>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:22px">
+      <div class="b9" style="border-color:#3E8E5E"><div class="n">Статус 1</div><b>Подтверждено</b><span>данные есть в материалах, руководитель проверил</span></div>
+      <div class="b9" style="border-color:var(--gold2)"><div class="n">Статус 2</div><b>Черновик</b><span>собрано по косвенным данным, ждёт подтверждения</span></div>
+      <div class="b9" style="border-color:#B23B2E"><div class="n">Статус 3</div><b>Данных нет</b><span>указано, что именно и у кого запросить</span></div>
+    </div>
+    <p class="lead" style="margin-top:22px;max-width:68ch">Каждый урок несёт свой статус. Новичок видит, где твёрдый факт, а где ещё черновик — и это честнее, чем красивый текст, которому нельзя верить.</p>
+    <img class="bob bobc" src="gen/bob/cut/bob_shield.png" alt="" style="height:170px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 15 -->
+  <section class="slide">
+    <div class="kick">Фаза 2 · База знаний</div>
+    <h2>Порядок слоёв — не оглавление,<br>а <span class="g">методика</span></h2>
+    <div class="steps7" style="margin-top:16px">
+      <div class="st7 zero"><div class="n">1</div><b>Компания</b><span>миссия, ценности, культура · порог 80%</span></div>
+      <div class="st7"><div class="n">2</div><b>Продукт</b><span>портфель, УТП, кейсы · порог 80%</span></div>
+      <div class="st7"><div class="n">3</div><b>Клиент</b><span>ICP, JTBD, CJM · порог 80%</span></div>
+      <div class="st7"><div class="n">4</div><b>Продажи</b><span>скрипт, возражения · порог 85%</span></div>
+    </div>
+    <div class="steps7" style="margin-top:10px;grid-template-columns:repeat(3,1fr)">
+      <div class="st7"><div class="n">5</div><b>CRM</b><span>статусы, SLA, страйки · порог 90%</span></div>
+      <div class="st7"><div class="n">6</div><b>Конкуренты</b><span>отстройка, карточки · порог 80%</span></div>
+      <div class="st7"><div class="n">7</div><b>Лучшие практики</b><span>эталонные звонки · порог 75%</span></div>
+    </div>
+    <div class="note"><b>Пороги разные, потому что разная цена ошибки.</b> В CRM 90%: ошибка теряет сделку, даже если переговоры проведены идеально. В практиках 75%: там учат наблюдением, а не зубрёжкой.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 16 -->
+  <section class="slide">
+    <div class="kick">Слой 1 · Компания</div>
+    <h2>Новичок решает «я здесь свой»<br>за <span class="g">первые три дня</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:52%">
+        <ul>
+          <li>Сотрудник, который верит в компанию, продаёт с гордостью — это слышно в звонке</li>
+          <li>Ценности — не декларация, а <b>скрытые критерии решений</b> в нестандартных ситуациях</li>
+          <li>Без Слоя 1 остальные шесть — просто инструкции</li>
+        </ul>
+        <div class="note red"><b>Ошибка:</b> копировать текст с сайта. Сайт написан для клиентов, а не для сотрудника — другой контекст и другая задача.</div>
+      </div>
+      <div class="col card" style="max-width:45%">
+        <h3>Как учат этому в мире</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px"><b>Storytelling и культурная адаптация.</b> Идентификация строится нарративом: была проблема → основатель её увидел → создал → вот где мы сейчас.</p>
+        <p style="color:var(--muted);font-size:16px;margin-top:8px">Видео первого лица работает в разы сильнее текста. Ценность без кейса — просто слово, оно не западает.</p>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 17 -->
+  <section class="slide dark2">
+    <div class="kick">Если миссии нет</div>
+    <h2>Слой 1 без видения превращается<br>в <span class="g">набор лозунгов</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:66ch">Сильный кандидат оценивает не только оффер, но и то, куда идёт компания. Не можете объяснить это за две минуты — он выберет ту, которая может. Поэтому видение собирается прямо в конструкторе, по плейбуку.</p>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Компонент 1</div><b>Горизонт 5–10 лет</b><span>не «вырастем на 30%», а «станем лидером рынка»</span></div>
+      <div class="b9"><div class="n">Компонент 2</div><b>Амбиция и масштаб</b><span>если достичь легко — это не видение</span></div>
+      <div class="b9"><div class="n">Компонент 3</div><b>Конкретность и цифры</b><span>кто клиенты, какие рынки, какие цели</span></div>
+      <div class="b9"><div class="n">Компонент 4</div><b>Ответ на «зачем»</b><span>команда должна чувствовать гордость</span></div>
+    </div>
+    <div class="note">Три теста на выходе: на вдохновение, на конкретность, на уникальность. Провален хотя бы один — дорабатываем. И помним: написать видение — это 30% работы, остальные 70% — внедрение.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 18 -->
+  <section class="slide">
+    <div class="kick">Слой 2 · Продукт</div>
+    <h2>Незнание продукта = неуверенность в голосе<br>= <span class="rd">потерянная сделка</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:52%">
+        <ul>
+          <li>Сначала карта портфеля, потом детали. <b>Сначала лес, потом деревья</b></li>
+          <li>Связка «характеристика → преимущество → выгода клиента», а не список свойств</li>
+          <li>Правило 80/20: новичок учит не всё, а то, что даёт выручку</li>
+          <li>Кейсы только реальные — выдуманные клиент проверит, а сотрудник почувствует</li>
+        </ul>
+      </div>
+      <div class="col card" style="max-width:45%">
+        <h3>Как учат этому в мире</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px"><b>Retrieval practice и интервальное повторение.</b> Продуктовое знание должно всплывать мгновенно: карточки, короткие проверки, возврат к топ-продуктам на 7-й и 30-й день.</p>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 19 -->
+  <section class="slide dark">
+    <div class="kick">Слой 3 · Клиент</div>
+    <h2>Поворотный момент всего онбординга</h2>
+    <p class="lead" style="margin-top:16px;max-width:68ch">Слои 1–2 учат пассивно: читай и запоминай. Слой 3 — первый слой активного применения. Сотрудник начинает думать не «как я продам», а <b class="em">«почему этот человек должен купить»</b>.</p>
+    <div class="row" style="margin-top:22px;max-width:92%">
+      <div class="col card"><h3>Что меняется</h3><p style="color:#c3cec5;font-size:16px;margin-top:6px">Сдвиг с продуктовой логики на клиентскую. Именно он отделяет A-игрока от среднего сотрудника.</p></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">Без него</h3><p style="color:#c3cec5;font-size:16px;margin-top:6px">Скрипты Слоя 4 звучат шаблонно. Человек читает правильные слова, но не попадает в конкретного клиента.</p></div>
+    </div>
+    <div class="note"><b>Ошибка:</b> смешивать сегмент и портрет человека. Сегмент — это группа. Портрет ЛПР — роль внутри неё. Путаница создаёт ощущение «все клиенты разные», и сотрудник перестаёт искать закономерности.</div>
+    <img class="bob bobc" src="gen/bob/cut/aw_awareness.png" alt="" style="height:160px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 20 -->
+  <section class="slide">
+    <div class="kick">Слой 4 · Продажи · порог 85%</div>
+    <h2>Скрипт — это <span class="g">алгоритм с развилками</span>,<br>а не монолог для заучивания</h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:50%">
+        <div class="note red">Дали скрипт как текст — сотрудник ломается на первом нестандартном ответе клиента. Он выучил слова, но не выучил логику.</div>
+        <div class="note grn" style="margin-top:10px">Описали воронку в отрыве от CRM — новичок не найдёт этап, потому что в системе он называется иначе. Названия должны совпадать дословно.</div>
+      </div>
+      <div class="col card" style="max-width:47%">
+        <h3>Как учат этому в мире</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px"><b>Deliberate practice с немедленной обратной связью.</b> Узкий навык, отработка, разбор сразу после. Ролевка без разбора в тот же день — потраченное время.</p>
+        <p style="color:var(--muted);font-size:16px;margin-top:8px">Норма — минимум 5 полных прогонов на разных типах клиента.</p>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_roleplay.png" alt="" style="height:150px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 21 -->
+  <section class="slide">
+    <div class="kick">Слой 5 · CRM · порог 90%</div>
+    <h2>CRM — это не надзор.<br>Это <span class="g">операционная нервная система</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:52%">
+        <ul>
+          <li>Сотрудник, который не умеет в CRM, <b>теряет сделки</b> — даже если отлично ведёт переговоры</li>
+          <li>Три задачи слоя: операционная точность, прозрачность воронки, культура данных</li>
+          <li>Самый высокий порог в программе — 90%</li>
+        </ul>
+        <div class="note red"><b>Ошибка:</b> писать «нажми кнопку Сохранить» вместо реальных названий полей вашей системы. Инструкция должна дословно повторять интерфейс.</div>
+      </div>
+      <div class="col card" style="max-width:45%">
+        <h3>Как учат этому в мире</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px"><b>Learning by doing в реальной системе.</b> Не «посмотри скринкаст», а «заведи тестовую сделку и проведи её по воронке». Плюс чек-лист под рукой, а не в памяти.</p>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 22 -->
+  <section class="slide">
+    <div class="kick">Слой 6 · Конкуренты</div>
+    <h2>Кто знает конкурентов, но не знает свой продукт, —<br><span class="rd">продаёт конкурентов</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:68ch">Поэтому слой стоит шестым, а не вторым. Сначала Слои 2–5 — и только тогда конкурентная карта становится инструментом, а не источником неуверенности.</p>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:20px">
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Ловушка 1</div><b>Слишком много конкурентов</b><span>запомнит 3–4, остальное шум. Берём 5–7 ключевых</span></div>
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Ловушка 2</div><b>Сравнение по 20 параметрам</b><span>таблица не работает в разговоре. Нужны 3–5 решающих</span></div>
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Ловушка 3</div><b>Говорить плохо о конкурентах</b><span>клиент читает это как неуверенность</span></div>
+    </div>
+    <div class="note grn">Формула ответа: <b>согласен → факт → выгода</b>. Выигрываем фактами о себе, не атакуя чужие слабости. И честная карта «чего мы НЕ делаем» строит доверие сильнее, чем «мы лучше во всём».</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 23 -->
+  <section class="slide dark2">
+    <div class="kick">Слой 7 · Лучшие практики</div>
+    <h2>Сотрудник перестаёт изобретать велосипед<br>и начинает <span class="g">воспроизводить</span></h2>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Урок 7.1</div><b>Эталонные звонки</b><span>3–5 записей с тайм-кодами и разбором</span></div>
+      <div class="b9"><div class="n">Урок 7.2</div><b>Паттерны победы</b><span>7–10 конкретных отличий топа от среднего</span></div>
+      <div class="b9"><div class="n">Урок 7.3</div><b>Чек-лист звонка</b><span>20–25 пунктов по этапам с баллами</span></div>
+      <div class="b9"><div class="n">Урок 7.4</div><b>Самооценка</b><span>запиши свой звонок, найди 3 точки роста</span></div>
+    </div>
+    <div class="note"><b>Ошибка:</b> дать записи без тайм-кодов. Новичок должен видеть не «хороший звонок», а «на 3:40 он сделал X — и поэтому клиент раскрылся». И не заменять реальные записи придуманными: если записей нет, это повод их запросить, а не сочинить.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_copilot.png" alt="" style="height:160px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 24 -->
+  <section class="slide">
+    <div class="kick">Как учат сотрудников в мире</div>
+    <h2>Десять принципов, зашитых <span class="g">в каждый урок</span></h2>
+    <div class="grid9" style="margin-top:18px">
+      <div class="b9"><div class="n">70-20-10</div><b>Контент — только 10%</b><span>20% — обратная связь, 70% — практика на реальных задачах</span></div>
+      <div class="b9"><div class="n">Retrieval</div><b>Извлечение, не перечитывание</b><span>вопрос по памяти в конце урока</span></div>
+      <div class="b9"><div class="n">Spaced</div><b>Повторение на 7-й и 30-й день</b><span>ценности и SLA не учатся один раз</span></div>
+      <div class="b9"><div class="n">Scenario</div><b>«Вот ситуация, что сделаешь»</b><span>вместо «запомни правило»</span></div>
+      <div class="b9"><div class="n">Worked examples</div><b>Сначала эталон, потом повтор</b><span>обратный порядок ломает новичка</span></div>
+      <div class="b9"><div class="n">Feedback 24h</div><b>Обратная связь в сутки</b><span>позже она уже не работает</span></div>
+    </div>
+    <div class="note">Плюс: одна мысль на урок, справочник под рукой вместо памяти, лучшие сотрудники как источник контента.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 25 -->
+  <section class="slide">
+    <div class="kick">Стандарт урока</div>
+    <h2>Онбординг — не корпоративная библия.<br><span class="g">Перегруз даёт отторжение</span></h2>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Объём</div><b>300–600 слов</b><span>один урок = одна мысль</span></div>
+      <div class="b9"><div class="n">Ритм</div><b>Подзаголовок каждые 150–200 слов</b><span>три пункта и больше — списком</span></div>
+      <div class="b9"><div class="n">Финал урока</div><b>Вопрос для рефлексии</b><span>не оценивается, но запускает мышление</span></div>
+      <div class="b9"><div class="n">Связка</div><b>«Для тебя это значит…»</b><span>иначе сотрудник думает «ок, и что?»</span></div>
+      <div class="b9"><div class="n">Тон</div><b>От первого лица компании</b><span>без канцелярита: не «осуществляем», а «делаем»</span></div>
+      <div class="b9"><div class="n">Визуал</div><b>Минимум одна схема на урок</b><span>идеал для Слоя 1 — видео CEO</span></div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/p_book.png" alt="" style="height:175px;right:18px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 26 -->
+  <section class="slide">
+    <div class="kick">Тесты</div>
+    <h2>Учит не вопрос. Учит <span class="g">объяснение ответа</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col card" style="max-width:49%">
+        <h3>Состав теста</h3>
+        <ul style="margin-top:6px"><li style="font-size:16px">70% — выбор одного варианта из четырёх</li><li style="font-size:16px">20% — множественный выбор</li><li style="font-size:16px">10% — сопоставление</li><li style="font-size:16px">минимум 2 вопроса на каждый урок</li><li style="font-size:16px">3 попытки, переход заблокирован до сдачи</li></ul>
+      </div>
+      <div class="col card" style="max-width:49%;border-color:var(--gold2)">
+        <h3 class="g">Обязательное поле</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">К каждому вопросу — <b>объяснение, почему ответ именно такой</b>. Сотрудник видит его после ответа, и именно это его учит.</p>
+        <p class="ex">Запрещены: вопросы-ловушки, двойные отрицания, вариант «все ответы верны», неправдоподобные варианты.</p>
+      </div>
+    </div>
+    <div class="note">Итого эталон программы: <b>37 уроков и 76 тестовых вопросов</b> на семь слоёв.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_temp.png" alt="" style="height:160px;right:18px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 27 -->
+  <section class="slide dark2">
+    <div class="kick">Фаза 3 · Программа</div>
+    <h2>Лестница из <span class="g">пяти этапов</span> до самостоятельности</h2>
+    <div class="fun" style="margin-top:16px;max-width:82%">
+      <div class="fbar" style="width:100%;background:var(--em)">Этап 0–1 · Знания и инструменты — контент, скрипт, CRM</div>
+      <div class="fbar" style="width:86%;background:var(--em2)">Этап 2 · Наблюдение — 3–5 эталонных записей с разбором</div>
+      <div class="fbar" style="width:72%;background:#2c6a4f">Этап 3 · Ролевые игры — минимум 5 прогонов с обратной связью</div>
+      <div class="fbar" style="width:58%;background:var(--gold)">Этап 4 · Под супервизией — 3–5 боевых контактов с наставником</div>
+      <div class="fbar" style="width:44%;background:var(--gold-h)">Этап 5 · Самостоятельно + контроль качества</div>
+    </div>
+    <div class="note">Каждый следующий этап не начинается, пока не закрыт предыдущий. Перепрыгнули наблюдение — получили человека, который знает слова, но не видел, как это звучит вживую.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 28 -->
+  <section class="slide">
+    <div class="kick">Первый день</div>
+    <h2>Что новичок держит открытым <span class="g">с первого часа</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:50%">
+        <div class="grid9" style="grid-template-columns:1fr;gap:8px">
+          <div class="b9"><div class="n">Окно 1</div><b>CRM — главное рабочее окно</b></div>
+          <div class="b9"><div class="n">Окно 2</div><b>Боевой скрипт</b></div>
+          <div class="b9"><div class="n">Окно 3</div><b>Справочник статусов</b></div>
+          <div class="b9"><div class="n">Окно 4</div><b>Банк возражений</b></div>
+          <div class="b9"><div class="n">Окно 5</div><b>Арсенал: все ссылки в одном месте</b></div>
+        </div>
+      </div>
+      <div class="col card" style="max-width:47%">
+        <h3>Ритм дня с первого дня</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">Сколько контактов в день, когда отчёты, за какое время первое касание нового лида. Новичок должен знать не только что делать, но и <b>в каком темпе</b>.</p>
+        <div class="note" style="margin-top:10px">Отдельным блоком — <b>красные линии</b>: что нельзя нарушать никогда, с последствием по каждому пункту.</div>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_arsenal.png" alt="" style="height:160px;right:18px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 29 -->
+  <section class="slide">
+    <div class="kick">Аттестация</div>
+    <h2>Тест проверяет, что прочитал.<br>Ролевка проверяет, что <span class="g">умеет</span></h2>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Блок C1</div><b>Теория · порог 90%</b><span>формулирует своими словами: продукт, рамка, условия</span></div>
+      <div class="b9" style="border-color:var(--gold2)"><div class="n">Блок C2 · главный</div><b>Ролевая · порог 80 из 100</b><span>балльный чек-лист по наблюдаемым действиям</span></div>
+      <div class="b9"><div class="n">Блок C3</div><b>Боевые контакты</b><span>первые 10 под выборочным контролем</span></div>
+      <div class="b9"><div class="n">Блок C4</div><b>Постоянный контроль</b><span>ре-аттестация раз в квартал или при падении</span></div>
+    </div>
+    <div class="note red">Не сдал — доработка слабых критериев и пересдача. Не «ну ладно, пусть работает»: допуск к самостоятельной работе только после всех блоков.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_temp.png" alt="" style="height:150px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 30 -->
+  <section class="slide">
+    <div class="kick">Ролевая аттестация · как считается</div>
+    <h2>Сто баллов за <span class="g">наблюдаемые действия</span>, а не за впечатление</h2>
+    <table class="mt sm" style="margin-top:10px;max-width:92%">
+      <tr><th>Критерий</th><th>Баллы</th></tr>
+      <tr><td>Держит рамку, говорит твёрдо, не в позиции просящего</td><td>10</td></tr>
+      <tr><td>Уложился в тайминг</td><td>8</td></tr>
+      <tr><td>Снял потребности и квалифицировал, зафиксировал ответы</td><td>10</td></tr>
+      <tr><td>Уверенно работает с инструментом и данными клиента</td><td>12</td></tr>
+      <tr><td>Создал осознание разрыва — эмоциональный пик разговора</td><td>15</td></tr>
+      <tr><td>Питч под разрыв: выбрал релевантное, вёл диалог, а не лекцию</td><td>15</td></tr>
+      <tr><td>Возражения: эмоция → логика → действие, довёл до готовности</td><td>15</td></tr>
+      <tr><td>Закрытие: техника, призыв и молчание после цены</td><td>8</td></tr>
+      <tr><td>Зафиксировал следующий шаг и завёл в CRM</td><td>7</td></tr>
+    </table>
+    <div class="note grn">Порог 80. Такой чек-лист одновременно и экзамен, и инструмент постоянного контроля качества — по нему же слушают боевые звонки.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_medals.png" alt="" style="height:160px;right:18px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 31 -->
+  <section class="slide dark">
+    <div class="kick">Карта контроля</div>
+    <h2>KPI новичка — это число.<br>«Хорошо влился в команду» — <span class="g">не KPI</span></h2>
+    <div class="row" style="margin-top:22px;max-width:96%">
+      <div class="col card"><div class="badge" style="background:var(--gold)">30 дней</div><h3 style="color:#fff;margin-top:8px">Прошёл систему</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">все слои сданы, аттестация пройдена, первые самостоятельные контакты под контролем, базовая активность на норме</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">60 дней</div><h3 style="color:#fff;margin-top:8px">Вышел на траекторию</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">около 70% личного плана, конверсия на нижней границе нормы, работает без сопровождения</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">90 дней</div><h3 style="color:#fff;margin-top:8px">Закрыл испытательный</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">100% плана, целевая конверсия, средний чек на норме, оценка качества в зелёной зоне</p></div>
+    </div>
+    <div class="note">Отдельно — <b>красные флаги</b>: по каким признакам уже на 30-й и 60-й день видно, что человек не дойдёт, и что делать руководителю.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 32 -->
+  <section class="slide">
+    <div class="kick">Наставник</div>
+    <h2>Наставник отвечает не за обучение,<br>а за <span class="g">перенос в работу</span></h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:50%">
+        <ul>
+          <li>Обучение — на платформе. Наставник — про <b>применение</b></li>
+          <li>Свой чек-лист по дням: что проверить, что объяснить, что подтвердить</li>
+          <li>Три контрольные точки прослушки: <b>день 3, день 7, день 14</b></li>
+        </ul>
+      </div>
+      <div class="col card" style="max-width:47%">
+        <h3>Чек-лист наблюдения за звонками</h3>
+        <p style="color:var(--muted);font-size:15.5px;margin-top:6px"><b>День 3</b> — усвоил стандарты, структуру и дисциплину.<br><b>День 7</b> — уверенность в диалоге, потребность, возражения.<br><b>День 14</b> — готовность к самостоятельной работе.</p>
+        <p class="ex">По 8 наблюдаемых критериев на точку, оценка «да / частично / нет», в конце — заключение из трёх вариантов.</p>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 33 -->
+  <section class="slide">
+    <div class="kick">Что ломает новичка</div>
+    <h2>Восемь провалов, которые <span class="rd">повторяются у всех</span></h2>
+    <div class="grid9" style="margin-top:18px">
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 1</div><b>Слабая рамка</b><span>скатывается в «продавца» — клиент защищается</span></div>
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 2</div><b>Не зафиксировал потребность</b><span>презентация бьёт мимо</span></div>
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 3</div><b>Прошёл разбор как отчёт</b><span>нет эмоции — нечего закрывать</span></div>
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 4</div><b>Рассказал всё сразу</b><span>лекция вместо диалога, клиент устал</span></div>
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 5</div><b>Назвал цену слишком рано</b><span>возражения сыплются уже после цены</span></div>
+      <div class="b9" style="border-color:#e0b6ad"><div class="n">Провал 6</div><b>Заполнил паузу после цены</b><span>сбил решение клиента</span></div>
+    </div>
+    <div class="note">Плюс два: не зафиксировал следующий шаг и не довёл материалы до клиента — сделка остывает без единой ошибки в разговоре.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 34 -->
+  <section class="slide dark2">
+    <div class="kick">Платформа Завод A-Players</div>
+    <h2>Курс — это то, что проходят.<br>Завод — это то, <span class="g">где работают</span></h2>
+    <p class="lead" style="margin-top:16px;max-width:68ch">Разница принципиальная. LMS заканчивается сертификатом. Рабочее место живёт вместе с сотрудником: он возвращается туда за ответом на третьем месяце и на третьем году.</p>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Модуль 1</div><b>Кабинет сотрудника</b><span>7 слоёв, прогресс, арсенал под рукой</span></div>
+      <div class="b9"><div class="n">Модуль 2</div><b>AI-наставник 24/7</b><span>отвечает строго по базе компании</span></div>
+      <div class="b9"><div class="n">Модуль 3</div><b>Тренажёр ролевок</b><span>голос и текст, разбор после каждой</span></div>
+    </div>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:10px">
+      <div class="b9"><div class="n">Модуль 4</div><b>Диагностика роли</b><span>18 моделей поведения, шкала A–E</span></div>
+      <div class="b9"><div class="n">Модуль 5</div><b>Штаб компании</b><span>доступы, роли, прогресс команды</span></div>
+      <div class="b9"><div class="n">Модуль 6</div><b>API базы знаний</b><span>наружу — в своего бота или Notion</span></div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 35 -->
+  <section class="slide">
+    <div class="kick">Платформа · AI-наставник</div>
+    <h2>Отвечает по <span class="g">вашей базе</span> — и не выдумывает</h2>
+    <div class="row" style="margin-top:16px">
+      <div class="col" style="max-width:52%">
+        <ul>
+          <li>Вопрос в три часа ночи получает ответ из <b>ваших регламентов</b>, а не из интернета</li>
+          <li>Не знает ответа — так и говорит, вместо правдоподобной выдумки</li>
+          <li>Снимает с руководителя поток одинаковых вопросов первого месяца</li>
+        </ul>
+      </div>
+      <div class="col card" style="max-width:45%">
+        <h3>Почему это важнее, чем кажется</h3>
+        <p style="color:var(--muted);font-size:16px;margin-top:6px">Новичок не задаёт половину вопросов — боится выглядеть глупо. И принимает решения наугад. AI-наставник убирает этот барьер: у него можно спросить что угодно и сколько угодно раз.</p>
+      </div>
+    </div>
+    <img class="bob bobc" src="gen/bob/cut/bob_phone.png" alt="" style="height:155px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 36 -->
+  <section class="slide">
+    <div class="kick">Платформа · тренажёр</div>
+    <h2>Тренажёр не проверяет знание скрипта.<br>Он <span class="g">снимает страх</span> первого звонка</h2>
+    <div class="grid9" style="grid-template-columns:repeat(4,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Как работает</div><b>AI играет клиента</b><span>голосом или текстом, по вашему сценарию</span></div>
+      <div class="b9"><div class="n">Сценарии</div><b>От простого к сложному</b><span>холодный, «дорого», «подумаю», агрессивный, молчаливый</span></div>
+      <div class="b9"><div class="n">После ролевки</div><b>Разбор по чек-листу</b><span>что сделал, что упустил, что улучшить</span></div>
+      <div class="b9"><div class="n">Сколько раз</div><b>Столько, сколько нужно</b><span>без расхода времени руководителя</span></div>
+    </div>
+    <div class="note grn">Ключевое отличие от ролевки с коллегой: тренажёр доступен в любое время, не устаёт и не жалеет. Пять прогонов до первого боевого звонка становятся реальностью, а не пожеланием.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 37 -->
+  <section class="slide dark">
+    <div class="kick">Платформа · диагностика</div>
+    <h2>Показывает не «слабый или сильный»,<br>а <span class="g">сколько процентов результата теряется</span></h2>
+    <div class="row" style="margin-top:20px;max-width:94%">
+      <div class="col card"><h3>Как устроено</h3><p style="color:#c3cec5;font-size:15.5px;margin-top:6px">18 моделей поведения роли, сгруппированных по четырём блокам. По каждой — пять описательных вариантов от лица сотрудника, от «делаю на уровне эксперта» до «только с руководством».</p></div>
+      <div class="col card" style="border-color:var(--gold2)"><h3 class="g">Что на выходе</h3><p style="color:#c3cec5;font-size:15.5px;margin-top:6px">Уровень A–E с весами по каждой модели и процент теряемого результата. Плюс персональный план развития: конкретное действие для роста на уровень.</p></div>
+    </div>
+    <div class="note">Формулировки описательные, а не оценочные — человек отвечает честно, потому что нигде не написано «плохо». Именно поэтому диагностика работает, а не превращается в самопохвалу.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_disc.png" alt="" style="height:170px;right:18px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 38 -->
+  <section class="slide">
+    <div class="kick">Фаза 4–5 · Инструмент</div>
+    <h2>Конструктор онбординга: <span class="g">26 шагов</span> в пяти фазах</h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:36%">
+        <ul>
+          <li style="font-size:17px">Плейбуки Завода зашиты внутрь — промпты писать не нужно</li>
+          <li style="font-size:17px">Над каждым слоем — методичка: что обязательно в каждом уроке</li>
+          <li style="font-size:17px">Работает на <b>твоём ключе Claude</b></li>
+        </ul>
+      </div>
+      <div class="col" style="max-width:62%">
+        <div class="frame clip" style="max-height:430px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор онбординга · A-Players</span></div><img src="shots/start.png" alt="Стартовый экран"></div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 39 -->
+  <section class="slide">
+    <div class="kick">Инструмент · материалы</div>
+    <h2>Загружаешь всё, что есть —<br>система <span class="g">сама разносит по слоям</span></h2>
+    <div class="frame clip" style="margin-top:14px;max-height:440px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор · материалы компании</span></div><img src="shots/files.png" alt="Экран материалов"></div>
+    <div class="note">Скрипты, регламенты, презентации, прайсы, расшифровки. Читает docx, xlsx, pptx, pdf прямо в браузере, определяет, к какому слою что относится, и заполняет брифы каждого слоя. Файлы не уходят никуда.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 40 -->
+  <section class="slide">
+    <div class="kick">Инструмент · слой</div>
+    <h2>Внутри слоя — методичка, свой бриф<br>и <span class="g">подсветка пробелов</span></h2>
+    <div class="frame clip" style="margin-top:14px;max-height:450px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор · Слой 4 · Продажи</span></div><img src="shots/l4.png" alt="Экран слоя"></div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 41 -->
+  <section class="slide">
+    <div class="kick">Инструмент · бриф слоя</div>
+    <h2>Что нашлось в материалах,<br>а на что нужен <span class="g">твой ответ</span></h2>
+    <div class="row" style="margin-top:14px">
+      <div class="col" style="max-width:34%">
+        <ul>
+          <li style="font-size:16.5px">Зелёным — ответ вытащен из материалов, с указанием файла</li>
+          <li style="font-size:16.5px">Оранжевым — <b>в документах этого нет</b>, впиши или надиктуй</li>
+          <li style="font-size:16.5px">Так видно, что запрашивать у РОПа и CEO, а не гадать</li>
+        </ul>
+      </div>
+      <div class="col" style="max-width:64%">
+        <div class="frame clip" style="max-height:430px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор · бриф слоя и ресерч</span></div><img src="shots/l6.png" alt="Бриф слоя"></div>
+      </div>
+    </div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 42 -->
+  <section class="slide dark2">
+    <div class="kick">Инструмент · ресерч</div>
+    <h2>Сначала уточняющие вопросы,<br>потом <span class="g">глубокий ресерч</span></h2>
+    <p class="lead" style="margin-top:14px;max-width:68ch">На слоях «Продукт», «Клиент» и «Конкуренты» система может пойти в открытые источники. Но сначала задаёт 4–6 вопросов — то, чего нельзя узнать снаружи и чего нет в твоих материалах. Иначе получится ресерч «вообще», а не про тебя.</p>
+    <div class="grid9" style="grid-template-columns:repeat(3,1fr);margin-top:20px">
+      <div class="b9"><div class="n">Слой 2</div><b>Рынок и цены</b><span>форматы продуктов, стандарты условий, где мы дороже рынка</span></div>
+      <div class="b9"><div class="n">Слой 3</div><b>Язык клиента</b><span>как аудитория описывает проблему своими словами</span></div>
+      <div class="b9"><div class="n">Слой 6</div><b>Конкурентное поле</b><span>игроки, цены, отзывы, боевые карточки с источниками</span></div>
+    </div>
+    <div class="note">Результат ресерча автоматически попадает в контекст генерации слоя — то есть контент собирается уже на проверенных внешних фактах, а не только на ваших документах.</div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 43 -->
+  <section class="slide">
+    <div class="kick">Инструмент · отчётность</div>
+    <h2>Кто где идёт и <span class="g">кто буксует</span></h2>
+    <div class="frame clip" style="margin-top:14px;max-height:450px"><div class="top"><i style="background:#e0655b"></i><i style="background:#e6b34d"></i><i style="background:#5fb87a"></i><span class="u">Конструктор · отчётность онбординга</span></div><img src="shots/report.png" alt="Отчётность"></div>
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 44 -->
+  <section class="slide">
+    <div class="kick">Контроль прохождения</div>
+    <h2>Слишком быстро — не читал.<br>Слишком долго — <span class="g">буксует</span></h2>
+    <div class="row" style="margin-top:18px">
+      <div class="col card" style="max-width:32%"><h3>Скорость</h3><p style="color:var(--muted);font-size:15.5px;margin-top:6px">Прошёл четыре слоя за два дня — почти наверняка листал. Система подсвечивает такие случаи отдельно.</p></div>
+      <div class="col card" style="max-width:32%"><h3>Застревание</h3><p style="color:var(--muted);font-size:15.5px;margin-top:6px">Выбился из целевого срока — сигнал наставнику, а не повод ждать до испытательного.</p></div>
+      <div class="col card" style="max-width:32%"><h3>Где теряются</h3><p style="color:var(--muted);font-size:15.5px;margin-top:6px">Есть нормативы по каждому переходу: где новички отваливаются чаще всего и что это значит.</p></div>
+    </div>
+    <div class="note">Если ниже нормы на переходе «начал → дошёл до Слоя 4» — значит первые слои перегружены текстом. Если на «прошёл → сдал аттестацию» — тесты не соответствуют контенту.</div>
+    <img class="bob bobc" src="gen/bob/cut/bob_dashboard.png" alt="" style="height:150px;right:16px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 45 -->
+  <section class="slide">
+    <div class="kick">Запуск</div>
+    <h2>План внедрения на <span class="g">восемь недель</span></h2>
+    <div class="steps7" style="margin-top:16px">
+      <div class="st7 zero"><div class="n">1–2</div><b>Аудит</b><span>интервью с РОПом и лучшими, прослушка звонков, аудит CRM</span></div>
+      <div class="st7"><div class="n">3–4</div><b>База знаний</b><span>семь слоёв, валидация с руководителем</span></div>
+      <div class="st7"><div class="n">5</div><b>Платформа</b><span>структура курса, загрузка, тесты</span></div>
+      <div class="st7"><div class="n">6</div><b>AI и тренажёры</b><span>наставник по базе, ролевки, диагностика</span></div>
+    </div>
+    <div class="steps7" style="margin-top:10px;grid-template-columns:repeat(3,1fr)">
+      <div class="st7"><div class="n">7</div><b>Контроль</b><span>карта 30-60-90, чек-листы, роль наставника</span></div>
+      <div class="st7"><div class="n">8</div><b>Запуск</b><span>обучение руководителя, пилот на 1–2 новичках</span></div>
+      <div class="st7"><div class="n">✓</div><b>Передача</b><span>система работает без вас</span></div>
+    </div>
+    <div class="note">Первые две недели — самые важные. Без аудита и интервью с лучшими вы соберёте красивый курс, который учит не тому, как у вас на самом деле продают.</div>
+    <img class="bob bobc" src="gen/bob/cut/s9_map.png" alt="" style="height:175px;right:18px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 46 -->
+  <section class="slide dark">
+    <div class="kick">Домашнее задание</div>
+    <h2>Собери онбординг под <span class="g">свою ключевую роль</span></h2>
+    <div class="row" style="margin-top:22px;max-width:96%">
+      <div class="col card"><div class="badge" style="background:var(--gold)">1</div><h3 style="color:#fff;margin-top:8px">Материалы</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Загрузи всё, что есть по роли, нажми «разнести по слоям» и посмотри карту покрытия — где пусто</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">2</div><h3 style="color:#fff;margin-top:8px">База знаний</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Закрой пробелы в брифах слоёв, собери все семь слоёв с тестами, выгрузи одним файлом</p></div>
+      <div class="col card"><div class="badge" style="background:var(--gold)">3</div><h3 style="color:#fff;margin-top:8px">Программа</h3><p style="color:#c3cec5;font-size:15px;margin-top:4px">Собери лестницу, аттестацию и карту 30-60-90. Заведи первого новичка в отчётность</p></div>
+    </div>
+    <p class="lead" style="margin-top:22px;color:#8ee0a6;font-weight:700">Принеси систему, по которой новичок дойдёт до результата без тебя.</p>
+    <img class="bob bobc" src="gen/bob/cut/p_book.png" alt="" style="height:175px">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+  <!-- 47 -->
+  <section class="slide dark2">
+    <div class="kick">Итог</div>
+    <h1 style="font-size:44px;max-width:24ch">Новичок не должен угадывать,<br>как у вас работают</h1>
+    <p class="lead" style="margin-top:20px;max-width:64ch">Найм доводит сильного человека до двери. Онбординг решает, станет он A-игроком или просто ещё одним сотрудником, который «не подошёл».</p>
+    <div class="chipset" style="margin-top:22px;max-width:66%">
+      <div class="chip">🧱 7 слоёв с порогами</div><div class="chip">🪜 Лестница до автономии</div><div class="chip">🎯 Аттестация на 100 баллов</div><div class="chip">📊 Карта 30-60-90</div><div class="chip">🎤 Тренажёр и диагностика</div>
+    </div>
+    <p class="lead" style="margin-top:20px;color:#8ee0a6;font-weight:700;font-size:22px">Три недели вместо трёх месяцев — это не про скорость. Это про то, что человек успевает поверить в компанию, пока ещё горит.</p>
+    <img class="bob bobscene" src="gen/bob/cut/s47_win.png" alt="">
+    <div class="brand"><img src="assets/logo-aplayers.png" alt="">Практикум A-Players</div>
+  </section>
+
+</div>
+
+<div id="bar"></div><div id="count"></div>
+<div class="hint" id="hint">← → пробел · F — полный экран</div>
+
+<script>
+const stage=document.getElementById('stage');
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+function fit(){const s=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('bar').style.width=((i+1)/slides.length*100)+'%';
+  document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+  location.hash=i+1;
+  document.getElementById('hint').style.opacity=i===0?1:0;
+}
+function next(){show(i+1);}function prev(){show(i-1);}
+addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();next();}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();prev();}
+  else if(e.key==='Home'){show(0);}else if(e.key==='End'){show(slides.length-1);}
+  else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen();}
+});
+stage.addEventListener('click',e=>{if(e.target.closest('a'))return;const r=stage.getBoundingClientRect();if((e.clientX-r.left)/r.width<0.22)prev();else next();});
+const start=parseInt((location.hash||'').replace('#',''),10);show(isNaN(start)?0:start-1);
+</script>
+</body>
+</html>

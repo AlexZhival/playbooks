@@ -917,6 +917,53 @@ async function runResearch(lid){
 }
 window.runResearch=runResearch;
 
+/* ---- ОДНА КНОПКА: разобрать материалы и разнести по всем слоям ---- */
+async function distributeAll(){
+  const F=filesState();if(!F.length){alert("Сначала загрузи материалы");return;}
+  if(!($("#apikey").value||"").trim()){alert("Вставь ключ Claude слева");return;}
+  const box=$("#filesStatus");
+  const step=(t)=>{if(box)box.innerHTML='<div class="statusbox"><span class="spin"></span>'+t+'</div>';};
+  step("Шаг 1 из 8 · читаю материалы и определяю, к каким слоям они относятся…");
+  try{await mapFilesSilent();}catch(e){if(box)box.innerHTML='<div class="errbox">'+esc(errText(e))+'</div>';return;}
+  let filled=0,skipped=[];
+  for(let i=0;i<LAYERS.length;i++){
+    const L=LAYERS[i];
+    const has=filesState().filter(f=>(f.layers||[]).includes(L.id)).length;
+    step("Шаг "+(i+2)+" из 8 · Слой "+L.n+" «"+L.title+"»: "+(has?"вытаскиваю факты из "+has+" материал"+(has>4?"ов":has>1?"ов":"а"):"материалов нет, пропускаю")+"…");
+    if(!has){skipped.push("Слой "+L.n+" "+L.title);continue;}
+    try{await fillLayerBriefSilent(L.id);filled++;}catch(e){skipped.push("Слой "+L.n+" — ошибка");}
+  }
+  save();render();
+  const b=$("#filesStatus");
+  if(b)b.innerHTML='<div class="note b">✓ Готово. Брифы заполнены по '+filled+' слоям из 7.'+
+    (skipped.length?' Без материалов остались: '+esc(skipped.join(", "))+' — их придётся заполнить руками или через интервью.':'')+
+    ' Заходи в каждый слой: оранжевым помечено то, на что нужен твой ответ.</div>';
+}
+window.distributeAll=distributeAll;
+async function mapFilesSilent(){
+  const F=filesState();
+  const ctx=await filesContext(null,120000);
+  const sys=["Ты — методист онбординга. Тебе дали материалы компании. Определи, к каким слоям базы знаний относится каждый файл и что полезного из него можно взять.",
+   "Слои: "+LAYERS.map(l=>l.id+" = Слой "+l.n+" "+l.title+" ("+l.sub+")").join(" · ")+" · company = общая информация о компании.",
+   'Верни СТРОГО JSON: {"files":[{"name":"точное имя файла","layers":["l2","l4"],"what":"что внутри ценного, 1-2 фразы","quality":"богатый|средний|слабый"}],"summary":"чего критично не хватает"}',
+   "Один файл может относиться к нескольким слоям."].join("\n");
+  const r=parseJSON(await callClaude({system:sys,messages:[{role:"user",content:ctx+"\n\nРазложи файлы по слоям."}],max_tokens:12000,effort:"low"}));
+  (r.files||[]).forEach(x=>{const f=F.find(y=>y.name===x.name);if(f){f.layers=(x.layers||[]).filter(Boolean);f.note=x.what||"";f.quality=x.quality||"";}});
+  save();
+}
+async function fillLayerBriefSilent(lid){
+  const L=layerById(lid);const ctx=await filesContext(lid,90000);if(!ctx)return;
+  const qs=L.brief;
+  const sys=["Ты извлекаешь факты из материалов компании и отвечаешь на вопросы брифа. Только то, что реально есть в материалах — ничего не додумывай.",
+   "Вопросы брифа Слоя "+L.n+" «"+L.title+"»:\n"+qs.map((q,i)=>(i+1)+". "+q).join("\n"),
+   'Верни СТРОГО JSON: {"answers":[{"i":1,"a":"ответ фактами","src":"файл","conf":"полный|частичный|нет"}]} — ровно '+qs.length+' объектов.',
+   "Отвечай конкретно: цифры, имена, формулировки как в источнике."].join("\n");
+  const r=parseJSON(await callClaude({system:sys,messages:[{role:"user",content:ctx+"\n\nЗаполни бриф слоя."}],max_tokens:16000,effort:"low"}));
+  S.lbrief=S.lbrief||{};S.lbrief[lid]=S.lbrief[lid]||{};
+  (r.answers||[]).forEach(x=>{const i=(+x.i)-1;if(i>=0&&i<qs.length&&x.a){S.lbrief[lid][i]=x.a;S.lbrief[lid]["_c"+i]=x.conf||"";S.lbrief[lid]["_s"+i]=x.src||"";}});
+  save();
+}
+
 /* ================= STEPS ================= */
 const STEPS=[
  {id:"start",icon:"0",t:"Старт",d:"компания и роль",sec:"Подготовка"},
@@ -1236,8 +1283,8 @@ function renderFiles(){
   $("#main").innerHTML=head("Шаг 0.1 · Материалы компании","Загрузи всё, что есть — <span style=\"color:#B0822E\">дальше система разберётся сама</span>","Скрипты, регламенты, презентации, прайсы, брифы, анализ конкурентов, расшифровки интервью. Система прочитает файлы, определит, к каким слоям они относятся, и на их основе заполнит брифы. Чем больше материалов — тем меньше придётся писать руками.")+
   '<div class="card"><div class="row" style="gap:10px;align-items:center">'+
    '<label class="btn primary" style="cursor:pointer">📎 Прикрепить файлы<input type="file" multiple accept=".docx,.xlsx,.xls,.pptx,.pdf,.txt,.md,.csv,.json,.html" style="display:none" onchange="onFiles(this)"></label>'+
-   '<button class="btn dark" onclick="mapFiles()">🧠 Разобрать материалы</button>'+
-   '<span class="kmini" style="margin:0">Поддерживаются docx · xlsx · pptx · pdf · txt · md · csv · html. Файлы остаются в твоём браузере.</span></div>'+
+   '<button class="btn dark" onclick="distributeAll()">🧠 Разобрать и разнести по всем слоям</button><button class="btn ghost sm" onclick="mapFiles()">только разметить</button>'+
+   '<span class="kmini" style="margin:0">Одна кнопка: система читает все файлы, раскладывает их по слоям и заполняет брифы каждого слоя. Файлы остаются в твоём браузере.</span></div>'+
    '<div id="filesStatus"></div>'+
    (F.length?'<div style="overflow-x:auto"><table class="gt narrow" style="margin-top:12px"><thead><tr><th>Файл</th><th>Что внутри</th><th>К каким слоям</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>'
     :'<div class="note b">Пока ничего не загружено. Прикрепи материалы — и брифы слоёв заполнятся автоматически, а тебе останется только дополнить пробелы.</div>')+
