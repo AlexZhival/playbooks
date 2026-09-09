@@ -60,11 +60,16 @@ section{padding:48px 0}section.alt{background:var(--bg2)}
 .vcard ol{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
 .vcard ol li{font-size:14.5px}
 .vcard .btns{margin-top:auto;padding-top:16px;display:flex;flex-wrap:wrap;gap:9px}
+.btn .ic{font-size:15px;line-height:1}
+.cta .ic{font-size:18px;line-height:1}
 .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:11px 16px;border-radius:10px;text-decoration:none;transition:transform .15s;border:none;cursor:pointer;font-family:var(--sans)}
 .btn:hover{transform:translateY(-1px)}
 .btn.p{background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A}
 .btn.e{background:var(--em);color:#fff}
 .btn.g{background:transparent;border:1.5px solid var(--line);color:var(--em)}
+/* на тёмной шапке текст цвета --em сливался с фоном: была видна только иконка */
+.hero .btn.g{color:var(--dark-ink);border-color:rgba(239,233,218,.5)}
+.hero .btn.g:hover{background:rgba(239,233,218,.10)}
 .road{display:flex;flex-direction:column;gap:12px;margin-top:22px}
 .rstep{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
 .rstep .n{width:46px;height:40px;border-radius:10px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:16px;display:grid;place-items:center}
@@ -137,8 +142,8 @@ footer img{height:20px}
     <span class="kicker">72 слайда презентации</span>
     <h1>Конструктор онбординга</h1>
     <p class="lead">Семь слоёв базы знаний, лестница до самостоятельности, аттестация, диагностика роли и ролевки. Собран на рабочей тетради «Завод A-Players», семи плейбуках слоёв, гайде интервью с лучшими менеджерами и разборе онбординга «Здоровое движение».</p>
-    <a class="cta" href="konstruktor.html" target="_blank" rel="noopener">🏭 Открыть конструктор</a>
-    <div class="dl-row" style="margin-top:16px"><a class="btn g" href="prezentaciya.html" target="_blank" rel="noopener">🖥 Презентация модуля</a><a class="btn p" href="prezentaciya.pdf" download="Онбординг и Завод A-Players — презентация.pdf">⬇ Презентация (PDF)</a></div>
+    <a class="cta" href="konstruktor.html" target="_blank" rel="noopener"><span class="ic">🏭</span>Открыть конструктор</a>
+    <div class="dl-row" style="margin-top:16px"><a class="btn g" href="prezentaciya.html" target="_blank" rel="noopener"><span class="ic">🖥</span>Презентация модуля</a><a class="btn p" href="prezentaciya.pdf" download="Онбординг и Завод A-Players — презентация.pdf"><span class="ic">⬇</span>Презентация (PDF)</a></div>
   </div>
 </header>
 <section>
@@ -167,7 +172,7 @@ footer img{height:20px}
       <li><b>Задание 3 · 3 часа — программа.</b> Лестница, аттестация, карта 30-60-90 с рамп-квотой 25/50/75/100, чек-лист готовности компании к выходу новичка. Заведи первого новичка в отчётность и выгрузи всё одним файлом Excel.</li>
     </ul></div>
     <div class="note-fallback" style="margin-top:16px">Если времени мало — делай <b>задание 0 и один слой</b>. Одна цифра и один рабочий слой дают больше, чем семь слоёв, собранных наспех и никем не подтверждённых.</div>
-    <div class="dl-row" style="margin-top:18px"><a class="btn p" href="konstruktor.html" target="_blank" rel="noopener">🏭 Открыть конструктор</a><a class="btn g" href="prezentaciya.pdf" download="Онбординг и Завод A-Players — презентация.pdf">⬇ Презентация (PDF)</a></div>
+    <div class="dl-row" style="margin-top:18px"><a class="btn p" href="konstruktor.html" target="_blank" rel="noopener"><span class="ic">🏭</span>Открыть конструктор</a><a class="btn g" href="prezentaciya.pdf" download="Онбординг и Завод A-Players — презентация.pdf"><span class="ic">⬇</span>Презентация (PDF)</a></div>
   </div>
 </section>
 <footer><div class="wrap"><span style="display:flex;align-items:center;gap:10px"><img src="assets/logo-aplayers.png" alt="A-Players"> ПРАКТИКУМ A-PLAYERS</span><span>Модуль · Онбординг и Завод A-Players</span></div></footer>
