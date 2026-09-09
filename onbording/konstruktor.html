@@ -1368,10 +1368,10 @@ function renderAdmin(){
     '<td><input type="text" value="'+esc(f.driveLink||"")+'" placeholder="ссылка на файл в Google Drive" oninput="setDrive(\''+f.id+'\',this.value)" style="min-width:220px">'+(f.driveLink?' <a href="'+esc(f.driveLink)+'" target="_blank">↗</a>':'')+'</td>'+
     '<td class="row" style="gap:6px"><button class="btn ghost sm" onclick="loadProject(\''+f.id+'\')">Открыть</button><button class="btn ghost sm" onclick="delProject(\''+f.id+'\')">✕</button></td></tr>';
   }).join(""):'<tr><td colspan="5" style="color:var(--muted)">Пока нет сохранённых онбордингов. Собери контент и нажми «💾 Сохранить текущий онбординг».</td></tr>';
-  $("#main").innerHTML=head("Мои онбординги","Админ-панель","Все собранные системы онбординга (хранятся в этом браузере). Сохрани текущую, выгрузи одним файлом и залей на платформу обучения.")+
-  '<div class="card"><div class="row"><button class="btn primary" onclick="saveProject()">💾 Сохранить текущий онбординг</button><button class="btn dark" onclick="assembleWorkbook()">⬇ Скачать весь онбординг в Excel</button><button class="btn ghost" onclick="newProject()">➕ Новый онбординг</button></div>'+
+  $("#main").innerHTML=head("Мои онбординги","Админ-панель","Все собранные системы онбординга — хранятся в этом браузере. Собери контент, сохрани проект и скачай пакет: внутри готовый кабинет сотрудника, админка руководителя и промпт, по которому AI-редактор развернёт полноценную платформу.")+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="saveProject()">💾 Сохранить текущий онбординг</button><button class="btn dark" onclick="buildPackage()" id="pkgBtn">📦 Скачать пакет для развёртывания</button><button class="btn ghost" onclick="assembleWorkbook()">⬇ Excel одним файлом</button><button class="btn ghost" onclick="newProject()">➕ Новый онбординг</button></div><div id="pkgStatus"></div>'+
   '<div class="note b">Сейчас открыт: <b>'+esc(S.role||"— ещё не начат —")+'</b>'+(S._pid?"":" · <span style='color:#B0822E'>не сохранён в списке</span>")+'. «➕ Новый онбординг» очищает рабочие поля под следующую роль — сохранённые остаются в таблице.</div>'+
-  '<div class="note">Что делать с выгрузкой: каждый слой — отдельный лист. Заливаешь в Teachbase (или другую LMS) как 7 модулей, включаешь последовательное прохождение и блокировку перехода до сдачи теста. Или отдаёшь команде внедрения Завода A-Players.</div>'+
+  '<div class="note b">Что внутри пакета: <b>кабинет-сотрудника.html</b> — готовый рабочий кабинет, открывается двойным кликом, ведёт новичка по слоям, даёт тесты с порогом и тремя попытками и не пускает дальше, пока слой не сдан. <b>админка.html</b> — панель руководителя с прогрессом и выгрузкой в CSV. <b>onboarding.json</b> — все данные одним файлом. <b>ПРОМПТ-для-вайбкодинга.md</b> — готовое задание для Claude Code или Cursor: развернуть полноценную платформу с общей базой и аккаунтами. Плюс весь контент в markdown по слоям, тестам, программе и брифам.</div><div class="note">Три способа развернуть: <b>1)</b> открыть кабинет двойным кликом и дать ссылку новичку — работает без сервера и без интернета; <b>2)</b> положить два html-файла на любой хостинг — заработают как есть; <b>3)</b> отдать папку AI-редактору вместе с промптом — получишь платформу с аккаунтами и сквозной аналитикой.</div>'+
   '<div style="overflow-x:auto"><table class="gt" style="margin-top:12px"><thead><tr><th>Роль / компания</th><th>Обновлено</th><th>Собрано</th><th>Ссылка на собранный онбординг</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div></div>'+navBtns();
 }
 
@@ -1688,6 +1688,240 @@ async function exportBrandedBlocks(id){
 }
 window.exportBrandedBlocks=exportBrandedBlocks;
 
+/* ================= ПАКЕТ ДЛЯ РАЗВЁРТЫВАНИЯ ================= */
+/* Собирает ZIP: данные + контент в markdown + готовый кабинет + админка + промпт для вайбкодинга */
+
+function tpl(id){const el=document.getElementById(id);return el?el.textContent:"";}
+
+/* разбор блока «Тест по слою» в структуру вопросов */
+function parseQuiz(blocks){
+  const b=(blocks||[]).find(x=>/^Тест/i.test(x.h||"")&&x.kind==="table");
+  if(!b||!Array.isArray(b.rows))return [];
+  const col=(name)=>{const c=(b.columns||[]).findIndex(x=>new RegExp(name,"i").test(String(x)));return c;};
+  const iQ=col("вопрос")>=0?col("вопрос"):0, iO=col("вариант")>=0?col("вариант"):1,
+        iC=col("правильн")>=0?col("правильн"):2, iW=col("почему")>=0?col("почему"):3;
+  const norm=s=>String(s==null?"":s).replace(/\s+/g," ").replace(/^[\s"«»]+|[\s"«».]+$/g,"").toLowerCase();
+  const out=[];
+  b.rows.forEach(r=>{
+    const row=Array.isArray(r)?r:[r];
+    const q=String(row[iQ]||"").trim(); if(!q)return;
+    const opts=String(row[iO]||"").split(/\s*[|;]\s*/).map(s=>s.trim()).filter(Boolean);
+    if(opts.length<2)return;
+    const raw=String(row[iC]||"").trim();
+    /* делим только по | и ; — запятая часто стоит внутри самого ответа */
+    let parts=raw.split(/\s*[|;]\s*/).map(s=>s.trim()).filter(Boolean);
+    const idxOf=(v)=>{
+      let i=opts.findIndex(o=>norm(o)===norm(v));
+      if(i<0)i=opts.findIndex(o=>norm(o).indexOf(norm(v))>=0&&norm(v).length>3);
+      if(i<0&&/^[а-дa-e1-9]$/i.test(v)){const k="абвгдеabcdef".indexOf(v.toLowerCase());if(k>=0&&k<opts.length)i=k;
+        const n=parseInt(v,10);if(isFinite(n)&&n>=1&&n<=opts.length)i=n-1;}
+      return i;
+    };
+    let idx=parts.map(idxOf).filter(i=>i>=0);
+    /* запасной путь: ответ мог быть перечислен через запятую и целиком не нашёлся */
+    if(!idx.length&&/,/.test(raw)){
+      parts=raw.split(/\s*,\s*/).map(s=>s.trim()).filter(Boolean);
+      idx=parts.map(idxOf).filter(i=>i>=0);
+    }
+    idx=idx.filter((v,i)=>idx.indexOf(v)===i);
+    const multi=idx.length>1;
+    out.push({q:q,opts:opts,multi:multi,
+      correct: multi?idx:(idx.length?idx[0]:null),
+      why:String(row[iW]||"").trim()});
+  });
+  return out;
+}
+
+function pkgData(){
+  const layers=LAYERS.map(L=>{
+    const r=S.results[L.id];
+    const content=(r&&r.blocks)||[];
+    return {id:L.id,n:L.n,title:L.title,sub:L.sub,thr:L.thr,min:L.min,days:L.days,
+            lessons:L.lessons,quiz:L.quiz,ready:!!r,
+            content:content,test:parseQuiz(content),
+            kpi:L.kpi||[],practice:L.practice||"",
+            brief:(L.brief||[]).map((q,i)=>({q:q,a:((S.lbrief||{})[L.id]||{})[i]||""}))};
+  });
+  const progIds=["course","ladder","attest","kpi3060","mentor","callcheck","arsenal","diag","roleplay","failures","gantt","conflicts","interview"];
+  const program=progIds.filter(id=>S.results[id]).map(id=>({id:id,title:(GEN[id]&&GEN[id].title)||id,blocks:S.results[id].blocks||[]}));
+  return {
+    company:S.company||"",niche:S.niche||"",role:S.role||"",target:S.target||"",format:S.format||"",
+    generated:new Date().toISOString().slice(0,10),
+    layers:layers,program:program,
+    norms:(OBENCH&&OBENCH.norms)||[],
+    brief:BRIEF.map(bl=>({block:bl.name,who:bl.who,qs:bl.qs.map((q,i)=>({q:q,a:(S.brief[bl.id]||[])[i]||""}))})),
+    files:(S.files||[]).map(f=>({name:f.name,chars:f.chars,layers:f.layers||[],note:f.note||""}))
+  };
+}
+
+function mdBlocks(blocks){
+  return (blocks||[]).map(b=>{
+    let out="### "+(b.h||"")+"\n\n";
+    if(b.kind==="table"&&(b.columns||b.rows)){
+      const c=Array.isArray(b.columns)?b.columns:[];
+      const rows=(Array.isArray(b.rows)?b.rows:[]).map(r=>Array.isArray(r)?r:[r]);
+      if(c.length){
+        out+="| "+c.join(" | ")+" |\n|"+c.map(()=>"---").join("|")+"|\n";
+        rows.forEach(r=>{out+="| "+c.map((_,i)=>String(r[i]==null?"":r[i]).replace(/\|/g,"\\|").replace(/\n/g," ")).join(" | ")+" |\n";});
+      } else rows.forEach(r=>{out+="- "+r.join(" · ")+"\n";});
+      out+="\n";
+    } else if(b.kind==="list"){
+      const it=Array.isArray(b.items)?b.items:(b.items?[b.items]:[]);
+      out+=it.map(x=>"- "+x).join("\n")+"\n\n";
+    } else {
+      const it=Array.isArray(b.items)?b.items:[];
+      out+=(b.text||it.join("\n"))+"\n\n";
+    }
+    return out;
+  }).join("");
+}
+
+function pad2(n){return (n<10?"0":"")+n;}
+function safeName(s){return String(s||"").replace(/[\\/:*?"<>|]/g,"-").replace(/\s+/g," ").trim().slice(0,60);}
+
+function pkgReadme(D){
+  const ready=D.layers.filter(l=>l.ready).length;
+  return "# Онбординг · "+(D.role||"сотрудник")+" · "+(D.company||"")+"\n\n"+
+"Пакет собран в конструкторе онбординга A-Players "+D.generated+".\n"+
+"Слоёв базы знаний собрано: "+ready+" из "+D.layers.length+". Разделов программы: "+D.program.length+".\n\n"+
+"## Что здесь лежит\n\n"+
+"| Файл | Что это |\n|---|---|\n"+
+"| `кабинет-сотрудника.html` | Готовый кабинет новичка. Открывается двойным кликом, работает без интернета и без сервера. Последовательное прохождение слоёв, тесты с порогом и тремя попытками, блокировка следующего слоя до сдачи, прогресс сохраняется в браузере. |\n"+
+"| `админка.html` | Панель руководителя: новички, отметки по слоям, балл аттестации, автоматический статус, выгрузка в CSV. |\n"+
+"| `onboarding.json` | Все данные онбординга одним файлом: слои, уроки, тесты, программа, брифы. Это источник правды для любой платформы. |\n"+
+"| `ПРОМПТ-для-вайбкодинга.md` | Готовое задание для Claude Code, Cursor или другого AI-редактора: развернуть полноценную платформу из этих данных. |\n"+
+"| `слои/` | Контент каждого слоя в markdown — можно править руками, заливать в LMS или в базу знаний. |\n"+
+"| `тесты/` | Вопросы тестов по слоям отдельными файлами. |\n"+
+"| `программа/` | Лестница, аттестация, карта 30-60-90, наставник, чек-листы — всё, что собрано в конструкторе. |\n"+
+"| `бриф/` | Бриф компании и брифы слоёв с ответами: на чём собран контент и где остались пробелы. |\n\n"+
+"## Три способа развернуть\n\n"+
+"**1. Прямо сейчас, без разработки.** Откройте `кабинет-сотрудника.html` двойным кликом и дайте ссылку новичку — файл самодостаточный. Руководитель работает в `админка.html`.\n\n"+
+"**2. На своём домене за 10 минут.** Положите оба html-файла на любой статический хостинг (GitHub Pages, Netlify, Vercel, обычный сайт) — они заработают как есть.\n\n"+
+"**3. Полноценная платформа.** Отдайте всю папку AI-редактору вместе с `ПРОМПТ-для-вайбкодинга.md` — он развернёт версию с общей базой, аккаунтами и сквозной аналитикой. Инструкция внутри промпта.\n\n"+
+"## Что важно знать\n\n"+
+"- Прогресс в кабинете и данные админки хранятся в браузере того, кто их открыл. Для общей базы на несколько человек нужен способ 3.\n"+
+"- Черновики в обучение не идут: всё, что помечено «Статус: черновик» или `[НУЖНО УТОЧНИТЬ]`, сначала подтверждает руководитель.\n"+
+"- Контент устаревает. У каждого слоя должен быть владелец с фамилией и срок пересборки — иначе через год новичок будет учиться по прайсу, которого нет.\n";
+}
+
+function pkgPrompt(D){
+  return "# Задание: развернуть платформу онбординга\n\n"+
+"Ты получил папку с готовым онбордингом сотрудника на роль «"+(D.role||"сотрудник")+"» в компании «"+(D.company||"")+"»"+(D.niche?" (ниша: "+D.niche+")":"")+".\n"+
+"Контент уже собран и подтверждён — придумывать и дописывать его НЕ нужно. Твоя задача — развернуть вокруг него работающую платформу.\n\n"+
+"## Источник данных\n\n"+
+"`onboarding.json` — единственный источник правды. Структура:\n\n"+
+"```\n"+
+"company, niche, role, target, format   — паспорт проекта\n"+
+"layers[]        — "+D.layers.length+" слоёв базы знаний, строго последовательных\n"+
+"  id, n, title, sub                    — идентификатор и название\n"+
+"  thr                                  — порог теста в процентах (обязателен к соблюдению)\n"+
+"  min, days, lessons, quiz             — время, место в плане, количество уроков и вопросов\n"+
+"  content[]                            — блоки контента: {h, kind: text|list|table, text|items|columns+rows}\n"+
+"  test[]                               — вопросы: {q, opts[], multi, correct, why}\n"+
+"  kpi[], practice                      — что сотрудник умеет после слоя и практическое задание\n"+
+"  brief[]                              — вопросы брифа слоя с ответами (контекст, не для показа новичку)\n"+
+"program[]       — разделы программы: лестница, аттестация, 30-60-90, наставник, чек-листы\n"+
+"norms[]         — нормативы онбординга для дашборда руководителя\n"+
+"brief[]         — бриф компании с ответами\n"+
+"files[]         — какие материалы компании легли в основу\n"+
+"```\n\n"+
+"## Что построить\n\n"+
+"**Кабинет сотрудника**\n"+
+"1. Вход по ссылке или по коду — без пароля на первом шаге, чтобы не терять людей на регистрации.\n"+
+"2. Слои открываются строго последовательно. Следующий доступен только после сдачи теста предыдущего на порог `thr`.\n"+
+"3. Уроки внутри слоя — по порядку блоков `content`, кроме блока «Тест по слою», он выносится в отдельный экран.\n"+
+"4. Тест: три попытки. После ответа обязательно показывать поле `why` — именно объяснение учит, а не сам вопрос.\n"+
+"5. После трёх непройденных попыток — не давать четвёртую, а ставить задачу руководителю на разбор.\n"+
+"6. Прогресс, попытки и баллы сохранять на сервере, а не только в браузере.\n\n"+
+"**Кабинет руководителя**\n"+
+"1. Таблица новичков: отметки по слоям подтягиваются автоматически из прохождения, вручную не проставляются.\n"+
+"2. Балл аттестации вводится руками, порог 80.\n"+
+"3. Автоматический статус: аттестован · ждёт аттестации · аттестация не сдана · выбился из срока (больше "+(D.target||"21 дня")+") · слишком быстро (прошёл больше половины слоёв за 2 дня — скорее всего листал).\n"+
+"4. Воронка прохождения: сколько начали, дошли до каждого слоя, сдали аттестацию. Показывать, где отваливаются.\n"+
+"5. Выгрузка в CSV и Excel.\n\n"+
+"**Админка контента**\n"+
+"1. Редактирование уроков и вопросов без программиста.\n"+
+"2. У каждого слоя — владелец с именем и дата следующей пересборки. Просроченный слой подсвечивается.\n"+
+"3. История версий: кто и когда менял урок.\n"+
+"4. Статус контента: подтверждено / черновик. Черновик новичку не показывается.\n\n"+
+"## Технические требования\n\n"+
+"- Русский интерфейс. Мобильная вёрстка обязательна — половина будет читать с телефона.\n"+
+"- Стиль: кремовый фон #F4F1EA, изумрудный #143A2D, золото #B0822E, заголовки Roboto Slab, текст Manrope.\n"+
+"- Стек на твоё усмотрение, но приоритет — простой деплой: одна команда, статика или один контейнер.\n"+
+"- Никаких внешних сервисов аналитики: данные о сотрудниках остаются внутри компании.\n"+
+"- Начни с рабочего минимума: кабинет + прохождение + тесты + таблица руководителя. Админку контента — вторым шагом.\n\n"+
+"## Чего делать не надо\n\n"+
+"- Не переписывать и не «улучшать» тексты уроков: они подтверждены руководителем компании.\n"+
+"- Не снижать пороги тестов и не убирать блокировку перехода — на этом держится вся конструкция.\n"+
+"- Не добавлять геймификацию с баллами и бейджами, пока не работает основное.\n\n"+
+"## Как проверить, что получилось\n\n"+
+"1. Новичок проходит слой 1, валит тест дважды, сдаёт с третьей — следующий слой открылся, попытки записаны.\n"+
+"2. Руководитель видит его прогресс без единого ручного действия.\n"+
+"3. Слой 2 недоступен, пока не сдан слой 1 — проверить прямой ссылкой.\n"+
+"4. Выгрузка CSV открывается в Excel с кириллицей без бубна.\n";
+}
+
+async function buildPackage(){
+  if(!window.JSZip){alert("Библиотека архивов не загрузилась — проверь интернет и обнови страницу.");return;}
+  const btn=document.getElementById("pkgBtn");
+  const st=document.getElementById("pkgStatus");
+  const say=(t)=>{if(st)st.innerHTML='<div class="statusbox"><span class="spin"></span>'+t+'</div>';};
+  if(!S.role){if(st)st.innerHTML='<div class="errbox">Сначала заполни «Старт»: компанию и роль.</div>';return;}
+  const ready=LAYERS.filter(L=>S.results[L.id]).length;
+  if(!ready){if(st)st.innerHTML='<div class="errbox">Пока не собран ни один слой. Собери хотя бы один — и пакет будет из чего делать.</div>';return;}
+  if(btn)btn.disabled=true;
+  try{
+    say("Собираю пакет…");
+    const D=pkgData();
+    const json=JSON.stringify(D,null,1);
+    const zip=new JSZip();
+    zip.file("README.md",pkgReadme(D));
+    zip.file("ПРОМПТ-для-вайбкодинга.md",pkgPrompt(D));
+    zip.file("onboarding.json",json);
+
+    const inject=(t)=>t.replace(/@@DATA@@/g,json).replace(/@@TITLE@@/g,safeName((D.company||"Онбординг")+" · "+(D.role||""))).replace(/@@ENDSCRIPT@@/g,"<\/script>");
+    const cab=tpl("tpl-cabinet"),adm=tpl("tpl-admin");
+    if(cab)zip.file("кабинет-сотрудника.html",inject(cab));
+    if(adm)zip.file("админка.html",inject(adm));
+
+    const fl=zip.folder("слои"),ft=zip.folder("тесты"),fp=zip.folder("программа"),fb=zip.folder("бриф");
+    D.layers.forEach(L=>{
+      if(!L.ready)return;
+      const nm=pad2(L.n)+"-"+safeName(L.title);
+      const head="# Слой "+L.n+" · "+L.title+"\n\n"+
+        "**"+(L.sub||"")+"**\n\n"+
+        "- Уроков: "+L.lessons+" · Время: "+L.min+" мин · Тест: "+L.quiz+" вопросов · Порог: **"+L.thr+"%** · Место в плане: "+L.days+"\n"+
+        (L.kpi.length?"- После слоя сотрудник умеет: "+L.kpi.join("; ")+"\n":"")+"\n";
+      fl.file(nm+".md",head+mdBlocks(L.content.filter(b=>!/^Тест по слою/i.test(b.h||""))));
+      if(L.test.length){
+        ft.file(nm+".md","# Тест · Слой "+L.n+" "+L.title+"\n\nПорог "+L.thr+"%, три попытки.\n\n"+
+          L.test.map((q,i)=>(i+1)+". "+q.q+"\n"+q.opts.map((o,j)=>"   - "+(q.correct===j||(Array.isArray(q.correct)&&q.correct.indexOf(j)>=0)?"**":"")+o+(q.correct===j||(Array.isArray(q.correct)&&q.correct.indexOf(j)>=0)?"** ✓":"")).join("\n")+
+            (q.why?"\n   \n   > "+q.why:"")).join("\n\n")+"\n");
+      }
+      const filled=L.brief.filter(x=>String(x.a||"").trim()).length;
+      fb.file("слой-"+pad2(L.n)+"-"+safeName(L.title)+".md",
+        "# Бриф слоя "+L.n+" · "+L.title+"\n\nЗаполнено "+filled+" из "+L.brief.length+".\n\n"+
+        L.brief.map(x=>"### "+x.q+"\n\n"+(String(x.a||"").trim()||"`[НУЖНО УТОЧНИТЬ]`")+"\n").join("\n"));
+    });
+    D.program.forEach((p,i)=>fp.file(pad2(i+1)+"-"+safeName(p.title)+".md","# "+p.title+"\n\n"+mdBlocks(p.blocks)));
+    fb.file("бриф-компании.md","# Бриф компании · "+(D.company||"")+"\n\n"+
+      D.brief.map(b=>"## "+b.block+"\n\n_Спросить у: "+b.who+"_\n\n"+
+        b.qs.map(x=>"**"+x.q+"**\n\n"+(String(x.a||"").trim()||"`[НУЖНО УТОЧНИТЬ]`")+"\n").join("\n")).join("\n"));
+
+    say("Упаковываю…");
+    const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
+    const fname="Онбординг — "+safeName((D.company||"")+" "+(D.role||"роль"))+".zip";
+    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=fname;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},600);
+    const kb=Math.round(blob.size/1024);
+    if(st)st.innerHTML='<div class="note b">✓ Пакет собран: <b>'+esc(fname)+'</b>, '+kb+' КБ. Внутри готовый кабинет сотрудника, админка, все данные и промпт для вайбкодинга. Распакуй и открой <b>README.md</b> — там три способа развернуть.</div>';
+  }catch(e){
+    if(st)st.innerHTML='<div class="errbox">Не удалось собрать пакет: '+esc(e.message||e)+'</div>';
+  }finally{ if(btn)btn.disabled=false; }
+}
+window.buildPackage=buildPackage;
+
 /* ================= INIT ================= */
 $("#apikey").value=localStorage.getItem(LS.key)||"";
 $("#model").value=localStorage.getItem(LS.model)||"claude-opus-5";
@@ -1695,6 +1929,356 @@ $("#apikey").addEventListener("change",()=>localStorage.setItem(LS.key,$("#apike
 $("#model").addEventListener("change",()=>localStorage.setItem(LS.model,$("#model").value));
 (function(){var h=(location.hash||"").replace("#","").trim();if(!h)return;var i=STEPS.findIndex(function(x){return x.id===h;});if(i>=0)STEP=i;})();
 renderNav();render();
+</script>
+
+<script type="text/plain" id="tpl-cabinet">
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>@@TITLE@@ — кабинет сотрудника</title>
+<style>
+:root{--cream:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+--em:#143A2D;--em2:#1C4C3B;--gold:#B0822E;--gold2:#C79A45;--green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+--serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+header{background:var(--em);color:#EFE9DA;padding:18px 0}
+header .row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-family:var(--serif);font-size:21px;font-weight:800}
+header .sub{font-size:13px;color:#9fb0a4;margin-top:2px}
+.pbar{height:7px;background:rgba(255,255,255,.14);border-radius:4px;overflow:hidden;min-width:180px;flex:1;max-width:320px}
+.pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold));width:0;transition:width .3s}
+.ptxt{font-size:12px;color:#cfe0d4;font-weight:700;white-space:nowrap}
+main{display:grid;grid-template-columns:290px 1fr;gap:24px;padding:24px 0 60px}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.side{position:sticky;top:16px;align-self:start}
+.lay{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:9px;cursor:pointer;display:flex;gap:11px;align-items:flex-start;transition:.12s}
+.lay:hover{border-color:var(--gold2)}
+.lay.on{border-color:var(--em);box-shadow:0 4px 14px rgba(20,32,27,.09)}
+.lay.done{background:#F1F6F1}
+.lay.lock{opacity:.5;cursor:not-allowed}
+.lay .n{width:26px;height:26px;border-radius:8px;background:var(--em);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.lay.done .n{background:var(--green)}
+.lay.lock .n{background:#b9beb6}
+.lay b{display:block;font-size:14.5px}
+.lay span{display:block;font-size:12px;color:var(--muted);margin-top:1px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px;margin-bottom:16px}
+h2{font-family:var(--serif);font-size:26px;font-weight:800;line-height:1.15}
+h3{font-family:var(--serif);font-size:19px;color:var(--em);margin:18px 0 6px}
+.kick{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:7px}
+.meta{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:8px}
+.meta b{color:var(--em)}
+.les{white-space:pre-wrap;font-size:14.8px;margin-top:6px}
+ul.li{list-style:none;margin-top:8px}ul.li li{position:relative;padding-left:22px;margin-bottom:6px}
+ul.li li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;background:var(--gold);border-radius:2px;transform:rotate(45deg)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:10px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:var(--em);color:#EFE9DA;text-align:left;padding:8px 11px;font-size:12px;font-weight:700}
+td{padding:7px 11px;border-top:1px solid var(--line);vertical-align:top}
+.tw{overflow-x:auto}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:14.5px;padding:11px 18px;border-radius:10px;text-decoration:none;transition:.15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:linear-gradient(180deg,var(--gold2),#A87C24);color:#19120A}
+.btn.d{background:var(--em);color:#fff}
+.btn.g{background:transparent;border:1.5px solid var(--line);color:var(--em)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.q{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:11px;background:#fff}
+.q.ok{border-color:#bcd3c2;background:#F2F8F3}
+.q.bad{border-color:#e0b6ad;background:#FCF1EF}
+.q .qt{font-weight:700;margin-bottom:9px}
+.opt{display:flex;gap:9px;align-items:flex-start;padding:7px 9px;border-radius:8px;cursor:pointer}
+.opt:hover{background:#F4F1EA}
+.opt input{margin-top:3px}
+.why{margin-top:9px;font-size:13.5px;background:rgba(176,130,46,.1);border-left:3px solid var(--gold);padding:9px 12px;border-radius:7px;color:#6a4e17}
+.note{border-left:3px solid var(--gold);background:rgba(176,130,46,.09);padding:11px 14px;border-radius:8px;font-size:14px;color:#6a4e17;margin-top:12px}
+.note.grn{border-color:var(--green);background:rgba(62,142,94,.1);color:#255c3c}
+.note.red{border-color:var(--red);background:rgba(178,59,46,.09);color:#7d2b21}
+.pill{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;background:var(--em);color:#fff}
+.pill.g{background:var(--green)}.pill.a{background:var(--amber)}.pill.r{background:var(--red)}
+.big{font-family:var(--serif);font-size:44px;font-weight:800;color:var(--em);line-height:1}
+footer{background:var(--em);color:#9fb0a4;padding:18px 0;font-size:13px}
+</style></head><body>
+<header><div class="wrap row">
+  <div><h1 id="hTitle">Онбординг</h1><div class="sub" id="hSub"></div></div>
+  <div style="display:flex;align-items:center;gap:12px;flex:1;justify-content:flex-end">
+    <div class="pbar"><i id="pbar"></i></div><div class="ptxt" id="ptxt">0%</div>
+    <button class="btn g" style="color:#EFE9DA;border-color:rgba(239,233,218,.4)" onclick="resetAll()">Сбросить</button>
+  </div>
+</div></header>
+<main class="wrap">
+  <div class="side" id="side"></div>
+  <div id="view"></div>
+</main>
+<footer><div class="wrap">Онбординг собран в конструкторе A-Players · прогресс хранится в этом браузере</div></footer>
+<script>
+const DATA=@@DATA@@;
+const KEY="onb_cab_"+(DATA.company||"x").replace(/\W/g,"").slice(0,20)+"_"+(DATA.role||"r").replace(/\W/g,"").slice(0,20);
+let P=load(),CUR=0,MODE="lesson",QUIZ=null;
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{done:{},att:{}};}catch(e){return {done:{},att:{}};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function unlocked(i){if(i===0)return true;for(let k=0;k<i;k++){if(!P.done[DATA.layers[k].id])return false;}return true;}
+function pct(){const n=DATA.layers.filter(l=>P.done[l.id]).length;return Math.round(n/Math.max(1,DATA.layers.length)*100);}
+function renderSide(){
+  document.getElementById("hTitle").textContent="Онбординг · "+(DATA.role||"сотрудник");
+  document.getElementById("hSub").textContent=(DATA.company||"")+(DATA.niche?" · "+DATA.niche:"");
+  document.getElementById("pbar").style.width=pct()+"%";
+  document.getElementById("ptxt").textContent=pct()+"%";
+  document.getElementById("side").innerHTML=DATA.layers.map((l,i)=>{
+    const d=!!P.done[l.id],u=unlocked(i);
+    return '<div class="lay'+(i===CUR?" on":"")+(d?" done":"")+(u?"":" lock")+'" onclick="'+(u?"go("+i+")":"")+'">'+
+      '<div class="n">'+(d?"✓":l.n)+'</div><div><b>'+esc(l.title)+'</b><span>'+esc(l.sub||"")+' · порог '+l.thr+'%</span></div></div>';
+  }).join("")+
+  (DATA.program&&DATA.program.length?'<div class="lay" onclick="goProg()"><div class="n" style="background:var(--gold)">П</div><div><b>Программа и аттестация</b><span>лестница · 30-60-90 · наставник</span></div></div>':"");
+}
+function blocksHTML(bl){
+  return (bl||[]).map(b=>{
+    let h='<h3>'+esc(b.h||"")+'</h3>';
+    if(b.kind==="table"&&(b.columns||b.rows)){
+      const cols=Array.isArray(b.columns)?b.columns:[];
+      const rows=(Array.isArray(b.rows)?b.rows:[]).map(r=>Array.isArray(r)?r:[r]);
+      h+='<div class="tw"><table>'+(cols.length?'<thead><tr>'+cols.map(c=>'<th>'+esc(c)+'</th>').join("")+'</tr></thead>':"")+
+         '<tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+esc(c)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
+    } else if(b.kind==="list"){
+      const it=Array.isArray(b.items)?b.items:(b.items?[b.items]:[]);
+      h+='<ul class="li">'+it.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>';
+    } else {
+      const it=Array.isArray(b.items)?b.items:[];
+      h+='<div class="les">'+esc(b.text||it.join("\n"))+'</div>';
+    }
+    return h;
+  }).join("");
+}
+function go(i){CUR=i;MODE="lesson";QUIZ=null;renderSide();render();window.scrollTo(0,0);}
+function goProg(){MODE="prog";renderSide();render();window.scrollTo(0,0);}
+function render(){
+  const v=document.getElementById("view");
+  if(MODE==="prog"){
+    v.innerHTML='<div class="card"><div class="kick">Программа</div><h2>Программа, аттестация и контроль</h2>'+
+      DATA.program.map(p=>'<div style="margin-top:18px"><div class="kick">'+esc(p.title)+'</div>'+blocksHTML(p.blocks)+'</div>').join("")+'</div>';
+    return;
+  }
+  const L=DATA.layers[CUR];
+  if(!L){v.innerHTML='<div class="card">Слой не найден</div>';return;}
+  if(MODE==="quiz"){renderQuiz(L);return;}
+  const done=!!P.done[L.id];
+  const att=P.att[L.id]||{};
+  v.innerHTML='<div class="card"><div class="kick">Слой '+L.n+' из '+DATA.layers.length+'</div><h2>'+esc(L.title)+'</h2>'+
+    '<div class="meta"><span>Уроков: <b>'+(L.content||[]).filter(b=>!/^Тест|Практическое|Что проверяет|Чего не хватило/i.test(b.h||"")).length+'</b></span>'+
+    '<span>Время: <b>'+esc(L.min||"—")+' мин</b></span><span>Тест: <b>'+(L.test||[]).length+' вопросов</b></span>'+
+    '<span>Порог: <b>'+L.thr+'%</b></span><span>Место в плане: <b>'+esc(L.days||"—")+'</b></span></div>'+
+    (done?'<div class="note grn" style="margin-top:14px">✓ Слой сдан'+(att.score!=null?': '+att.score+'% с '+att.tries+'-й попытки':"")+'. Следующий слой открыт.</div>':"")+
+    '</div>'+
+    '<div class="card">'+blocksHTML((L.content||[]).filter(b=>!/^Тест по слою/i.test(b.h||"")))+'</div>'+
+    ((L.test||[]).length?'<div class="card"><h3 style="margin-top:0">Тест по слою</h3>'+
+      '<p style="color:var(--muted);font-size:14px">'+(L.test.length)+' вопросов · порог '+L.thr+'% · 3 попытки. Пока тест не сдан, следующий слой закрыт.</p>'+
+      '<div style="margin-top:12px"><button class="btn p" onclick="startQuiz()"'+((att.tries||0)>=3&&!done?" disabled":"")+'>'+(done?"Пройти ещё раз":"Начать тест")+'</button>'+
+      ((att.tries||0)>0?'<span style="margin-left:12px;color:var(--muted);font-size:13.5px">Попыток использовано: '+att.tries+' из 3</span>':"")+'</div>'+
+      ((att.tries||0)>=3&&!done?'<div class="note red">Три попытки использованы. По правилу онбординга дальше — разбор с руководителем, а не четвёртая попытка.</div>':"")+
+      '</div>'
+     :'<div class="card"><div class="note">Тест по этому слою не собран. Отметить слой пройденным можно вручную.<div style="margin-top:10px"><button class="btn d" onclick="markDone()">Отметить слой пройденным</button></div></div></div>');
+}
+function startQuiz(){
+  const L=DATA.layers[CUR];
+  QUIZ={ans:{},checked:false};
+  MODE="quiz";render();window.scrollTo(0,0);
+}
+function renderQuiz(L){
+  const v=document.getElementById("view");
+  const T=L.test||[];
+  v.innerHTML='<div class="card"><div class="kick">Слой '+L.n+' · тест</div><h2>'+esc(L.title)+'</h2>'+
+    '<p style="color:var(--muted);margin-top:6px">Порог '+L.thr+'%. Отвечай сам — списанный тест не помогает, а маскирует пробел.</p></div>'+
+    '<div id="qs">'+T.map((q,i)=>{
+      const cls=QUIZ.checked?(isRight(q,QUIZ.ans[i])?" ok":" bad"):"";
+      return '<div class="q'+cls+'"><div class="qt">'+(i+1)+'. '+esc(q.q)+'</div>'+
+        q.opts.map((o,j)=>'<label class="opt"><input type="'+(q.multi?"checkbox":"radio")+'" name="q'+i+'" value="'+j+'"'+
+          (QUIZ.checked?" disabled":"")+(sel(i,j)?" checked":"")+' onchange="pick('+i+','+j+','+(q.multi?"true":"false")+')"><span>'+esc(o)+'</span></label>').join("")+
+        (QUIZ.checked&&q.why?'<div class="why"><b>Почему так:</b> '+esc(q.why)+'</div>':"")+'</div>';
+    }).join("")+'</div>'+
+    '<div class="card" id="qres">'+(QUIZ.checked?resultHTML(L,T):'<button class="btn p" onclick="checkQuiz()">Проверить ответы</button> <button class="btn g" onclick="go(CUR)">Вернуться к урокам</button>')+'</div>';
+}
+function sel(i,j){const a=QUIZ.ans[i];return Array.isArray(a)?a.indexOf(j)>=0:a===j;}
+function pick(i,j,multi){
+  if(multi){const a=Array.isArray(QUIZ.ans[i])?QUIZ.ans[i]:[];const k=a.indexOf(j);if(k>=0)a.splice(k,1);else a.push(j);QUIZ.ans[i]=a;}
+  else QUIZ.ans[i]=j;
+}
+function isRight(q,a){
+  if(q.correct==null)return true;
+  if(q.multi){const c=(q.correct||[]).slice().sort().join(",");const g=(Array.isArray(a)?a:[]).slice().sort().join(",");return c===g;}
+  return a===q.correct;
+}
+function checkQuiz(){
+  const L=DATA.layers[CUR],T=L.test||[];
+  const scorable=T.filter(q=>q.correct!=null);
+  const right=T.filter(q=>q.correct!=null&&isRight(q,QUIZ.ans[T.indexOf(q)])).length;
+  const score=scorable.length?Math.round(right/scorable.length*100):0;
+  const a=P.att[L.id]||{tries:0};
+  a.tries=(a.tries||0)+1;a.score=score;a.last=new Date().toISOString().slice(0,10);
+  P.att[L.id]=a;
+  if(score>=L.thr)P.done[L.id]=true;
+  save();QUIZ.checked=true;QUIZ.score=score;renderSide();render();window.scrollTo(0,0);
+}
+function resultHTML(L,T){
+  const s=QUIZ.score,ok=s>=L.thr,a=P.att[L.id]||{};
+  return '<div style="display:flex;gap:22px;align-items:center;flex-wrap:wrap"><div><div class="big" style="color:'+(ok?"var(--green)":"var(--red)")+'">'+s+'%</div>'+
+    '<div style="font-size:13px;color:var(--muted)">порог '+L.thr+'% · попытка '+a.tries+' из 3</div></div>'+
+    '<div style="flex:1;min-width:240px">'+(ok
+      ?'<div class="note grn" style="margin:0">✓ Слой сдан. Следующий открыт. Разбери объяснения по вопросам, где ошибся — именно они учат.</div>'
+      :(a.tries>=3?'<div class="note red" style="margin:0">Три попытки использованы. Дальше — разбор с руководителем: где именно пробел, а не четвёртая попытка.</div>'
+                  :'<div class="note red" style="margin:0">Порог не взят. Прочитай объяснения, вернись к урокам и попробуй ещё раз.</div>'))+'</div></div>'+
+    '<div style="margin-top:14px"><button class="btn g" onclick="go(CUR)">К урокам слоя</button> '+
+    (!ok&&a.tries<3?'<button class="btn p" onclick="startQuiz()">Ещё попытка</button>':"")+
+    (ok&&CUR<DATA.layers.length-1?'<button class="btn d" onclick="go('+(CUR+1)+')">Следующий слой →</button>':"")+'</div>';
+}
+function markDone(){P.done[DATA.layers[CUR].id]=true;save();renderSide();render();}
+function resetAll(){if(!confirm("Сбросить весь прогресс обучения? Отметки о сданных слоях и попытки будут стёрты."))return;P={done:{},att:{}};save();CUR=0;MODE="lesson";renderSide();render();}
+renderSide();render();
+@@ENDSCRIPT@@
+</body></html>
+
+</script>
+<script type="text/plain" id="tpl-admin">
+<!doctype html><html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>@@TITLE@@ — админка онбординга</title>
+<style>
+:root{--cream:#F4F1EA;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+--em:#143A2D;--gold:#B0822E;--gold2:#C79A45;--green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+--serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.55}
+.wrap{max-width:1280px;margin:0 auto;padding:0 22px}
+header{background:var(--em);color:#EFE9DA;padding:18px 0}
+header h1{font-family:var(--serif);font-size:21px;font-weight:800}
+header .sub{font-size:13px;color:#9fb0a4;margin-top:2px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin:18px 0}
+h2{font-family:var(--serif);font-size:23px;font-weight:800}
+h3{font-family:var(--serif);font-size:18px;color:var(--em)}
+.kick{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:6px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+th{background:var(--em);color:#EFE9DA;text-align:left;padding:8px 10px;font-size:11.5px;font-weight:700;white-space:nowrap}
+td{padding:7px 10px;border-top:1px solid var(--line);vertical-align:middle}
+td.c{text-align:center}
+input[type=text],input[type=date],input[type=number]{font-family:var(--sans);font-size:13.5px;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+input[type=text]{min-width:150px}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:var(--sans);font-weight:700;font-size:14px;padding:10px 16px;border-radius:10px;transition:.15s;text-decoration:none}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:linear-gradient(180deg,var(--gold2),#A87C24);color:#19120A}
+.btn.d{background:var(--em);color:#fff}
+.btn.g{background:transparent;border:1.5px solid var(--line);color:var(--em)}
+.btn.sm{font-size:12.5px;padding:6px 11px}
+.bar{height:7px;background:#E7E2D4;border-radius:4px;overflow:hidden;min-width:90px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--gold))}
+.tag{display:inline-block;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.tag.g{background:#E7F2E9;color:#256B44}.tag.a{background:#FBF1DF;color:#8A5A12}.tag.r{background:#FAE9E6;color:#8E2E23}.tag.n{background:#EFEDE6;color:#5A6056}
+.note{border-left:3px solid var(--gold);background:rgba(176,130,46,.09);padding:11px 14px;border-radius:8px;font-size:14px;color:#6a4e17;margin-top:12px}
+.note.red{border-color:var(--red);background:rgba(178,59,46,.09);color:#7d2b21}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:12px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi .v{font-family:var(--serif);font-size:30px;font-weight:800;color:var(--em);line-height:1}
+.kpi .l{font-size:12.5px;color:var(--muted);margin-top:3px}
+footer{background:var(--em);color:#9fb0a4;padding:16px 0;font-size:13px;margin-top:30px}
+</style></head><body>
+<header><div class="wrap"><h1 id="hT">Админка онбординга</h1><div class="sub" id="hS"></div></div></header>
+<div class="wrap">
+  <div class="card">
+    <div class="row" style="justify-content:space-between">
+      <div><div class="kick">Приёмка</div><h2>Новички в онбординге</h2></div>
+      <div class="row"><button class="btn p" onclick="add()">+ Новичок</button><button class="btn g" onclick="csv()">⬇ Выгрузить CSV</button></div>
+    </div>
+    <div id="kpis" class="grid"></div>
+    <div style="overflow-x:auto"><table id="tbl"></table></div>
+    <div class="note">Слой засчитывается, когда сотрудник сдал тест на порог в кабинете. Аттестация — балл от 0 до 100, порог 80. Статус считается автоматически.</div>
+  </div>
+  <div class="card" id="norms"></div>
+  <div class="card" id="prog"></div>
+</div>
+<footer><div class="wrap">Админка собрана в конструкторе A-Players · данные хранятся в этом браузере</div></footer>
+<script>
+const DATA=@@DATA@@;
+const KEY="onb_adm_"+(DATA.company||"x").replace(/\W/g,"").slice(0,20)+"_"+(DATA.role||"r").replace(/\W/g,"").slice(0,20);
+let S=load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{list:[]};}catch(e){return {list:[]};}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function num(x){const v=parseFloat(x);return isFinite(v)?v:0;}
+function days(d){if(!d)return null;return Math.max(0,Math.round((Date.now()-new Date(d))/86400000));}
+function verdict(p){
+  const done=DATA.layers.filter(l=>(p.layers||{})[l.id]).length,att=num(p.att),d=days(p.start),n=DATA.layers.length;
+  if(done===n&&att>=80)return ['g','✓ аттестован'];
+  if(done===n&&att>0&&att<80)return ['r','аттестация не сдана'];
+  if(done===n)return ['a','ждёт аттестации'];
+  if(d!==null&&d>21)return ['r','⚠ выбился из срока ('+d+' дн.)'];
+  if(d!==null&&d<=2&&done>=4)return ['a','слишком быстро — проверь'];
+  return ['n',(d!==null?d+' дн. · ':'')+'слоёв '+done+'/'+n];
+}
+function render(){
+  document.getElementById("hT").textContent="Админка онбординга · "+(DATA.role||"сотрудник");
+  document.getElementById("hS").textContent=(DATA.company||"")+" · целевой срок: "+(DATA.target||"не задан");
+  const n=DATA.layers.length;
+  const tot=S.list.length,att=S.list.filter(p=>num(p.att)>=80).length;
+  const risk=S.list.filter(p=>verdict(p)[0]==='r').length;
+  const avg=tot?Math.round(S.list.reduce((a,p)=>a+DATA.layers.filter(l=>(p.layers||{})[l.id]).length,0)/tot/n*100):0;
+  document.getElementById("kpis").innerHTML=
+    '<div class="kpi"><div class="v">'+tot+'</div><div class="l">новичков в работе</div></div>'+
+    '<div class="kpi"><div class="v">'+avg+'%</div><div class="l">средний прогресс по слоям</div></div>'+
+    '<div class="kpi"><div class="v">'+att+'</div><div class="l">прошли аттестацию (80+)</div></div>'+
+    '<div class="kpi"><div class="v" style="color:'+(risk?'var(--red)':'var(--em)')+'">'+risk+'</div><div class="l">в красной зоне</div></div>';
+  document.getElementById("tbl").innerHTML=
+    '<thead><tr><th>Новичок</th><th>Старт</th>'+DATA.layers.map(l=>'<th title="'+esc(l.title)+'" class="c">'+l.n+'</th>').join("")+
+    '<th>Прогресс</th><th>Аттест.</th><th>Статус</th><th></th></tr></thead><tbody>'+
+    (S.list.length?S.list.map((p,i)=>{
+      const done=DATA.layers.filter(l=>(p.layers||{})[l.id]).length,pc=Math.round(done/n*100),v=verdict(p);
+      return '<tr><td><input type="text" value="'+esc(p.name||"")+'" placeholder="Имя" oninput="set('+i+',\'name\',this.value)"></td>'+
+      '<td><input type="date" value="'+esc(p.start||"")+'" oninput="set('+i+',\'start\',this.value,1)"></td>'+
+      DATA.layers.map(l=>'<td class="c"><input type="checkbox" '+((p.layers||{})[l.id]?"checked":"")+' onchange="lay('+i+',\''+l.id+'\',this.checked)"></td>').join("")+
+      '<td><div class="row" style="gap:7px"><div class="bar" style="flex:1"><i style="width:'+pc+'%"></i></div><span style="font-size:12px">'+pc+'%</span></div></td>'+
+      '<td><input type="number" min="0" max="100" value="'+esc(p.att||"")+'" style="width:64px;text-align:center" oninput="set('+i+',\'att\',this.value,1)"></td>'+
+      '<td><span class="tag '+v[0]+'">'+esc(v[1])+'</span></td>'+
+      '<td><button class="btn g sm" onclick="del('+i+')">✕</button></td></tr>';
+    }).join(""):'<tr><td colspan="'+(n+6)+'" style="color:var(--muted)">Пока никого нет. Нажми «+ Новичок».</td></tr>')+'</tbody>';
+  document.getElementById("norms").innerHTML='<div class="kick">Ориентиры</div><h3>Нормативы системного онбординга</h3>'+
+    '<div style="overflow-x:auto"><table><thead><tr><th>Показатель</th><th>Норма</th></tr></thead><tbody>'+
+    (DATA.norms||[]).map(x=>'<tr><td>'+esc(x[0])+'</td><td>'+esc(x[1])+'</td></tr>').join("")+'</tbody></table></div>';
+  const pr=(DATA.program||[]);
+  document.getElementById("prog").innerHTML=pr.length
+    ?'<div class="kick">Справочник руководителя</div><h3>Программа, аттестация и чек-листы</h3>'+
+      pr.map(p=>'<details style="margin-top:10px"><summary style="cursor:pointer;font-weight:700;color:var(--em)">'+esc(p.title)+'</summary><div style="margin-top:8px">'+blocks(p.blocks)+'</div></details>').join("")
+    :'<div class="note">Разделы программы (лестница, аттестация, 30-60-90, наставник) в этом пакете не собраны — вернись в конструктор и собери их.</div>';
+}
+function blocks(bl){
+  return (bl||[]).map(b=>{
+    let h='<h3 style="font-size:16px;margin-top:12px">'+esc(b.h||"")+'</h3>';
+    if(b.kind==="table"&&(b.columns||b.rows)){
+      const c=Array.isArray(b.columns)?b.columns:[],r=(Array.isArray(b.rows)?b.rows:[]).map(x=>Array.isArray(x)?x:[x]);
+      h+='<div style="overflow-x:auto"><table>'+(c.length?'<thead><tr>'+c.map(x=>'<th>'+esc(x)+'</th>').join("")+'</tr></thead>':"")+'<tbody>'+r.map(x=>'<tr>'+x.map(y=>'<td>'+esc(y)+'</td>').join("")+'</tr>').join("")+'</tbody></table></div>';
+    } else if(b.kind==="list"){
+      const it=Array.isArray(b.items)?b.items:(b.items?[b.items]:[]);
+      h+='<ul style="margin:6px 0 0 18px">'+it.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>';
+    } else h+='<div style="white-space:pre-wrap;font-size:14px">'+esc(b.text||"")+'</div>';
+    return h;
+  }).join("");
+}
+function add(){S.list.push({name:"",start:new Date().toISOString().slice(0,10),layers:{},att:""});save();render();}
+function del(i){if(!confirm("Убрать новичка из отчётности?"))return;S.list.splice(i,1);save();render();}
+function set(i,k,v,re){S.list[i][k]=v;save();if(re)render();}
+function lay(i,id,on){const p=S.list[i];p.layers=p.layers||{};if(on)p.layers[id]=1;else delete p.layers[id];save();render();}
+function csv(){
+  const head=["Новичок","Старт","Слоёв сдано","Прогресс %","Аттестация","Статус"].concat(DATA.layers.map(l=>"С"+l.n));
+  const rows=S.list.map(p=>{
+    const done=DATA.layers.filter(l=>(p.layers||{})[l.id]).length;
+    return [p.name||"",p.start||"",done,Math.round(done/DATA.layers.length*100),p.att||"",verdict(p)[1]]
+      .concat(DATA.layers.map(l=>(p.layers||{})[l.id]?"да":""));
+  });
+  const csvTxt="﻿"+[head].concat(rows).map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(";")).join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csvTxt],{type:"text/csv;charset=utf-8"}));
+  a.download="Прогресс онбординга — "+(DATA.company||"")+".csv";document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},400);
+}
+render();
+@@ENDSCRIPT@@
+</body></html>
+
 </script>
 </body>
 </html>
