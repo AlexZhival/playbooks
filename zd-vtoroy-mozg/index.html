@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Здоровое движение &middot; второй мозг - как пользоваться</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+  --em:#143A2D;--em2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold2:#C79A45;--gold-h:#977019;
+  --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+  --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(29px,5vw,50px);line-height:1.05;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,31px);line-height:1.12;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:19.5px;line-height:1.25}
+p{margin-top:12px}
+a{color:var(--em2)}
+.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"\25CF";color:var(--gold);font-size:10px}
+b,strong{font-weight:800}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 3px}
+
+/* hero */
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:58px 0 50px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 26%,rgba(199,154,69,.2),transparent 46%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:740px}
+.hero .lead{font-size:clamp(16.5px,2.2vw,19px);color:rgba(239,233,218,.85);max-width:640px;margin-top:16px;font-weight:500}
+.hero .kicker{color:var(--gold2)}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold2)}
+.cta{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;font-weight:800;font-size:16px;padding:14px 22px;border-radius:12px;text-decoration:none;margin-top:26px;box-shadow:0 14px 30px -12px rgba(176,130,46,.7);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+
+section{padding:46px 0}
+section.alt{background:var(--bg2)}
+.eyebrow{margin-bottom:12px;display:inline-block}
+.lead{font-size:18.5px;color:var(--muted);font-weight:500}
+
+/* оглавление */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:26px}
+.toc a{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s}
+.toc a:hover{border-color:var(--gold);transform:translateY(-2px)}
+.toc .n{font-family:var(--mono);font-size:11.5px;color:var(--gold-h);font-weight:700;letter-spacing:.08em}
+.toc .t{font-weight:700;font-size:15.5px;margin-top:3px;display:block}
+
+/* карточки ролей */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+@media(max-width:740px){.roles{grid-template-columns:1fr}}
+.rcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px}
+.rcard.r1{border-top:5px solid var(--em)}
+.rcard.r2{border-top:5px solid var(--gold)}
+.rcard .rn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.rcard ul{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.rcard li{font-size:15.5px}
+
+/* шаги */
+ol.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
+ol.steps>li>b:first-child{display:block;font-size:17px;margin-bottom:2px}
+ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+
+/* выноски */
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
+.note.warn{border-left-color:var(--red)}
+.note.ok{border-left-color:var(--green)}
+.note>b:first-child{display:block;margin-bottom:4px}
+code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
+
+/* таблица статуса */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--em);color:var(--dark-ink);text-align:left;padding:13px 16px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono)}
+.tbl td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag.live{background:#dfeccb;color:#2F5233}
+.tag.next{background:#f3e3c6;color:#7c5a14}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.foot{background:var(--em);color:rgba(239,233,218,.8);padding:38px 0;font-size:15px}
+.foot b{color:#fff}
+
+/* карточки сценариев */
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;margin-top:24px}
+.case{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;
+  border-top:5px solid var(--gold);display:flex;flex-direction:column;gap:10px}
+.case.big{border-top-color:var(--em)}
+.case .cn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gold-h);font-weight:700}
+.case h3{margin-top:2px}
+.case p{margin-top:0;font-size:15.5px;color:var(--muted)}
+.say{background:var(--bg2);border:1px dashed var(--line);border-radius:12px;padding:13px 15px;
+  font-size:15px;line-height:1.5;color:var(--ink);font-style:italic}
+.say::before{content:"Скажите боту:";display:block;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gold-h);font-style:normal;font-weight:700;margin-bottom:6px}
+.res{font-size:14.5px;color:var(--muted);border-left:3px solid var(--em2);padding-left:12px}
+.res b{color:var(--ink)}
+.steps{counter-reset:st;margin-top:22px;display:flex;flex-direction:column;gap:14px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px 18px 62px;
+  position:relative}
+.step::before{counter-increment:st;content:counter(st);position:absolute;left:20px;top:17px;width:28px;height:28px;
+  border-radius:9px;background:var(--em);color:var(--gold2);font-family:var(--mono);font-weight:800;font-size:14px;
+  display:grid;place-items:center}
+.step b{display:block;font-size:16.5px;margin-bottom:4px}
+.step p{margin-top:4px;font-size:15.5px;color:var(--muted)}
+
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <span class="badge">Здоровое движение</span>
+  <h1>Второй мозг компании</h1>
+  <p class="lead">Как им пользоваться каждый день: тридцать сценариев, которые уже работают,
+  и то, чему его можно научить дальше.</p>
+</div></div>
+
+<div class="wrap">
+
+<section id="start">
+  <span class="kicker">С чего начать</span>
+  <h2>Пять минут на знакомство</h2>
+  <p class="lead">Второй мозг живет в Telegram. Пишите ему как живому человеку, текстом или голосом.
+  Он видит все ваши рабочие документы, живые цифры продаж и знает, какой отчет считается главным.</p>
+
+  <div class="steps">
+    <div class="step"><b>Откройте бота и поздоровайтесь</b>
+      <p>Первый вопрос лучше простой: спросите, какие папки ему доступны. Он перечислит все разделы
+      компании, к которым у него есть доступ.</p></div>
+    <div class="step"><b>Попросите что-нибудь найти</b>
+      <p>Например, где лежит РНП или отчет по контенту за июнь. Он ответит ссылкой на настоящий документ,
+      а не догадкой.</p></div>
+    <div class="step"><b>Спросите цифру</b>
+      <p>Сколько денег пришло в августе, какой средний чек, сколько сделок висит без касания.
+      Он сходит в аналитику и посчитает.</p></div>
+    <div class="step"><b>Запишите голосовое</b>
+      <p>Говорить быстрее, чем печатать. Особенно когда вы за рулем или между съемками.</p></div>
+    <div class="step"><b>Попросите его чему-нибудь научиться</b>
+      <p>Он умеет добавлять себе новые навыки. Что именно и как, написано в конце этой страницы.</p></div>
+  </div>
+
+  <div class="note"><b>Важно понимать.</b> Он отвечает по вашим данным, а не по интернету.
+  Если чего-то нет в ваших документах, он честно скажет, что не видит, и не будет выдумывать.
+  Это его главное отличие от обычного чата с нейросетью.</div>
+</section>
+
+<section id="dengi">
+  <span class="kicker">Сценарии &middot; деньги и продажи</span>
+  <h2>Держать руку на пульсе</h2>
+
+  <div class="cases">
+    <div class="case big"><span class="cn">каждое утро</span>
+      <h3>Как мы прожили вчерашний день</h3>
+      <div class="say">Посмотри отчетность за вчера и напиши, где мы относительно плана,
+      какой ранрейт и справляется ли команда.</div>
+      <p class="res">Поднимет данные из аналитики и отчетности команды, принесет разбор,
+      а не просто цифры.</p></div>
+
+    <div class="case"><span class="cn">раз в неделю</span>
+      <h3>Найти недополученные деньги</h3>
+      <div class="say">Посчитай, сколько мы недополучили выручки за счет того, что у слабых менеджеров
+      конверсия и средний чек ниже средних. Дай сценарий, если подтянуть их до среднего.</div>
+      <p class="res">Такой расчет уже приносил результат: <b>около 4,6 млн рублей</b> за июль и август.</p></div>
+
+    <div class="case"><span class="cn">когда просело</span>
+      <h3>Разобрать просадку</h3>
+      <div class="say">Август дал больше выручки, чем июль, но средний чек упал почти вдвое.
+      Разберись, что произошло, и скажи, какие вопросы задать отделу продаж.</div>
+      <p class="res">Пройдет по воронке от заявки до оплаты и покажет, на каком этапе изменилось поведение.</p></div>
+
+    <div class="case"><span class="cn">каждый день</span>
+      <h3>Очередь, про которую забыли</h3>
+      <div class="say">Сколько открытых сделок висит без касания дольше двух недель и что с ними делать.</div>
+      <p class="res">Сейчас таких <b>больше трехсот</b>. Это деньги, которые лежат и ждут.</p></div>
+
+    <div class="case"><span class="cn">к планерке</span>
+      <h3>Сверить план с фактом</h3>
+      <div class="say">Сверь план из предиктивной модели с фактом продаж и скажи, где мы расходимся
+      и на сколько.</div>
+      <p class="res">Две системы, которые сегодня сверяет человек руками.</p></div>
+
+    <div class="case"><span class="cn">про людей</span>
+      <h3>Кто как продает</h3>
+      <div class="say">Покажи по менеджерам конверсию, средний чек и процент дозвона за месяц.
+      Кто выбивается в обе стороны.</div>
+      <p class="res">Основа для разговора один на один, а не для наказания.</p></div>
+  </div>
+</section>
+
+<section id="komanda">
+  <span class="kicker">Сценарии &middot; работа с командой</span>
+  <h2>Снять с себя ручной контроль</h2>
+
+  <div class="cases">
+    <div class="case big"><span class="cn">перед планеркой</span>
+      <h3>Подготовить вопросы команде</h3>
+      <div class="say">Завтра планерка. Посмотри результаты команды за прошлую неделю и собери вопросы:
+      отдельно продажам, отдельно маркетингу, отдельно продукту.</div>
+      <p class="res">Вы приходите на встречу с готовыми вопросами, а не собираете их в моменте.</p></div>
+
+    <div class="case"><span class="cn">после встречи</span>
+      <h3>Разобрать созвон</h3>
+      <div class="say">У меня была встреча, чувствую себя разбитым. Сходи в облако, транскрибируй ее
+      и принеси разбор: что говорила команда, что меня зацепило, какие вопросы остались.</div>
+      <p class="res">Работает и для планерок, и для сложных разговоров один на один.</p></div>
+
+    <div class="case"><span class="cn">челлендж</span>
+      <h3>Проверить, что проект реально дал</h3>
+      <div class="say">Команда отметила проект в трекере как сделанный. Проверь по цифрам, повлияло ли это
+      на продажи, и если нет, скажи, какие вопросы задать.</div>
+      <p class="res">Ловит ситуацию, когда галочка стоит, а результата нет.</p></div>
+
+    <div class="case"><span class="cn">про документы</span>
+      <h3>Что у нас устарело</h3>
+      <div class="say">Пройдись по нашим документам и скажи, что помечено как архив
+      и что давно не обновлялось.</div>
+      <p class="res">Готовый список к ежемесячному субботнику по документам.</p></div>
+  </div>
+</section>
+
+<section id="kontent">
+  <span class="kicker">Сценарии &middot; контент и продукт</span>
+  <h2>Забрать себе рутину подготовки</h2>
+
+  <div class="cases">
+    <div class="case big"><span class="cn">эфиры</span>
+      <h3>Собрать структуру вебинара</h3>
+      <div class="say">Мне надо провести вебинар на такую-то тему. Изучи транскрипты моих прошлых эфиров
+      и давай вместе соберем структуру: что заходило, где отваливались, какие возражения звучали чаще.</div>
+      <p class="res">Чем больше эфиров накопится в папке, тем точнее он будет попадать.</p></div>
+
+    <div class="case"><span class="cn">по плейбуку</span>
+      <h3>Сделать по нашему способу</h3>
+      <div class="say">Возьми наш плейбук по продающему вебинару, изучи его и собери презентацию
+      по нему, а не как тебе кажется правильным.</div>
+      <p class="res">Плейбуки лежат в отдельной папке штаба. Чем больше их напишете, тем меньше
+      он импровизирует.</p></div>
+
+    <div class="case"><span class="cn">тексты</span>
+      <h3>Написать вашим голосом</h3>
+      <div class="say">Научись писать посты моим языком. Задай мне вопросы и попроси примеры,
+      чтобы получилось похоже на меня, а не на нейросеть.</div>
+      <p class="res">Он проведет короткое интервью, посмотрит примеры и запомнит манеру.</p></div>
+
+    <div class="case"><span class="cn">продукт</span>
+      <h3>Посмотреть на курс глазами данных</h3>
+      <div class="say">Покажи метрики по направлениям: доходимость, отзывы, где проседает.
+      Сравни два направления между собой.</div>
+      <p class="res">Данные лежат в папке продукта, он их сведет.</p></div>
+  </div>
+</section>
+
+<section id="lichnoe">
+  <span class="kicker">Сценарии &middot; для себя</span>
+  <h2>Не только про работу</h2>
+  <p class="lead">Он одинаково хорошо работает напарником в личных задачах. Ограничений нет,
+  память у каждого своя, и никто кроме вас вашу переписку не видит.</p>
+
+  <div class="cases">
+    <div class="case"><span class="cn">напарник</span>
+      <h3>Держать в тонусе</h3>
+      <div class="say">Будь моим напарником по режиму. Каждый день спрашивай, что я ел,
+      считай калории и напоминай про тренировку.</div>
+      <p class="res">Можно прислать фото еды, он посчитает сам.</p></div>
+
+    <div class="case"><span class="cn">разгрузка</span>
+      <h3>Выгрузить голову</h3>
+      <div class="say">Я сейчас надиктую все, что на мне висит. Разложи это по приоритетам
+      и скажи, что можно отдать команде.</div>
+      <p class="res">Голосом это быстрее, чем писать список.</p></div>
+
+    <div class="case"><span class="cn">подготовка</span>
+      <h3>Собраться перед сложным разговором</h3>
+      <div class="say">У меня завтра непростой разговор с сотрудником. Вот контекст.
+      Помоги подготовиться и предупреди, где я могу сорваться.</div>
+      <p class="res">Он знает ваши данные, поэтому разговор получается предметным.</p></div>
+  </div>
+</section>
+
+<section id="krony">
+  <span class="kicker">Автоматика</span>
+  <h2>Кроны: он приходит сам</h2>
+  <p class="lead">Крон это повторяющееся действие по расписанию. Вы его не просите,
+  он приходит сам в нужный день и час. Это то, что снимает нагрузку сильнее всего.</p>
+
+  <div class="cases">
+    <div class="case big"><span class="cn">понедельник, 10:00</span>
+      <h3>Вопросы к планерке</h3>
+      <p>Читает отчетность и аналитику за прошлую неделю, делает аудит и присылает вопросы
+      отдельно по каждому отделу. Команда получает их заранее и приходит подготовленной.</p></div>
+
+    <div class="case"><span class="cn">каждый день, 9:00</span>
+      <h3>Продажи за вчера</h3>
+      <p>Короткий разбор вчерашнего дня в рабочий чат: выручка, оплаты, средний чек, что выбивается.</p></div>
+
+    <div class="case"><span class="cn">пятница, 17:00</span>
+      <h3>Итоги недели</h3>
+      <p>Где мы относительно плана месяца, что изменилось, на что смотреть в понедельник.</p></div>
+
+    <div class="case"><span class="cn">каждый день</span>
+      <h3>Забытые сделки</h3>
+      <p>Список сделок, которые перевалили за неделю без касания, пока их не стало триста.</p></div>
+
+    <div class="case"><span class="cn">раз в месяц</span>
+      <h3>Напоминание про субботник</h3>
+      <p>Проверить актуальность документов по своим папкам, увести лишнее в архив.</p></div>
+  </div>
+
+  <div class="note"><b>Как выбрать свои.</b> Александр пришлет вариант списка, вы вычеркнете лишнее
+  и добавите свое. Главное не переборщить: если бот пишет каждые два часа, его перестают читать.</div>
+</section>
+
+<section id="uchit">
+  <span class="kicker">Развитие</span>
+  <h2>Его можно доучивать</h2>
+  <p class="lead">Он не закончен и не должен быть закончен. Когда чего-то не умеет, скажите ему
+  научиться, и он разберется сам.</p>
+
+  <div class="cases">
+    <div class="case"><span class="cn">навык</span><h3>Новое умение</h3>
+      <div class="say">Научись читать мои голосовые сообщения.</div>
+      <p class="res">Так уже добавляли распознавание речи и чтение записей из облака.</p></div>
+    <div class="case"><span class="cn">манера</span><h3>Правило на будущее</h3>
+      <div class="say">Запомни: не используй длинные тире и букву е с точками, пиши проще.</div>
+      <p class="res">Он положит это себе в память и будет соблюдать дальше.</p></div>
+    <div class="case"><span class="cn">голос</span><h3>Отвечать голосом</h3>
+      <div class="say">Давай выберем голос, которым ты будешь мне отвечать.</div>
+      <p class="res">Удобно, когда слушаете на ходу.</p></div>
+  </div>
+
+  <div class="note warn"><b>Первые две недели будут калибровкой.</b> Что-то он поймет не так,
+  где-то не найдет документ, где-то ответит слишком длинно. Это нормально и лечится:
+  скажите ему, что было не так, и он поправится. Или напишите Александру.</div>
+</section>
+
+<section id="granicy">
+  <span class="kicker">Честно</span>
+  <h2>Чего он пока не делает</h2>
+  <div class="roles">
+    <div class="rcard r1"><span class="rn">не умеет</span>
+      <ul>
+        <li>Писать в ваши документы и CRM. Только читает, и это осознанно.</li>
+        <li>Прогнозировать. Он про то, что уже произошло, а не про то, что будет.</li>
+        <li>Видеть то, к чему ему не дали доступ. Нет доступа - честно скажет.</li>
+        <li>Работать, когда выключен сервер. Пока он живет на ноутбуке, до переезда.</li>
+      </ul></div>
+    <div class="rcard r2"><span class="rn">что дальше</span>
+      <ul>
+        <li>Переезд на постоянный сервер, чтобы работал круглосуточно.</li>
+        <li>Свой бот у каждого: своя память, своя переписка, коллеги ее не видят.</li>
+        <li>Кроны по вашему выбору.</li>
+        <li>Папка плейбуков, которую наполняете вы, и он начинает работать по ней.</li>
+      </ul></div>
+  </div>
+</section>
+
+<div class="foot"><div class="wrap">
+  <p>Здоровое движение &middot; второй мозг компании. Вопросы и правки - Александру.</p>
+</div></div>
+
+</div>
+
+</body>
+</html>
