@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Здоровое движение &middot; настройка второго мозга</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+  --em:#143A2D;--em2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold2:#C79A45;--gold-h:#977019;
+  --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+  --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(29px,5vw,50px);line-height:1.05;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,31px);line-height:1.12;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:19.5px;line-height:1.25}
+p{margin-top:12px}
+a{color:var(--em2)}
+.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"\25CF";color:var(--gold);font-size:10px}
+b,strong{font-weight:800}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 3px}
+
+/* hero */
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:58px 0 50px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 26%,rgba(199,154,69,.2),transparent 46%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:740px}
+.hero .lead{font-size:clamp(16.5px,2.2vw,19px);color:rgba(239,233,218,.85);max-width:640px;margin-top:16px;font-weight:500}
+.hero .kicker{color:var(--gold2)}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold2)}
+.cta{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;font-weight:800;font-size:16px;padding:14px 22px;border-radius:12px;text-decoration:none;margin-top:26px;box-shadow:0 14px 30px -12px rgba(176,130,46,.7);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+
+section{padding:46px 0}
+section.alt{background:var(--bg2)}
+.eyebrow{margin-bottom:12px;display:inline-block}
+.lead{font-size:18.5px;color:var(--muted);font-weight:500}
+
+/* оглавление */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:26px}
+.toc a{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s}
+.toc a:hover{border-color:var(--gold);transform:translateY(-2px)}
+.toc .n{font-family:var(--mono);font-size:11.5px;color:var(--gold-h);font-weight:700;letter-spacing:.08em}
+.toc .t{font-weight:700;font-size:15.5px;margin-top:3px;display:block}
+
+/* карточки ролей */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+@media(max-width:740px){.roles{grid-template-columns:1fr}}
+.rcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px}
+.rcard.r1{border-top:5px solid var(--em)}
+.rcard.r2{border-top:5px solid var(--gold)}
+.rcard .rn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.rcard ul{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.rcard li{font-size:15.5px}
+
+/* шаги */
+ol.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
+ol.steps>li>b:first-child{display:block;font-size:17px;margin-bottom:2px}
+ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+
+/* выноски */
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
+.note.warn{border-left-color:var(--red)}
+.note.ok{border-left-color:var(--green)}
+.note>b:first-child{display:block;margin-bottom:4px}
+code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
+
+/* таблица статуса */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--em);color:var(--dark-ink);text-align:left;padding:13px 16px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono)}
+.tbl td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag.live{background:#dfeccb;color:#2F5233}
+.tag.next{background:#f3e3c6;color:#7c5a14}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.foot{background:var(--em);color:rgba(239,233,218,.8);padding:38px 0;font-size:15px}
+.foot b{color:#fff}
+.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
+ol.steps>li>b:first-child{display:block;font-size:17px;margin-bottom:2px}
+ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+
+/* выноски */
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
+.note.warn{border-left-color:var(--red)}
+.note.ok{border-left-color:var(--green)}
+.note>b:first-child{display:block;margin-bottom:4px}
+code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
+
+/* таблица статуса */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--em);color:var(--dark-ink);text-align:left;padding:13px 16px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono)}
+.tbl td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag.live{background:#dfeccb;color:#2F5233}
+.tag.next{background:#f3e3c6;color:#7c5a14}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.foot{background:var(--em);color:rgba(239,233,218,.8);padding:38px 0;font-size:15px}
+.foot b{color:#fff}
+
+.steps{counter-reset:st;margin-top:22px;display:flex;flex-direction:column;gap:14px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px 18px 62px;position:relative}
+.step::before{counter-increment:st;content:counter(st);position:absolute;left:20px;top:17px;width:28px;height:28px;
+  border-radius:9px;background:var(--em);color:var(--gold2);font-family:var(--mono);font-weight:800;font-size:14px;
+  display:grid;place-items:center}
+.step b{display:block;font-size:16.5px;margin-bottom:4px}
+.step p{margin-top:4px;font-size:15.5px;color:var(--muted)}
+.prompt{background:#12241C;color:#D8E6DE;border-radius:14px;padding:20px 22px;margin-top:18px;
+  font-family:var(--mono);font-size:13.5px;line-height:1.62;white-space:pre-wrap;overflow-x:auto}
+.prompt .ph{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2);
+  margin-bottom:11px;font-weight:700}
+.tree{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-top:18px;
+  font-family:var(--mono);font-size:13.5px;line-height:1.7;white-space:pre;overflow-x:auto}
+.tbl2{width:100%;border-collapse:collapse;margin-top:18px;font-size:15.5px}
+.tbl2 th,.tbl2 td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl2 th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h)}
+.tbl2 tr:last-child td{border-bottom:none}
+.wrapx{overflow-x:auto}
+.who{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;padding:5px 11px;border-radius:30px;background:var(--em);color:var(--gold2);margin-top:14px}
+.who.one{background:var(--gold);color:#19120A}
+.check{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.check li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px 13px 46px;
+  position:relative;font-size:15.5px}
+.check li::before{content:"";position:absolute;left:16px;top:15px;width:18px;height:18px;border-radius:5px;
+  border:2px solid var(--em2)}
+.rcard p{margin-top:10px;font-size:15.5px;color:var(--muted)}
+
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <span class="badge">Здоровое движение</span>
+  <h1>Настройка второго мозга</h1>
+  <p class="lead">Пошагово для фаундеров. Все аккаунты заводятся на компанию,
+  и права владения остаются у вас. Внутри готовые промпты на случай, если где-то застрянете.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+  <span class="kicker">Зачем делать самим</span>
+  <h2>Ключи должны быть у вас</h2>
+  <p class="lead">Второй мозг держится на трех вещах: подписке Claude, служебных аккаунтах Google,
+  через которые он читает документы, и кошельке Anthropic, из которого платится чат в штабе.
+  Если все это заводит подрядчик, ключи от ваших документов и денег остаются у него.
+  Поэтому заводите вы, а я показываю как.</p>
+  <div class="note"><b>Можно заранее, можно вместе.</b> Шаги расписаны так, чтобы справиться
+  без меня. Если что-то не получится, ничего страшного: во вторник пройдем оставшееся на встрече.</div>
+</section>
+
+<section>
+  <span class="kicker">План</span>
+  <h2>Что и когда</h2>
+  <div class="wrapx"><table class="tbl2">
+    <tr><th>Шаг</th><th>Кто</th><th>Время</th></tr>
+    <tr><td>1. Подписка Claude</td><td>каждый фаундер</td><td>5 минут</td></tr>
+    <tr><td>2. Свой бот в Telegram</td><td>каждый фаундер</td><td>5 минут</td></tr>
+    <tr><td>3. Служебные аккаунты Google</td><td>один раз на компанию</td><td>30 минут</td></tr>
+    <tr><td>4. Кошелек Anthropic с лимитом</td><td>один раз на компанию</td><td>20 минут</td></tr>
+    <tr><td>Подключаем мозг к боту</td><td>вместе во вторник</td><td>40 минут</td></tr>
+    <tr><td>Сервер, чтобы работал круглосуточно</td><td>после вторника</td><td>отдельно</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <span class="kicker">Шаг первый</span>
+  <h2>Подписка Claude</h2>
+  <span class="who">каждый фаундер</span>
+  <p class="lead">Ваш второй мозг работает на вашей личной подписке. Своя подписка означает
+  свою память и свою переписку: ее не видит никто, включая коллег.</p>
+  <div class="steps">
+    <div class="step"><b>Откройте claude.ai</b>
+      <p>Войдите или зарегистрируйтесь, лучше на рабочую почту.</p></div>
+    <div class="step"><b>Оформите подписку</b>
+      <p>Кнопка Upgrade, тариф Pro или Max. Max дает больше запаса, если пользоваться
+      ассистентом весь день. Начать можно с Pro и повысить позже.</p></div>
+    <div class="step"><b>Проверьте, что подписка активна</b>
+      <p>В настройках профиля должен быть виден выбранный тариф.</p></div>
+  </div>
+  <div class="note">Перерасхода в подписке не бывает: цена фиксированная, а если лимит
+  на сегодня кончился, сервис просто попросит подождать.</div>
+</section>
+
+<section>
+  <span class="kicker">Шаг второй</span>
+  <h2>Свой бот в Telegram</h2>
+  <span class="who">каждый фаундер</span>
+  <p class="lead">Бот это дверь в ваш второй мозг. У каждого свой, потому что у каждого
+  своя память и своя переписка.</p>
+  <div class="steps">
+    <div class="step"><b>Найдите в Telegram @BotFather</b>
+      <p>Это официальный бот Telegram для создания ботов. Нажмите Start.</p></div>
+    <div class="step"><b>Отправьте команду /newbot</b>
+      <p>Он спросит имя, например «Мозг Марины». Потом адрес, он обязательно заканчивается
+      на bot, например marina_zd_brain_bot.</p></div>
+    <div class="step"><b>Сохраните токен</b>
+      <p>В ответ придет строка вида 8123456789:AAF... Это токен, по сути пароль от бота.
+      Сохраните его в заметки или в менеджер паролей, во вторник он понадобится.</p></div>
+  </div>
+  <div class="note warn"><b>Токен никому не пересылайте.</b> Кто знает токен, тот управляет ботом.
+  Даже мне не присылайте: во вторник вставите его сами на своем компьютере.</div>
+</section>
+
+<section>
+  <span class="kicker">Шаг третий</span>
+  <h2>Служебные аккаунты Google</h2>
+  <span class="who one">один раз на компанию</span>
+  <p class="lead">Второй мозг читает документы глазами служебного аккаунта Google. Это не человек,
+  у него нет почты и пароля, и он видит ровно те документы, которые ему расшарили.</p>
+  <p>Заводим сразу три, по одному на уровень доступа: для фаундеров, для управленцев и для линейных
+  сотрудников. Все фаундеры смотрят через один аккаунт, потому что видят одно и то же.
+  Во вторник понадобится только фаундерский, два других пригодятся, когда подключим команду.</p>
+
+  <div class="steps">
+    <div class="step"><b>Откройте console.cloud.google.com</b>
+      <p>Войдите корпоративным аккаунтом компании, тем, на котором ваш Google Workspace. Не личным.</p></div>
+    <div class="step"><b>Создайте проект</b>
+      <p>Вверху слева выбор проекта, New Project, название brains, Create.</p></div>
+    <div class="step"><b>Включите два интерфейса</b>
+      <p>Меню слева, APIs and Services, Library. Найдите Google Drive API и нажмите Enable.
+      Потом так же Google Sheets API.</p></div>
+    <div class="step"><b>Создайте три служебных аккаунта</b>
+      <p>Меню слева, IAM and Admin, Service Accounts, Create Service Account. Имя brain-founders,
+      Create and continue. Роли не выбирайте, сразу Done. Повторите для brain-managers и brain-staff.</p></div>
+    <div class="step"><b>Скачайте ключ для каждого</b>
+      <p>Нажмите на аккаунт, вкладка Keys, Add Key, Create new key, формат JSON, Create.
+      Скачается файл, это и есть ключ.</p></div>
+  </div>
+
+  <div class="note warn"><b>Если появилось окно «Service account key creation is disabled».</b>
+  Это нормально: Google по умолчанию запрещает такие ключи в организациях, созданных после
+  мая 2024 года. Запрет снимается для одного проекта, не для всей компании. Вставьте промпт
+  ниже в Claude, он проведет по шагам. Не получится, оставьте, сделаем во вторник вместе.</div>
+
+  <div class="prompt"><span class="ph">промпт на случай, если застряли: вставить в claude.ai целиком</span>Помоги мне завести служебные аккаунты Google для чтения документов компании. Я не технический специалист, веди меня по шагам через сайт console.cloud.google.com. Я буду говорить, что вижу на экране, а ты подсказывай, куда нажать дальше.
+
+Что нужно получить в конце:
+1. Проект brains, созданный от имени корпоративного аккаунта компании.
+2. В проекте включены Google Drive API и Google Sheets API.
+3. Три служебных аккаунта: brain-founders, brain-managers, brain-staff. Ролей в проекте им не назначать.
+4. Для каждого скачан ключ в формате JSON.
+5. Итоговый список: три адреса служебных аккаунтов.
+
+Если при создании ключа появится окно «Service account key creation is disabled», объясни, как снять ограничение iam.disableServiceAccountKeyCreation только для проекта brains, а не для всей организации, и какие права мне для этого нужны.
+
+Иди по одному шагу за раз. После каждого шага жди, пока я скажу, что получилось.</div>
+
+  <h3>Что делать с результатом</h3>
+  <p>У вас на руках две разные вещи, и обращаться с ними надо по-разному.</p>
+  <div class="roles">
+    <div class="rcard r1"><span class="rn">адрес аккаунта</span>
+      <p>Вида brain-founders@brains-123.iam.gserviceaccount.com. Это не секрет. Отправьте три адреса
+      Еве: она расшарит на них документы с правом только на чтение, так же как делала для
+      тестового аккаунта. Фаундерскому все папки, включая финансы, управленческому все, кроме финансов.</p></div>
+    <div class="rcard r2"><span class="rn">файл ключа</span>
+      <p>Файл JSON это пароль. Никому не пересылайте, ни в чат, ни на почту. Сохраните у себя
+      на компьютере в надежную папку. Во вторник подключим его к вашему мозгу прямо у вас,
+      он никуда не уйдет.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Шаг четвертый</span>
+  <h2>Кошелек Anthropic с лимитом</h2>
+  <span class="who one">один раз на компанию</span>
+  <p class="lead">Отсюда платится чат «Где что лежит» в штабе и помощники в онбординге. Здесь же
+  ставится жесткий потолок расходов: консоль физически не пропустит запрос сверх лимита,
+  что бы ни происходило.</p>
+
+  <div class="steps">
+    <div class="step"><b>Откройте console.anthropic.com</b>
+      <p>Зарегистрируйтесь на корпоративную почту. Владельцем организации будете вы.</p></div>
+    <div class="step"><b>Пополните баланс</b>
+      <p>Раздел Billing. Для старта хватит небольшой суммы, дальше видно по расходу.</p></div>
+    <div class="step"><b>Создайте рабочее пространство</b>
+      <p>Раздел Workspaces, создать, название shtab-chat.</p></div>
+    <div class="step"><b>Поставьте месячный лимит</b>
+      <p>Откройте пространство, вкладка Limits, карандаш напротив лимита расходов, Change Limit,
+      впишите 100 долларов. Это стартовая цифра с запасом, дальше подстроим по факту.</p></div>
+    <div class="step"><b>Создайте ключ внутри пространства</b>
+      <p>Именно внутри shtab-chat, тогда лимит на него действует. Ключ показывается один раз,
+      сохраните его как пароль.</p></div>
+    <div class="step"><b>Включите уведомления о расходах</b>
+      <p>В настройках организации включите письма при приближении к лимиту, чтобы узнавать заранее.</p></div>
+  </div>
+
+  <div class="note"><b>Сколько это стоит по оценке.</b> Один вопрос в чат штаба обходится
+  примерно в один цент. Если двадцать пять человек задают по десять вопросов в день, выходит
+  около пятидесяти долларов в месяц. Плюс в самом штабе стоит ограничение сорок вопросов
+  на человека в сутки. Точную цифру покажет вкладка Usage через неделю.</div>
+
+  <div class="note warn"><b>Ключ в платформу вставляем только после того, как поставлен лимит.</b>
+  Во вторник сделаем это вместе.</div>
+
+  <div class="prompt"><span class="ph">промпт на случай, если застряли: вставить в claude.ai целиком</span>Помоги настроить аккаунт Anthropic для компании. Веди меня по шагам через сайт console.anthropic.com, я буду говорить, что вижу на экране.
+
+Что нужно получить в конце:
+1. Организация, зарегистрированная на корпоративную почту, владелец я.
+2. Пополненный баланс.
+3. Рабочее пространство shtab-chat.
+4. Месячный лимит расходов 100 долларов на это пространство, вкладка Limits.
+5. Ключ API, созданный внутри пространства shtab-chat.
+6. Включенные уведомления о приближении к лимиту.
+
+Иди по одному шагу за раз и жди моего ответа.</div>
+</section>
+
+<section>
+  <span class="kicker">Вторник</span>
+  <h2>Что сделаем вместе</h2>
+  <p class="lead">Ставим второй мозг на компьютер каждого из вас, подключаем к вашему боту,
+  кладем ключ фаундерского аккаунта Google и проверяем, что мозг открывает документы
+  и берет цифры из аналитики. Около сорока минут.</p>
+  <p>Что должно быть под рукой:</p>
+  <ul class="check">
+    <li>Компьютер, Mac или Windows</li>
+    <li>Активная подписка Claude</li>
+    <li>Токен вашего бота из шага два</li>
+    <li>Файл ключа brain-founders из шага три, если успели</li>
+    <li>Ключ Anthropic из шага четыре, если успели</li>
+  </ul>
+  <div class="note">В таком виде бот работает, пока ваш компьютер включен. Чтобы он жил
+  круглосуточно, следующим шагом переносим его на удаленный сервер. Все аккаунты при этом
+  остаются вашими.</div>
+</section>
+
+<section>
+  <span class="kicker">Потом</span>
+  <h2>Что дальше</h2>
+  <div class="steps">
+    <div class="step"><b>Удаленный сервер</b>
+      <p>Чтобы мозг работал круглосуточно и не зависел от ноутбука. Каждый из вас будет там отдельным
+      пользователем системы, чужую переписку не прочитать физически.</p></div>
+    <div class="step"><b>Порядок на общем диске</b>
+      <p>Сейчас почти все рабочие документы лежат на личных аккаунтах сотрудников. Переносим их
+      на общий диск компании по папкам, тогда доступ дается одной папкой, а не полусотней ссылок.</p></div>
+    <div class="step"><b>Второй мозг команде</b>
+      <p>Управленцам и линейным свои боты со своими наборами папок. Им подписка не нужна,
+      они работают через кошелек компании с лимитом.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Коротко</span>
+  <h2>Правила безопасности</h2>
+  <div class="roles">
+    <div class="rcard r1"><span class="rn">храним у себя</span>
+      <ul>
+        <li>Токены ботов</li>
+        <li>Файлы ключей Google</li>
+        <li>Ключ Anthropic</li>
+        <li>Все это в менеджере паролей или в личной заметке, не в общих папках</li>
+      </ul></div>
+    <div class="rcard r2"><span class="rn">можно отправлять</span>
+      <ul>
+        <li>Адреса служебных аккаунтов, они не секрет</li>
+        <li>Названия проекта и пространств</li>
+        <li>Скриншоты экрана, если на них не видно ключей</li>
+      </ul></div>
+  </div>
+</section>
+
+<div class="foot"><div class="wrap">
+  <p>Здоровое движение &middot; настройка второго мозга. Застряли на любом шаге, пишите Александру.</p>
+</div></div>
+
+</div>
+
+</body>
+</html>
