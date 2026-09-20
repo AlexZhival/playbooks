@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Платформа A-Players · операционная система вашей компании за 4 месяца</title>
+<meta name="description" content="Платформа, на которой собственник и его команда собирают операционную систему компании под свою бизнес-модель, нишу, структуру и фазу роста. Четыре месяца, ваши цифры, готовая архитектура на выходе.">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="Платформа A-Players · операционная система вашей компании">
+<meta property="og:description" content="Четыре месяца, ваши цифры, готовая система управления на выходе.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --c-bg:#F4F1EA; --c-bg-2:#EFE9D9; --c-bg-alt:#EBE5D7; --c-card:#FCFAF4;
+  --c-ink:#16201B; --c-muted:#5A6056; --c-line:#DCD4C2; --c-line-soft:#E6DECE;
+  --c-emerald:#143A2D; --c-emerald-2:#1C4C3B; --c-dark-ink:#EFE9DA; --c-dark-muted:#AFBCB2;
+  --c-gold:#B0822E; --c-gold-2:#C79A45; --c-gold-hover:#977019; --c-green:#3E8E5E;
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Manrope",system-ui,sans-serif;background:var(--c-bg);color:var(--c-ink);
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+.wrap{width:min(1180px,100% - 40px);margin-inline:auto;position:relative;z-index:1}
+section{position:relative;overflow:hidden}
+.pad{padding-block:var(--s7)}
+@media(max-width:760px){.pad{padding-block:var(--s6)}body{font-size:16px}}
+
+h1,h2,h3,h4{font-family:"Roboto Slab",Georgia,serif;line-height:1.1;letter-spacing:-.01em}
+h1{font-size:clamp(34px,5.2vw,62px);font-weight:900}
+h2{font-size:clamp(27px,3.6vw,44px);font-weight:800;margin-bottom:var(--s3)}
+h3{font-size:clamp(19px,1.5vw,22px);font-weight:700}
+.lead{font-size:clamp(17px,1.4vw,21px);color:var(--c-muted);max-width:62ch}
+.hl{background:linear-gradient(180deg,transparent 58%,rgba(176,130,46,.34) 58%);color:#0F2B20;font-weight:900}
+.kicker{font-family:ui-monospace,Menlo,monospace;font-size:13px;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:700;color:var(--c-gold);display:inline-flex;align-items:center;gap:9px;margin-bottom:var(--s2)}
+.kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor}
+
+/* паттерн */
+.bcanvas{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5}
+.bcanvas.side-r{mask-image:linear-gradient(270deg,#000 0%,transparent 42%);-webkit-mask-image:linear-gradient(270deg,#000 0%,transparent 42%)}
+.bcanvas.side-l{mask-image:linear-gradient(90deg,#000 0%,transparent 42%);-webkit-mask-image:linear-gradient(90deg,#000 0%,transparent 42%)}
+.bcanvas.fade-edge{mask-image:radial-gradient(120% 120% at 50% 40%,#000 35%,transparent 78%);-webkit-mask-image:radial-gradient(120% 120% at 50% 40%,#000 35%,transparent 78%)}
+.bcanvas.fade-l{mask-image:linear-gradient(105deg,transparent 30%,#000 82%);-webkit-mask-image:linear-gradient(105deg,transparent 30%,#000 82%)}
+.bcanvas.hero-mask{opacity:.5;mask-image:linear-gradient(180deg,#000 0,#000 12%,transparent 42%);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 12%,transparent 42%)}
+.dark .bcanvas{opacity:1}
+
+/* кнопки */
+.btn{display:inline-block;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;
+  font-weight:800;font-size:17px;padding:17px 30px;border-radius:10px;text-decoration:none;
+  box-shadow:0 14px 28px -10px rgba(176,130,46,.55);transition:transform .15s ease, box-shadow .15s ease;
+  min-height:44px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 18px 34px -10px rgba(176,130,46,.62)}
+.btn:focus-visible{outline:3px solid #0F2B20;outline-offset:3px}
+.btn-note{margin-top:12px;font-size:15px;color:var(--c-muted);max-width:52ch}
+.dark .btn-note{color:var(--c-dark-muted)}
+
+/* hero */
+.hero{background:radial-gradient(120% 95% at 88% -10%,var(--c-bg-2),var(--c-bg));padding-block:clamp(48px,7vw,104px)}
+.hero-grid{display:grid;grid-template-columns:1.25fr .85fr;gap:var(--s6);align-items:center}
+@media(max-width:940px){.hero-grid{grid-template-columns:1fr;gap:var(--s4)}}
+.pills{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:var(--s3)}
+.pill{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:700;padding:9px 15px;border-radius:999px;background:var(--c-ink);color:var(--c-bg)}
+.pill.gold{background:transparent;border:1px solid var(--c-gold);color:#0F2B20}
+.hero p.lead{margin-top:var(--s3)}
+.value{margin:var(--s4) 0;display:grid;gap:14px}
+.value div{display:flex;gap:14px;align-items:flex-start;font-size:17px}
+.value b{font-family:"Roboto Slab",serif;font-size:15px;letter-spacing:.02em;color:var(--c-gold);
+  min-width:112px;flex:none;padding-top:2px;text-transform:uppercase}
+@media(max-width:560px){.value div{flex-direction:column;gap:2px}.value b{min-width:0}}
+.hero-art{border-radius:20px;overflow:hidden;box-shadow:0 30px 60px -34px rgba(20,32,27,.55)}
+.canvas-card{position:relative;background:linear-gradient(160deg,var(--c-emerald-2),var(--c-emerald));
+  color:var(--c-dark-ink);min-height:470px;display:flex;align-items:flex-end}
+.canvas-tex{position:absolute;inset:0;width:100%;height:100%;opacity:1}
+.canvas-card::after{content:"";position:absolute;inset:0;z-index:0;
+  background:linear-gradient(180deg,rgba(15,42,32,.15) 0%,rgba(15,42,32,.82) 38%,rgba(15,42,32,.94) 100%)}
+.canvas-in{position:relative;z-index:1;padding:var(--s4)}
+.cc-kick{font-family:ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  font-weight:700;color:var(--c-gold-2);margin-bottom:10px}
+.cc-num{font-family:"Roboto Slab",serif;font-size:76px;font-weight:900;line-height:.9;color:#FBF6EA}
+.cc-lab{font-size:16px;color:var(--c-dark-muted);margin:10px 0 18px;max-width:34ch}
+.cc-list{list-style:none;display:grid;gap:8px}
+.cc-list li{font-size:15.5px;padding-left:20px;position:relative;color:#EFE9DA}
+.cc-list li::before{content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;background:var(--c-gold-2)}
+
+/* форма */
+.form-card{background:var(--c-card);border:1px solid var(--c-line);border-radius:18px;padding:var(--s4);max-width:460px;text-align:left}
+.form-card h3{margin-bottom:6px}
+.form-card .free{display:inline-block;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:700;color:var(--c-gold);border:1px solid var(--c-gold);border-radius:999px;padding:4px 10px;margin-left:8px}
+.form-card label{display:block;font-size:14px;color:var(--c-muted);font-weight:600;margin:16px 0 6px}
+.form-card input,.form-card select{width:100%;padding:13px 14px;border:1px solid var(--c-line);border-radius:10px;
+  font-family:inherit;font-size:16px;background:#fff;color:var(--c-ink);min-height:44px}
+.form-card input:focus,.form-card select:focus{outline:2px solid var(--c-emerald);outline-offset:1px;border-color:var(--c-emerald)}
+.form-card .agree{display:flex;gap:10px;align-items:flex-start;margin:18px 0;font-size:13.5px;color:var(--c-muted)}
+.form-card .agree input{width:18px;height:18px;min-height:18px;flex:none;margin-top:2px;accent-color:var(--c-gold)}
+.form-card .btn{width:100%;text-align:center}
+
+/* полоса доверия */
+.trust{border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line);background:var(--c-bg-2)}
+.trust .wrap{display:flex;flex-wrap:wrap;gap:var(--s4) var(--s6);justify-content:space-between;padding-block:var(--s4)}
+.tnum{font-family:"Roboto Slab",serif;font-size:clamp(24px,2.6vw,34px);font-weight:900;color:var(--c-emerald)}
+.tlab{font-size:14.5px;color:var(--c-muted);margin-top:4px;max-width:22ch}
+
+/* сетки карточек */
+.grid{display:grid;gap:var(--s3)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:980px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.g2,.g3,.g4{grid-template-columns:1fr}}
+.card{background:var(--c-card);border:1px solid var(--c-line);border-radius:16px;padding:var(--s3)}
+.card h3{margin-bottom:10px}
+.card p{font-size:16px;color:var(--c-muted)}
+.card .n{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;font-weight:800;color:var(--c-gold);letter-spacing:.12em}
+.dark .card{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12)}
+.dark .card p{color:var(--c-dark-muted)}
+
+/* темные секции */
+.dark{background:var(--c-emerald);color:var(--c-dark-ink)}
+.dark h2,.dark h3{color:#FBF6EA}
+.dark .lead{color:var(--c-dark-muted)}
+.dark .kicker{color:var(--c-gold-2)}
+
+/* список артефактов */
+.arts{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--s2) var(--s5)}
+@media(max-width:860px){.arts{grid-template-columns:1fr}}
+.art{display:flex;gap:14px;padding:16px 0;border-bottom:1px dashed var(--c-line)}
+.art svg{width:22px;height:22px;flex:none;margin-top:3px;stroke:var(--c-gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.art b{font-family:"Roboto Slab",serif;font-size:18px;font-weight:700;display:block;margin-bottom:3px}
+.art span{font-size:15.5px;color:var(--c-muted);display:block}
+
+/* шаги */
+.steps{counter-reset:s;display:grid;gap:var(--s3);grid-template-columns:repeat(4,1fr)}
+@media(max-width:980px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.steps{grid-template-columns:1fr}}
+.step{background:var(--c-card);border:1px solid var(--c-line);border-radius:16px;padding:var(--s3);position:relative}
+.step::before{counter-increment:s;content:"0" counter(s);font-family:ui-monospace,Menlo,monospace;
+  font-size:13px;font-weight:800;color:var(--c-gold);letter-spacing:.14em}
+.step h3{margin:10px 0 8px}
+.step p{font-size:15.5px;color:var(--c-muted)}
+
+/* автор */
+.author{display:grid;grid-template-columns:.8fr 1.2fr;gap:var(--s5);align-items:center}
+@media(max-width:860px){.author{grid-template-columns:1fr}}
+.author-photo{border-radius:20px;overflow:hidden;aspect-ratio:4/5;background:var(--c-emerald-2);max-width:360px}
+.author-photo img{width:100%;height:100%;object-fit:cover}
+.rows{display:grid;gap:12px;margin-top:var(--s3)}
+.row-i{display:flex;gap:14px;background:rgba(255,255,255,.05);border-left:3px solid var(--c-gold);
+  border-radius:0 12px 12px 0;padding:14px 18px}
+.row-i b{font-family:"Roboto Slab",serif;font-size:17px;display:block;margin-bottom:2px}
+.row-i span{font-size:15.5px;color:var(--c-dark-muted)}
+
+/* FAQ */
+details{background:var(--c-card);border:1px solid var(--c-line);border-radius:14px;padding:18px 22px;margin-bottom:12px}
+details[open]{border-color:var(--c-gold)}
+summary{font-family:"Roboto Slab",serif;font-size:18px;font-weight:700;cursor:pointer;list-style:none;
+  display:flex;justify-content:space-between;gap:16px;align-items:center;min-height:32px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:26px;color:var(--c-gold);font-weight:700;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin-top:12px;color:var(--c-muted);font-size:16px}
+
+/* финал */
+.final{background:radial-gradient(120% 120% at 12% -15%,var(--c-emerald-2),var(--c-emerald));text-align:center;color:var(--c-dark-ink)}
+.final h2{color:#FBF6EA}
+.final .btn-note{color:var(--c-dark-muted)}
+.final .form-card h3{color:var(--c-ink)}
+.final .wrap{max-width:820px}
+.final h2{font-size:clamp(28px,4vw,48px)}
+.final .lead{margin:var(--s3) auto var(--s4);color:var(--c-dark-muted)}
+
+footer{background:var(--c-emerald);color:var(--c-dark-muted);padding-block:var(--s4);font-size:14.5px;
+  border-top:1px solid rgba(255,255,255,.1)}
+footer .wrap{display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4);justify-content:space-between;align-items:center}
+footer a{color:var(--c-gold-2)}
+.quote{font-family:"Roboto Slab",serif;font-size:clamp(20px,2.2vw,28px);font-weight:700;line-height:1.35;
+  border-left:4px solid var(--c-gold);padding-left:var(--s3);margin-top:var(--s4)}
+
+/* ——— апгрейд: зерно, глубина, движение ——— */
+.grain{position:fixed;inset:0;z-index:99;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+h1,h2{text-wrap:balance}
+.lead,.card p,.art span{text-wrap:pretty}
+.tnum,.cc-num,.big-num{font-variant-numeric:tabular-nums}
+
+/* появление при скролле */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s cubic-bezier(.2,.7,.3,1),transform .6s cubic-bezier(.2,.7,.3,1)}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+/* карточки: живые состояния */
+.card{transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 22px 40px -28px rgba(20,58,45,.55);border-color:var(--c-gold-2)}
+.dark .card:hover{box-shadow:0 22px 44px -26px rgba(0,0,0,.6);border-color:rgba(199,154,69,.5)}
+.btn:active{transform:translateY(1px) scale(.995)}
+details summary:focus-visible{outline:3px solid var(--c-gold);outline-offset:4px;border-radius:6px}
+
+/* зигзаг с иллюстрациями */
+.zig{display:grid;grid-template-columns:1.05fr .95fr;gap:var(--s6);align-items:center;margin-top:var(--s5)}
+.zig.rev{grid-template-columns:.95fr 1.05fr}
+.zig.rev .zig-media{order:-1}
+@media(max-width:900px){.zig,.zig.rev{grid-template-columns:1fr;gap:var(--s4)}.zig.rev .zig-media{order:0}}
+.zig-media{position:relative;border-radius:18px;overflow:hidden;border:1px solid var(--c-line);
+  background:var(--c-card);box-shadow:0 30px 60px -38px rgba(20,58,45,.6)}
+.dark .zig-media{border-color:rgba(255,255,255,.14)}
+.zig-media img{width:100%;height:auto;display:block}
+.zig h3{font-size:clamp(22px,2.4vw,30px);margin-bottom:12px}
+.zig p{color:var(--c-muted);font-size:17px}
+.dark .zig p{color:var(--c-dark-muted)}
+.zig ul{list-style:none;display:grid;gap:10px;margin-top:var(--s3)}
+.zig li{padding-left:22px;position:relative;font-size:16.5px}
+.zig li::before{content:"";position:absolute;left:0;top:9px;width:9px;height:9px;border-radius:2px;
+  background:var(--c-gold);transform:rotate(45deg)}
+.big-num{font-family:"Roboto Slab",serif;font-size:clamp(40px,5vw,64px);font-weight:900;color:var(--c-emerald);line-height:1}
+.dark .big-num{color:var(--c-gold-2)}
+
+/* липкая шапка */
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(140%) blur(10px);
+  background:rgba(244,241,234,.82);border-bottom:1px solid var(--c-line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);padding-block:12px}
+.tb-logo{display:flex;align-items:center;gap:10px;font-family:"Roboto Slab",serif;font-weight:800;font-size:17px}
+.tb-logo i{width:30px;height:30px;border-radius:8px;background:var(--c-gold);color:#fff;display:grid;place-items:center;
+  font-style:normal;font-weight:900;font-size:17px}
+.topbar .btn{padding:11px 20px;font-size:15px;min-height:40px}
+@media(max-width:620px){.tb-logo span{display:none}
+  .topbar .wrap{gap:12px}
+  .topbar .btn{padding:10px 14px;font-size:14px;white-space:nowrap}
+  .topbar .btn svg{width:15px;margin-left:5px}}
+
+
+/* ——— швейцарская сетка, типографика, оконные рамки ——— */
+:root{
+  --fs-1:13px; --fs-2:15px; --fs-3:17px; --fs-4:20px; --fs-5:26px;
+  --fs-6:34px; --fs-7:46px; --fs-8:62px; --fs-9:84px;
+  --track-tight:-.022em; --track-wide:.18em;
+}
+body{font-size:var(--fs-3);line-height:1.62}
+h1{font-size:clamp(38px,6.2vw,var(--fs-9));letter-spacing:var(--track-tight);line-height:.98}
+h2{font-size:clamp(28px,4.2vw,var(--fs-7));letter-spacing:var(--track-tight);line-height:1.04}
+h3{font-size:clamp(19px,1.7vw,23px);letter-spacing:-.012em}
+.lead{font-size:clamp(17px,1.35vw,20px);line-height:1.62;max-width:58ch}
+
+/* 12 колонок */
+.g12{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--s3) var(--s4)}
+@media(max-width:900px){.g12{grid-template-columns:repeat(6,1fr)}}
+.col-7{grid-column:span 7}.col-5{grid-column:span 5}.col-6{grid-column:span 6}
+.col-4{grid-column:span 4}.col-8{grid-column:span 8}.col-12{grid-column:1/-1}
+@media(max-width:900px){.col-7,.col-5,.col-6,.col-4,.col-8{grid-column:1/-1}}
+
+/* нумерация секций на полях, швейцарский прием */
+.sec-head{position:relative;margin-bottom:var(--s5);padding-left:0}
+@media(min-width:1280px){.sec-head .sec-no{position:absolute;left:-76px;top:4px}}
+.sec-no{font-family:ui-monospace,Menlo,monospace;font-size:var(--fs-1);font-weight:800;letter-spacing:var(--track-wide);
+  color:var(--c-gold);padding-top:10px;border-top:2px solid var(--c-gold);min-width:52px}
+.dark .sec-no{color:var(--c-gold-2);border-top-color:var(--c-gold-2)}
+@media(max-width:1279px){.sec-head .sec-no{display:inline-block;margin-bottom:12px}}
+
+/* оконная рамка для экранов продукта */
+.frame{border-radius:14px;overflow:hidden;border:1px solid var(--c-line);background:#fff;
+  box-shadow:0 40px 80px -48px rgba(20,58,45,.7)}
+.dark .frame{border-color:rgba(255,255,255,.16)}
+.frame-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;background:var(--c-bg-2);border-bottom:1px solid var(--c-line)}
+.dark .frame-bar{background:rgba(255,255,255,.06);border-bottom-color:rgba(255,255,255,.12)}
+.frame-bar i{width:9px;height:9px;border-radius:50%;background:#D9CFBC;display:block}
+.frame-bar span{margin-left:8px;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--c-muted)}
+.dark .frame-bar span{color:var(--c-dark-muted)}
+.frame img{display:block;width:100%}
+
+/* полоса доверия в швейцарском духе */
+.trust .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s4);padding-block:var(--s5)}
+@media(max-width:820px){.trust .wrap{grid-template-columns:repeat(2,1fr)}}
+.trust > .wrap > div{border-left:2px solid var(--c-gold);padding-left:18px}
+.tnum{font-size:clamp(28px,3vw,40px);letter-spacing:-.02em}
+.tlab{font-size:14px;letter-spacing:.01em}
+
+/* воздух между секциями по density 4 */
+.pad{padding-block:clamp(72px,9vw,128px)}
+.kicker{font-size:var(--fs-1);letter-spacing:var(--track-wide)}
+
+
+/* ——— первый экран ——— */
+.hero{background:radial-gradient(130% 110% at 92% -20%,var(--c-bg-2) 0%,var(--c-bg) 58%);
+  padding-block:clamp(32px,5vw,72px) clamp(48px,6vw,96px);overflow:visible}
+.hero-g{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5.4fr);gap:clamp(28px,4vw,64px);align-items:center}
+.hero-copy{min-width:0}
+.hero h1{font-size:clamp(33px,4.6vw,60px);line-height:1.02;letter-spacing:-.024em;max-width:15ch;margin-bottom:18px}
+.hero-sub{font-size:clamp(16px,1.25vw,19px);line-height:1.58;color:var(--c-muted);max-width:50ch}
+
+.hero-facts{display:grid;grid-template-columns:repeat(3,auto);gap:clamp(16px,2.4vw,40px);margin:clamp(18px,2.4vw,28px) 0;
+  padding:18px 0;border-top:1px solid var(--c-line);border-bottom:1px solid var(--c-line);width:fit-content}
+.hero-facts b{display:block;font-family:"Roboto Slab",serif;font-size:clamp(22px,2.2vw,30px);font-weight:900;
+  color:var(--c-emerald);line-height:1;font-variant-numeric:tabular-nums}
+.hero-facts span{display:block;font-size:13.5px;color:var(--c-muted);margin-top:6px;max-width:19ch;line-height:1.35}
+
+.hero-cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.btn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;
+  vertical-align:-3px;margin-left:8px;transition:transform .18s ease}
+.btn:hover svg{transform:translateX(3px)}
+.cta-side b{display:block;font-family:"Roboto Slab",serif;font-size:15.5px}
+.cta-side span{display:block;font-size:14px;color:var(--c-muted);max-width:32ch;line-height:1.4}
+
+.hero-logos{margin-top:clamp(20px,2.6vw,32px);max-width:560px}
+.hl-lab{display:block;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--c-muted);margin-bottom:12px}
+.hero-logos img{width:100%;display:block;filter:saturate(.96)}
+.hero-logos .lg-wrap{background:#FCFAF4;border:1px solid var(--c-line);border-radius:12px;padding:10px 14px}
+
+.hero-visual{position:relative;min-width:0}
+.hv-main{transform:perspective(1600px) rotateY(-3deg) rotateX(1deg);transform-origin:left center;
+  box-shadow:0 50px 90px -46px rgba(20,58,45,.65)}
+.hv-main img{max-height:clamp(320px,44vw,520px);object-fit:cover;object-position:top center}
+.hv-badge{position:absolute;left:-30px;bottom:18px;background:var(--c-emerald);color:var(--c-dark-ink);
+  border-radius:16px;padding:18px 20px;max-width:246px;box-shadow:0 28px 54px -26px rgba(15,42,32,.75);
+  border:1px solid rgba(199,154,69,.35)}
+.hvb-num{font-family:"Roboto Slab",serif;font-size:31px;font-weight:900;color:var(--c-gold-2);line-height:1;
+  font-variant-numeric:tabular-nums}
+.hvb-lab{font-size:13.5px;line-height:1.4;color:var(--c-dark-muted);margin-top:8px}
+
+/* адаптив первого экрана */
+@media(max-width:1180px){
+  .hero-g{gap:36px}
+  .hv-main{transform:none}
+  .hv-badge{left:auto;right:-14px;bottom:-20px;max-width:216px}
+}
+@media(max-width:980px){
+  .hero-g{grid-template-columns:1fr;gap:clamp(30px,5vw,44px)}
+  .hero h1{max-width:18ch}
+  .hero-visual{max-width:620px}
+  .hv-badge{left:auto;right:12px;bottom:-22px}
+}
+@media(max-width:700px){
+  .hero{padding-block:24px 56px}
+  .hero-facts{grid-template-columns:1fr 1fr;gap:16px 22px;width:auto}
+  .hero-facts span{max-width:none}
+  .hero-cta{gap:16px}
+  .btn{width:100%;text-align:center}
+  .cta-side{order:2}
+  .hv-badge{position:static;max-width:none;margin-top:16px}
+}
+@media(max-width:420px){
+  .hero h1{font-size:clamp(29px,8.4vw,34px);max-width:none}
+  .hero-facts{grid-template-columns:1fr;gap:14px}
+  .pills{gap:8px}
+  .pill{font-size:11.5px;padding:8px 12px}
+}
+
+
+.hero-clients{margin-top:clamp(22px,2.8vw,34px);border-top:1px solid var(--c-line);padding-top:18px;min-width:0;max-width:100%}
+.cl-row{display:flex;flex-wrap:wrap;gap:10px 26px}
+.cl{min-width:0}
+.cl b{display:block;font-family:"Roboto Slab",serif;font-size:15.5px;font-weight:800;color:var(--c-emerald);line-height:1.2}
+.cl span{display:block;font-size:12.5px;color:var(--c-muted);margin-top:3px;line-height:1.35;font-variant-numeric:tabular-nums}
+@media(max-width:700px){.cl-row{gap:12px 18px}.cl b{font-size:14.5px}.cl span{font-size:12px}}
+
+.cl-logo{height:21px;width:auto;display:block;margin-bottom:6px;
+  filter:grayscale(1) brightness(.32) contrast(1.15);opacity:.9;transition:filter .2s ease,opacity .2s ease}
+.cl:hover .cl-logo{filter:none;opacity:1}
+.cl-logo.st{height:17px}
+.cl-logo.og{height:26px}
+.hv-sub{position:absolute;right:-26px;bottom:-34px;width:46%;box-shadow:0 34px 60px -30px rgba(20,58,45,.7);
+  transform:perspective(1600px) rotateY(-3deg) rotateX(1deg)}
+.hv-sub img{max-height:230px;object-fit:cover;object-position:top center}
+.hv-badge{z-index:2}
+@media(max-width:1180px){.hv-sub{right:-10px;bottom:-26px;width:52%}}
+@media(max-width:980px){.hv-sub{display:none}}
+
+/* бегущая лента клиентов */
+.ticker{position:relative;overflow:hidden;margin-top:14px;width:100%;max-width:100%;
+  mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ticker-line{display:flex;align-items:center;gap:0;width:max-content;animation:tk 34s linear infinite}
+.ticker:hover .ticker-line{animation-play-state:paused}
+@keyframes tk{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-line{animation:none}
+  .ticker{overflow-x:auto;mask-image:none;-webkit-mask-image:none}}
+.tk{display:flex;align-items:center;gap:11px;padding:0 24px;border-right:1px solid var(--c-line);flex:none;height:34px}
+.tk img{height:21px;width:auto;display:block;filter:grayscale(1) brightness(.3) contrast(1.15);opacity:.88;
+  transition:filter .2s ease,opacity .2s ease}
+.tk img.st{height:16px}.tk img.qa{height:26px}.tk img.rf{height:17px}.tk img.og{height:22px}
+.tk:hover img{filter:none;opacity:1}
+.tk-word{font-family:"Roboto Slab",serif;font-weight:800;font-size:17px;color:var(--c-emerald);letter-spacing:-.01em}
+.tk i{font-style:normal;font-size:13px;color:var(--c-muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+@media(max-width:700px){.tk{padding:0 18px;gap:9px}.tk i{font-size:12px}.tk-word{font-size:15.5px}}
+
+/* галерея артефактов */
+.af-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3)}
+@media(max-width:1180px){.af-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:860px){.af-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.af-grid{grid-template-columns:1fr}}
+.af{margin:0;background:var(--c-card);border:1px solid var(--c-line);border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;transition:transform .22s cubic-bezier(.2,.7,.3,1),box-shadow .22s ease,border-color .22s ease}
+.af:hover{transform:translateY(-4px);box-shadow:0 26px 46px -30px rgba(20,58,45,.6);border-color:var(--c-gold-2)}
+.af-shot{background:var(--c-bg-2);border-bottom:1px solid var(--c-line);height:228px;overflow:hidden;position:relative}
+.af-shot img{width:100%;height:100%;object-fit:cover;object-position:top center;transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+.af:hover .af-shot img{transform:scale(1.045)}
+.af figcaption{padding:16px 18px 20px;display:flex;flex-direction:column;gap:6px;flex:1}
+.af-no{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.16em;font-weight:800;color:var(--c-gold)}
+.af figcaption b{font-family:"Roboto Slab",serif;font-size:17.5px;font-weight:700;line-height:1.22}
+.af-txt{font-size:14.5px;color:var(--c-muted);line-height:1.45}
+
+.af-cta{margin-top:var(--s5);background:var(--c-emerald);border-radius:20px;padding:clamp(24px,3vw,36px);
+  display:flex;align-items:center;justify-content:space-between;gap:var(--s4);flex-wrap:wrap;position:relative;overflow:hidden}
+.af-cta b{display:block;font-family:"Roboto Slab",serif;font-size:clamp(20px,2.2vw,27px);color:#FBF6EA;margin-bottom:8px}
+.af-cta span{display:block;color:var(--c-dark-muted);font-size:16.5px;max-width:56ch}
+.af-cta .btn{flex:none}
+
+.clients-band{background:var(--c-emerald);padding:26px 0 30px;position:relative;overflow:hidden}
+.cb-lab{text-align:center;margin-bottom:18px}
+.cb-lab span{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--c-gold-2)}
+.clients-band .ticker{margin:0 0 10px;max-width:none}
+.clients-band .ticker-line{animation-duration:54s}
+.clients-band .ticker-line.rev{animation-direction:reverse;animation-duration:66s}
+.clients-band .tk{border-right:1px solid rgba(255,255,255,.14);height:38px;padding:0 28px}
+.clients-band .tk img{filter:brightness(0) invert(1);opacity:.8}
+.clients-band .tk:hover img{opacity:1}
+.clients-band .tk-word{color:#F3EEDF;font-size:17.5px}
+.clients-band .tk i{color:var(--c-dark-muted);font-size:13.5px}
+@media(max-width:700px){.clients-band .tk{padding:0 18px;height:34px}.clients-band .tk i{font-size:12.5px}}
+/* ——— фирменные артефакты, нарисованные нами ——— */
+.mock{background:var(--c-card);border:1px solid var(--c-line);border-radius:14px;overflow:hidden;
+  font-size:13px;line-height:1.4;color:var(--c-ink);box-shadow:0 22px 44px -34px rgba(20,58,45,.5)}
+.mock-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;
+  background:var(--c-emerald);color:#F3EEDF}
+.mock-top b{font-family:"Roboto Slab",serif;font-size:14.5px;font-weight:700}
+.chip{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 9px;border-radius:999px;border:1px solid rgba(199,154,69,.5);color:var(--c-gold-2);white-space:nowrap}
+.chip.warn{border-color:rgba(201,149,43,.6);color:#E7BE6A}
+.chip.live{border-color:rgba(62,142,94,.7);color:#7DD3A0}
+.mock-alert{padding:10px 16px;background:rgba(176,130,46,.12);border-top:1px solid var(--c-line);font-size:12.5px;color:#7A5A14}
+.mock-alert.red{background:rgba(155,59,46,.1);color:#8C3626}
+.mock-foot{display:flex;gap:16px;padding:9px 16px;border-top:1px solid var(--c-line);font-size:11.5px;color:var(--c-muted)}
+.goal-dot::before{content:"";display:inline-block;width:8px;height:8px;border-radius:2px;background:var(--c-gold);margin-right:6px;transform:rotate(45deg)}
+
+/* зрелость */
+.mz{padding:14px 16px;display:grid;gap:11px}
+.mz-row{display:grid;grid-template-columns:1fr 100px auto;gap:10px;align-items:center}
+.mz-lab{font-size:12.5px;color:var(--c-ink)}
+.mz-track{position:relative;height:8px;background:var(--c-bg-2);border-radius:99px}
+.mz-now{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--c-emerald-2),var(--c-emerald));border-radius:99px}
+.mz-goal{position:absolute;top:-3px;width:2px;height:14px;background:var(--c-gold)}
+.mz-num{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:var(--c-muted);white-space:nowrap}
+.mz-num i{color:var(--c-gold);font-style:normal}
+
+/* предиктивная */
+.pm{width:100%;border-collapse:collapse;font-size:12.5px}
+.pm th{background:var(--c-bg-2);text-align:left;padding:8px 14px;font-size:10.5px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--c-muted);font-family:ui-monospace,Menlo,monospace}
+.pm td{padding:8px 14px;border-top:1px solid var(--c-line-soft);font-variant-numeric:tabular-nums}
+.pill-ok,.pill-warn,.pill-bad{padding:3px 8px;border-radius:99px;font-size:11.5px;font-weight:700}
+.pill-ok{background:rgba(62,142,94,.14);color:#2C7A4B}
+.pill-warn{background:rgba(201,149,43,.16);color:#8A6412}
+.pill-bad{background:rgba(155,59,46,.13);color:#9B3B2E}
+.pm-chart{padding:10px 14px 4px;position:relative}
+.pm-chart svg{width:100%;height:80px}
+.pm-chart polyline{fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.pm-plan{stroke:var(--c-line);stroke-dasharray:5 5}
+.pm-fact{stroke:var(--c-gold)}
+.pm-dot{fill:var(--c-gold)}
+.pm-legend{display:flex;gap:14px;font-size:11px;color:var(--c-muted);padding-bottom:8px}
+.lg::before{content:"";display:inline-block;width:14px;height:2px;margin-right:6px;vertical-align:middle}
+.lg.plan::before{background:var(--c-line)}
+.lg.fact::before{background:var(--c-gold)}
+
+/* дашборд */
+.dash-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--c-line-soft)}
+.dash-kpi > div{background:var(--c-card);padding:11px 13px}
+.dash-kpi span{display:block;font-size:11px;color:var(--c-muted)}
+.dash-kpi b{display:block;font-family:"Roboto Slab",serif;font-size:17px;margin:3px 0;font-variant-numeric:tabular-nums}
+.dash-kpi i{font-style:normal;font-size:11.5px;font-weight:700}
+.dash-kpi .up{color:#2C7A4B}.dash-kpi .down{color:#9B3B2E}
+.dash-body{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;padding:14px}
+.dash-chart svg{width:100%;height:96px}
+.dash-chart rect{fill:var(--c-emerald-2);opacity:.85;rx:3}
+.dash-chart rect.hot{fill:var(--c-gold)}
+.dash-cap{display:block;font-size:11px;color:var(--c-muted);margin-top:4px}
+.dash-funnel{display:grid;gap:7px;align-content:start}
+.fn{display:grid;grid-template-columns:86px 1fr auto;gap:8px;align-items:center;font-size:11.5px}
+.fn span{color:var(--c-muted)}
+.fn div{height:9px;background:linear-gradient(90deg,var(--c-emerald),var(--c-emerald-2));border-radius:99px}
+.fn b{font-variant-numeric:tabular-nums;font-size:12px}
+
+/* игроки */
+.sg-bar{display:flex;height:42px;margin:14px 16px 12px;border-radius:10px;overflow:hidden}
+.sg{display:grid;place-items:center;color:#fff;font-family:"Roboto Slab",serif;font-weight:800;font-size:14px}
+.sg-a{background:#1C7A52}.sg-b{background:#3E8E5E}.sg-c{background:#C79A45}.sg-d{background:#B0822E}.sg-e{background:#9B3B2E}
+.sg-legend{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:0 16px 14px}
+.lgi{display:grid;gap:2px;font-size:11px;color:var(--c-muted)}
+.lgi b{font-family:"Roboto Slab",serif;font-size:13px;color:var(--c-ink)}
+.lgi em{font-style:normal;font-weight:700;color:var(--c-emerald);font-variant-numeric:tabular-nums}
+.dot{width:9px;height:9px;border-radius:2px;display:inline-block}
+.dot-a{background:#1C7A52}.dot-b{background:#3E8E5E}.dot-c{background:#C79A45}.dot-d{background:#B0822E}.dot-e{background:#9B3B2E}
+
+/* экономика */
+.ec{width:100%;border-collapse:collapse;font-size:12.5px}
+.ec td{padding:9px 16px;border-top:1px solid var(--c-line-soft)}
+.ec td:first-child{border-top-color:var(--c-line-soft)}
+.ec .neg{color:#9B3B2E;font-weight:700;font-variant-numeric:tabular-nums}
+.ec .pos{color:#2C7A4B;font-weight:700;font-variant-numeric:tabular-nums}
+.ec-total{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--c-emerald);color:#F3EEDF}
+.ec-total b{font-family:"Roboto Slab",serif;font-size:19px;color:var(--c-gold-2);font-variant-numeric:tabular-nums}
+
+/* кабинет */
+.mock-kab{background:var(--c-bg-2)}
+.kab-bar{display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--c-emerald);color:#F3EEDF;font-size:11.5px}
+.kab-logo{width:22px;height:22px;border-radius:6px;background:var(--c-gold);color:#fff;display:grid;place-items:center;
+  font-family:"Roboto Slab",serif;font-weight:900;font-size:13px}
+.kab-nav{opacity:.7}.kab-nav.on{opacity:1;color:var(--c-gold-2);font-weight:700}
+.kab-body{display:grid;grid-template-columns:1.4fr 1fr;gap:12px;padding:14px}
+.kab-mod{background:var(--c-card);border:1px solid var(--c-line);border-radius:11px;padding:12px 14px;margin-bottom:10px}
+.kab-mod.ghost{opacity:.55}
+.kab-no{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;color:var(--c-gold);display:block}
+.kab-mod b{display:block;font-family:"Roboto Slab",serif;font-size:15px;margin:5px 0 8px}
+.kab-progress{height:6px;background:var(--c-bg-2);border-radius:99px;overflow:hidden;margin-bottom:7px}
+.kab-progress div{height:100%;background:linear-gradient(90deg,var(--c-gold),var(--c-gold-2))}
+.kab-meta{font-size:11.5px;color:var(--c-muted)}
+.kab-card{background:var(--c-emerald);color:#F3EEDF;border-radius:11px;padding:12px 14px;margin-bottom:10px}
+.kab-card span{font-size:11px;color:var(--c-dark-muted);display:block}
+.kab-card b{display:block;font-family:"Roboto Slab",serif;font-size:14.5px;margin:4px 0}
+.kab-card i{font-style:normal;font-size:11.5px;color:var(--c-gold-2)}
+
+/* онбординг */
+.ob{display:grid;gap:8px;padding:14px 16px}
+.ob-step{display:grid;grid-template-columns:62px 1fr auto;gap:10px;align-items:center;padding:9px 12px;
+  border:1px solid var(--c-line);border-radius:10px;background:var(--c-bg-2);font-size:12.5px}
+.ob-step b{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;color:var(--c-muted)}
+.ob-step i{font-style:normal;font-size:11px;color:var(--c-muted)}
+.ob-step.done{border-color:rgba(62,142,94,.45)}
+.ob-step.done i{color:#2C7A4B;font-weight:700}
+.ob-step.now{border-color:var(--c-gold);background:rgba(199,154,69,.12)}
+.ob-step.now i{color:#8A6412;font-weight:700}
+.ob-foot{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 14px}
+.ob-foot div{background:var(--c-emerald);color:#F3EEDF;border-radius:10px;padding:10px 12px}
+.ob-foot b{display:block;font-family:"Roboto Slab",serif;font-size:19px;color:var(--c-gold-2)}
+.ob-foot span{font-size:11px;color:var(--c-dark-muted)}
+
+/* чаты: второй мозг и тренажер */
+.chat{padding:14px 16px;display:grid;gap:9px;background:var(--c-bg-2);min-height:190px;align-content:start}
+.msg{max-width:86%;padding:9px 12px;border-radius:12px;font-size:12.5px;line-height:1.45;opacity:0;transform:translateY(8px)}
+.chat.play .msg{animation:msgIn .45s cubic-bezier(.2,.7,.3,1) forwards}
+.chat.play .msg:nth-child(1){animation-delay:.1s}
+.chat.play .msg:nth-child(2){animation-delay:1.0s}
+.chat.play .msg:nth-child(3){animation-delay:2.0s}
+.chat.play .msg:nth-child(4){animation-delay:3.0s}
+.chat.play .msg:nth-child(5){animation-delay:3.9s}
+.chat.play .msg:nth-child(6){animation-delay:4.8s}
+@keyframes msgIn{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.msg{opacity:1;transform:none;animation:none!important}}
+.msg.me{justify-self:end;background:var(--c-emerald);color:#F3EEDF;border-bottom-right-radius:4px}
+.msg.bot{justify-self:start;background:var(--c-card);border:1px solid var(--c-line);border-bottom-left-radius:4px}
+.msg.typing{display:flex;gap:4px;padding:11px 14px;background:var(--c-card);border:1px solid var(--c-line);justify-self:start}
+.msg.typing i{width:6px;height:6px;border-radius:50%;background:var(--c-muted);animation:blink 1.2s infinite}
+.msg.typing i:nth-child(2){animation-delay:.2s}.msg.typing i:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.tr-score{display:grid;gap:8px;padding:12px 16px;border-top:1px solid var(--c-line)}
+.tr-score > div{display:grid;grid-template-columns:1fr 92px 30px;gap:10px;align-items:center;font-size:11.5px;color:var(--c-muted)}
+.tr-score .bar{height:7px;background:var(--c-bg-2);border-radius:99px;overflow:hidden}
+.tr-score .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c-gold),var(--c-gold-2))}
+.tr-score b{font-variant-numeric:tabular-nums;color:var(--c-emerald);font-size:13px;text-align:right}
+
+/* ——— развернутые демо: дашборд и предиктивная модель ——— */
+.demo-wrap{margin-top:var(--s4)}
+.demo-toggle{display:inline-flex;align-items:center;gap:10px;background:transparent;border:1px solid var(--c-gold);
+  color:var(--c-emerald);font-family:"Manrope",sans-serif;font-weight:700;font-size:15.5px;padding:13px 22px;
+  border-radius:10px;cursor:pointer;transition:background .18s ease,color .18s ease;min-height:44px}
+.demo-toggle:hover{background:var(--c-gold);color:#19120A}
+.demo-toggle svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;transition:transform .22s ease}
+.demo-toggle[aria-expanded="true"] svg{transform:rotate(180deg)}
+.dark .demo-toggle{border-color:var(--c-gold-2);color:var(--c-gold-2)}
+.dark .demo-toggle:hover{background:var(--c-gold-2);color:#19120A}
+.demo-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .5s cubic-bezier(.2,.7,.3,1),opacity .4s ease,margin .4s ease}
+.demo-panel.open{max-height:1800px;opacity:1;margin-top:var(--s3)}
+
+.df-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--c-line-soft)}
+.df-kpi > div{background:var(--c-card);padding:13px 15px}
+.df-kpi span{display:block;font-size:11.5px;color:var(--c-muted)}
+.df-kpi b{display:block;font-family:"Roboto Slab",serif;font-size:20px;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.df-kpi i{font-style:normal;font-size:11.5px;font-weight:700}
+.df-kpi .up{color:#2C7A4B}.df-kpi .down{color:#9B3B2E}
+.spark{width:100%;height:26px;margin-top:6px}
+.spark polyline{fill:none;stroke:#2C7A4B;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.spark.down polyline{stroke:#9B3B2E}
+
+.df-main{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;padding:12px}
+.df-main2{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 12px 12px}
+@media(max-width:820px){.df-main,.df-main2{grid-template-columns:1fr}.df-kpi{grid-template-columns:repeat(2,1fr)}}
+.df-card{background:var(--c-bg-2);border:1px solid var(--c-line);border-radius:12px;padding:12px 14px}
+.df-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:8px}
+.df-head b{font-family:"Roboto Slab",serif;font-size:13.5px}
+.df-head span{font-size:11px;color:var(--c-muted)}
+.trend{width:100%;height:170px}
+.grid-lines line{stroke:var(--c-line);stroke-width:1;stroke-dasharray:3 6}
+.trend polyline{fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.ln-plan{stroke:var(--c-line);stroke-dasharray:6 6}
+.ln-fact{stroke:var(--c-gold);stroke-dasharray:1400;stroke-dashoffset:1400}
+.demo-panel.open .ln-fact,.af-live .ln-fact{animation:draw 1.6s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pt{fill:var(--c-gold)}
+.gap{stroke:#9B3B2E;stroke-width:2;stroke-dasharray:4 4}
+.df-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--c-muted);margin-top:6px}
+.lg.note{color:var(--c-emerald);font-weight:700}
+.donut-wrap{display:flex;gap:14px;align-items:center}
+.donut{width:118px;height:118px;flex:none;transform:rotate(-90deg)}
+.donut circle{fill:none;stroke-width:13}
+.d-bg{stroke:var(--c-line-soft)}
+.d-1{stroke:#143A2D}.d-2{stroke:#C79A45}.d-3{stroke:#3E8E5E}
+.d-num,.d-lab{transform:rotate(90deg);transform-origin:60px 60px;text-anchor:middle;font-family:"Roboto Slab",serif}
+.d-num{font-size:19px;font-weight:800;fill:var(--c-ink)}
+.d-lab{font-size:10px;fill:var(--c-muted)}
+.d-legend{display:grid;gap:7px;font-size:11.5px;color:var(--c-muted)}
+.d-legend div{display:flex;align-items:center;gap:7px}
+.d-legend b{margin-left:auto;color:var(--c-ink);font-variant-numeric:tabular-nums}
+.d-legend i{width:9px;height:9px;border-radius:2px;display:block}
+.c1{background:#143A2D}.c2{background:#C79A45}.c3{background:#3E8E5E}
+.team{width:100%;border-collapse:collapse;font-size:12px}
+.team td{padding:7px 0;border-top:1px solid var(--c-line-soft)}
+.team td:last-child{text-align:right}
+
+.pmf{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+@media(max-width:820px){.pmf{grid-template-columns:1fr}}
+.pmf-left,.pmf-right{background:var(--c-bg-2);border:1px solid var(--c-line);border-radius:12px;padding:12px 14px}
+.pmf-head{font-family:"Roboto Slab",serif;font-size:13px;margin:14px 0 8px}
+.drv{display:grid;grid-template-columns:1fr 84px 54px;gap:9px;align-items:center;font-size:11.5px;color:var(--c-muted);margin-bottom:6px}
+.drv .bar{height:7px;background:var(--c-line-soft);border-radius:99px;overflow:hidden}
+.drv .bar i{display:block;height:100%;background:#9B3B2E}
+.drv .bar.ok i{background:#2C7A4B}
+.drv b{text-align:right;font-variant-numeric:tabular-nums;font-size:12px;color:var(--c-ink)}
+.pmf-gap{margin-top:8px;padding:10px 12px;background:rgba(155,59,46,.1);border-radius:10px}
+.pmf-gap b{display:block;font-family:"Roboto Slab",serif;font-size:16px;color:#8C3626}
+.pmf-gap span{font-size:11.5px;color:var(--c-muted)}
+.pmf-act{margin-top:10px;font-size:11.5px;color:var(--c-muted)}
+.pmf-act span{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--c-gold)}
+.pmf-act ul{list-style:none;margin-top:6px;display:grid;gap:4px}
+.pmf-act li{padding-left:16px;position:relative}
+.pmf-act li::before{content:"";position:absolute;left:0;top:7px;width:7px;height:7px;background:var(--c-gold);border-radius:2px;transform:rotate(45deg)}
+
+/* штаб компании: как в продукте */
+.mock-hub{background:#F4EFDF}
+.hub-hero{position:relative;background:linear-gradient(160deg,#4E6B33,#3E5A2A);padding:18px 20px 16px;overflow:hidden}
+.hub-kick{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.hub-h1{display:block;font-family:"Roboto Slab",serif;font-size:26px;font-weight:900;color:#fff;text-transform:uppercase;margin:6px 0 7px;letter-spacing:-.01em}
+.hub-hero p{font-size:11.5px;color:rgba(255,255,255,.82);max-width:52ch;line-height:1.45}
+.hub-stats{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.hub-stats div{background:rgba(255,255,255,.14);border-radius:9px;padding:7px 12px;min-width:66px}
+.hub-stats b{display:block;font-family:"Roboto Slab",serif;font-size:17px;color:#fff;line-height:1}
+.hub-stats span{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);font-family:ui-monospace,Menlo,monospace}
+.hub-word{position:absolute;right:10px;top:-8px;font-family:"Roboto Slab",serif;font-weight:900;font-size:60px;
+  color:rgba(255,255,255,.1);letter-spacing:.02em;pointer-events:none}
+.hub-search{display:flex;gap:7px;padding:12px 16px 8px;align-items:center;flex-wrap:wrap}
+.hs-field{flex:1;min-width:150px;background:#fff;border:1px solid #E2D9BF;border-radius:9px;padding:9px 12px;
+  font-size:11px;color:#9B947F}
+.hs-btn{background:#fff;border:1px solid #E2D9BF;border-radius:9px;padding:9px 11px;font-size:10.5px;color:var(--c-ink);white-space:nowrap}
+.hub-lab{display:flex;align-items:baseline;gap:9px;padding:8px 16px 6px;font-family:"Roboto Slab",serif;
+  font-size:13px;font-weight:800;text-transform:uppercase;color:var(--c-ink);border-left:3px solid var(--c-gold);margin:6px 16px 0}
+.hub-lab i{font-style:normal;font-size:10px;letter-spacing:.04em;text-transform:none;color:var(--c-muted);font-family:"Manrope",sans-serif;font-weight:500}
+.hub-lab.lock{border-left-color:#4E6B33}
+.hb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 16px 14px}
+.hb-grid.one{grid-template-columns:repeat(3,1fr)}
+.hb-grid.one .hb{grid-column:span 1}
+@media(max-width:620px){.hb-grid,.hb-grid.one{grid-template-columns:repeat(2,1fr)}}
+.hb{background:#fff;border:1px solid #EDE4CE;border-radius:11px;padding:11px 12px;display:grid;gap:4px;align-content:start}
+.hb.locked{background:#FBF7E9;border-color:#D9CBA2}
+.hb-ic{width:24px;height:24px;border-radius:7px;background:#F1EAD6;display:grid;place-items:center;font-size:12px;margin-bottom:2px}
+.hb-n{font-family:"Roboto Slab",serif;font-size:12.5px;font-weight:800;text-transform:uppercase;line-height:1.15}
+.hb-c{font-size:9.5px;color:var(--c-muted);font-family:ui-monospace,Menlo,monospace;letter-spacing:.04em}
+.hb-d{font-size:10.5px;color:var(--c-muted);line-height:1.4}
+.hb-tag{display:inline-block;margin-top:5px;margin-right:4px;font-family:ui-monospace,Menlo,monospace;font-size:8.5px;
+  letter-spacing:.1em;text-transform:uppercase;background:#F1EAD6;border-radius:99px;padding:4px 8px;color:#6B6450}
+.hb-tag.warn{background:rgba(176,130,46,.2);color:#7A5A14}
+
+/* завод обучения */
+.zv-list{display:grid;gap:8px;padding:14px 16px}
+.zv{display:grid;grid-template-columns:1fr 92px 40px;gap:10px;align-items:center;font-size:12.5px;color:var(--c-muted)}
+.zv.done span{color:var(--c-ink)}
+.zv-bar{height:7px;background:var(--c-bg-2);border-radius:99px;overflow:hidden}
+.zv-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c-emerald),var(--c-emerald-2))}
+.zv.now .zv-bar i{background:linear-gradient(90deg,var(--c-gold),var(--c-gold-2))}
+.zv b{text-align:right;font-variant-numeric:tabular-nums;font-size:12px;color:var(--c-ink)}
+.zv-foot{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 14px}
+.zv-foot div{background:var(--c-emerald);border-radius:10px;padding:10px 12px;color:#F3EEDF}
+.zv-foot b{display:block;font-family:"Roboto Slab",serif;font-size:19px;color:var(--c-gold-2)}
+.zv-foot span{font-size:11px;color:var(--c-dark-muted)}
+
+/* завод обучения: полный вид */
+.mock-zavodf{background:#F4EFDF}
+.zf-hero{position:relative;background:linear-gradient(160deg,#1C4C3B,#143A2D);padding:18px 20px 16px;overflow:hidden}
+.zf-kick{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.zf-h1{display:block;font-family:"Roboto Slab",serif;font-size:26px;font-weight:900;color:#fff;text-transform:uppercase;margin:6px 0 7px}
+.zf-hero p{font-size:11.5px;color:rgba(255,255,255,.82);max-width:50ch;line-height:1.45}
+.zf-stats{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.zf-stats div{background:rgba(255,255,255,.12);border-radius:9px;padding:7px 12px;min-width:62px}
+.zf-stats b{display:block;font-family:"Roboto Slab",serif;font-size:17px;color:var(--c-gold-2);line-height:1}
+.zf-stats span{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.7);font-family:ui-monospace,Menlo,monospace}
+.zf-body{display:grid;grid-template-columns:1.15fr 1fr;gap:10px;padding:0 0 14px}
+@media(max-width:700px){.zf-body{grid-template-columns:1fr}}
+.zl-list{display:grid;gap:6px;padding:8px 16px 0}
+.zl{display:grid;grid-template-columns:52px 1fr auto auto;gap:9px;align-items:center;background:#fff;
+  border:1px solid #EDE4CE;border-radius:9px;padding:9px 11px;font-size:11px}
+.zl b{font-family:"Roboto Slab",serif;font-size:12.5px;font-weight:700}
+.zl-no{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.08em;color:var(--c-muted)}
+.zl-m{font-size:10px;color:var(--c-muted)}
+.zl-st{font-family:ui-monospace,Menlo,monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--c-muted)}
+.zl.done{border-color:rgba(28,122,82,.4)}.zl.done .zl-st{color:#1C7A52;font-weight:700}
+.zl.now{border-color:var(--c-gold);background:#FBF5E6}.zl.now .zl-st{color:#8A6412;font-weight:700}
+.zf-people{display:grid;gap:7px;padding:8px 16px 0}
+.zp{display:grid;grid-template-columns:1fr 78px 34px;gap:8px;align-items:center;font-size:11px;color:var(--c-muted)}
+.zf-bar{height:7px;background:#EDE4CE;border-radius:99px;overflow:hidden}
+.zf-bar i{display:block;height:100%;background:linear-gradient(90deg,#1C7A52,#3E8E5E)}
+.zp.warn .zf-bar i{background:linear-gradient(90deg,#9B3B2E,#C0563F)}
+.zp b{text-align:right;font-variant-numeric:tabular-nums;color:var(--c-ink);font-size:11.5px}
+.zf-trainer{margin:12px 16px 0;background:#fff;border:1px solid #EDE4CE;border-radius:11px;padding:11px 12px;display:grid;gap:6px}
+.zf-tl{font-family:ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--c-gold)}
+.zf-msg{font-size:11px;padding:7px 10px;border-radius:9px;max-width:92%}
+.zf-msg.bot{background:#F4EFDF;justify-self:start}
+.zf-msg.me{background:var(--c-emerald);color:#F3EEDF;justify-self:end}
+.zf-score{display:grid;grid-template-columns:1fr 70px 26px;gap:8px;align-items:center;font-size:10px;color:var(--c-muted);margin-top:2px}
+.zf-score i{display:block;height:6px;background:linear-gradient(90deg,var(--c-gold),var(--c-gold-2));border-radius:99px}
+.zf-score b{text-align:right;font-size:11px;color:var(--c-emerald)}
+
+
+/* широкая раскладка для больших артефактов */
+.wide-claim{display:flex;align-items:flex-start;gap:clamp(18px,2.4vw,34px);margin-bottom:var(--s4);max-width:none}
+.wc-num{font-family:"Roboto Slab",serif;font-size:clamp(56px,7.4vw,104px);font-weight:900;line-height:.82;
+  color:var(--c-gold-2);flex:none}
+.wide-claim.light .wc-num{color:var(--c-gold)}
+.wc-text{font-size:clamp(18px,1.6vw,23px);line-height:1.5;color:var(--c-dark-muted);max-width:66ch;padding-top:6px}
+.wide-claim.light .wc-text{color:var(--c-muted)}
+.wc-text b{color:#FBF6EA;font-weight:800}
+.wide-claim.light .wc-text b{color:var(--c-ink)}
+.wide-shot{margin-bottom:var(--s4)}
+.wide-shot .mock{box-shadow:0 40px 80px -46px rgba(0,0,0,.6)}
+.wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3)}
+@media(max-width:1020px){.wc-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.wc-grid{grid-template-columns:1fr}}
+.wc-i{border-top:2px solid rgba(199,154,69,.5);padding-top:13px}
+.wc-grid.light .wc-i{border-top-color:var(--c-gold)}
+.wc-ic{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.16em;font-weight:800;color:var(--c-gold-2);display:block;margin-bottom:7px}
+.wc-grid.light .wc-ic{color:var(--c-gold)}
+.wc-i b{display:block;font-family:"Roboto Slab",serif;font-size:18px;line-height:1.2;color:#FBF6EA;margin-bottom:7px}
+.wc-grid.light .wc-i b{color:var(--c-ink)}
+.wc-i p{font-size:15px;line-height:1.5;color:var(--c-dark-muted)}
+.wc-grid.light .wc-i p{color:var(--c-muted)}
+.hub-sec .wide-shot .mock-hub{transform:none}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<header class="topbar"><div class="wrap"><div class="tb-logo"><i>A</i><span>Платформа A-Players</span></div><a class="btn" href="#form">Демо платформы →</a></div></header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="mono-em" width="118" height="126" patternUnits="userSpaceOnUse">
+      <g font-family="'Roboto Slab',serif" font-weight="800" text-anchor="middle">
+        <text x="30" y="64" font-size="62" fill="rgba(20,58,45,.10)">A</text>
+        <text x="89" y="122" font-size="62" fill="rgba(20,58,45,.10)">A</text>
+      </g>
+    </pattern>
+    <pattern id="mono-gd" width="118" height="126" patternUnits="userSpaceOnUse">
+      <g font-family="'Roboto Slab',serif" font-weight="800" text-anchor="middle">
+        <text x="30" y="64" font-size="62" fill="rgba(199,154,69,.42)">A</text>
+        <text x="89" y="122" font-size="62" fill="rgba(199,154,69,.42)">A</text>
+      </g>
+    </pattern>
+    <pattern id="mono-canvas" width="118" height="126" patternUnits="userSpaceOnUse">
+      <g font-family="'Roboto Slab',serif" font-weight="800" text-anchor="middle">
+        <text x="30" y="64" font-size="62" fill="rgba(199,154,69,.62)">A</text>
+        <text x="89" y="122" font-size="62" fill="rgba(199,154,69,.62)">A</text>
+      </g>
+    </pattern>
+  </defs>
+</svg>
+
+<!-- HERO -->
+<section class="hero">
+  <svg class="bcanvas hero-mask" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <svg class="bcanvas hero-side" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="hero-g">
+      <div class="hero-copy">
+        <div class="pills">
+          <span class="pill">Платформа A-Players</span>
+          <span class="pill gold">Поток 2026 · старт в сентябре</span>
+        </div>
+
+        <h1>Операционная система вашей компании <span class="hl">за четыре месяца</span></h1>
+
+        <p class="hero-sub">Собственник и команда собирают управление под свою модель, нишу и фазу роста. На ваших цифрах, по лекалам компаний, которые уже выросли кратно.</p>
+        <ul class="hero-bul">
+          <li><b>Система, а не курс.</b> На выходе работающая конструкция внутри компании, а не конспект в столе</li>
+          <li><b>Собирает команда, ведет платформа.</b> От вас два часа в неделю, остальное делают люди по готовым шаблонам</li>
+          <li><b>Остается навсегда.</b> Артефакты, база знаний и второй мозг не уходят вместе с сотрудниками</li>
+        </ul>
+
+        <div class="hero-facts">
+          <div><b>16</b><span>артефактов остаются в компании</span></div>
+          <div><b>2 часа</b><span>вашего времени в неделю</span></div>
+          <div><b>1 неделя</b><span>до первого результата в бизнесе</span></div>
+        </div>
+
+        <div class="hero-cta">
+          <a class="btn magnet" href="#form">Записаться на демо <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5"/></svg></a>
+          <div class="cta-side">
+            <b>30 минут, живой показ</b>
+            <span>Проведем по платформе на реальном потоке и покажем, что появится у вас через месяц.</span>
+          </div>
+        </div>
+
+        </div>
+
+      <div class="hero-visual">
+        <div class="frame hv-main">
+          <div class="frame-bar"><i></i><i></i><i></i><span>платформа · трекшн недели по компании</span></div>
+          <img src="assets/app-05-trakshn.webp" alt="Экран платформы: что сдвинулось в компании за неделю, цель, результат и метрика" fetchpriority="high" width="1500" height="1041">
+        </div>
+        <div class="frame hv-sub">
+          <div class="frame-bar"><i></i><i></i><i></i><span>управленческая рамка</span></div>
+          <img src="assets/app-ramka.webp" alt="Управленческая рамка внутри платформы: ритуалы, частота и ответственные" loading="lazy" width="1440" height="1000">
+        </div>
+        <div class="hv-badge">
+          <div class="hvb-num">+10-20%</div>
+          <div class="hvb-lab">к выручке дает только воронка дожима, собранная на втором месяце</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КЛИЕНТЫ -->
+<section class="clients-band">
+  <svg class="bcanvas fade-edge" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-gd)"/></svg>
+  <div class="cb-lab"><span>Компании, которые собрали систему на практикуме</span></div>
+  <div class="ticker"><div class="ticker-line"><div class="tk"><img src="assets/skyeng.svg" alt="Skypro от Skyeng"><i>0 → 2,2 млрд ₽ за 15 месяцев</i></div><div class="tk"><img src="assets/stonetree.webp" alt="Stonetree Holding"><i>$225 млн под управлением, Дубай</i></div><div class="tk"><span class="tk-word">UMA</span><i>1 млрд ₽ за год, +47% к плану</i></div><div class="tk"><img src="assets/refocus.svg" alt="Refocus"><i>×30, до $1 млн в месяц</i></div><div class="tk"><span class="tk-word">CLEVER</span><i>3+ млрд ₽, офисы в 5 странах</i></div><div class="tk"><img src="assets/qacademy.svg" alt="Qmarketing Academy"><i>×6, +240 млн ₽ за 13 месяцев</i></div><div class="tk"><span class="tk-word">Overgear</span><i>$2,9 млн в месяц, gaming</i></div><div class="tk"><img src="assets/skyeng.svg" alt="Skypro от Skyeng"><i>0 → 2,2 млрд ₽ за 15 месяцев</i></div><div class="tk"><img src="assets/stonetree.webp" alt="Stonetree Holding"><i>$225 млн под управлением, Дубай</i></div><div class="tk"><span class="tk-word">UMA</span><i>1 млрд ₽ за год, +47% к плану</i></div><div class="tk"><img src="assets/refocus.svg" alt="Refocus"><i>×30, до $1 млн в месяц</i></div><div class="tk"><span class="tk-word">CLEVER</span><i>3+ млрд ₽, офисы в 5 странах</i></div><div class="tk"><img src="assets/qacademy.svg" alt="Qmarketing Academy"><i>×6, +240 млн ₽ за 13 месяцев</i></div><div class="tk"><span class="tk-word">Overgear</span><i>$2,9 млн в месяц, gaming</i></div></div></div>
+  <div class="ticker"><div class="ticker-line rev"><div class="tk"><span class="tk-word">Volna</span><i>релокация врачей в ОАЭ</i></div><div class="tk"><span class="tk-word">Trend Surfers</span><i>рекорд продаж за всю историю</i></div><div class="tk"><span class="tk-word">Бюро Су</span><i>рекорд по выручке</i></div><div class="tk"><span class="tk-word">Артрейд</span><i>впервые вышли на целевой ROAS</i></div><div class="tk"><span class="tk-word">SternMeister</span><i>EdTech, Германия</i></div><div class="tk"><span class="tk-word">Red Bananas</span><i>рекорд по выручке</i></div><div class="tk"><span class="tk-word">Энергооборудование</span><i>сегментация клиентов и рост маржи</i></div><div class="tk"><span class="tk-word">Sertifikaciya</span><i>система управления с нуля</i></div><div class="tk"><span class="tk-word">Volna</span><i>релокация врачей в ОАЭ</i></div><div class="tk"><span class="tk-word">Trend Surfers</span><i>рекорд продаж за всю историю</i></div><div class="tk"><span class="tk-word">Бюро Су</span><i>рекорд по выручке</i></div><div class="tk"><span class="tk-word">Артрейд</span><i>впервые вышли на целевой ROAS</i></div><div class="tk"><span class="tk-word">SternMeister</span><i>EdTech, Германия</i></div><div class="tk"><span class="tk-word">Red Bananas</span><i>рекорд по выручке</i></div><div class="tk"><span class="tk-word">Энергооборудование</span><i>сегментация клиентов и рост маржи</i></div><div class="tk"><span class="tk-word">Sertifikaciya</span><i>система управления с нуля</i></div></div></div>
+</section>
+
+<!-- ПОЛОСА ДОВЕРИЯ -->
+<section class="trust haspat">
+  <svg class="bcanvas side-l" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div><div class="tnum" data-count="50" data-suffix="+ млрд ₽">0</div><div class="tlab">Выручки компаний в экосистеме</div></div>
+    <div><div class="tnum" data-count="100" data-suffix="+">0</div><div class="tlab">Управленцев выросли до уровня CCO и CEO</div></div>
+    <div><div class="tnum" data-count="80" data-suffix="+">0</div><div class="tlab">Компаний в 10 странах</div></div>
+    <div><div class="tnum" data-count="3" data-prefix="×">0</div><div class="tlab">Средний рост компаний за первый год</div></div>
+  </div>
+</section>
+
+<!-- ПРОБЛЕМА -->
+<section class="pad">
+  <svg class="bcanvas side-r" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">01</div><div><div class="kicker">Узнаете себя</div><h2>Компания выросла, а управление осталось ручным</h2></div></div>
+    <p class="lead">Если хотя бы два пункта про вас, платформа собрана ровно под эту задачу.</p>
+    <div class="grid g3" style="margin-top:var(--s4)">
+      <div class="card rv"><h3>Все решения идут через вас</h3><p>Руководители приходят с вопросами, а не с решениями. Без вас процессы останавливаются, отпуск превращается в работу из телефона.</p></div>
+      <div class="card rv"><h3>Результат скачет</h3><p>Месяц выстрелил, два провалились. Почему так вышло, понятно только задним числом, когда деньги уже потеряны.</p></div>
+      <div class="card rv"><h3>Вы до сих пор главный продавец</h3><p>Крупные сделки закрываете лично. Отдел без вас не дожимает, а нанять сильного руководителя страшно после прошлого опыта.</p></div>
+      <div class="card rv"><h3>Цифры живут в разных местах</h3><p>Отчеты собираются руками, каждый отдел считает по-своему, единой картины нет ни у кого, включая вас.</p></div>
+      <div class="card rv"><h3>Сильные люди не приживаются</h3><p>Нанимаете дорогих специалистов, а через три месяца расстаетесь. Каждый такой заход стоит компании несколько окладов.</p></div>
+      <div class="card rv"><h3>Курсы уже пробовали</h3><p>Знания есть, системы нет. Потому что учился один человек, а работает компания целиком.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="pad" style="background:var(--c-bg-alt)">
+  <div class="wrap">
+    <div class="zig" style="margin-top:0">
+      <div class="rv">
+        <div class="kicker">Как это выглядит в цифрах</div>
+        <h3>Пока системы нет, потери не видит никто</h3>
+        <p>Это реальный срез по компании после первого аудита на платформе: заявки без касаний, сделки без следующего шага, отказы без дожима. Деньги уже потрачены на трафик и зарплаты, а результата нет.</p>
+        <ul>
+          <li>Считается автоматически из вашей CRM</li>
+          <li>Видно, какая сумма возвращается в первый месяц</li>
+          <li>С этого экрана начинается сборка системы</li>
+        </ul>
+      </div>
+      <div class="rv"><div class="mock mock-poteri">
+      <div class="mock-top"><b>Где деньги теряются прямо сейчас</b><span class="chip warn">аудит за квартал</span></div>
+      <table class="ec"><tbody><tr><td>Заявки без касания дольше 7 дней</td><td class="q">214 шт</td><td class="neg">−8,6 млн ₽</td></tr><tr><td>Сделки без следующего шага</td><td class="q">96 шт</td><td class="neg">−3,9 млн ₽</td></tr><tr><td>Нет дожима после отказа</td><td class="q">178 шт</td><td class="neg">−5,2 млн ₽</td></tr><tr><td>Ошибки найма за год</td><td class="q">3 чел</td><td class="neg">−1,5 млн ₽</td></tr></tbody></table>
+      <div class="ec-total"><span>Итого мимо кассы за квартал</span><b>−19,2 млн ₽</b></div>
+    </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ЦЕНА БЕЗДЕЙСТВИЯ -->
+<section class="pad dark">
+  <svg class="bcanvas side-l" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-gd)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">02</div><div><div class="kicker">Цена бездействия</div><h2>Каждый месяц без системы стоит денег, просто счет не выставляют</h2></div></div>
+    <div class="grid g3" style="margin-top:var(--s4)">
+      <div class="card rv"><div class="n">Воронка</div><h3>10-30% выручки</h3><p>Теряется между этапами: заявки без касаний, сделки без дожима, клиенты, про которых забыли.</p></div>
+      <div class="card rv"><div class="n">Ваше время</div><h3>60% рабочей недели</h3><p>Уходит на тушение пожаров вместо стратегии и роста. Это время собственника по его же ставке.</p></div>
+      <div class="card rv"><div class="n">Найм</div><h3>500 000 ₽</h3><p>Стоит каждая ошибка найма: поиск, онбординг, упущенная выручка и повторный заход.</p></div>
+    </div>
+    <p class="quote">Пока система держится на собственнике, потолок компании равен его личной пропускной способности.</p>
+  </div>
+</section>
+
+<!-- РЕШЕНИЕ -->
+<section class="pad">
+  <svg class="bcanvas side-r" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">03</div><div><div class="kicker">Что это такое</div><h2>Не курс про управление. Конструктор вашей системы управления</h2></div></div>
+    <p class="lead">На платформе собственник и его команда шаг за шагом собирают операционную систему своей компании. Каждый шаг адаптируется под вашу модель, нишу, структуру, стиль управления и фазу, на которой сейчас бизнес. Вы не изучаете теорию менеджмента, вы собираете конструкцию, которой потом управляете.</p>
+    <div class="zig rev" style="margin-top:var(--s4)">
+      <div class="rv"><div class="mock mock-konstr">
+      <div class="mock-top"><b>Операционная система собирается по кубикам</b><span class="chip">месяц 2 из 4</span></div>
+      <div class="kb-grid"><div class="kb done"><span>Цели и OKR</span></div><div class="kb done"><span>Метрики и дашборд</span></div><div class="kb done"><span>Ритмы управления</span></div><div class="kb now"><span>CRM и регламент касаний</span></div><div class="kb now"><span>Портреты ролей</span></div><div class="kb "><span>Воронка найма</span></div><div class="kb "><span>Онбординг</span></div><div class="kb "><span>Плейбуки</span></div><div class="kb "><span>Второй мозг</span></div></div>
+      <div class="mock-foot"><span>собрано 3 из 9</span><span class="goal-dot">следующий блок открывается после внедрения</span></div>
+    </div></div>
+      <div class="rv">
+        <div class="big-num">9</div>
+        <h3>Блоков системы, которые собираются один за другим</h3>
+        <p>Следующий блок открывается, когда предыдущий внедрен в компании. Поэтому к финалу у вас собранная конструкция, а не девять начатых тем.</p>
+      </div>
+    </div>
+    <div class="grid g3" style="margin-top:var(--s5)">
+      <div class="card rv"><div class="n">Адаптация</div><h3>Под ваш контур</h3><p>Малому бизнесу не нужна система корпорации, растущей компании не хватает системы стартапа. Платформа подбирает уровень под вашу фазу.</p></div>
+      <div class="card rv"><div class="n">Лекала</div><h3>Практики выросших компаний</h3><p>Внутри инструменты в том виде, в котором они работают у единорогов, быстрорастущих технологических бизнесов и лидеров ниш. Адаптированные под ваш масштаб.</p></div>
+      <div class="card rv"><div class="n">Команда</div><h3>Учится не один человек</h3><p>Собственник и его core-команда проходят программу вместе и собирают систему каждый в своей зоне. Поэтому она остается в компании.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- КАК УСТРОЕНО -->
+<section class="pad" style="background:var(--c-bg-alt)">
+  <svg class="bcanvas fade-l" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">04</div><div><div class="kicker">Как устроена работа</div><h2>Каждый модуль превращается в артефакт внутри вашей компании</h2></div></div>
+    <div class="steps" style="margin-top:var(--s4)">
+      <div class="step rv"><h3>Живая встреча</h3><p>Раз в неделю. Александр разбирает тему и примеры из практики, отвечает на ваши вопросы. Запись и расшифровка приходят в течение суток.</p></div>
+      <div class="step rv"><h3>Задание под вашу роль</h3><p>Шаблоны, чек-листы и промпты. Задание не учебное: вы делаете его на своих данных и в своей компании.</p></div>
+      <div class="step rv"><h3>Внедрение за неделю</h3><p>Между встречами собираете артефакт: модель, регламент, дашборд, план найма. Минимум один результат в бизнес каждую неделю.</p></div>
+      <div class="step rv"><h3>Личный разбор</h3><p>Записываетесь напрямую к Александру, он смотрит ваш артефакт и ваши цифры и корректирует. Ограничения по количеству нет.</p></div>
+    </div>
+
+    <div class="zig">
+      <div class="rv">
+        <div class="big-num">01</div>
+        <h3>Модули, материалы и задания в одном кабинете</h3>
+        <p>Вся программа открывается по ходу потока. Внутри каждого модуля материалы, запись встречи, расшифровка и задание со сроком. Человек не ищет ничего в чатах.</p>
+        <ul>
+          <li>Прогресс виден и участнику, и его руководителю</li>
+          <li>Задание принимается с обратной связью, а не формально</li>
+          <li>Доступ к материалам остается после финала потока</li>
+        </ul>
+      </div>
+      <div class="rv"><div class="frame"><div class="frame-bar"><i></i><i></i><i></i><span>тренажер продаж на ИИ</span></div>
+      <div class="frame-live"><div class="mock mock-trainer">
+      <div class="mock-top"><b>Тренажер продаж на ИИ</b><span class="chip">ролевка 12 из 20</span></div>
+      <div class="chat" data-anim="trainer">
+        <div class="msg bot">Мне дорого. У конкурентов дешевле на 30%.</div>
+        <div class="msg me">Понимаю. Скажите, вы сравниваете по цене входа или по стоимости результата?</div>
+        <div class="msg bot">По цене, конечно.</div>
+        <div class="msg me">Тогда давайте посчитаем, во сколько вам обходится текущая конверсия. Это займет две минуты.</div>
+        <div class="msg typing"><i></i><i></i><i></i></div>
+      </div>
+      <div class="tr-score">
+        <div><span>Отработка цены</span><div class="bar"><i style="width:82%"></i></div><b>82</b></div>
+        <div><span>Вопросы вместо аргументов</span><div class="bar"><i style="width:64%"></i></div><b>64</b></div>
+        <div><span>Следующий шаг</span><div class="bar"><i style="width:91%"></i></div><b>91</b></div>
+      </div>
+    </div></div></div></div>
+    </div>
+
+    <div class="card rv" style="margin-top:var(--s4);background:var(--c-bg-2)">
+      <p style="font-size:17px;color:var(--c-ink)"><b>Исследование Гарвардской школы бизнеса и BCG на 758 консультантах:</b> те, кто работал с ИИ, выполняли на 12 процентов больше задач, делали их на 25 процентов быстрее и на 40 процентов качественнее. Самый большой прирост получили слабые исполнители: плюс 43 процента против плюс 17 у сильных. Именно поэтому ИИ в системе управления выравнивает результат команды, а не только ускоряет лучших.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ЧТО СОБИРАЕТЕ -->
+<section class="pad">
+  <svg class="bcanvas side-l" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">05</div><div><div class="kicker">Опись того, что останется у вас</div><h2>Семнадцать артефактов, собранных на ваших данных</h2></div></div>
+    <p class="lead rv" style="margin-top:-18px;margin-bottom:var(--s4)">Это не список тем программы. Каждый экран ниже вы соберете руками своей команды и оставите себе навсегда.</p>
+    <div class="af-grid">
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-zrelost">
+      <div class="mock-top"><b>Диагностика управленца</b><span class="chip">грейд B → A</span></div>
+      <div class="mz"><div class="mz-row"><span class="mz-lab">Управление по данным</span>
+      <div class="mz-track"><div class="mz-now" style="width:40%"></div><div class="mz-goal" style="left:80%"></div></div>
+      <span class="mz-num">40 <i>→</i> 80</span></div><div class="mz-row"><span class="mz-lab">Финансы и юнит-экономика</span>
+      <div class="mz-track"><div class="mz-now" style="width:30%"></div><div class="mz-goal" style="left:75%"></div></div>
+      <span class="mz-num">30 <i>→</i> 75</span></div><div class="mz-row"><span class="mz-lab">ИИ в управлении</span>
+      <div class="mz-track"><div class="mz-now" style="width:20%"></div><div class="mz-goal" style="left:85%"></div></div>
+      <span class="mz-num">20 <i>→</i> 85</span></div><div class="mz-row"><span class="mz-lab">Команда и найм</span>
+      <div class="mz-track"><div class="mz-now" style="width:55%"></div><div class="mz-goal" style="left:80%"></div></div>
+      <span class="mz-num">55 <i>→</i> 80</span></div><div class="mz-row"><span class="mz-lab">Стратегия и приоритеты</span>
+      <div class="mz-track"><div class="mz-now" style="width:35%"></div><div class="mz-goal" style="left:70%"></div></div>
+      <span class="mz-num">35 <i>→</i> 70</span></div></div>
+      <div class="mock-foot"><span>сейчас</span><span class="goal-dot">цель на квартал</span></div>
+    </div></div>
+        <figcaption><span class="af-no">01</span><b>Карта управленческой зрелости</b><span class="af-txt">Честная оценка вас и каждого руководителя по навыкам. Видно, кого двигать вверх, кого учить, с кем расставаться.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/a-pdp-top.webp" alt="Персональный план развития"></div>
+        <figcaption><span class="af-no">02</span><b>Персональный план развития</b><span class="af-txt">На каждого руководителя: что качает в этом квартале и по каким признакам поймете, что вырос.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/art-pdp.webp" alt="Дорожная карта квартала"></div>
+        <figcaption><span class="af-no">03</span><b>Дорожная карта квартала</b><span class="af-txt">Проекты, сроки и владельцы на одном экране. Видно, что реально сдвинется за три месяца.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-predikt">
+      <div class="mock-top"><b>Предиктивная модель квартала</b><span class="chip warn">прогноз 92% плана</span></div>
+      <table class="pm"><thead><tr><th>Период</th><th>План</th><th>Факт</th><th>Выполнение</th></tr></thead>
+      <tbody><tr><td>Нед 1</td><td>24 млн</td><td>26 млн</td>
+      <td><span class="pill-ok">104%</span></td></tr><tr><td>Нед 2</td><td>48 млн</td><td>51 млн</td>
+      <td><span class="pill-ok">106%</span></td></tr><tr><td>Нед 3</td><td>72 млн</td><td>69 млн</td>
+      <td><span class="pill-warn">96%</span></td></tr><tr><td>Нед 4</td><td>96 млн</td><td>88 млн</td>
+      <td><span class="pill-bad">92%</span></td></tr></tbody></table>
+      <div class="pm-chart">
+        <svg viewBox="0 0 320 90" preserveAspectRatio="none">
+          <polyline class="pm-plan" points="10,78 90,58 170,38 250,18 310,8"/>
+          <polyline class="pm-fact" points="10,76 90,56 170,42 250,30 310,26"/>
+          <circle class="pm-dot" cx="310" cy="26" r="4"/>
+        </svg>
+        <div class="pm-legend"><span class="lg plan">план</span><span class="lg fact">прогноз по факту</span></div>
+      </div>
+      <div class="mock-alert">Разрыв 8 млн ₽ виден на третьей неделе, а не в конце квартала</div>
+    </div></div>
+        <figcaption><span class="af-no">04</span><b>Предиктивная модель</b><span class="af-txt">Срыв плана виден за месяц до конца квартала, и его еще можно отыграть.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/app-ramka.webp" alt="Управленческая рамка"></div>
+        <figcaption><span class="af-no">05</span><b>Управленческая рамка и ритмы</b><span class="af-txt">Кто с кем и как часто встречается, что решается на каждой встрече, что уходит наверх.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-dash">
+      <div class="mock-top"><b>Дашборд руководителя</b><span class="chip">неделя 38</span></div>
+      <div class="dash-kpi">
+        <div><span>Выручка</span><b>18,4 млн</b><i class="up">+12%</i></div>
+        <div><span>Конверсия</span><b>9,4%</b><i class="up">+1,6 п.п.</i></div>
+        <div><span>Средний чек</span><b>412 тыс</b><i class="down">-3%</i></div>
+        <div><span>Цикл сделки</span><b>21 день</b><i class="up">-4 дня</i></div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-chart">
+          <svg viewBox="0 0 300 110" preserveAspectRatio="none">
+            <rect x="8" y="62" width="26" height="42"/><rect x="48" y="48" width="26" height="56"/>
+            <rect x="88" y="54" width="26" height="50"/><rect x="128" y="34" width="26" height="70"/>
+            <rect x="168" y="26" width="26" height="78"/><rect x="208" y="16" width="26" height="88"/>
+            <rect class="hot" x="248" y="8" width="26" height="96"/>
+          </svg>
+          <span class="dash-cap">выручка по неделям</span>
+        </div>
+        <div class="dash-funnel">
+          <div class="fn"><span>Лиды</span><div style="width:100%"></div><b>1 240</b></div>
+          <div class="fn"><span>Квалификация</span><div style="width:72%"></div><b>892</b></div>
+          <div class="fn"><span>Встреча</span><div style="width:41%"></div><b>508</b></div>
+          <div class="fn"><span>Счет</span><div style="width:22%"></div><b>272</b></div>
+          <div class="fn"><span>Оплата</span><div style="width:11%"></div><b>117</b></div>
+        </div>
+      </div>
+      <div class="mock-alert red">Красная зона: конверсия из встречи в счет упала на 6 п.п. у двух менеджеров</div>
+    </div></div>
+        <figcaption><span class="af-no">06</span><b>Дашборд руководителя</b><span class="af-txt">Каждый читает цифры своей зоны сам и приходит с решением, а не с вопросом.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/art-funnel.webp" alt="Карта сегментов и воронка"></div>
+        <figcaption><span class="af-no">07</span><b>Карта сегментов и воронка</b><span class="af-txt">Перестаете продавать всем одинаково. Растет конверсия и средний чек.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/a-portret-roli.webp" alt="Портрет роли"></div>
+        <figcaption><span class="af-no">08</span><b>Портреты ролей и грейды</b><span class="af-txt">Обязанности, цели роли, KPI и навыки. От портретов строятся найм, тестовые и мотивация.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/a-portrety.webp" alt="Библиотека ролей"></div>
+        <figcaption><span class="af-no">09</span><b>Библиотека ролей</b><span class="af-txt">CEO, коммерческий и операционный директор, РОП, маркетолог, HRD и другие. Отдаем целиком.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-igroki">
+      <div class="mock-top"><b>Состав команды по уровням</b><span class="chip">32 человека</span></div>
+      <div class="sg-bar"><div class="sg sg-a" style="width:14%"><span>A</span></div><div class="sg sg-b" style="width:31%"><span>B</span></div><div class="sg sg-c" style="width:34%"><span>C</span></div><div class="sg sg-d" style="width:15%"><span>D</span></div><div class="sg sg-e" style="width:6%"><span>E</span></div></div>
+      <div class="sg-legend"><div class="lgi"><i class="dot dot-a"></i><b>A</b><span>Исключительные</span><em>14%</em></div><div class="lgi"><i class="dot dot-b"></i><b>B</b><span>Сильные</span><em>31%</em></div><div class="lgi"><i class="dot dot-c"></i><b>C</b><span>Несамостоятельные</span><em>34%</em></div><div class="lgi"><i class="dot dot-d"></i><b>D</b><span>Слабые</span><em>15%</em></div><div class="lgi"><i class="dot dot-e"></i><b>E</b><span>Токсичные</span><em>6%</em></div></div>
+      <div class="mock-alert">Доля A и B ниже половины: компания живет на ручном управлении</div>
+    </div></div>
+        <figcaption><span class="af-no">10</span><b>Матрица игроков A-E</b><span class="af-txt">Состав команды становится цифрой: кого поощрять, кого развивать, кого заменять.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-econ">
+      <div class="mock-top"><b>Экономика состава команды</b><span class="chip">расчет по вашим окладам</span></div>
+      <table class="ec"><tbody><tr><td>Игрок D в отделе продаж</td><td class="neg">−1,9 млн ₽</td><td>год</td></tr><tr><td>Ошибка найма руководителя</td><td class="neg">−500 тыс ₽</td><td>разово</td></tr><tr><td>Игрок E в команде</td><td class="neg">−2,4 млн ₽</td><td>год и репутация</td></tr><tr><td>Замена C на B</td><td class="pos">+3,1 млн ₽</td><td>год</td></tr></tbody></table>
+      <div class="ec-total"><span>Итог решений по составу за год</span><b>+7,9 млн ₽</b></div>
+    </div></div>
+        <figcaption><span class="af-no">11</span><b>Экономика команды</b><span class="af-txt">Сколько стоит слабое звено и ошибка найма. Решения по людям принимаются по деньгам.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/a-naim.webp" alt="Воронка найма"></div>
+        <figcaption><span class="af-no">12</span><b>Воронка найма</b><span class="af-txt">Портреты, тестовые, оценка. Сильные люди перестают быть везением.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-kab">
+      <div class="kab-bar"><span class="kab-logo">A</span><span class="kab-nav on">Программа</span><span class="kab-nav">Трекшн</span><span class="kab-nav">Рейтинг</span><span class="kab-nav">Вопросы</span></div>
+      <div class="kab-body">
+        <div class="kab-main">
+          <div class="kab-mod"><span class="kab-no">Модуль 04</span><b>Предиктивное управление</b>
+            <div class="kab-progress"><div style="width:62%"></div></div>
+            <span class="kab-meta">6 из 9 материалов · задание сдано</span></div>
+          <div class="kab-mod ghost"><span class="kab-no">Модуль 05</span><b>Координация и ритмы</b>
+            <span class="kab-meta">откроется после встречи в четверг</span></div>
+        </div>
+        <div class="kab-side">
+          <div class="kab-card"><span>Задание недели</span><b>Собрать модель на своих цифрах</b><i>до пятницы</i></div>
+          <div class="kab-card"><span>Личный разбор</span><b>чт, 15:00</b><i>запись открыта</i></div>
+        </div>
+      </div>
+    </div></div>
+        <figcaption><span class="af-no">13</span><b>Кабинет участника</b><span class="af-txt">Программа, материалы, задания и разборы в одном месте. Прогресс виден и человеку, и руководителю.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-trainer">
+      <div class="mock-top"><b>Тренажер продаж на ИИ</b><span class="chip">ролевка 12 из 20</span></div>
+      <div class="chat" data-anim="trainer">
+        <div class="msg bot">Мне дорого. У конкурентов дешевле на 30%.</div>
+        <div class="msg me">Понимаю. Скажите, вы сравниваете по цене входа или по стоимости результата?</div>
+        <div class="msg bot">По цене, конечно.</div>
+        <div class="msg me">Тогда давайте посчитаем, во сколько вам обходится текущая конверсия. Это займет две минуты.</div>
+        <div class="msg typing"><i></i><i></i><i></i></div>
+      </div>
+      <div class="tr-score">
+        <div><span>Отработка цены</span><div class="bar"><i style="width:82%"></i></div><b>82</b></div>
+        <div><span>Вопросы вместо аргументов</span><div class="bar"><i style="width:64%"></i></div><b>64</b></div>
+        <div><span>Следующий шаг</span><div class="bar"><i style="width:91%"></i></div><b>91</b></div>
+      </div>
+    </div></div>
+        <figcaption><span class="af-no">14</span><b>Тренажер продаж на ИИ</b><span class="af-txt">Виртуальный РОП гоняет менеджеров по вашим скриптам. Новичок тренируется не на клиентах.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot"><img src="assets/a-reyting.webp" alt="Трекшн и рейтинг"></div>
+        <figcaption><span class="af-no">15</span><b>Трекшн и рейтинг потока</b><span class="af-txt">Очки идут за внедрения. Видно, кто двигает компанию, а кто просто присутствует.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-brain">
+      <div class="mock-top"><b>Второй мозг компании</b><span class="chip live">online</span></div>
+      <div class="chat" data-anim="brain">
+        <div class="msg me">Почему просели продажи в сентябре?</div>
+        <div class="msg bot">Выручка ниже плана на 12%. Причина одна: конверсия из встречи в счет упала с 34% до 22% в сегменте среднего бизнеса.</div>
+        <div class="msg bot">Провал у двух менеджеров, оба не используют новый блок отработки цены. В CRM 47 сделок без касания больше 9 дней.</div>
+        <div class="msg me">Что делать на этой неделе?</div>
+        <div class="msg bot">Забрать 47 зависших сделок в воронку дожима, поставить ролевку по цене двум менеджерам и вернуть SLA на первое касание. Ожидаемый возврат 4,1 млн ₽.</div>
+        <div class="msg typing"><i></i><i></i><i></i></div>
+      </div>
+    </div></div>
+        <figcaption><span class="af-no">16</span><b>Второй мозг компании</b><span class="af-txt">Помощник знает ваши цифры, регламенты и сделки. Знания перестают жить в головах людей.</span></figcaption>
+      </figure>
+      <figure class="af rv">
+        <div class="af-shot af-live"><div class="mock mock-onb">
+      <div class="mock-top"><b>Онбординг нового менеджера</b><span class="chip">выход на результат: 14 дней</span></div>
+      <div class="ob"><div class="ob-step done"><b>День 1</b><span>Продукт и рынок</span><i>готово</i></div><div class="ob-step done"><b>День 2</b><span>Скрипты и возражения</span><i>готово</i></div><div class="ob-step now"><b>День 3</b><span>CRM и регламент касаний</span><i>идет</i></div><div class="ob-step "><b>День 5</b><span>Аттестация</span><i>ждет</i></div></div>
+      <div class="ob-foot"><div><b>79%</b><span>прошли аттестацию с первого раза</span></div><div><b>×2,4</b><span>быстрее выход на план</span></div></div>
+    </div></div>
+        <figcaption><span class="af-no">17</span><b>Онбординг новых сотрудников</b><span class="af-txt">Программа выхода новичка на результат с аттестацией. Время до первой сделки падает в два-три раза.</span></figcaption>
+      </figure>
+    </div>
+    <div class="demo-wrap rv">
+      <button class="demo-toggle" type="button" data-demo="dash" aria-expanded="false" aria-controls="demo-dash">
+        Посмотреть демо дашборда <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
+      </button>
+      <div class="demo-panel" id="demo-dash"><div class="mock mock-dashfull">
+      <div class="mock-top"><b>Демо: дашборд собственника</b><span class="chip">данные условной компании, 240 млн ₽ в год</span></div>
+      <div class="df-kpi">
+        <div><span>Выручка, месяц</span><b>24,8 млн</b><i class="up">+14% к плану</i>
+          <svg class="spark" viewBox="0 0 80 26"><polyline points="2,22 14,19 26,20 38,14 50,12 62,7 78,4"/></svg></div>
+        <div><span>Маржа</span><b>31,2%</b><i class="up">+2,4 п.п.</i>
+          <svg class="spark" viewBox="0 0 80 26"><polyline points="2,18 14,20 26,16 38,17 50,13 62,11 78,8"/></svg></div>
+        <div><span>Конверсия лид → оплата</span><b>9,4%</b><i class="down">-0,8 п.п.</i>
+          <svg class="spark down" viewBox="0 0 80 26"><polyline points="2,8 14,10 26,9 38,13 50,12 62,17 78,19"/></svg></div>
+        <div><span>Цикл сделки</span><b>21 день</b><i class="up">-4 дня</i>
+          <svg class="spark" viewBox="0 0 80 26"><polyline points="2,6 14,9 26,8 38,12 50,15 62,17 78,20"/></svg></div>
+      </div>
+      <div class="df-main">
+        <div class="df-card df-trend">
+          <div class="df-head"><b>Выручка: план, факт и прогноз</b><span>янв — сен</span></div>
+          <svg class="trend" viewBox="0 0 520 190" preserveAspectRatio="none">
+            <defs><linearGradient id="gfact" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1C4C3B" stop-opacity=".35"/><stop offset="1" stop-color="#1C4C3B" stop-opacity="0"/></linearGradient></defs>
+            <g class="grid-lines"><line x1="0" y1="40" x2="520" y2="40"/><line x1="0" y1="80" x2="520" y2="80"/>
+              <line x1="0" y1="120" x2="520" y2="120"/><line x1="0" y1="160" x2="520" y2="160"/></g>
+            <path class="area" d="M10,150 L75,140 L140,128 L205,132 L270,108 L335,96 L400,78 L465,58 L510,44 L510,180 L10,180 Z" fill="url(#gfact)"/>
+            <polyline class="ln-plan" points="10,156 75,146 140,136 205,126 270,116 335,104 400,92 465,74 510,60"/>
+            <polyline class="ln-fact" points="10,150 75,140 140,128 205,132 270,108 335,96 400,78 465,58 510,44"/>
+            <circle class="pt" cx="510" cy="44" r="5"/>
+          </svg>
+          <div class="df-legend"><span class="lg plan">план</span><span class="lg fact">факт</span><span class="lg note">прогноз квартала: 78,4 млн ₽</span></div>
+        </div>
+        <div class="df-card df-donut">
+          <div class="df-head"><b>Выручка по каналам</b><span>сентябрь</span></div>
+          <div class="donut-wrap">
+            <svg viewBox="0 0 120 120" class="donut">
+              <circle class="d-bg" cx="60" cy="60" r="46"/>
+              <circle class="d-1" cx="60" cy="60" r="46" stroke-dasharray="126 289" stroke-dashoffset="0"/>
+              <circle class="d-2" cx="60" cy="60" r="46" stroke-dasharray="86 289" stroke-dashoffset="-126"/>
+              <circle class="d-3" cx="60" cy="60" r="46" stroke-dasharray="58 289" stroke-dashoffset="-212"/>
+              <text x="60" y="56" class="d-num">24,8</text><text x="60" y="72" class="d-lab">млн ₽</text>
+            </svg>
+            <div class="d-legend">
+              <div><i class="c1"></i>Рекомендации<b>44%</b></div>
+              <div><i class="c2"></i>Контент и вебинары<b>30%</b></div>
+              <div><i class="c3"></i>Партнеры<b>26%</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="df-main2">
+        <div class="df-card">
+          <div class="df-head"><b>Воронка недели</b><span>1 240 лидов</span></div>
+          <div class="dash-funnel">
+            <div class="fn"><span>Лиды</span><div style="width:100%"></div><b>1 240</b></div>
+            <div class="fn"><span>Квалификация</span><div style="width:72%"></div><b>892</b></div>
+            <div class="fn"><span>Встреча</span><div style="width:41%"></div><b>508</b></div>
+            <div class="fn"><span>Счет</span><div style="width:22%"></div><b>272</b></div>
+            <div class="fn"><span>Оплата</span><div style="width:11%"></div><b>117</b></div>
+          </div>
+        </div>
+        <div class="df-card">
+          <div class="df-head"><b>Команда: вклад в результат</b><span>топ и красная зона</span></div>
+          <table class="team"><tbody>
+            <tr><td>Анна К.</td><td class="q">38 сделок</td><td><span class="pill-ok">124% плана</span></td></tr>
+            <tr><td>Игорь М.</td><td class="q">31 сделка</td><td><span class="pill-ok">108% плана</span></td></tr>
+            <tr><td>Павел С.</td><td class="q">19 сделок</td><td><span class="pill-warn">74% плана</span></td></tr>
+            <tr><td>Дмитрий В.</td><td class="q">11 сделок</td><td><span class="pill-bad">42% плана</span></td></tr>
+          </tbody></table>
+        </div>
+      </div>
+      <div class="mock-alert red">Красная зона: у двух менеджеров конверсия из встречи в счет упала на 6 п.п. за две недели</div>
+    </div></div>
+    </div>
+    <div class="demo-wrap rv">
+      <button class="demo-toggle" type="button" data-demo="pm" aria-expanded="false" aria-controls="demo-pm">
+        Посмотреть демо предиктивной модели <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
+      </button>
+      <div class="demo-panel" id="demo-pm"><div class="mock mock-pmfull">
+      <div class="mock-top"><b>Демо: предиктивная модель квартала</b><span class="chip warn">прогноз 94% плана</span></div>
+      <div class="pmf">
+        <div class="pmf-left">
+          <table class="pm"><thead><tr><th>Месяц</th><th>План</th><th>Прогноз</th><th>Выполнение</th></tr></thead><tbody><tr><td>Сентябрь</td><td>24,0 млн</td><td>26,1 млн</td><td><span class="pill-ok">109%</span></td></tr><tr><td>Октябрь</td><td>26,0 млн</td><td>25,4 млн</td><td><span class="pill-warn">98%</span></td></tr><tr><td>Ноябрь</td><td>28,0 млн</td><td>24,8 млн</td><td><span class="pill-bad">89%</span></td></tr><tr><td>Декабрь</td><td>30,0 млн</td><td>26,2 млн</td><td><span class="pill-bad">87%</span></td></tr></tbody></table>
+          <div class="pmf-drivers">
+            <div class="pmf-head">Что двигает прогноз</div>
+            <div class="drv"><span>Лидов в работе</span><div class="bar"><i style="width:68%"></i></div><b>-32%</b></div>
+            <div class="drv"><span>Конверсия в счет</span><div class="bar"><i style="width:74%"></i></div><b>-6 п.п.</b></div>
+            <div class="drv"><span>Средний чек</span><div class="bar ok"><i style="width:88%"></i></div><b>+4%</b></div>
+            <div class="drv"><span>Цикл сделки</span><div class="bar ok"><i style="width:92%"></i></div><b>-4 дня</b></div>
+          </div>
+        </div>
+        <div class="pmf-right">
+          <div class="df-head"><b>План против прогноза</b><span>квартал</span></div>
+          <svg class="trend" viewBox="0 0 420 200" preserveAspectRatio="none">
+            <g class="grid-lines"><line x1="0" y1="40" x2="420" y2="40"/><line x1="0" y1="80" x2="420" y2="80"/>
+              <line x1="0" y1="120" x2="420" y2="120"/><line x1="0" y1="160" x2="420" y2="160"/></g>
+            <polyline class="ln-plan" points="20,150 150,120 280,86 400,52"/>
+            <polyline class="ln-fact" points="20,146 150,124 280,112 400,104"/>
+            <circle class="pt" cx="400" cy="104" r="5"/>
+            <line class="gap" x1="400" y1="52" x2="400" y2="104"/>
+          </svg>
+          <div class="pmf-gap"><b>Разрыв 11,6 млн ₽</b><span>виден в середине квартала, есть 6 недель, чтобы отыграть</span></div>
+          <div class="pmf-act"><span>Что делать по модели</span>
+            <ul><li>Вернуть 214 заявок без касания в работу</li><li>Ролевки по отработке цены двум менеджерам</li><li>Поднять SLA первого касания до 15 минут</li></ul>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    </div>
+    <div class="af-cta rv">
+      <div><b>Хотите посмотреть эти артефакты вживую?</b>
+      <span>Покажем платформу изнутри на реальном потоке: что именно она строит и что появится у вас через месяц.</span></div>
+      <a class="btn" href="#form">Записаться на демо <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h13M11 5l5 5-5 5"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- ВТОРОЙ МОЗГ -->
+<section class="pad dark">
+  <svg class="bcanvas side-r" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-gd)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">06</div><div><div class="kicker">Отличие платформы</div><h2>Сначала система, потом <span class="hl" style="color:#FBF6EA">второй мозг</span> компании</h2></div></div>
+    <p class="lead rv">Собранную систему мы подключаем ко второму мозгу, и она начинает работать сама. Он знает ваши цифры, регламенты, плейбуки, сделки и людей. Вы спрашиваете голосом или текстом, как сотрудника, который прочитал все ваши документы и помнит каждую цифру.</p>
+    <div class="zig" style="margin-top:var(--s4)">
+      <div class="rv"><div class="mock mock-brain">
+      <div class="mock-top"><b>Второй мозг компании</b><span class="chip live">online</span></div>
+      <div class="chat" data-anim="brain">
+        <div class="msg me">Почему просели продажи в сентябре?</div>
+        <div class="msg bot">Выручка ниже плана на 12%. Причина одна: конверсия из встречи в счет упала с 34% до 22% в сегменте среднего бизнеса.</div>
+        <div class="msg bot">Провал у двух менеджеров, оба не используют новый блок отработки цены. В CRM 47 сделок без касания больше 9 дней.</div>
+        <div class="msg me">Что делать на этой неделе?</div>
+        <div class="msg bot">Забрать 47 зависших сделок в воронку дожима, поставить ролевку по цене двум менеджерам и вернуть SLA на первое касание. Ожидаемый возврат 4,1 млн ₽.</div>
+        <div class="msg typing"><i></i><i></i><i></i></div>
+      </div>
+    </div></div>
+      <div class="rv">
+        <div class="big-num">24/7</div>
+        <h3>Спрашиваете как сотрудника, отвечает как аналитик</h3>
+        <p>Отвечает конкретикой по вашей воронке и вашим сделкам, а не общими словами из интернета.</p>
+        <ul>
+          <li>Готовит сводку перед планеркой: что сдвинулось, где красная зона</li>
+          <li>Пишет черновик регламента и портрета роли вашим языком</li>
+          <li>Разбирает встречу по записи и выдает задачи с владельцами</li>
+          <li>Работает с телефона, голосом, без обучения сотрудников</li>
+        </ul>
+      </div>
+    </div>
+    <p class="quote">Знания компании перестают жить в головах людей. Человек уходит, а система остается. Новый руководитель входит в контекст за дни, а не за месяцы.</p>
+  </div>
+</section>
+
+<!-- ИИ В КОМАНДЕ -->
+<section class="pad">
+  <svg class="bcanvas side-l" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">07</div><div><div class="kicker">ИИ как рабочий инструмент</div><h2>ИИ сильнее всего подтягивает слабое звено в команде</h2></div></div>
+    <div class="zig rev">
+      <div class="rv">
+        <div class="big-num">×2-×3</div>
+        <h3>Новичок выходит на результат быстрее, потому что тренируется на тренажере</h3>
+        <p>Виртуальный руководитель отдела отыгрывает клиента по вашим сценариям: возражения, торг, сложный характер. После каждой попытки разбор по эталону вашего скрипта.</p>
+        <ul>
+          <li>Ошибки отрабатываются до звонка живому клиенту</li>
+          <li>Руководителю видно, кто и сколько тренировался</li>
+          <li>Эталон один для всей команды</li>
+        </ul>
+      </div>
+      <div class="rv"><div class="mock mock-trainer">
+      <div class="mock-top"><b>Тренажер продаж на ИИ</b><span class="chip">ролевка 12 из 20</span></div>
+      <div class="chat" data-anim="trainer">
+        <div class="msg bot">Мне дорого. У конкурентов дешевле на 30%.</div>
+        <div class="msg me">Понимаю. Скажите, вы сравниваете по цене входа или по стоимости результата?</div>
+        <div class="msg bot">По цене, конечно.</div>
+        <div class="msg me">Тогда давайте посчитаем, во сколько вам обходится текущая конверсия. Это займет две минуты.</div>
+        <div class="msg typing"><i></i><i></i><i></i></div>
+      </div>
+      <div class="tr-score">
+        <div><span>Отработка цены</span><div class="bar"><i style="width:82%"></i></div><b>82</b></div>
+        <div><span>Вопросы вместо аргументов</span><div class="bar"><i style="width:64%"></i></div><b>64</b></div>
+        <div><span>Следующий шаг</span><div class="bar"><i style="width:91%"></i></div><b>91</b></div>
+      </div>
+    </div></div>
+    </div>
+    <div class="grid g3" style="margin-top:var(--s5)">
+      <div class="card rv"><div class="n">Советники</div><h3>Помощник под каждую роль</h3><p>Знает функцию руководителя, его цифры и лучшие практики в его зоне. Вопрос «как правильно» решается за минуты и без очереди к вам.</p></div>
+      <div class="card rv"><div class="n">Ресерч</div><h3>Копайлот под проекты команды</h3><p>Под каждый проект поднимает практики рынка и приносит готовые варианты решений. Команда перестает изобретать то, что придумали до нее.</p></div>
+      <div class="card rv"><div class="n">Качество</div><h3>Контроль звонков на ИИ</h3><p>Сто процентов диалогов разбираются без ручного прослушивания, отклонения от эталона видны сразу.</p></div>
+    </div>
+    <div class="card rv" style="margin-top:var(--s4);background:var(--c-bg-2)">
+      <p style="font-size:17px;color:var(--c-ink)"><b>Исследование Гарвардской школы бизнеса и BCG на 758 консультантах:</b> те, кто работал с ИИ, выполняли на 12 процентов больше задач, делали их на 25 процентов быстрее и на 40 процентов качественнее. Самый большой прирост получили слабые исполнители: плюс 43 процента против плюс 17 у сильных. Поэтому ИИ в системе управления выравнивает результат команды, а не только ускоряет лучших.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ШТАБ -->
+<section class="pad dark hub-sec">
+  <svg class="bcanvas side-l" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-gd)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">08</div><div><div class="kicker">Актив, который остается</div><h2>Штаб компании: система <span class="hl" style="color:#FBF6EA">не зависит</span> от увольнений</h2></div></div>
+    <div class="wide-claim rv">
+      <div class="wc-num">15</div>
+      <div class="wc-text"><b>папок компании на одной странице.</b> Раньше это жило в головах, чатах и на личных дисках сотрудников. Теперь у каждого источника есть владелец, дата и отметка, актуален он или устарел.</div>
+    </div>
+    <div class="wide-shot rv"><div class="mock mock-hub">
+      <div class="hub-hero">
+        <span class="hub-kick">внутренняя страница компании</span>
+        <b class="hub-h1">Штаб компании</b>
+        <p>Одна страница, с которой видно все рабочие источники: где что лежит, кто ведет, актуально ли. Отсюда же второй мозг берет контекст.</p>
+        <div class="hub-stats"><div><b>15</b><span>папок</span></div><div><b>73</b><span>источника</span></div>
+          <div><b>161</b><span>лендинг</span></div><div><b>5</b><span>мозгов</span></div></div>
+        <span class="hub-word">ШТАБ</span>
+      </div>
+      <div class="hub-search"><span class="hs-field">Найти источник во всех папках: РНП, ТОВ, метрики, оферта...</span>
+        <span class="hs-btn">Реестр документов</span><span class="hs-btn">Реестр лендингов</span></div>
+      <div class="hub-lab">Папки компании <i>откройте папку, чтобы увидеть источники внутри</i></div>
+      <div class="hb-grid"><div class="hb"><div class="hb-ic">◎</div>
+      <div class="hb-n">Стратегия и цели</div><div class="hb-c">7 источников</div>
+      <div class="hb-d">OGSM и OKR, предиктивная модель, стратсессии по направлениям</div><span class="hb-tag">мозг: управленцы</span></div><div class="hb"><div class="hb-ic">▤</div>
+      <div class="hb-n">Плейбуки</div><div class="hb-c">8 источников</div>
+      <div class="hb-d">как в компании делается то или иное: один способ на задачу, а не пять мнений</div><span class="hb-tag">мозг: управленцы</span></div><div class="hb"><div class="hb-ic">◈</div>
+      <div class="hb-n">Обучение команды</div><div class="hb-c">5 источников</div>
+      <div class="hb-d">платформа онбординга: слои, модули, аттестации и AI-тренажер</div><span class="hb-tag">мозг: продажи</span></div><div class="hb"><div class="hb-ic">◱</div>
+      <div class="hb-n">Маркетинг</div><div class="hb-c">14 источников</div>
+      <div class="hb-d">контент-планы и отчеты, воронки, рассылки, tone of voice, работа с базой</div><span class="hb-tag">мозг: маркетинг</span></div><div class="hb"><div class="hb-ic">◆</div>
+      <div class="hb-n">Продажи</div><div class="hb-c">5 источников</div>
+      <div class="hb-d">РНП и план-факт, скрипты, регламенты отдела, конверсии, отчеты менеджеров</div><span class="hb-tag">мозг: продажи</span></div><div class="hb"><div class="hb-ic">▣</div>
+      <div class="hb-n">Продукт и курсы</div><div class="hb-c">5 источников</div>
+      <div class="hb-d">метрики направлений, календарные планы, доходимость, работа кураторов</div><span class="hb-tag">мозг: продукт</span></div><div class="hb"><div class="hb-ic">◵</div>
+      <div class="hb-n">Аналитика</div><div class="hb-c">2 источника</div>
+      <div class="hb-d">сквозная воронка и витрины данных, к которым подключается второй мозг</div><span class="hb-tag">мозг: фаундеры</span></div><div class="hb"><div class="hb-ic">◐</div>
+      <div class="hb-n">Вебинары и эфиры</div><div class="hb-c">2 источника</div>
+      <div class="hb-d">записи, транскрипты и разборы прошлых эфиров, чтобы собирать новые на их основе</div><span class="hb-tag">мозг: маркетинг</span></div><div class="hb"><div class="hb-ic">◍</div>
+      <div class="hb-n">Команда, найм, мотивация</div><div class="hb-c">4 источника</div>
+      <div class="hb-d">оргструктура, воронка найма, регламенты общения, онбординг сотрудников</div><span class="hb-tag">мозг: фаундеры</span></div><div class="hb"><div class="hb-ic">⚙</div>
+      <div class="hb-n">Техотдел и платформа</div><div class="hb-c">11 источников</div>
+      <div class="hb-d">SLA и правила задач, интеграции и доступы, воронки, сайты</div><span class="hb-tag">мозг: техотдел</span></div><div class="hb"><div class="hb-ic">◭</div>
+      <div class="hb-n">Запуски и проекты</div><div class="hb-c">2 источника</div>
+      <div class="hb-d">календарь запусков, отчеты по запускам, спринты и трекер проектов</div><span class="hb-tag">мозг: маркетинг</span></div><div class="hb"><div class="hb-ic">▥</div>
+      <div class="hb-n">Продуктовая линейка</div><div class="hb-c">2 источника</div>
+      <div class="hb-d">матрица переходов между продуктами, схема линейки</div><span class="hb-tag">мозг: продукт</span></div><div class="hb"><div class="hb-ic">◉</div>
+      <div class="hb-n">Как устроен второй мозг</div><div class="hb-c">описание системы</div>
+      <div class="hb-d">кто что видит, откуда ассистент берет данные и что нужно от компании</div><span class="hb-tag">мозг: фаундеры</span></div><div class="hb"><div class="hb-ic">◌</div>
+      <div class="hb-n">Лендинги и сайты</div><div class="hb-c">161 страница</div>
+      <div class="hb-d">все страницы компании в одном месте: какие работают, какие висят без дела</div><span class="hb-tag">мозг: маркетинг</span></div></div>
+      <div class="hub-lab lock">Под замком <i>открывается отдельным паролем, его знают фаундеры</i></div>
+      <div class="hb-grid one">
+        <div class="hb locked"><div class="hb-ic">🔒</div><div class="hb-n">Финансы и управленка</div>
+          <div class="hb-c">6 источников под замком</div>
+          <div class="hb-d">P&amp;L и CashFlow, движение денег, выплаты, зарплаты, юнит-экономика</div>
+          <span class="hb-tag">мозг: финансы</span><span class="hb-tag warn">нужен пароль</span></div>
+      </div>
+    </div></div>
+    <div class="wc-grid rv">
+      <div class="wc-i"><span class="wc-ic">01</span><b>Доступ по ролям</b><p>Линейный сотрудник не откроет папку, которой для него не существует. Даже по прямой ссылке.</p></div>
+      <div class="wc-i"><span class="wc-ic">02</span><b>Финансы под замком</b><p>Отдельный пароль, который знают только фаундеры. Сменили пароль, сейф захлопнулся у всех сразу.</p></div>
+      <div class="wc-i"><span class="wc-ic">03</span><b>Отсюда работает второй мозг</b><p>Ассистент берет контекст ровно из этих папок и отвечает цитатой из вашего документа.</p></div>
+      <div class="wc-i"><span class="wc-ic">04</span><b>Человек уходит, знания остаются</b><p>Новый руководитель входит в контекст за дни, а не собирает его по кусочкам месяцами.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ОБУЧЕНИЕ -->
+<section class="pad">
+  <svg class="bcanvas side-r" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">09</div><div><div class="kicker">Завод сотрудников</div><h2>Новичок выходит на план <span class="hl">без вашего участия</span></h2></div></div>
+    <div class="wide-claim light rv">
+      <div class="wc-num">×2-×3</div>
+      <div class="wc-text"><b>быстрее до первой сделки.</b> Онбординг перестает быть разговором в курилке: человек идет по слоям, сдает аттестацию, тренируется на ИИ-ролевках, а руководитель видит прогресс каждого.</div>
+    </div>
+    <div class="wide-shot rv"><div class="mock mock-zavodf">
+      <div class="zf-hero">
+        <span class="zf-kick">платформа онбординга</span>
+        <b class="zf-h1">Завод сотрудников</b>
+        <p>Новичок проходит путь по слоям, сдает аттестацию и выходит на план без вашего участия.</p>
+        <div class="zf-stats"><div><b>7</b><span>слоев</span></div><div><b>60</b><span>модулей</span></div>
+          <div><b>79</b><span>вопросов</span></div><div><b>24/7</b><span>AI-наставник</span></div></div>
+        <span class="hub-word">ЗАВОД</span>
+      </div>
+      <div class="zf-body">
+        <div class="zf-col">
+          <div class="hub-lab">Путь новичка <i>слой открывается после сдачи предыдущего</i></div>
+          <div class="zl-list"><div class="zl done"><span class="zl-no">Слой 1</span><b>Компания и продукт</b><span class="zl-m">12 модулей</span>
+      <span class="zl-st">пройден</span></div><div class="zl done"><span class="zl-no">Слой 2</span><b>Рынок и клиент</b><span class="zl-m">9 модулей</span>
+      <span class="zl-st">пройден</span></div><div class="zl now"><span class="zl-no">Слой 3</span><b>Скрипты и возражения</b><span class="zl-m">11 модулей</span>
+      <span class="zl-st">идет</span></div><div class="zl "><span class="zl-no">Слой 4</span><b>CRM и регламенты</b><span class="zl-m">8 модулей</span>
+      <span class="zl-st">закрыт</span></div><div class="zl "><span class="zl-no">Слой 5</span><b>Переговоры и дожим</b><span class="zl-m">10 модулей</span>
+      <span class="zl-st">закрыт</span></div><div class="zl "><span class="zl-no">Слой 6</span><b>Аттестация</b><span class="zl-m">79 вопросов</span>
+      <span class="zl-st">закрыт</span></div><div class="zl "><span class="zl-no">Слой 7</span><b>Выход на план</b><span class="zl-m">кабинет РОПа</span>
+      <span class="zl-st">закрыт</span></div></div>
+        </div>
+        <div class="zf-col">
+          <div class="hub-lab">Кабинет руководителя <i>видно каждого</i></div>
+          <div class="zf-people">
+            <div class="zp"><span>Ирина, 4 день</span><div class="zf-bar"><i style="width:68%"></i></div><b>68%</b></div>
+            <div class="zp"><span>Максим, 6 день</span><div class="zf-bar"><i style="width:92%"></i></div><b>92%</b></div>
+            <div class="zp warn"><span>Олег, 5 день</span><div class="zf-bar"><i style="width:24%"></i></div><b>24%</b></div>
+          </div>
+          <div class="zf-trainer"><span class="zf-tl">AI-тренажер ролевок</span>
+            <div class="zf-msg bot">Мне надо подумать, пришлите на почту</div>
+            <div class="zf-msg me">Конечно. Скажите, что именно хотите обдумать, чтобы я прислал только это?</div>
+            <div class="zf-score"><span>отработка отговорки</span><i style="width:78%"></i><b>78</b></div>
+          </div>
+        </div>
+      </div>
+    </div></div>
+    <div class="wc-grid light rv">
+      <div class="wc-i"><span class="wc-ic">01</span><b>Семь слоев вместо стажировки на коленке</b><p>Компания и продукт, рынок, скрипты, CRM, переговоры, аттестация, выход на план.</p></div>
+      <div class="wc-i"><span class="wc-ic">02</span><b>Аттестация, а не отметка о просмотре</b><p>79 вопросов и проверка на практике. Пока не сдал, следующий слой закрыт.</p></div>
+      <div class="wc-i"><span class="wc-ic">03</span><b>ИИ-тренажер вместо живых клиентов</b><p>Возражения отрабатываются в ролевках с оценкой по каждому критерию.</p></div>
+      <div class="wc-i"><span class="wc-ic">04</span><b>Руководитель видит каждого</b><p>Кто где идет, кто буксует и кому нужна помощь сегодня, а не в конце месяца.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- АВТОР -->
+<section class="pad dark">
+  <svg class="bcanvas side-r" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-gd)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">10</div><div><div class="kicker">Кто собрал платформу</div><h2>Практик, а не теоретик</h2></div></div>
+    <div class="author" style="margin-top:var(--s4)">
+      <div class="author-photo" style="background:linear-gradient(160deg,var(--c-emerald-2),var(--c-emerald))"><img src="assets/founder-hero3.webp" alt="Александр Животов" loading="lazy" style="object-fit:contain;object-position:bottom"></div>
+      <div>
+        <p class="lead">Александр Животов прошел весь путь сам: от линейной позиции до коммерческого и генерального директора. Все, что внутри платформы, он до этого собирал руками в своих компаниях и в компаниях клиентов.</p>
+        <div class="rows">
+          <div class="row-i"><div><b>Ex-коммерческий директор Skypro от Skyeng</b><span>Вырастил направление с нуля до нескольких миллиардов выручки за 15 месяцев</span></div></div>
+          <div class="row-i"><div><b>Опцион в компании из топ-15 российского IT по версии Forbes</b><span>За результаты и скорость роста</span></div></div>
+          <div class="row-i"><div><b>Самый эффективный отдел продаж в России</b><span>По версии GrowthWisePartners в 2023 году</span></div></div>
+          <div class="row-i"><div><b>Больше 100 выпускников выросли в директоров</b><span>Коммерческих и генеральных, в 10 странах</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КОМУ -->
+<section class="pad">
+  <svg class="bcanvas side-r" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap">
+    <div class="sec-head rv"><div class="sec-no">11</div><div><div class="kicker">Честно про соответствие</div><h2>Кому платформа подходит, а кому нет</h2></div></div>
+    <div class="grid g2" style="margin-top:var(--s4)">
+      <div class="card rv" style="border-left:4px solid var(--c-green)">
+        <h3>Подходит</h3>
+        <p style="margin-top:12px">Собственникам компаний от 50 млн до 1 млрд выручки, которые уперлись в ручное управление.<br><br>Тем, кто готов проходить программу вместе с core-командой, а не в одиночку.<br><br>Тем, кто готов выделять два часа в неделю и давать команде время на внедрение.</p>
+      </div>
+      <div class="card rv" style="border-left:4px solid #9B3B2E">
+        <h3>Не подходит</h3>
+        <p style="margin-top:12px">Тем, кто ищет разовые лайфхаки и быстрые хаки без перестройки управления.<br><br>Тем, кто хочет прийти один и потом «пересказать команде». Так система не появляется.<br><br>Тем, у кого сейчас нет ни одного человека, кому можно делегировать сборку артефактов.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="pad" style="background:var(--c-bg-alt)">
+  <svg class="bcanvas fade-edge" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-em)"/></svg>
+  <div class="wrap" style="max-width:900px">
+    <div class="sec-head rv"><div class="sec-no">12</div><div><div class="kicker">Вопросы, которые задают чаще всего</div><h2>Что обычно останавливает</h2></div></div>
+    <div style="margin-top:var(--s4)">
+      <details><summary>У меня нет времени на еще одно обучение</summary><p>Ваше участие это два часа в неделю: живая встреча и решение по артефакту. Сборку делает команда по готовым шаблонам. Если два часа в неделю не находятся, то это и есть главный симптом ручного управления, и именно его мы и лечим.</p></details>
+      <details><summary>Мы уже проходили курсы, эффекта не было</summary><p>Курс дает знания одному человеку, а работает компания целиком. Здесь программу проходит собственник вместе с командой, и каждый собирает свою часть системы на реальных данных компании. На выходе не конспект, а работающая конструкция.</p></details>
+      <details><summary>У нас особая ниша, у нас так не работает</summary><p>С точки зрения технологии управления у всех устроено одинаково: цели, роли, метрики, ритмы, регламенты. Отличаются бенчмарки и модель воронки, и именно их мы адаптируем под вашу нишу и фазу.</p></details>
+      <details><summary>Сколько это стоит</summary><p>Стоимость зависит от того, сколько человек из вашей команды заходит в программу. Точную конфигурацию и цену называем на диагностике, когда понятно, какие роли нужно включить, чтобы система действительно собралась.</p></details>
+      <details><summary>Что если мы не внедрим</summary><p>Формат построен так, что внедрение идет по ходу программы: каждую неделю один артефакт в компании, с приемкой на личном разборе. Если артефакт не собран, это видно сразу, а не в конце четырех месяцев.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ФИНАЛЬНЫЙ CTA -->
+<section class="pad final" id="diagnostika">
+  <svg class="bcanvas hero-mask" aria-hidden="true"><rect width="100%" height="100%" fill="url(#mono-gd)"/></svg>
+  <div class="wrap">
+    <h2 class="rv">Посмотрите платформу вживую</h2>
+    <p class="lead">Тридцать минут. Проводим по платформе на реальном потоке, показываем артефакты изнутри и разбираем, с чего начнется сборка системы именно в вашей компании. Подключиться можно на этой же неделе.</p>
+    <div style="display:flex;justify-content:center;margin-top:var(--s4)">
+      <form class="form-card" id="form" method="post" action="#">
+        <h3>Записаться на демо<span class="free">Бесплатно</span></h3>
+        <label for="f-name">Ваше имя</label>
+        <input id="f-name" name="name" type="text" placeholder="Александр" required>
+        <label for="f-phone">Телефон или телеграм</label>
+        <input id="f-phone" name="contact" type="text" placeholder="+7 900 000-00-00" required>
+        <label for="f-rev">Выручка в год</label>
+        <select id="f-rev" name="revenue" required>
+          <option value="">Выберите</option>
+          <option>до 50 млн ₽</option>
+          <option>50-120 млн ₽</option>
+          <option>120-300 млн ₽</option>
+          <option>300 млн - 1 млрд ₽</option>
+          <option>больше 1 млрд ₽</option>
+        </select>
+        <div class="agree"><input id="f-ok" type="checkbox" required><label for="f-ok" style="margin:0;font-size:13.5px">Согласие на обработку персональных данных</label></div>
+        <button class="btn" type="submit">Записаться на демо →</button>
+      </form>
+    </div>
+    <p class="btn-note" style="margin:var(--s3) auto 0">Демо проводит Александр лично. Количество слотов в неделю ограничено его календарем.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap ft-grid">
+    <div class="ft-col">
+      <div class="ft-logo"><i>A</i><b>Платформа A-Players</b></div>
+      <p>Операционная система вашей компании: система управления, база знаний и второй мозг в одном месте.</p>
+      <p class="ft-geo">A-Players Group · Москва и Дубай</p>
+    </div>
+    <div class="ft-col">
+      <span class="ft-h">Связь</span>
+      <a href="https://t.me/AlexanderZhivotov">Телеграм: @AlexanderZhivotov</a>
+      <a href="https://a-players.ru">a-players.ru</a>
+      <a href="https://a-players.ru/diagnostic/">Диагностика управления</a>
+    </div>
+    <div class="ft-col">
+      <span class="ft-h">Соцсети</span>
+      <a href="https://t.me/zhivotov_alexander">Телеграм-канал</a>
+      <a href="https://www.youtube.com/@zhivotov_alexander">YouTube</a>
+      <a href="https://www.instagram.com/zhivotov_alexander/">Instagram</a>
+    </div>
+    <div class="ft-col">
+      <span class="ft-h">Документы</span>
+      <a href="https://a-players.ru/privacy">Политика обработки персональных данных</a>
+      <a href="https://a-players.ru/soglasie">Согласие на обработку персональных данных</a>
+      <span class="ft-small">Отправляя форму, вы соглашаетесь с политикой и даете согласие на обработку персональных данных.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(()=>{const els=document.querySelectorAll('.rv');
+ if(!('IntersectionObserver'in window)){els.forEach(e=>e.classList.add('in'));return;}
+ const io=new IntersectionObserver((ent)=>{ent.forEach((e,i)=>{if(e.isIntersecting){
+   setTimeout(()=>e.target.classList.add('in'),(i%4)*70); io.unobserve(e.target);}})},{rootMargin:'0px 0px -12% 0px'});
+ els.forEach(e=>io.observe(e));
+ const chats=document.querySelectorAll('.chat');
+ if('IntersectionObserver'in window){const co=new IntersectionObserver(en=>{en.forEach(e=>{
+   if(e.isIntersecting){e.target.classList.add('play');co.unobserve(e.target);}})},{rootMargin:'0px 0px -18% 0px'});
+   chats.forEach(c=>co.observe(c));}
+})();
+</script>
+<script>
+document.querySelectorAll('.demo-toggle').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const panel=document.getElementById(b.getAttribute('aria-controls'));
+    const open=panel.classList.toggle('open');
+    b.setAttribute('aria-expanded',open?'true':'false');
+    if(open) setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),260);
+  });
+});
+</script>
+<script>
+(()=>{const nums=document.querySelectorAll('[data-count]');
+ if(!nums.length) return;
+ const run=el=>{const to=+el.dataset.count,pre=el.dataset.prefix||'',suf=el.dataset.suffix||'';
+   const dur=1100,t0=performance.now();
+   const step=t=>{const k=Math.min(1,(t-t0)/dur);const e=1-Math.pow(1-k,3);
+     el.textContent=pre+Math.round(to*e)+suf; if(k<1) requestAnimationFrame(step);};
+   requestAnimationFrame(step);};
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+   nums.forEach(n=>n.textContent=(n.dataset.prefix||'')+n.dataset.count+(n.dataset.suffix||''));return;}
+ const io=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){run(e.target);io.unobserve(e.target);}})},{threshold:.6});
+ nums.forEach(n=>io.observe(n));})();
+</script>
+<div class="sticky-cta" id="stickyCta">
+  <div class="wrap">
+    <div class="sc-text"><b>Проверьте свою систему управления прямо сейчас</b><span>Диагностика по 14 навыкам, результат сразу на экране</span></div>
+    <form class="sc-form" action="https://a-players.ru/diagnostic/" method="get">
+      <input type="text" name="contact" placeholder="Телеграм или телефон" aria-label="Телеграм или телефон" required>
+      <button class="btn" type="submit"><span class="sc-long">Пройти диагностику</span><span class="sc-short">Диагностика</span> →</button>
+    </form>
+  </div>
+</div>
+<script>
+(()=>{const bar=document.getElementById('stickyCta');const hero=document.querySelector('.hero');
+ const fin=document.getElementById('form');
+ const io=new IntersectionObserver(en=>{en.forEach(e=>{
+   if(e.target===hero) bar.classList.toggle('show', !e.isIntersecting);
+   if(e.target===fin && e.isIntersecting) bar.classList.remove('show');
+ })},{threshold:.15});
+ if(hero) io.observe(hero); if(fin) io.observe(fin);
+ // магнитная кнопка
+ document.querySelectorAll('.magnet').forEach(b=>{
+   if(matchMedia('(pointer: coarse)').matches||matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+   b.addEventListener('mousemove',e=>{const r=b.getBoundingClientRect();
+     const x=(e.clientX-r.left-r.width/2)/r.width, y=(e.clientY-r.top-r.height/2)/r.height;
+     b.style.transform=`translate(${x*14}px, ${y*8}px)`;});
+   b.addEventListener('mouseleave',()=>{b.style.transform='';});
+ });
+})();
+</script>
+</body>
+</html>
