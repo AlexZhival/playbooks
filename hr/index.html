@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>A-Players · HR-функция и ритуалы команды</title>
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+  --em:#143A2D;--em2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold2:#C79A45;--gold-h:#977019;
+  --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+  --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1000px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(30px,5.2vw,52px);line-height:1.05;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(23px,4vw,33px);line-height:1.1;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.2}
+.kicker{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"●";color:var(--gold);font-size:10px}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 3px}
+.gold{color:var(--gold-h)}b,strong{font-weight:800}.em{color:var(--em)}.rd{color:var(--red)}.grn{color:var(--green)}
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:60px 0 54px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 86% 30%,rgba(199,154,69,.18),transparent 44%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:760px}
+.hero .lead{font-size:clamp(17px,2.3vw,20px);color:rgba(239,233,218,.85);max-width:640px;margin-top:16px;font-weight:500}
+.hero .kicker{color:var(--gold2)}
+.hero-bob{position:absolute;right:20px;bottom:-6px;height:300px;z-index:1;pointer-events:none;filter:drop-shadow(0 12px 20px rgba(0,0,0,.22))}
+@media(max-width:980px){.hero-bob{display:none}}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.badge{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold2)}
+.cta{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;font-weight:800;font-size:16px;padding:14px 22px;border-radius:12px;text-decoration:none;margin-top:24px;box-shadow:0 14px 30px -12px rgba(176,130,46,.7);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+section{padding:48px 0}section.alt{background:var(--bg2)}
+.eyebrow{margin-bottom:13px;display:inline-block}
+.lead{font-size:19px;color:var(--muted);font-weight:500}
+.deliv{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--green);border-radius:0 16px 16px 0;padding:22px 26px;margin-top:22px}
+.deliv ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:10px 24px;margin-top:8px}
+@media(max-width:640px){.deliv ul{grid-template-columns:1fr}}
+.deliv li{position:relative;padding-left:27px;font-size:16px}
+.deliv li::before{content:"✓";position:absolute;left:0;top:-1px;color:var(--green);font-weight:800}
+.deliv.one ul{grid-template-columns:1fr}
+.stat3{display:flex;gap:30px;margin-top:18px;flex-wrap:wrap}
+.stat3 .v{font-family:var(--serif);font-weight:800;font-size:44px;color:var(--em);line-height:1}
+.stat3 .l{font-size:15px;color:var(--muted)}
+.vars{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+@media(max-width:760px){.vars{grid-template-columns:1fr}}
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;display:flex;flex-direction:column}
+.vcard.v1{border-top:5px solid var(--em)}.vcard.v2{border-top:5px solid var(--gold)}
+.vcard .vn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.vcard h3{font-size:21px;margin-top:2px}.vcard p{font-size:14.5px;color:var(--muted);margin-top:6px}
+.vcard ol{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.vcard ol li{font-size:14.5px}
+.vcard .btns{margin-top:auto;padding-top:16px;display:flex;flex-wrap:wrap;gap:9px}
+.btn .ic{font-size:15px;line-height:1}
+.cta .ic{font-size:18px;line-height:1}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:14px;padding:11px 16px;border-radius:10px;text-decoration:none;transition:transform .15s;border:none;cursor:pointer;font-family:var(--sans)}
+.btn:hover{transform:translateY(-1px)}
+.btn.p{background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A}
+.btn.e{background:var(--em);color:#fff}
+.btn.g{background:transparent;border:1.5px solid var(--line);color:var(--em)}
+.hero .btn.g{color:var(--dark-ink);border-color:rgba(239,233,218,.5)}
+.hero .btn.g:hover{background:rgba(239,233,218,.10)}
+.road{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.rstep{display:grid;grid-template-columns:54px 1fr;gap:16px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 20px}
+.rstep .n{width:46px;height:40px;border-radius:10px;background:linear-gradient(180deg,#BE8E34,#A87C24);color:#19120A;font-family:var(--serif);font-weight:800;font-size:16px;display:grid;place-items:center}
+.rstep h4{font-family:var(--serif);font-size:18px;color:var(--em)}
+.rstep p{font-size:15px;color:var(--muted);margin-top:5px}
+.rstep .mini{font-size:13.5px;color:var(--ink);margin-top:8px;background:var(--bg2);border-radius:9px;padding:9px 12px}
+.rstep .mini b{color:var(--em)}
+.rstep.star .n{background:linear-gradient(180deg,#3E8E5E,#2f7a4e);color:#fff}
+.sec-box{background:#2b1512;border:1px solid #5a2b22;border-radius:18px;padding:26px 28px;margin-top:24px;color:#f3e3df;position:relative;overflow:hidden}
+.sec-box::after{content:"🔒";position:absolute;right:22px;top:18px;font-size:40px;opacity:.25}
+.sec-box h3{color:#fff;font-size:22px}
+.sec-box .rule{display:flex;gap:11px;margin-top:14px;font-size:15px}
+.sec-box .rule .i{color:#ffcf6a;font-weight:800;flex:none}
+.sec-box .big{background:rgba(255,255,255,.08);border-radius:10px;padding:11px 15px;margin-top:16px;font-weight:700;color:#ffd98a}
+.note-fallback{background:#FBF6EC;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:15px}
+.value{background:var(--em);color:var(--dark-ink);border-radius:12px;padding:12px 16px;margin-top:14px;font-size:15px;font-weight:600}
+.value b{color:#fff}
+.dl-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.crit{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-top:20px}
+.crit ul{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:8px}
+.crit li{position:relative;padding-left:26px;font-size:16px}
+.crit li::before{content:"☐";position:absolute;left:0;color:var(--gold-h);font-weight:800}
+.links{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:20px}
+@media(max-width:860px){.links{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.links{grid-template-columns:1fr}}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.lcard h4{font-family:var(--serif);font-size:16px;color:var(--em);margin-bottom:8px}
+.lcard a{display:block;font-size:14px;color:var(--em);text-decoration:none;font-weight:700;padding:3px 0;line-height:1.35}
+.lcard a::before{content:"↗ ";color:var(--gold-h)}
+.lcard a span{color:var(--muted);font-weight:500}
+footer{background:var(--em);color:var(--dark-ink);padding:26px 0}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:14px}
+footer img{height:20px}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="badges"><span class="badge">Модуль · HR-функция</span><span class="badge">55 слайдов</span><span class="badge">Конструктор HR-системы</span><span class="badge">Тренажёр увольнения</span></div>
+    <span class="kicker">Практикум A-Players · 8 поток</span>
+    <h1>HR-функция<br>и ритуалы команды</h1>
+    <p class="lead">Найти сильного — только треть работы. Вырастить и удержать — ещё две трети. И держатся они на ритуалах, а не на настроении собственника.</p>
+    <a class="cta" href="konstruktor.html" target="_blank" rel="noopener"><span class="ic">🎛</span>Открыть конструктор HR-системы</a>
+    <div class="dl-row" style="margin-top:16px">
+      <a class="btn g" href="prezentaciya.html" target="_blank" rel="noopener"><span class="ic">🖥</span>Презентация модуля</a>
+      <a class="btn p" href="prezentaciya.pdf" download="HR-функция и ритуалы команды — презентация.pdf"><span class="ic">⬇</span>Презентация (PDF)</a>
+      <a class="btn g" href="ssylki-dlya-miro.txt" download="Ссылки модуля (для Miro).txt"><span class="ic">🔗</span>Ссылки для Miro</a>
+    </div>
+    <img class="hero-bob" src="gen/bob/cut/re_retention.png" alt="">
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Что будет в итоге</span>
+    <h2>Пять артефактов HR-системы</h2>
+    <div class="deliv"><ul>
+      <li><b>Вердикт по HR</b> — кто нужен сейчас: дженералист, сеньор, HRD или пока справляешься сам</li>
+      <li><b>Пять HR-метрик</b> — посчитаны и сравнены с нормой твоей ниши</li>
+      <li><b>Карта ритуалов</b> — что есть, что в развитии, что внедрить, и всё это в календаре</li>
+      <li><b>Матрица удержания</b> — кто в зоне ухода и план по каждому</li>
+      <li><b>План найма на квартал</b> — роли по месяцам с датами старта поиска</li>
+      <li><b>Бриф HR-дженералиста</b> — если триггеры сработали, можно открывать вакансию</li>
+    </ul></div>
+    <div class="stat3">
+      <div><div class="v">12 окладов</div><div class="l">стоит одна ошибка найма</div></div>
+      <div><div class="v">80%</div><div class="l">ключевых руководителей выращены внутри</div></div>
+      <div><div class="v">0 ₽</div><div class="l">стоит большинство инструментов удержания</div></div>
+    </div>
+    <div class="note-fallback">🔑 Конструктор работает на <b>твоём</b> ключе Claude (<a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com → API Keys</a>). Ключ хранится только в твоём браузере, данные команды никуда не уходят.</div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Инструменты модуля</span>
+    <h2>Чем собираешь</h2>
+    <div class="vars">
+      <div class="vcard v1">
+        <div class="vn">Основной инструмент</div>
+        <h3>Конструктор HR-системы</h3>
+        <p>Семь шагов: от диагностики до выгрузки. Считает сам, а ИИ подключается там, где нужен текст под твою компанию.</p>
+        <ol>
+          <li>Диагностика «какой HR нужен» + профиль роли на 90 дней</li>
+          <li>Калькулятор пяти HR-метрик с нормами по нишам</li>
+          <li>Карта 16 ритуалов и <b>выгрузка в календарь (.ics)</b></li>
+          <li>Матрица удержания с планом по каждому человеку</li>
+          <li>Тренажёр экологичного увольнения с разбором на 100 баллов</li>
+          <li>HR-пульт и выгрузка всего в Excel</li>
+        </ol>
+        <div class="btns"><a class="btn p" href="konstruktor.html" target="_blank" rel="noopener"><span class="ic">🎛</span>Открыть конструктор</a></div>
+      </div>
+      <div class="vcard v2">
+        <div class="vn">Материалы встречи</div>
+        <h3>Презентация и ссылки</h3>
+        <p>55 слайдов: триггеры HR-функции, метрики, карта ритуалов, удержание чемпионов, экологичное увольнение, AI в HR. На каждом слайде — скрин шаблона или сервиса, и всё кликается.</p>
+        <ol>
+          <li>HTML-версия — все ссылки живые</li>
+          <li>PDF — с кликабельными ссылками и поиском по тексту</li>
+          <li>Отдельный файл со ссылками: вставляешь в Miro текстовым блоком</li>
+        </ol>
+        <div class="btns">
+          <a class="btn e" href="prezentaciya.html" target="_blank" rel="noopener"><span class="ic">🖥</span>Смотреть</a>
+          <a class="btn g" href="prezentaciya.pdf" download="HR-функция и ритуалы команды — презентация.pdf"><span class="ic">⬇</span>PDF</a>
+          <a class="btn g" href="ssylki-dlya-miro.txt" download="Ссылки модуля (для Miro).txt"><span class="ic">🔗</span>Ссылки</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#F6F2E8">
+  <div class="wrap">
+    <span class="kicker eyebrow">Домашнее задание</span>
+    <h2>Сначала диагностика, потом ритмы, в конце — люди</h2>
+    <p style="font-size:16px;color:#5A6056;max-width:78ch;margin-top:8px">Порядок важен. Если начать с найма HR, получишь человека без задач и метрик. Если начать с ритуалов без замера — нечем будет доказать, что они что-то изменили. Поэтому сначала цифры, потом ритм, потом работа с конкретными людьми.</p>
+
+    <div class="road">
+      <div class="rstep"><div class="n">0</div><div>
+        <h4>Какой HR нужен тебе сейчас · 20 минут</h4>
+        <p>Открой конструктор, шаг «Какой HR нужен». Отметь сработавшие триггеры, впиши, сколько процентов твоего времени уходит на HR-рутину и сколько ролей в найме и перенайме каждый месяц.</p>
+        <div class="mini"><b>Результат:</b> вердикт — дженералист, сеньор-дженералист, HRD или пока сам. Плюс профиль роли: что этот человек делает первые 90 дней, топ-5 навыков, KPI, вилка и где его искать. <b>Порог для решения:</b> больше 20% твоего времени на HR-рутину — пора нанимать.</div>
+      </div></div>
+
+      <div class="rstep"><div class="n">1</div><div>
+        <h4>Аудит пяти HR-метрик · 1 час</h4>
+        <p>Шаг «HR-метрики». Нужны цифры за 12 месяцев: выручка, ФОТ, численность, сколько человек ушло отдельно по линейным и по кор-команде, сколько людей по факту и сколько нужно по плану. Плюс замер eNPS по кор-команде — анонимный вопрос «с какой вероятностью порекомендуешь работу у нас другу, 0–10».</p>
+        <div class="mini"><b>Нормы для сверки:</b> текучесть линейных 6–10% в месяц, топ-команды 1–2%. eNPS ниже нуля — критично, цель для МСБ 30–45. ФОТ/выручка и выручка на сотрудника сравниваются с твоей нишей — таблица норм вшита в конструктор. <b>Результат:</b> пять цифр со светофором и вывод, где пробоина.</div>
+      </div></div>
+
+      <div class="rstep"><div class="n">2</div><div>
+        <h4>Карта ритуалов команды · 1,5 часа</h4>
+        <p>Шаг «Карта ритуалов». Пройди по 16 ритуалам и честно отметь статус: есть, в развитии или внедрить. Укажи, кто ведёт каждый. Потом нажми «Скачать календарь ритуалов» — файл открывается двойным кликом и заливает ритуалы в Google Calendar или Apple Календарь с повторами и повесткой внутри.</p>
+        <div class="mini"><b>Что попадёт в календарь:</b> чек-ин энергии по понедельникам, 1:1 отдельной встречей на каждого из кор-команды, воркшоп, демо и признание, мониторинг резюме, фидбэк-сессия, Performance Review с 9-box, PDP, пересмотр матрицы удержания, eNPS и 270°. Ритуалы со статусом «есть» в файл не попадают — они у тебя уже стоят. <b>Результат:</b> заполненная карта и ритуалы в календаре на квартал вперёд.</div>
+      </div></div>
+
+      <div class="rstep"><div class="n">3</div><div>
+        <h4>Матрица удержания кор-команды · 1,5 часа</h4>
+        <p>Шаг «Матрица удержания». По каждому ключевому сотруднику ответь на три вопроса: вырастет ли он в доходе за 12 месяцев, растёт ли как профессионал прямо сейчас, есть ли карьерный рост. Добавь калибруемость по модели «хочу — могу — делаю» и сигналы: открыл резюме, снизил активность, спрашивал про карьеру.</p>
+        <div class="mini"><b>Результат:</b> риск по каждому считается сам, а ИИ пишет план на квартал: что делаем, к какому сроку, кто отвечает, и с каких фраз начать разговор на 1:1. <b>Правило модуля:</b> сохранить тех, кого хочешь сохранить, — твоя прямая обязанность, а не их лояльность.</div>
+      </div></div>
+
+      <div class="rstep"><div class="n">4</div><div>
+        <h4>План найма на квартал · 1 час</h4>
+        <p>Посчитай, сколько людей и на какие роли понадобится через 1, 2 и 3 месяца под план продаж. Считаем от трафика и ёмкости одного человека, сверху добавляем 5% на отсутствия — больничные и отпуска. По каждой роли определи дату старта поиска: сильного руководителя выводим минимум два месяца.</p>
+        <div class="mini"><b>Добавь донорские компании:</b> 3–5 компаний, где уже работает твой идеальный кандидат, и 2–3 конкретных имени. Бенчмарк по откликам: на руководителя уходит от 700 до 2 400 откликов, на менеджера — около 1 100–1 500. Калькулятор откликов есть в конструкторе воронки найма из модуля 11.</div>
+      </div></div>
+
+      <div class="rstep star"><div class="n">★</div><div>
+        <h4>Тренажёр экологичного увольнения · 20 минут</h4>
+        <p>Шаг «Тренажёр увольнения». Выбери сценарий — «пойду в суд», «у меня ипотека», «это сокращение, хочу три оклада» или спокойный кейс — и проведи встречу. Сотрудника играет ИИ и держит характер до конца. В конце нажми «Завершить и разобрать».</p>
+        <div class="mini"><b>Результат:</b> балл из 100 по пяти ступеням встречи плюс лексика безопасности, список сорвавшихся фраз и как стоило сказать. <b>Принеси на встречу свой балл и одну фразу, которую разбор подсветил как рискованную.</b> Это же упражнение можно дать каждому руководителю — обучение найму и увольнению двигает команду сильнее всего.</div>
+      </div></div>
+
+      <div class="rstep star"><div class="n">★★</div><div>
+        <h4>Бриф HR-дженералиста · если триггеры сработали</h4>
+        <p>Если по заданию 0 вышло, что HR нужен уже сейчас, — открывай бриф вакансии и портрет навыков. Проранжируй навыки под свою ситуацию: что критично сегодня, что желательно, а что человек дорастит в процессе.</p>
+        <div class="mini"><b>Результат:</b> заполненный бриф, топ-5 обязательных навыков, топ-3 желательных и список донорских компаний. Готовый пакет, с которым можно размещать вакансию и стартовать воронку найма.</div>
+      </div></div>
+    </div>
+
+    <div class="note-fallback" style="margin-top:20px">Если времени мало — делай <b>задания 0, 2 и 3</b>. Вердикт по HR, ритуалы в календаре и матрица удержания дают больше, чем все пять заданий, сделанных наспех.</div>
+
+    <div class="dl-row"><a class="btn p" href="konstruktor.html" target="_blank" rel="noopener"><span class="ic">🎛</span>Открыть конструктор</a><a class="btn g" href="prezentaciya.pdf" download="HR-функция и ритуалы команды — презентация.pdf"><span class="ic">⬇</span>Презентация (PDF)</a></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <span class="kicker eyebrow">Шаблоны и материалы</span>
+    <h2>Всё, что нужно для домашки</h2>
+    <div class="links">
+      <div class="lcard"><h4>📊 Шаблоны A-Players</h4>
+        <a href="https://docs.google.com/spreadsheets/d/1onNb3f3mKLqnR9WpeVhAHgycqcucwJoDPmEbwrFt4SQ/edit?usp=sharing" target="_blank" rel="noopener">Удержание A-Players, рост eNPS <span>— треугольник, Risk Map, трекер</span></a>
+        <a href="https://docs.google.com/spreadsheets/d/18UE8lRkEXSd3lGyKZR8IZIGsnOaCqaMx39RAKSr0B7w/edit?usp=sharing" target="_blank" rel="noopener">Матрица удержания <span>— со справочником бенчмарков</span></a>
+        <a href="https://docs.google.com/spreadsheets/d/1IBZjtEX1Znfi8vfRzOK4CJ1sjtOj1czelP8gxT1B5H8/edit?usp=sharing" target="_blank" rel="noopener">Performance Review, 270°, 9-box</a>
+        <a href="https://docs.google.com/spreadsheets/d/1V0nhHybWuRUVLMhzTPI3Qv048oOPEDYYk6wcnQznUl0/edit?usp=sharing" target="_blank" rel="noopener">One-on-One A-Players</a>
+        <a href="https://docs.google.com/spreadsheets/d/1Y-E4k7OdP2w-Kd6LrV4kSDnxW4_SbPWZpsvGgpmbplo/edit?usp=sharing" target="_blank" rel="noopener">Дашборд руководителя <span>— рамка и карта встреч</span></a>
+        <a href="https://docs.google.com/spreadsheets/d/13bPBhBp6ql5eM9ZHd13bxTcF8nX-KeBh8Pb2jxr2yos/edit?usp=sharing" target="_blank" rel="noopener">Трекинг наставников и испытательного</a>
+      </div>
+      <div class="lcard"><h4>📘 Плейбуки и портреты</h4>
+        <a href="https://docs.google.com/spreadsheets/d/1Z0EqByaHSMbL2ZjTrDFEJEJRGPTddTy6zqbNGUQlceA/edit?usp=sharing" target="_blank" rel="noopener">Портрет HR-дженералиста</a>
+        <a href="https://docs.google.com/spreadsheets/d/1w_tC1lb2NYOHKbo2gZnfUPlcJJUab7cDN1zOiyOUznU/edit?usp=sharing" target="_blank" rel="noopener">Портрет HRD</a>
+        <a href="https://docs.google.com/spreadsheets/d/1xNzMGjdsz4Y-nWwFkW3XIIer-QAuhkIJFAkk1IzpjRo/edit?usp=sharing" target="_blank" rel="noopener">Навыки и грейды</a>
+        <a href="https://docs.google.com/spreadsheets/d/1qnKXx0rGL7PHtjF1VluIfCMqLO3GADcpMeDFh3Co_5w/edit?usp=sharing" target="_blank" rel="noopener">Бриф на новую вакансию</a>
+        <a href="https://docs.google.com/document/d/1rbHzHYvTEKYN-mQUT0U4S8yk2liJcRXHxWpJvusAbi8/edit?usp=sharing" target="_blank" rel="noopener">Плейбук PDP управленца</a>
+        <a href="https://docs.google.com/presentation/d/1xqTRnjVY9iYd9btm1UEorJzgjy6---HWWo8IxOfWll8/edit?usp=sharing" target="_blank" rel="noopener">Экологичное увольнение <span>— методичка</span></a>
+      </div>
+      <div class="lcard"><h4>💰 Вилки и сервисы</h4>
+        <a href="https://www.amtconsult.ru/" target="_blank" rel="noopener">AMT Консалт <span>— вилки и HR-бенчмарки</span></a>
+        <a href="https://b1.ru/services/tax-and-law-services/b1-salary-survey-report-2025/" target="_blank" rel="noopener">Б1 <span>— обзор зарплат</span></a>
+        <a href="https://ancor.ru/services/consulting/issledovaniya-i-oprosy/obzory-zarabotnykh-plat-lgot-i-kompensatsiy/" target="_blank" rel="noopener">ANCOR <span>— обзоры зарплат и льгот</span></a>
+        <a href="https://happy-job.ru/" target="_blank" rel="noopener">Happy Job <span>— eNPS</span></a>
+        <a href="https://benefactory.ru/" target="_blank" rel="noopener">Benefactory <span>— гибкие бенефиты</span></a>
+        <a href="https://miro.com/miroverse/" target="_blank" rel="noopener">Miroverse <span>— шаблоны фидбэк-сессий</span></a>
+      </div>
+    </div>
+    <div class="value">Полный список из 32 ссылок — в файле «Ссылки для Miro» и на предпоследнем слайде презентации.</div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <span class="kicker eyebrow">Что сдаём</span>
+    <h2>Чек-лист готовности</h2>
+    <div class="crit"><ul>
+      <li>Вердикт по HR получен, профиль роли собран</li>
+      <li>Пять HR-метрик посчитаны и сравнены с нормой ниши</li>
+      <li>Карта ритуалов заполнена, календарь выгружен и залит</li>
+      <li>Матрица удержания закрыта по всей кор-команде, по каждому крестику есть действие, срок и ответственный</li>
+      <li>План найма на квартал готов, по каждой роли есть дата старта поиска и донорские компании</li>
+      <li>Тренажёр увольнения пройден, балл и рискованная фраза записаны</li>
+      <li>Excel из HR-пульта выгружен — с ним идёшь на ближайшие 1:1</li>
+    </ul></div>
+    <div class="sec-box">
+      <h3>Про ключ и данные команды</h3>
+      <div class="rule"><span class="i">1</span><span>Конструктор работает на твоём ключе Claude. Ключ хранится в localStorage твоего браузера и уходит только на api.anthropic.com — ни на какой наш сервер он не попадает.</span></div>
+      <div class="rule"><span class="i">2</span><span>Имена сотрудников, цифры по зарплатам и матрица удержания остаются в твоём браузере. Мы их не видим и не храним.</span></div>
+      <div class="rule"><span class="i">3</span><span>Работай в одном браузере: данные сохраняются локально. Перед закрытием выгружай Excel — это твоя резервная копия.</span></div>
+      <div class="big">Не публикуй матрицу удержания с именами в общих чатах. Это чувствительные данные по людям.</div>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap"><span style="display:flex;align-items:center;gap:10px"><img src="assets/logo-aplayers.png" alt="A-Players"> ПРАКТИКУМ A-PLAYERS</span><span>Модуль · HR-функция и ритуалы команды</span></div></footer>
+</body>
+</html>

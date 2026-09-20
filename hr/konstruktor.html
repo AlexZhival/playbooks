@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Конструктор HR-системы — A-Players</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Roboto+Slab:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<style>
+  :root{
+    --cream:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+    --em:#143A2D;--em2:#1C4C3B;--gold:#B0822E;--gold-h:#977019;--gold2:#C79A45;
+    --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+    --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5}
+  a{color:var(--em)}
+  .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+  .side{background:var(--em);color:#EFE9DA;padding:22px 18px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .brand{font-family:var(--serif);font-weight:800;font-size:18px;color:#fff;display:flex;align-items:center;gap:9px;margin-bottom:4px}
+  .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--gold2)}
+  .side .sub{font-size:12px;color:#a9bcaf;margin-bottom:18px}
+  .steps{display:flex;flex-direction:column;gap:3px}
+  .snav{display:flex;gap:11px;align-items:flex-start;padding:9px 11px;border-radius:10px;cursor:pointer;color:#cdd8ce;transition:.12s}
+  .snav:hover{background:rgba(255,255,255,.06)}
+  .snav.on{background:rgba(199,154,69,.16);color:#fff}
+  .snav .si{width:24px;height:24px;border-radius:7px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:13px;font-weight:800;flex:none;font-family:var(--serif)}
+  .snav.on .si{background:var(--gold);color:#19120A}
+  .snav.done .si{background:var(--green);color:#fff}
+  .snav .st{font-size:13.5px;font-weight:600;line-height:1.25}
+  .snav .sd{font-size:11px;color:#9fb0a4;margin-top:1px}
+  .keybox{margin-top:18px;background:rgba(0,0,0,.16);border-radius:10px;padding:12px}
+  .keybox label{font-size:11px;color:#a9bcaf;display:block;margin-bottom:5px}
+  .keybox input,.keybox select{width:100%;background:rgba(255,255,255,.95);border:none;border-radius:7px;padding:8px 10px;font-size:13px;color:#16201B;margin-bottom:7px}
+  .main{padding:34px 52px 90px;max-width:1500px;margin-inline:auto;width:100%}
+  .kick{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-h);font-weight:800}
+  h1{font-family:var(--serif);font-weight:800;font-size:30px;letter-spacing:-.4px;margin:4px 0 6px}
+  h2{font-family:var(--serif);font-weight:800;font-size:21px;color:var(--em);margin:22px 0 10px}
+  h3{font-family:var(--serif);font-weight:700;font-size:16px;color:var(--em)}
+  p.lead{color:var(--muted);font-size:16px;max-width:76ch}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-top:14px;box-shadow:0 6px 20px rgba(20,32,27,.05)}
+  label.fl{font-size:13px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px}
+  input[type=text],input[type=number],input[type=date],input[type=time],textarea,select{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:10px 12px;font-size:14.5px;font-family:inherit;color:var(--ink)}
+  textarea{min-height:80px;resize:vertical}
+  input:focus,textarea:focus,select:focus{outline:none;border-color:var(--em);box-shadow:0 0 0 3px rgba(20,58,45,.12)}
+  .fg{margin-bottom:14px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:900px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.two,.three{grid-template-columns:1fr}}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;padding:11px 18px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:.14s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn.primary{background:var(--gold);color:#fff}
+  .btn.dark{background:var(--em);color:#fff}
+  .btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--em)}
+  .btn.sm{padding:8px 13px;font-size:13px}
+  .btn:disabled{opacity:.5;cursor:default;transform:none}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1.5px solid var(--line);background:#fff;border-radius:20px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer}
+  .chip.on{border-color:var(--em);background:#EFF4EC;color:var(--em)}
+  .statusbox{background:#fff;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;padding:12px 15px;font-size:14px;margin-top:12px;display:flex;align-items:center;gap:10px}
+  .errbox{background:#fbecea;border:1px solid #e6c7c0;border-left:4px solid var(--red);border-radius:10px;padding:12px 15px;font-size:14px;margin-top:12px;color:#7a2318}
+  .spin{width:16px;height:16px;border:2.5px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp .7s linear infinite;flex:none}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .note{background:#FBF6EC;border:1px solid var(--line);border-radius:10px;padding:11px 14px;font-size:13.5px;color:#6a4e17;margin-top:12px}
+  .note.b{background:#EFF4EC;color:#1d3b2c;border-color:#c3d6c8}
+  .note.r{background:#fbecea;color:#7a2318;border-color:#e6c7c0}
+  table.gt{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-top:8px}
+  table.gt th{background:var(--em);color:#EFE9DA;text-align:left;padding:8px 11px;font-size:12px;font-weight:700}
+  table.gt td{padding:8px 11px;border-top:1px solid var(--line);vertical-align:top}
+  table.gt tr:nth-child(even) td{background:#faf7f0}
+  table.gt td input,table.gt td select{padding:6px 8px;font-size:13px;border-radius:7px}
+  .g{color:var(--green);font-weight:800}.y{color:var(--amber);font-weight:800}.r{color:var(--red);font-weight:800}
+  ul.li{list-style:none;display:flex;flex-direction:column;gap:7px;margin-top:6px}
+  ul.li li{position:relative;padding-left:22px;font-size:14px}
+  ul.li li::before{content:"";position:absolute;left:0;top:8px;width:8px;height:8px;border-radius:2px;background:var(--gold);transform:rotate(45deg)}
+  .verdict{background:linear-gradient(150deg,#17402f,#122f24);color:#EFE9DA;border-radius:16px;padding:22px 24px;margin-top:14px}
+  .verdict .vk{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);font-weight:800}
+  .verdict h2{color:#fff;margin:6px 0 4px;font-size:26px}
+  .verdict .vs{color:#CBD3C4;font-size:15px}
+  .mgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px}
+  @media(max-width:1100px){.mgrid{grid-template-columns:repeat(2,1fr)}}
+  .mcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .mcard .mn{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-h);font-weight:800}
+  .mcard .mv{font-family:var(--serif);font-weight:800;font-size:27px;color:var(--em);margin-top:4px}
+  .mcard .mh{font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:4px}
+  .mcard.ok{border-color:#bcd3c2;background:#F4F9F5}
+  .mcard.warn{border-color:#e6d2a8;background:#FCF7EC}
+  .mcard.bad{border-color:#e6c7c0;background:#FBEFED}
+  .rit{border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:#fff;margin-top:8px;display:grid;grid-template-columns:1.5fr .7fr .8fr 1fr;gap:10px;align-items:center}
+  @media(max-width:1000px){.rit{grid-template-columns:1fr}}
+  .rit.has{border-color:#bcd3c2;background:#F6FAF6}
+  .rit .rn{font-weight:800;color:var(--em);font-size:14.5px}
+  .rit .rd{font-size:12.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+  .seclab{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-h);font-weight:800;margin-top:18px}
+  .chat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;max-height:460px;overflow-y:auto}
+  .msg{margin-bottom:10px;display:flex;gap:9px}
+  .msg .av{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;font-size:14px;font-weight:800;background:var(--bg2);color:var(--em)}
+  .msg.me .av{background:var(--em);color:#fff}
+  .msg .bub{background:#F6F3EA;border-radius:12px;padding:9px 13px;font-size:14.5px;line-height:1.45;max-width:78ch;white-space:pre-wrap}
+  .msg.me .bub{background:#EFF4EC}
+  .score{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff;margin-top:7px}
+  .score b{color:var(--em)}
+  .score .pts{font-family:var(--serif);font-weight:800;font-size:19px}
+  .big{font-family:var(--serif);font-weight:800;font-size:44px;color:var(--em)}
+  .tri{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+  .tri div{border-radius:10px;padding:10px 12px;font-size:13.5px;border:1.5px solid}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><span class="dot"></span> A-Players</div>
+    <div class="sub">Конструктор HR-системы</div>
+    <div class="steps" id="steps"></div>
+    <div class="keybox">
+      <label>Claude API-ключ (твой)</label>
+      <input id="apikey" type="password" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+      <label>Модель</label>
+      <select id="model">
+        <option value="claude-opus-5">Opus 5 (точнее)</option>
+        <option value="claude-sonnet-5">Sonnet 5 (быстрее)</option>
+      </select>
+      <div style="font-size:10.5px;color:#9fb0a4;line-height:1.4">Ключ хранится только в твоём браузере и никуда не отправляется, кроме api.anthropic.com.</div>
+    </div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+
+<script>
+/* ================= ДАННЫЕ МЕТОДОЛОГИИ ================= */
+const NICHE_BENCH=[
+ ["Косметическое производство (FMCG)","15–22%","$120k"],
+ ["Фарма-дистрибуция / мед. решения","12–20%","$200k"],
+ ["B2B дистрибуция (сырьё, оборудование)","10–20%","$200k"],
+ ["Логистика и таможенный брокер","15–25%","$150k"],
+ ["Real Estate Management","18–30%","$250k"],
+ ["IT-платформа / SaaS","40–70%","$250k"],
+ ["FinTech / международные платежи","25–45%","$300k"],
+ ["EdTech (онлайн-школа, академия)","35–55%","$80k"],
+ ["Digital-агентство / геймдев","40–60%","$90k"],
+ ["Девелоперский консалтинг / full-cycle бюро","35–55%","$120k"]
+];
+const TRIGGERS=[
+ {id:"size",t:"В компании больше 20–30 человек",d:"и каждый месяц 3–4 роли в найме или перенайме"},
+ {id:"sys",t:"Найм стал системным",d:"постоянный поток вакансий, планируем на 3–4 месяца вперёд"},
+ {id:"noise",t:"Появился «людской шум»",d:"конфликты, выгорание, демотивация, тревога в команде"},
+ {id:"tired",t:"Основатель устал быть психологом",d:"все HR-вопросы сходятся на одном человеке"}
+];
+const RITUALS=[
+ {id:"checkin",sec:"Каждую неделю",n:"Чек-ин энергии и состояния",d:"Понедельник, 2 вопроса в чате: уровень энергии и эмоциональное состояние за прошлую неделю",rrule:"FREQ=WEEKLY;BYDAY=MO",dur:15,who:"CEO / руководитель"},
+ {id:"oneone",sec:"Каждую неделю",n:"1:1 с ключевыми",d:"30 минут, вопросы по треугольнику удержания, договорённости письменно",rrule:"FREQ=WEEKLY;INTERVAL=2",dur:30,who:"руководитель",perPerson:true},
+ {id:"workshop",sec:"Раз в 2–3 недели",n:"Воркшоп / обучение команды",d:"Найм, увольнение, AI, темы практикума. Обучение растит команду быстрее всего",rrule:"FREQ=WEEKLY;INTERVAL=3",dur:90,who:"CEO / эксперт"},
+ {id:"mentor",sec:"Раз в 2–3 недели",n:"Встреча с ментором / советником",d:"У каждого ключевого сотрудника есть наставник вне компании. Стоит 0 рублей",rrule:"FREQ=WEEKLY;INTERVAL=2",dur:60,who:"сотрудник"},
+ {id:"demo",sec:"Каждый месяц",n:"Демо и признание",d:"Что получилось за месяц, кого благодарим публично. Культура чемпионов",rrule:"FREQ=MONTHLY;BYDAY=1FR",dur:60,who:"вся команда"},
+ {id:"mentrep",sec:"Каждый месяц",n:"Наставники презентуют работу",d:"Начало месяца: гипотезы, как растили новичков, результаты",rrule:"FREQ=MONTHLY;BYDAY=1MO",dur:45,who:"наставники"},
+ {id:"hhmon",sec:"Каждый месяц",n:"Мониторинг резюме на hh.ru",d:"Кто из ключевых открыл резюме — ранний сигнал до оффера конкурента",rrule:"FREQ=MONTHLY;BYMONTHDAY=1",dur:30,who:"HR"},
+ {id:"feedback",sec:"Каждый квартал",n:"Фидбэк-сессия",d:"Безопасная среда, внешний модератор, шаблон из Miroverse",rrule:"FREQ=MONTHLY;INTERVAL=3",dur:120,who:"команда + модератор"},
+ {id:"pr",sec:"Каждый квартал",n:"Performance Review + 9-box",d:"Итоги квартальных проектов, квадрант по каждому управленцу, решения",rrule:"FREQ=MONTHLY;INTERVAL=3",dur:120,who:"CEO + HR"},
+ {id:"pdp",sec:"Каждый квартал",n:"PDP на квартал",d:"2–3 навыка, 80% практики, привязка к текущим проектам",rrule:"FREQ=MONTHLY;INTERVAL=3",dur:60,who:"руководитель + сотрудник"},
+ {id:"retention",sec:"Каждый квартал",n:"Матрица удержания",d:"Кор-команда × 3 грани + калибруемость, план на каждый крестик",rrule:"FREQ=MONTHLY;INTERVAL=3",dur:60,who:"CEO + HR"},
+ {id:"hrproj",sec:"Каждый квартал",n:"2–3 HR-проекта в работу",d:"HR-дженералист берёт проекты из чеклиста удержания по приоритету",rrule:"FREQ=MONTHLY;INTERVAL=3",dur:60,who:"HR"},
+ {id:"enps",sec:"Раз в полгода",n:"Замер eNPS",d:"Анонимно: «порекомендуешь работу у нас другу?» + разбор причин",rrule:"FREQ=MONTHLY;INTERVAL=6",dur:30,who:"HR"},
+ {id:"d270",sec:"Раз в полгода",n:"Диагностика 270°",d:"Как человек делает: руководитель, коллеги, подчинённые",rrule:"FREQ=MONTHLY;INTERVAL=6",dur:60,who:"HR"},
+ {id:"salary",sec:"Раз в год",n:"Пересмотр рыночных вилок",d:"Отчёт AMT Консалт / Б1 / ANCOR + hh.ru. Цель — держаться рынок ±10%",rrule:"FREQ=YEARLY",dur:60,who:"CEO + HR"},
+ {id:"benefits",sec:"Раз в год",n:"Пересмотр бенефитов",d:"Баллы на выбор вместо одинакового ДМС (Benefactory и аналоги)",rrule:"FREQ=YEARLY",dur:60,who:"HR"}
+];
+const OFFB_CASES=[
+ {id:"court",n:"«Я пойду в суд»",d:"Сотрудник в панике и агрессии. Психология: сгладить конфликт, объяснить, что суд — это долгий процесс на полгода, деньги проще получить сейчас. Финансовый рычаг: начинать переговоры сразу с 2 окладов, чтобы не разозлить сильнее."},
+ {id:"mortgage",n:"«У меня ипотека / сложная ситуация»",d:"Страх потери базовой безопасности. Психология: искать золотую середину, акцент — полная сумма (оклад + отпуск + бонус) закроет потребность. Финансовый рычаг: начинать с 0,5 оклада сверху при необходимости."},
+ {id:"three",n:"«По факту это сокращение, хочу 3 оклада»",d:"Попытка юридической манипуляции. Психология: спокойно объяснить разницу между сокращением (внешний кризис) и оптимизацией (внутренняя неэффективность). Финансовый рычаг: до 0,5 оклада сверху."},
+ {id:"calm",n:"Спокойный кейс: человек всё понимает",d:"Сотрудник позитивен, ищет компромисс, конфликтов с командой не было. Проверяем, что руководитель не сорвётся в оправдания и доведёт встречу до подписания соглашения."}
+];
+const OFFB_RULES=`ФРЕЙМВОРК ЭКОЛОГИЧНОГО ОФФБОРДИНГА (методичка A-Players):
+ЗОЛОТОЙ СТАНДАРТ — соглашение сторон (ст. 78 ТК РФ): невозможно отозвать в одностороннем порядке, закрывает риски обеим сторонам.
+ТРИАДА ПОДГОТОВКИ: (1) сроки отработки — от «день в день» до 14+ дней в зависимости от риска и объёма передачи дел; (2) финансы — расчёт обязательных выплат и согласованный бюджет на отступные; (3) аргументы и документы — факты о результатах работы (не о личных качествах), черновик соглашения, план передачи дел.
+АРХИТЕКТУРА ВЫПЛАТ: обязательная база по закону (оклад за отработанные дни + компенсация отпуска) + дополнительные рычаги переговоров (бонусы KPI пропорционально, компенсация при достижении соглашения — обычно 0,5–2 оклада).
+5 СТУПЕНЕЙ ВСТРЕЧИ: 1) синхронизация и озвучивание решения — чётко, без вступлений, обосновать фактами; 2) отработка возражений — выслушать, дать выговориться, снизить градус; 3) озвучивание условий (математика) — сроки, выплаты, что получит; 4) меню поддержки — рекомендация, помощь рекрутёров, обучение; 5) фиксация и подписание — договорённости в письме или мессенджере сразу после встречи.
+ЛЕКСИКА БЕЗОПАСНОСТИ: говорим «оптимизация процессов», а не «сокращение персонала»; опираемся на неудовлетворительные результаты по утверждённым KPI, а не на «ты ленивый»; при испытательном сроке — «предлагаем расторгнуть по соглашению сторон, так как договорённости не были выполнены».
+ПСИХОЛОГИЯ: сохранять спокойствие и не реагировать на провокации; возвращать ответственность мягко («мы предварительно обсуждали критерии»); использовать коучинговые вопросы «Как?» и «Что?» вместо «Почему?».
+ЕСЛИ НЕ ПОДПИСАЛИ СЕГОДНЯ: пауза → резюмирование → консультация с HR → повторная встреча с новым предложением.
+ПОСЛЕ: экзит-интервью для улучшения процессов, честная рекомендация, коммуникация с оставшейся командой в течение суток.`;
+const RET_METHOD=`ТРЕУГОЛЬНИК УДЕРЖАНИЯ (методология A-Players, лист «Методология» таблицы «Удержание A-Players, рост eNPS»):
+ГРАНЬ 1 — РОСТ ДОХОДА: политика роста только через результат. Топ-перформер по итогам performance review → индексация до 15%. Рост зоны ответственности → пересмотр вилки по рыночному бенчмарку. Дополнительные роли (наставник, лидер проекта) → отдельный бонус.
+ГРАНЬ 2 — РОСТ КАК ПРОФЕССИОНАЛ: PDP каждый квартал под проекты; грейды Junior → Middle → Senior → Team Lead с чёткими критериями; доступ к внешнему обучению и конференциям; участие в сложных проектах.
+ГРАНЬ 3 — КАРЬЕРНЫЙ РОСТ: лестница не только вертикальная (рост грейда = карьерный рост + рост дохода); роль наставника как промежуточная ступень будущего руководителя; каждый руководитель обязан вырастить заместителя.
+КАЛИБРУЕМОСТЬ «ХОЧУ — МОГУ — ДЕЛАЮ»: не делает → мотивация и переконфигурация задач (решаемо); не может → научить (решаемо); не хочет → почти не переводится в «хочу», сигнал к ротации.
+НАСТАВНИЧЕСТВО: критерии наставника — ≥100% плана последние 2 месяца, <10% критических ошибок, ноль дисциплинарных нарушений, рекомендация руководителя. Не больше 2 подопечных. Бонус — только при выполнении собственного плана.
+ПРИЗНАНИЕ: принцип разбитых окон, еженедельное публичное признание, микропоощрения в течение 24–48 часов, гибкие бенефиты вместо одинакового ДМС.
+МОНИТОРИНГ: ежемесячная проверка статусов резюме ключевых сотрудников, eNPS 2 раза в год, ежегодный зарплатный бенчмарк, цель — рынок ±10%.`;
+
+/* ================= STATE ================= */
+const LS={key:"apx_hr_key",model:"apx_hr_model",state:"apx_hr_state"};
+const API_URL="https://api.anthropic.com/v1/messages";
+let STEP=0;
+let S={company:"",niche:"",headcount:"",team:[],trig:{},founderTime:"",openRoles:"",
+       metrics:{},rituals:{},ritStart:"",ritTime:"10:00",
+       results:{},trainer:null};
+try{const j=JSON.parse(localStorage.getItem(LS.state));if(j)S=Object.assign(S,j);}catch(_){}
+function save(){try{localStorage.setItem(LS.state,JSON.stringify(S));return true}catch(e){return false}}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const num=v=>{const x=parseFloat(String(v==null?"":v).replace(/\s| /g,"").replace(",","."));return isFinite(x)?x:null;};
+const fmt=n=>n==null?"—":(Math.round(n*10)/10).toLocaleString("ru-RU");
+
+/* ================= CLAUDE ================= */
+async function callClaude({system,messages,max_tokens,effort}){
+  const key=($("#apikey").value||"").trim();if(!key)throw new Error("no-key");
+  const model=$("#model").value;
+  const body={model,max_tokens:max_tokens||6000,system:[{type:"text",text:system,cache_control:{type:"ephemeral"}}],messages};
+  if(effort&&(model==="claude-opus-5"||model==="claude-sonnet-5"))body.output_config={effort};
+  let res=null;
+  for(let attempt=0;attempt<4;attempt++){
+    try{res=await fetch(API_URL,{method:"POST",headers:{"content-type":"application/json","x-api-key":key,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify(body)});}
+    catch(netErr){if(attempt===3)throw netErr;await new Promise(r=>setTimeout(r,1200*Math.pow(2,attempt)));continue;}
+    if(res.status===429||res.status>=500){if(attempt===3)break;const ra=parseInt(res.headers.get("retry-after")||"",10);await new Promise(r=>setTimeout(r,isFinite(ra)?ra*1000:1200*Math.pow(2,attempt)));continue;}
+    break;
+  }
+  const data=await res.json().catch(()=>({}));
+  if(!res.ok||data.type==="error")throw new Error((data.error&&data.error.message)||("HTTP "+res.status));
+  const txt=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+  if(data.stop_reason==="max_tokens"){const e=new Error("truncated");e.truncated=true;e.partial=txt;throw e;}
+  return txt;
+}
+function errText(e){
+  if(e&&e.truncated)return "Модель оборвала ответ по лимиту токенов. Нажми ещё раз — или сократи количество людей в таблице.";
+  if(e.message==="no-key")return "Вставь свой ключ Claude API в панели слева.";
+  if(/Failed to fetch|NetworkError/i.test(e.message))return "Нет связи с api.anthropic.com. Открой файл в Chrome и проверь интернет.";
+  return e.message||"Ошибка.";
+}
+function balanceClose(s){let inStr=false,escf=false;const st=[];for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(escf)escf=false;else if(ch==="\\")escf=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch==='{'||ch==='[')st.push(ch==='{'?'}':']');else if(ch==='}'||ch===']')st.pop();}let o=s;if(inStr)o+='"';o=o.replace(/[,\s]+$/,"");for(let i=st.length-1;i>=0;i--)o+=st[i];return o.replace(/,\s*([}\]])/g,"$1");}
+function lastTopComma(s){let inStr=false,escf=false,last=-1;for(let i=0;i<s.length;i++){const ch=s[i];if(inStr){if(escf)escf=false;else if(ch==="\\")escf=true;else if(ch==='"')inStr=false;continue;}if(ch==='"')inStr=true;else if(ch===',')last=i;}return last;}
+function parseJSON(s){
+  let t=String(s||"").replace(/^﻿/,"").trim().replace(/^```[a-z]*\s*/i,"").replace(/```\s*$/,"").trim();
+  const a=t.indexOf("{");if(a>0)t=t.slice(a);
+  const b=t.lastIndexOf("}");if(b>0){try{return JSON.parse(t.slice(0,b+1).replace(/,\s*([}\]])/g,"$1"));}catch(_){}}
+  let w=t;for(let k=0;k<400;k++){try{return JSON.parse(balanceClose(w));}catch(_){}const c=lastTopComma(w);if(c<0)break;w=w.slice(0,c);}
+  throw new SyntaxError("не-JSON");
+}
+const JSON_RULE="Отвечай ТОЛЬКО валидным JSON без markdown-обёртки и без пояснений до или после.";
+const CTX=()=>`КОНТЕКСТ КОМПАНИИ: «${S.company||"—"}», ниша: ${S.niche||"—"}, численность: ${S.headcount||"—"} человек. Кор-команда: ${(S.team||[]).map(p=>p.name+" — "+p.role+(p.grade?" ("+p.grade+")":"")).join("; ")||"не заполнена"}.`;
+
+/* ================= ШАГИ ================= */
+const STEPS=[
+ {id:"start",icon:"0",t:"Старт",d:"компания и кор-команда"},
+ {id:"diag",icon:"1",t:"Какой HR нужен",d:"диагностика по триггерам"},
+ {id:"metrics",icon:"2",t:"HR-метрики",d:"5 цифр и сравнение с нишей"},
+ {id:"rituals",icon:"3",t:"Карта ритуалов",d:"+ выгрузка в календарь"},
+ {id:"retention",icon:"4",t:"Матрица удержания",d:"риски и планы по людям"},
+ {id:"offb",icon:"5",t:"Тренажёр увольнения",d:"диалог и разбор"},
+ {id:"panel",icon:"6",t:"Мой HR-пульт",d:"сводка и выгрузка"}
+];
+function stepDone(id){
+  if(id==="start")return !!(S.company&&(S.team||[]).length);
+  if(id==="diag")return !!S.results.diag;
+  if(id==="metrics")return !!(S.metrics&&S.metrics.revenue);
+  if(id==="rituals")return Object.keys(S.rituals||{}).some(k=>(S.rituals[k]||{}).status);
+  if(id==="retention")return (S.team||[]).some(p=>p.money||p.skills||p.career);
+  if(id==="offb")return !!(S.trainer&&S.trainer.score);
+  return false;
+}
+function renderNav(){
+  $("#steps").innerHTML=STEPS.map((st,i)=>{
+    const done=stepDone(st.id);
+    return '<div class="snav'+(i===STEP?' on':'')+(done?' done':'')+'" onclick="go('+i+')"><div class="si">'+(done&&i!==STEP?'✓':st.icon)+'</div><div><div class="st">'+esc(st.t)+'</div><div class="sd">'+esc(st.d)+'</div></div></div>';
+  }).join("");
+}
+function go(i){STEP=Math.max(0,Math.min(STEPS.length-1,i));renderNav();render();window.scrollTo(0,0);}
+window.go=go;
+function head(kick,h1,lead){return '<div class="kick">'+kick+'</div><h1>'+h1+'</h1>'+(lead?'<p class="lead">'+lead+'</p>':'');}
+function navBtns(){const b=[];if(STEP>0)b.push('<button class="btn ghost" onclick="go('+(STEP-1)+')">← Назад</button>');if(STEP<STEPS.length-1)b.push('<button class="btn dark" onclick="go('+(STEP+1)+')">Дальше →</button>');return '<div class="row" style="margin-top:22px">'+b.join("")+'</div>';}
+function busy(sel,text){const el=$(sel);if(el)el.innerHTML='<div class="statusbox"><div class="spin"></div>'+esc(text)+'</div>';}
+function fail(sel,e){const el=$(sel);if(el)el.innerHTML='<div class="errbox">'+esc(errText(e))+'</div>';}
+function render(){
+  const id=STEPS[STEP].id;
+  if(id==="start")return renderStart();
+  if(id==="diag")return renderDiag();
+  if(id==="metrics")return renderMetrics();
+  if(id==="rituals")return renderRituals();
+  if(id==="retention")return renderRetention();
+  if(id==="offb")return renderOffb();
+  return renderPanel();
+}
+
+/* ---- 0. СТАРТ ---- */
+function renderStart(){
+  $("#main").innerHTML=head("Конструктор HR-системы","Собери HR-систему<br>своей компании","Диагностика «какой HR нужен», пять HR-метрик против нормы ниши, карта ритуалов с выгрузкой в календарь, матрица удержания с планами по людям и тренажёр экологичного увольнения. Всё на твоём ключе Claude — ключ никуда не передаётся.")+
+  '<div class="card"><div class="three">'+
+  '<div class="fg"><label class="fl">Компания</label><input type="text" id="f_company" value="'+esc(S.company)+'" placeholder="напр. A-Players"></div>'+
+  '<div class="fg"><label class="fl">Ниша</label><input type="text" id="f_niche" value="'+esc(S.niche)+'" placeholder="напр. онлайн-образование"></div>'+
+  '<div class="fg"><label class="fl">Человек в команде</label><input type="number" id="f_head" value="'+esc(S.headcount)+'" placeholder="напр. 34"></div></div>'+
+  '<h3>Кор-команда: кого потерять критично</h3><p style="font-size:13.5px;color:var(--muted);margin-top:4px">Эти же люди попадут в матрицу удержания. 3–10 человек достаточно.</p>'+
+  '<table class="gt" id="teamTbl"><tr><th style="width:26%">Имя</th><th style="width:34%">Роль</th><th style="width:18%">Грейд</th><th style="width:14%">В компании</th><th></th></tr>'+
+  (S.team||[]).map((p,i)=>'<tr>'+
+    '<td><input type="text" value="'+esc(p.name)+'" oninput="teamSet('+i+',\'name\',this.value)"></td>'+
+    '<td><input type="text" value="'+esc(p.role)+'" oninput="teamSet('+i+',\'role\',this.value)"></td>'+
+    '<td><select onchange="teamSet('+i+',\'grade\',this.value)">'+["","Junior","Middle","Senior","Lead"].map(g=>'<option'+(p.grade===g?' selected':'')+'>'+g+'</option>').join("")+'</select></td>'+
+    '<td><input type="text" value="'+esc(p.tenure||"")+'" placeholder="1,5 года" oninput="teamSet('+i+',\'tenure\',this.value)"></td>'+
+    '<td><button class="btn ghost sm" onclick="teamDel('+i+')">✕</button></td></tr>').join("")+
+  '</table><div class="row" style="margin-top:10px"><button class="btn ghost sm" onclick="teamAdd()">+ Добавить человека</button></div>'+
+  '<div class="note b">Правило модуля: найти сильного — треть работы. Остальные две трети — вырастить и удержать. Обе держатся на ритуалах, а не на настроении собственника.</div>'+
+  '<div class="row" style="margin-top:16px"><button class="btn primary" onclick="saveStart()">Сохранить и продолжить →</button></div></div>';
+}
+function teamAdd(){S.team=S.team||[];S.team.push({name:"",role:"",grade:"",tenure:""});save();renderStart();}
+function teamDel(i){S.team.splice(i,1);save();renderStart();}
+function teamSet(i,k,v){S.team[i][k]=v;save();}
+function saveStart(){S.company=$("#f_company").value.trim();S.niche=$("#f_niche").value.trim();S.headcount=$("#f_head").value.trim();save();renderNav();go(1);}
+window.teamAdd=teamAdd;window.teamDel=teamDel;window.teamSet=teamSet;window.saveStart=saveStart;
+
+/* ---- 1. ДИАГНОСТИКА: КАКОЙ HR НУЖЕН ---- */
+function hrVerdict(){
+  const n=num(S.headcount)||0,ft=num(S.founderTime)||0,or_=num(S.openRoles)||0;
+  const trig=TRIGGERS.filter(t=>S.trig[t.id]).length+(ft>20?1:0)+(or_>=3?1:0);
+  let role,why;
+  if(n>=800){role="HR-отдел + HRBP";why="На таком масштабе появляется бизнес-партнёрство: примерно 1 HRBP на 1 000 сотрудников.";}
+  else if(n>=100){role="HRD + 1–2 рекрутера";why="Функции разделяются: HRD берёт HR-бренд, C&B и развитие, рекрутеры — поиск, отклики и первичные интервью.";}
+  else if(n>=50){role="Senior HR-дженералист";why="Джуниор и мидл не вывезут системный найм: будут ошибаться в воронках и недотягивать сильных кандидатов.";}
+  else if(n>=20||trig>=2){role="HR-дженералист с сильным рекрутингом";why="Один универсал, у которого навык рекрутинга минимум уровня middle по карте навыков.";}
+  else {role="Пока справляешься сам + рекрутер на подряде";why="Триггеров мало. Разумнее отдать поиск на агентство или фрилансера и вернуться к вопросу при 20–30 людях.";}
+  return {role,why,trig};
+}
+function renderDiag(){
+  const v=hrVerdict();
+  $("#main").innerHTML=head("Шаг 1 · Диагностика","Какой HR нужен тебе сейчас","Четыре триггера, порог по твоему времени и размер команды. Вердикт считается сразу, а дальше ИИ распишет, что этот человек делает в первые 90 дней и какие навыки у него обязаны быть.")+
+  '<div class="card"><h3>Отметь, что уже про тебя</h3><div style="margin-top:8px">'+
+  TRIGGERS.map(t=>'<div class="rit'+(S.trig[t.id]?' has':'')+'" style="grid-template-columns:auto 1fr" onclick="trigTgl(\''+t.id+'\')"><div style="font-size:20px">'+(S.trig[t.id]?"✅":"⬜")+'</div><div><div class="rn">'+esc(t.t)+'</div><div class="rd">'+esc(t.d)+'</div></div></div>').join("")+
+  '</div><div class="two" style="margin-top:14px">'+
+  '<div class="fg"><label class="fl">Сколько % твоего времени уходит на HR-рутину</label><input type="number" id="f_ft" value="'+esc(S.founderTime)+'" placeholder="напр. 25"><div class="note" style="margin-top:6px">Речь не про финальные собеседования, а про размещение вакансий, отсмотр откликов, оформление, разбор конфликтов. Порог — 20%.</div></div>'+
+  '<div class="fg"><label class="fl">Сколько ролей в найме и перенайме каждый месяц</label><input type="number" id="f_or" value="'+esc(S.openRoles)+'" placeholder="напр. 3"></div></div>'+
+  '<div class="row"><button class="btn ghost" onclick="diagSave()">Пересчитать вердикт</button></div></div>'+
+  '<div class="verdict"><div class="vk">Вердикт · триггеров сработало: '+v.trig+' из 6</div><h2>'+esc(v.role)+'</h2><div class="vs">'+esc(v.why)+'</div></div>'+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="diagRun()">Собрать профиль роли на ИИ</button><span style="font-size:13px;color:var(--muted)">первые 90 дней, топ-5 навыков, KPI, вилка, где искать</span></div><div id="diagOut">'+(S.results.diag?diagHTML(S.results.diag):"")+'</div></div>'+navBtns();
+}
+function trigTgl(id){S.trig[id]=!S.trig[id];save();renderDiag();}
+function diagSave(){S.founderTime=$("#f_ft").value.trim();S.openRoles=$("#f_or").value.trim();save();renderDiag();}
+function diagHTML(r){
+  return '<h3 style="margin-top:16px">'+esc(r.title||"Профиль роли")+'</h3>'+
+  (r.first90?'<table class="gt"><tr><th style="width:18%">Период</th><th>Что должен сделать</th><th style="width:26%">Как проверишь</th></tr>'+r.first90.map(x=>'<tr><td><b>'+esc(x.period)+'</b></td><td>'+esc(x.what)+'</td><td>'+esc(x.check)+'</td></tr>').join("")+'</table>':"")+
+  (r.skills?'<h3 style="margin-top:14px">Топ-5 навыков, без которых не рассматриваем</h3><ul class="li">'+r.skills.map(x=>'<li><b>'+esc(x.name)+'</b> — '+esc(x.why)+'</li>').join("")+'</ul>':"")+
+  (r.kpi?'<h3 style="margin-top:14px">KPI роли</h3><ul class="li">'+r.kpi.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':"")+
+  (r.salary?'<div class="note"><b>Вилка:</b> '+esc(r.salary)+'</div>':"")+
+  (r.where?'<div class="note b"><b>Где искать:</b> '+esc(r.where)+'</div>':"")+
+  (r.risk?'<div class="note r"><b>Риск:</b> '+esc(r.risk)+'</div>':"");
+}
+async function diagRun(){
+  const v=hrVerdict();busy("#diagOut","Собираю профиль роли под твою компанию…");
+  try{
+    const sys="Ты — операционный директор и практик найма уровня A-Players. Отвечаешь конкретно, без общих слов, на русском. "+JSON_RULE;
+    const msg=CTX()+`\nВердикт диагностики: нужен «${v.role}». Сработало триггеров: ${v.trig} из 6. Времени собственника на HR: ${S.founderTime||"не указано"}%. Ролей в найме ежемесячно: ${S.openRoles||"не указано"}.
+Собери профиль этой роли ПОД ЭТУ компанию и нишу. Формат JSON:
+{"title":"название роли и одной фразой зачем она этой компании",
+"first90":[{"period":"Дни 1–30","what":"что конкретно делает","check":"по чему поймёшь, что сделано"}, ... 3 периода: 1–30, 31–60, 61–90],
+"skills":[{"name":"навык","why":"почему критичен именно здесь"} ... ровно 5],
+"kpi":["метрика с цифрой-ориентиром" ... 4–5],
+"salary":"вилка в рублях для этой роли и региона СНГ с оговоркой +10–15% к рынку за сильного",
+"where":"где искать этого человека: площадки, донорские ниши, формулировка запроса в агентство",
+"risk":"главная ошибка при найме такого человека именно в компании такого размера"}`;
+    const txt=await callClaude({system:sys,messages:[{role:"user",content:msg}],max_tokens:5000,effort:"medium"});
+    S.results.diag=parseJSON(txt);save();renderNav();$("#diagOut").innerHTML=diagHTML(S.results.diag);
+  }catch(e){fail("#diagOut",e);}
+}
+window.trigTgl=trigTgl;window.diagSave=diagSave;window.diagRun=diagRun;
+
+/* ---- 2. HR-МЕТРИКИ ---- */
+function calcMetrics(){
+  const m=S.metrics||{},r=num(m.revenue),f=num(m.fot),fte=num(m.fte),
+        lo=num(m.leftLine),ln=num(m.avgLine),co=num(m.leftCore),cn=num(m.avgCore),
+        fact=num(m.factStaff),plan=num(m.planStaff),
+        pr=num(m.prom),ne=num(m.neu),de=num(m.det);
+  const tot=(pr||0)+(ne||0)+(de||0);
+  return {
+    revFte:(r&&fte)?r/fte:null,
+    fotShare:(r&&f)?f/r*100:null,
+    turnLine:(lo!=null&&ln)?lo/ln*100:null,
+    turnCore:(co!=null&&cn)?co/cn*100:null,
+    staff:(fact&&plan)?fact/plan*100:null,
+    enps:tot?((pr-de)/tot*100):null
+  };
+}
+function mcls(v,ok,warn){if(v==null)return"";if(ok(v))return" ok";if(warn(v))return" warn";return" bad";}
+function renderMetrics(){
+  const m=S.metrics||{},c=calcMetrics();
+  const f=(id,lab,ph)=>'<div class="fg"><label class="fl">'+lab+'</label><input type="text" value="'+esc(m[id]||"")+'" placeholder="'+ph+'" oninput="metSet(\''+id+'\',this.value)"></div>';
+  $("#main").innerHTML=head("Шаг 2 · HR-метрики","Пять цифр, по которым видно здоровье команды","Считаем как маркетинг: по каждой метрике светофор против нормы. Дальше ИИ скажет, где у тебя пробоина и что чинить первым.")+
+  '<div class="card"><h3>Эффективность</h3><div class="three">'+f("revenue","Выручка за 12 месяцев, ₽","напр. 180 000 000")+f("fot","ФОТ за 12 месяцев, ₽","напр. 70 000 000")+f("fte","Сотрудников (FTE)","напр. 34")+'</div>'+
+  '<h3>Текучесть за месяц</h3><div class="two"><div class="two">'+f("leftLine","Ушло линейных за месяц","напр. 2")+f("avgLine","Средняя численность линейных","напр. 22")+'</div><div class="two">'+f("leftCore","Ушло из кор-команды за месяц","напр. 0")+f("avgCore","Средняя численность кор-команды","напр. 8")+'</div></div>'+
+  '<h3>Укомплектованность и eNPS</h3><div class="three">'+f("factStaff","Людей по факту","напр. 30")+f("planStaff","Нужно по плану (WFM)","напр. 36")+'<div></div></div>'+
+  '<div class="three">'+f("prom","Промоутеры (9–10), чел.","напр. 11")+f("neu","Нейтральные (7–8), чел.","напр. 9")+f("det","Детракторы (0–6), чел.","напр. 2")+'</div></div>'+
+  '<div class="mgrid">'+
+  '<div class="mcard'+(c.revFte!=null?" ok":"")+'"><div class="mn">Выручка на сотрудника</div><div class="mv">'+(c.revFte!=null?fmt(c.revFte/1e6)+" млн ₽":"—")+'</div><div class="mh">в год на одного FTE. Сравни с нормой ниши ниже</div></div>'+
+  '<div class="mcard'+mcls(c.fotShare,v=>v<=35,v=>v<=55)+'"><div class="mn">ФОТ / выручка</div><div class="mv">'+(c.fotShare!=null?fmt(c.fotShare)+"%":"—")+'</div><div class="mh">норма зависит от ниши: от 10–20% в дистрибуции до 40–70% в SaaS</div></div>'+
+  '<div class="mcard'+mcls(c.turnLine,v=>v<=10,v=>v<=15)+'"><div class="mn">Текучесть линейных</div><div class="mv">'+(c.turnLine!=null?fmt(c.turnLine)+"%":"—")+'</div><div class="mh">норма 6–10% в месяц</div></div>'+
+  '<div class="mcard'+mcls(c.turnCore,v=>v<=2,v=>v<=4)+'"><div class="mn">Текучесть кор-команды</div><div class="mv">'+(c.turnCore!=null?fmt(c.turnCore)+"%":"—")+'</div><div class="mh">норма 1–2% в месяц</div></div>'+
+  '<div class="mcard'+mcls(c.enps,v=>v>=30,v=>v>=0)+'"><div class="mn">eNPS</div><div class="mv">'+(c.enps!=null?fmt(c.enps):"—")+'</div><div class="mh">цель МСБ 30–45, ниже нуля — критично</div></div>'+
+  '</div>'+
+  '<div class="card"><h3>Укомплектованность</h3><div class="big">'+(c.staff!=null?fmt(c.staff)+"%":"—")+'</div><div style="font-size:13.5px;color:var(--muted)">Считается от плана WFM, а не от «сколько запланировали нанять». В Skyeng смотрят каждый день.</div></div>'+
+  '<div class="card"><h3>Нормы ФОТ/выручка и выручки на сотрудника по нишам</h3><table class="gt"><tr><th>Отрасль</th><th>ФОТ / выручка</th><th>Выручка на сотрудника в год</th></tr>'+NICHE_BENCH.map(r=>'<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>').join("")+'</table><div class="note">Источник: данные мастермайнда A-Players (выступление Head of HR Skyeng). Свежие вилки — отчёты AMT Консалт, Б1, ANCOR, Antal.</div></div>'+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="metRun()">Разобрать мои цифры на ИИ</button><span style="font-size:13px;color:var(--muted)">где пробоина и что чинить первым</span></div><div id="metOut">'+(S.results.metrics?metHTML(S.results.metrics):"")+'</div></div>'+navBtns();
+}
+function metSet(k,v){S.metrics=S.metrics||{};S.metrics[k]=v;save();}
+function metHTML(r){
+  return (r.verdict?'<div class="verdict" style="margin-top:14px"><div class="vk">Главный вывод</div><h2 style="font-size:22px">'+esc(r.verdict)+'</h2></div>':"")+
+  (r.items?'<table class="gt"><tr><th style="width:20%">Метрика</th><th style="width:14%">Оценка</th><th>Что это значит и что делать</th></tr>'+r.items.map(x=>'<tr><td><b>'+esc(x.metric)+'</b></td><td class="'+(x.status==="норма"?"g":x.status==="внимание"?"y":"r")+'">'+esc(x.status)+'</td><td>'+esc(x.comment)+'</td></tr>').join("")+'</table>':"")+
+  (r.actions?'<h3 style="margin-top:14px">Что делаем в ближайшие 30 дней</h3><ul class="li">'+r.actions.map(x=>'<li>'+esc(x)+'</li>').join("")+'</ul>':"");
+}
+async function metRun(){
+  const c=calcMetrics();busy("#metOut","Разбираю цифры…");
+  try{
+    const sys="Ты — операционный директор, который читает HR-метрики как коммерческие. Говоришь прямо, приземлённо, на русском. "+JSON_RULE;
+    const msg=CTX()+`\nПОСЧИТАННЫЕ МЕТРИКИ: выручка на сотрудника в год: ${c.revFte!=null?Math.round(c.revFte).toLocaleString("ru-RU")+" ₽":"нет данных"}; ФОТ/выручка: ${c.fotShare!=null?c.fotShare.toFixed(1)+"%":"нет данных"}; текучесть линейных: ${c.turnLine!=null?c.turnLine.toFixed(1)+"% в месяц":"нет данных"}; текучесть кор-команды: ${c.turnCore!=null?c.turnCore.toFixed(1)+"% в месяц":"нет данных"}; укомплектованность: ${c.staff!=null?c.staff.toFixed(0)+"%":"нет данных"}; eNPS: ${c.enps!=null?Math.round(c.enps):"нет данных"}.
+НОРМЫ: текучесть линейных 6–10% в месяц, топ-команда 1–2% в месяц. eNPS: ниже 0 критично, 30–45 — цель для МСБ, 50+ мировой класс. ФОТ/выручка и выручка на сотрудника сравниваются с нишей: ${NICHE_BENCH.map(r=>r[0]+" "+r[1]+" / "+r[2]).join("; ")}.
+Разбери цифры этой компании. Если данных нет — так и скажи, что замерить в первую очередь. Формат JSON:
+{"verdict":"одна фраза: главный вывод по команде",
+"items":[{"metric":"название","status":"норма | внимание | пробоина","comment":"что значит именно для этой ниши и что делать"} ... по каждой из 6 метрик],
+"actions":["конкретное действие на ближайшие 30 дней с ответственным" ... 4–6]}`;
+    const txt=await callClaude({system:sys,messages:[{role:"user",content:msg}],max_tokens:5000,effort:"medium"});
+    S.results.metrics=parseJSON(txt);save();$("#metOut").innerHTML=metHTML(S.results.metrics);
+  }catch(e){fail("#metOut",e);}
+}
+window.metSet=metSet;window.metRun=metRun;
+
+/* ---- 3. КАРТА РИТУАЛОВ ---- */
+function ritGet(id){S.rituals=S.rituals||{};return S.rituals[id]||(S.rituals[id]={status:"",who:"",day:"",time:""});}
+function renderRituals(){
+  let secs=[],cur="";
+  RITUALS.forEach(r=>{
+    const st=ritGet(r.id);
+    if(r.sec!==cur){cur=r.sec;secs.push('<div class="seclab">'+esc(cur)+'</div>');}
+    secs.push('<div class="rit'+(st.status==="есть"?' has':'')+'">'+
+      '<div><div class="rn">'+esc(r.n)+'</div><div class="rd">'+esc(r.d)+'</div></div>'+
+      '<div><select onchange="ritSet(\''+r.id+'\',\'status\',this.value)">'+["","есть","в развитии","внедрить"].map(o=>'<option'+(st.status===o?' selected':'')+'>'+(o||"— статус —")+'</option>').join("")+'</select></div>'+
+      '<div><input type="text" value="'+esc(st.who||r.who)+'" placeholder="кто ведёт" oninput="ritSet(\''+r.id+'\',\'who\',this.value)"></div>'+
+      '<div><input type="time" value="'+esc(st.time||S.ritTime||"10:00")+'" oninput="ritSet(\''+r.id+'\',\'time\',this.value)"></div></div>');
+  });
+  const onCnt=RITUALS.filter(r=>ritGet(r.id).status==="есть").length;
+  $("#main").innerHTML=head("Шаг 3 · Карта ритуалов","Ритуалы команды — и сразу в календарь","Отметь, что уже живёт, что делаешь через раз, а чего нет вообще. Потом одной кнопкой выгружаешь файл календаря: все ритуалы с повторами и повесткой падают в Google Calendar или Apple Календарь.")+
+  '<div class="card"><div class="row"><div class="big">'+onCnt+' / '+RITUALS.length+'</div><div style="font-size:14px;color:var(--muted)">ритуалов уже работает системно</div></div>'+secs.join("")+'</div>'+
+  '<div class="card"><h3>Выгрузка в календарь</h3><div class="two"><div class="fg"><label class="fl">С какой даты стартуем</label><input type="date" value="'+esc(S.ritStart||"")+'" oninput="S.ritStart=this.value;save()"></div>'+
+  '<div class="fg"><label class="fl">Время по умолчанию</label><input type="time" value="'+esc(S.ritTime||"10:00")+'" oninput="S.ritTime=this.value;save()"></div></div>'+
+  '<div class="row"><button class="btn primary" onclick="icsExport()">📅 Скачать календарь ритуалов (.ics)</button><button class="btn ghost" onclick="ritRun()">Собрать повестки на ИИ</button></div>'+
+  '<div class="note">В файл попадут все ритуалы, кроме отмеченных «есть» — те уже стоят у тебя в календаре. 1:1 создаётся отдельной встречей на каждого человека из кор-команды.</div>'+
+  '<div id="ritOut">'+(S.results.rituals?ritHTML(S.results.rituals):"")+'</div></div>'+navBtns();
+}
+function ritSet(id,k,v){ritGet(id)[k]=v;save();if(k==="status")renderRituals();}
+function pad(n){return String(n).padStart(2,"0");}
+function icsDate(d,hm){const[h,m]=(hm||"10:00").split(":");return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+"T"+pad(h)+pad(m)+"00";}
+function icsFold(s){return s.replace(/\r?\n/g,"\\n");}
+function icsExport(){
+  const start=S.ritStart?new Date(S.ritStart+"T00:00:00"):(()=>{const d=new Date();d.setDate(d.getDate()+((8-d.getDay())%7||7));return d;})();
+  const ev=[];let uid=0;
+  RITUALS.forEach((r,i)=>{
+    const st=ritGet(r.id);if(st.status==="есть")return;
+    const d=new Date(start.getTime());d.setDate(d.getDate()+i%5);
+    const time=st.time||S.ritTime||"10:00";
+    const people=(r.perPerson&&(S.team||[]).length)?S.team.filter(p=>p.name).map(p=>p.name):[null];
+    people.forEach(nm=>{
+      const dtStart=icsDate(d,time);
+      const end=new Date(d.getTime());const[h,m]=time.split(":");end.setHours(+h,+m+r.dur,0,0);
+      ev.push(["BEGIN:VEVENT","UID:aplayers-hr-"+(++uid)+"@aplayers","DTSTAMP:"+icsDate(new Date(),"09:00")+"Z",
+        "DTSTART:"+dtStart,"DTEND:"+icsDate(end,pad(end.getHours())+":"+pad(end.getMinutes())),
+        "RRULE:"+r.rrule,"SUMMARY:"+(nm?r.n+" — "+nm:r.n),
+        "DESCRIPTION:"+icsFold(r.d+"\n\nВедёт: "+(st.who||r.who)+"\nМодуль «HR-функция и ритуалы команды» · A-Players"),
+        "END:VEVENT"].join("\r\n"));
+    });
+  });
+  if(!ev.length){alert("Все ритуалы отмечены как «есть» — выгружать нечего.");return;}
+  const ics=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//A-Players//HR ritual map//RU","CALSCALE:GREGORIAN",...ev,"END:VCALENDAR"].join("\r\n");
+  const blob=new Blob([ics],{type:"text/calendar;charset=utf-8"});const u=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=u;a.download="Ритуалы команды — "+(S.company||"компания")+".ics";document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(u);a.remove();},400);
+}
+function ritHTML(r){
+  return (r.agendas?'<h3 style="margin-top:14px">Повестки под твою команду</h3>'+r.agendas.map(a=>'<div class="card" style="margin-top:10px"><h3>'+esc(a.ritual)+'</h3><div style="font-size:13px;color:var(--muted);margin-bottom:6px">'+esc(a.when||"")+'</div><ul class="li">'+(a.points||[]).map(p=>'<li>'+esc(p)+'</li>').join("")+'</ul>'+(a.output?'<div class="note b"><b>Результат встречи:</b> '+esc(a.output)+'</div>':"")+'</div>').join(""):"")+
+  (r.order?'<div class="note"><b>Порядок внедрения:</b> '+esc(r.order)+'</div>':"");
+}
+async function ritRun(){
+  busy("#ritOut","Собираю повестки ритуалов…");
+  try{
+    const have=RITUALS.filter(r=>ritGet(r.id).status==="есть").map(r=>r.n).join("; ")||"ничего";
+    const need=RITUALS.filter(r=>ritGet(r.id).status&&ritGet(r.id).status!=="есть").map(r=>r.n).join("; ")||RITUALS.map(r=>r.n).join("; ");
+    const sys="Ты — операционный директор, который ставит людям ритмы управления. Пишешь по-русски, коротко, наблюдаемыми формулировками. "+JSON_RULE;
+    const msg=CTX()+`\nУже работает системно: ${have}.\nНужно внедрить или дотянуть: ${need}.\nСобери повестки для 5 самых приоритетных ритуалов из тех, что нужно внедрить. Формат JSON:
+{"agendas":[{"ritual":"название","when":"частота и длительность","points":["пункт повестки — что именно делаем и о чём спрашиваем" ... 4–6],"output":"что должно остаться после встречи"} ... 5],
+"order":"в каком порядке внедрять и почему именно так — одна-две фразы"}`;
+    const txt=await callClaude({system:sys,messages:[{role:"user",content:msg}],max_tokens:6000,effort:"medium"});
+    S.results.rituals=parseJSON(txt);save();$("#ritOut").innerHTML=ritHTML(S.results.rituals);
+  }catch(e){fail("#ritOut",e);}
+}
+window.ritSet=ritSet;window.icsExport=icsExport;window.ritRun=ritRun;
+
+/* ---- 4. МАТРИЦА УДЕРЖАНИЯ ---- */
+function riskOf(p){const c=[p.money,p.skills,p.career].filter(x=>x==="✅").length;return c===3?{t:"низкий",cls:"g"}:c===2?{t:"средний",cls:"y"}:{t:"высокий",cls:"r"};}
+function renderRetention(){
+  const rows=(S.team||[]).map((p,i)=>{
+    const r=riskOf(p);
+    const sel=(k)=>'<select onchange="teamSet('+i+',\''+k+'\',this.value);renderRetention()">'+["","✅","❌","❓"].map(o=>'<option'+(p[k]===o?' selected':'')+'>'+(o||"—")+'</option>').join("")+'</select>';
+    return '<tr><td><b>'+esc(p.name||"—")+'</b><div style="font-size:12px;color:var(--muted)">'+esc(p.role||"")+'</div></td>'+
+      '<td>'+sel("money")+'</td><td>'+sel("skills")+'</td><td>'+sel("career")+'</td>'+
+      '<td><select onchange="teamSet('+i+',\'calib\',this.value)">'+["","калибруется","на грани","некалибруемый"].map(o=>'<option'+(p.calib===o?' selected':'')+'>'+(o||"—")+'</option>').join("")+'</select></td>'+
+      '<td class="'+r.cls+'">'+r.t+'</td>'+
+      '<td><input type="text" value="'+esc(p.signal||"")+'" placeholder="сигналы: открыл резюме, снизил активность…" oninput="teamSet('+i+',\'signal\',this.value)"></td></tr>';
+  }).join("");
+  $("#main").innerHTML=head("Шаг 4 · Матрица удержания","Кто из команды в зоне ухода","Три вопроса, которые каждый сотрудник задаёт себе молча: вырасту ли я в доходе, расту ли как профессионал, есть ли карьерный рост. Три галочки — низкий риск. Крестик — работа для тебя.")+
+  '<div class="tri"><div style="border-color:#e3cfa3;background:#FBF3E4"><b>₽ Рост дохода</b><div style="font-size:12.5px;margin-top:3px">Индексация за результат, пересмотр вилки, бонус за доп. роль</div></div>'+
+  '<div style="border-color:#bcd3c2;background:#F0F6F1"><b>✦ Рост как профессионал</b><div style="font-size:12.5px;margin-top:3px">PDP, грейды, внешнее обучение, сложные проекты</div></div>'+
+  '<div style="border-color:#c3cfe6;background:#EEF2FA"><b>↑ Карьерный рост</b><div style="font-size:12.5px;margin-top:3px">Лестница не только вертикальная, роль наставника, заместитель</div></div></div>'+
+  '<div class="card"><table class="gt"><tr><th style="width:20%">Сотрудник</th><th>₽ доход</th><th>✦ навыки</th><th>↑ карьера</th><th style="width:14%">Калибруемость</th><th style="width:10%">Риск</th><th style="width:26%">Сигналы</th></tr>'+
+  (rows||'<tr><td colspan="7">Добавь людей на шаге «Старт».</td></tr>')+'</table>'+
+  '<div class="note">Калибруемость по модели «хочу — могу — делаю»: не делает → мотивация, не может → научить, не хочет → почти не лечится, это сигнал к ротации.</div></div>'+
+  '<div class="card"><div class="row"><button class="btn primary" onclick="retRun()">Собрать планы удержания на ИИ</button><span style="font-size:13px;color:var(--muted)">по каждому крестику — действие, срок и с чего начать разговор</span></div><div id="retOut">'+(S.results.retention?retHTML(S.results.retention):"")+'</div></div>'+navBtns();
+}
+function retHTML(r){
+  return (r.people?r.people.map(p=>'<div class="card" style="margin-top:12px"><h3>'+esc(p.name)+' <span style="font-size:13px;font-weight:600;color:var(--muted)">· риск '+esc(p.risk||"")+'</span></h3>'+
+    (p.gap?'<div style="font-size:14px;margin-top:4px"><b>Где дыра:</b> '+esc(p.gap)+'</div>':"")+
+    (p.plan?'<table class="gt"><tr><th>Что делаем</th><th style="width:16%">Срок</th><th style="width:18%">Кто</th></tr>'+p.plan.map(x=>'<tr><td>'+esc(x.action)+'</td><td>'+esc(x.due)+'</td><td>'+esc(x.who)+'</td></tr>').join("")+'</table>':"")+
+    (p.script?'<div class="note b"><b>С чего начать разговор на 1:1:</b><br>'+esc(p.script)+'</div>':"")+'</div>').join(""):"")+
+  (r.summary?'<div class="note"><b>Общий вывод:</b> '+esc(r.summary)+'</div>':"");
+}
+async function retRun(){
+  const team=(S.team||[]).filter(p=>p.name);
+  if(!team.length){alert("Сначала добавь людей на шаге «Старт».");return;}
+  busy("#retOut","Собираю планы удержания…");
+  try{
+    const sys="Ты — операционный директор, который удерживает сильных руководителей. Пишешь конкретно и по-человечески, без HR-канцелярита, на русском. "+RET_METHOD+" "+JSON_RULE;
+    const rows=team.map(p=>`${p.name} — ${p.role||"роль не указана"}${p.grade?", грейд "+p.grade:""}${p.tenure?", в компании "+p.tenure:""}: доход ${p.money||"?"}, навыки ${p.skills||"?"}, карьера ${p.career||"?"}, калибруемость ${p.calib||"не оценена"}${p.signal?", сигналы: "+p.signal:""}`).join("\n");
+    const msg=CTX()+"\nМАТРИЦА УДЕРЖАНИЯ:\n"+rows+`\nПо каждому человеку с крестиком или вопросом собери план удержания на квартал. Для тех, у кого всё закрыто — что делать, чтобы не потерять. Для «некалибруемых» — честно скажи, что это ротация, и как к ней подготовиться. Формат JSON:
+{"people":[{"name":"имя","risk":"низкий|средний|высокий","gap":"какая грань не закрыта и почему это опасно именно здесь","plan":[{"action":"конкретное действие","due":"срок, напр. 2 недели","who":"кто делает"} ... 2–4],"script":"2–3 фразы, с которых начинаешь разговор на 1:1 — живым языком, без канцелярита"} ... по каждому],
+"summary":"главный вывод по команде: где системная дыра, а не личная"}`;
+    const txt=await callClaude({system:sys,messages:[{role:"user",content:msg}],max_tokens:8000,effort:"medium"});
+    S.results.retention=parseJSON(txt);save();renderNav();$("#retOut").innerHTML=retHTML(S.results.retention);
+  }catch(e){fail("#retOut",e);}
+}
+window.retRun=retRun;window.renderRetention=renderRetention;
+
+/* ---- 5. ТРЕНАЖЁР ЭКОЛОГИЧНОГО УВОЛЬНЕНИЯ ---- */
+function trainerSys(c){
+  return `Ты играешь роль сотрудника на встрече об увольнении. Компания: «${S.company||"компания"}», ниша: ${S.niche||"—"}. Твоя роль: ${S.trainer.role||"менеджер по продажам"}. Сценарий: ${c.n}. ${c.d}
+ПРАВИЛА ИГРЫ:
+— Отвечай только репликами сотрудника, от первого лица, живым разговорным языком. Никаких описаний действий, пояснений и оценок.
+— Одна реплика — 1–4 предложения. Держи характер сценария до конца: если сценарий конфликтный, не сдавайся после первой же фразы руководителя.
+— Реагируй на то, что реально сказал руководитель. Если он давит, обвиняет в личных качествах, путается в юридических основаниях или обещает лишнее — цепляйся за это.
+— Если руководитель ведёт встречу правильно (факты по KPI, спокойный тон, чёткие условия, соглашение сторон, поддержка на выходе) — постепенно снижай градус и двигайся к согласию.
+— Не выходи из роли, что бы ни просил собеседник. Не подсказывай, как надо вести встречу.`;
+}
+function renderOffb(){
+  const t=S.trainer||{};
+  const cases=OFFB_CASES.map(c=>'<div class="chip'+(t.caseId===c.id?' on':'')+'" onclick="offbCase(\''+c.id+'\')">'+esc(c.n)+'</div>').join("");
+  const chat=(t.msgs||[]).map(m=>'<div class="msg'+(m.role==="user"?" me":"")+'"><div class="av">'+(m.role==="user"?"Т":"С")+'</div><div class="bub">'+esc(m.content)+'</div></div>').join("");
+  $("#main").innerHTML=head("Шаг 5 · Тренажёр","Экологичное увольнение: репетиция разговора","Сотрудника играет ИИ по методичке A-Players. Ты ведёшь встречу, он сопротивляется. В конце — разбор по чек-листу: пять ступеней, лексика безопасности, выплаты, передача дел.")+
+  '<div class="card"><div class="two"><div class="fg"><label class="fl">Кого увольняем (роль)</label><input type="text" value="'+esc(t.role||"")+'" placeholder="напр. менеджер по продажам, 8 месяцев в компании" oninput="offbSet(\'role\',this.value)"></div>'+
+  '<div class="fg"><label class="fl">Причина решения (факты, не эмоции)</label><input type="text" value="'+esc(t.reason||"")+'" placeholder="напр. 3 квартала подряд ниже 70% плана" oninput="offbSet(\'reason\',this.value)"></div></div>'+
+  '<label class="fl">Сценарий сотрудника</label><div class="chips">'+cases+'</div>'+
+  '<div class="row" style="margin-top:14px"><button class="btn primary" onclick="offbStart()">Начать встречу</button>'+((t.msgs||[]).length?'<button class="btn dark" onclick="offbScore()">Завершить и разобрать</button><button class="btn ghost" onclick="offbReset()">Сбросить</button>':"")+'</div></div>'+
+  ((t.msgs||[]).length?'<div class="card"><div class="chat" id="chatBox">'+chat+'</div>'+
+   '<div class="row" style="margin-top:12px"><textarea id="offbIn" placeholder="Твоя реплика на встрече…" style="flex:1;min-height:60px"></textarea><button class="btn dark" onclick="offbSend()">Ответить →</button></div>'+
+   '<div id="offbStatus"></div></div>':"")+
+  '<div id="offbOut">'+(t.score?scoreHTML(t.score):"")+'</div>'+
+  '<div class="card"><h3>Шпаргалка по методичке</h3><table class="gt"><tr><th style="width:24%">Ступень</th><th>Что делаешь</th></tr>'+
+  [["1 · Синхронизация","Чётко озвучиваешь решение без длинных вступлений, опираясь на факты и KPI"],
+   ["2 · Отработка возражений","Даёшь выговориться, снижаешь градус, не споришь о личных качествах"],
+   ["3 · Математика","Сроки, выплаты: обязательная база + дополнительные рычаги (обычно 0,5–2 оклада)"],
+   ["4 · Меню поддержки","Рекомендация, помощь рекрутёров, обучение, передача контактов"],
+   ["5 · Фиксация","Договорённости письменно сразу после встречи, соглашение сторон по ст. 78 ТК РФ"]].map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td></tr>').join("")+'</table>'+
+  '<div class="note r"><b>Лексика безопасности:</b> «оптимизация процессов», а не «сокращение персонала». Опора на неудовлетворительные результаты по утверждённым KPI, а не на личные качества.</div></div>'+navBtns();
+  const cb=$("#chatBox");if(cb)cb.scrollTop=cb.scrollHeight;
+}
+function offbSet(k,v){S.trainer=S.trainer||{};S.trainer[k]=v;save();}
+function offbCase(id){S.trainer=S.trainer||{};S.trainer.caseId=id;save();renderOffb();}
+function offbReset(){S.trainer={role:(S.trainer||{}).role,reason:(S.trainer||{}).reason,caseId:(S.trainer||{}).caseId};save();renderOffb();}
+function offbStart(){
+  S.trainer=S.trainer||{};
+  if(!S.trainer.caseId)S.trainer.caseId=OFFB_CASES[0].id;
+  S.trainer.msgs=[];S.trainer.score=null;save();renderOffb();
+  const box=$("#offbStatus");if(box)box.innerHTML='<div class="note b">Встреча началась. Первая реплика — твоя: озвучь решение.</div>';
+}
+async function offbSend(){
+  const inp=$("#offbIn");const text=(inp.value||"").trim();if(!text)return;
+  const c=OFFB_CASES.find(x=>x.id===(S.trainer||{}).caseId)||OFFB_CASES[0];
+  S.trainer.msgs=S.trainer.msgs||[];S.trainer.msgs.push({role:"user",content:text});save();renderOffb();
+  busy("#offbStatus","Сотрудник отвечает…");
+  try{
+    const txt=await callClaude({system:trainerSys(c),messages:S.trainer.msgs,max_tokens:700});
+    S.trainer.msgs.push({role:"assistant",content:txt});save();renderOffb();
+  }catch(e){fail("#offbStatus",e);}
+}
+function scoreHTML(r){
+  return '<div class="card"><div class="verdict"><div class="vk">Разбор встречи</div><h2>'+(r.total!=null?r.total+" / 100":"")+' — '+esc(r.verdict||"")+'</h2><div class="vs">'+esc(r.summary||"")+'</div></div>'+
+  (r.criteria?r.criteria.map(c=>'<div class="score"><div><b>'+esc(c.name)+'</b><div style="font-size:13px;color:var(--muted)">'+esc(c.comment)+'</div></div><div class="pts '+(c.points>=c.max*0.7?"g":c.points>=c.max*0.4?"y":"r")+'">'+c.points+'/'+c.max+'</div></div>').join(""):"")+
+  (r.mistakes&&r.mistakes.length?'<h3 style="margin-top:14px">Что сорвалось</h3><ul class="li">'+r.mistakes.map(m=>'<li>'+esc(m)+'</li>').join("")+'</ul>':"")+
+  (r.rewrite?'<div class="note b"><b>Как было бы правильно сказать:</b><br>'+esc(r.rewrite)+'</div>':"")+'</div>';
+}
+async function offbScore(){
+  if(!(S.trainer&&S.trainer.msgs&&S.trainer.msgs.length)){alert("Сначала проведи встречу.");return;}
+  const c=OFFB_CASES.find(x=>x.id===S.trainer.caseId)||OFFB_CASES[0];
+  busy("#offbStatus","Разбираю встречу по чек-листу…");
+  try{
+    const sys="Ты — операционный директор, который обучает руководителей экологичному оффбордингу. Оцениваешь строго, по наблюдаемым действиям, а не по впечатлению. Пишешь по-русски. "+OFFB_RULES+" "+JSON_RULE;
+    const dialog=S.trainer.msgs.map(m=>(m.role==="user"?"РУКОВОДИТЕЛЬ: ":"СОТРУДНИК: ")+m.content).join("\n");
+    const msg=`Сценарий: ${c.n}. Роль сотрудника: ${S.trainer.role||"—"}. Причина решения: ${S.trainer.reason||"не указана"}.\nСТЕНОГРАММА ВСТРЕЧИ:\n${dialog}\n\nОцени работу руководителя. Формат JSON:
+{"total":число от 0 до 100,"verdict":"одна фраза: зачёт / нужно переиграть / провал",
+"summary":"2–3 предложения: как прошла встреча в целом",
+"criteria":[{"name":"Ступень 1 · Озвучил решение чётко","points":число,"max":20,"comment":"что именно сделал или не сделал"},
+ {"name":"Ступень 2 · Отработал возражения","points":число,"max":20,"comment":"..."},
+ {"name":"Ступень 3 · Математика: сроки и выплаты","points":число,"max":20,"comment":"..."},
+ {"name":"Ступень 4 · Меню поддержки","points":число,"max":15,"comment":"..."},
+ {"name":"Ступень 5 · Фиксация договорённостей","points":число,"max":15,"comment":"..."},
+ {"name":"Лексика безопасности и тон","points":число,"max":10,"comment":"..."}],
+"mistakes":["конкретная фраза руководителя и чем она опасна" ... 0–5],
+"rewrite":"как стоило сформулировать самый рискованный момент встречи"}`;
+    const txt=await callClaude({system:sys,messages:[{role:"user",content:msg}],max_tokens:5000,effort:"medium"});
+    S.trainer.score=parseJSON(txt);save();renderNav();renderOffb();
+  }catch(e){fail("#offbStatus",e);}
+}
+window.offbSet=offbSet;window.offbCase=offbCase;window.offbStart=offbStart;window.offbSend=offbSend;window.offbScore=offbScore;window.offbReset=offbReset;
+
+/* ---- 6. HR-ПУЛЬТ И ВЫГРУЗКА ---- */
+function renderPanel(){
+  const c=calcMetrics(),v=hrVerdict();
+  const risky=(S.team||[]).filter(p=>riskOf(p).t!=="низкий"&&p.name);
+  const onCnt=RITUALS.filter(r=>ritGet(r.id).status==="есть").length;
+  $("#main").innerHTML=head("Шаг 6 · HR-пульт","Что получилось","Сводка по всем шагам. Excel собирает все листы в один файл: диагностика, метрики, карта ритуалов, матрица удержания и разбор тренажёра.")+
+  '<div class="mgrid" style="grid-template-columns:repeat(4,1fr)">'+
+  '<div class="mcard"><div class="mn">Нужен HR</div><div class="mv" style="font-size:19px">'+esc(v.role)+'</div><div class="mh">триггеров: '+v.trig+' из 6</div></div>'+
+  '<div class="mcard"><div class="mn">eNPS</div><div class="mv">'+(c.enps!=null?fmt(c.enps):"—")+'</div><div class="mh">цель 30–45</div></div>'+
+  '<div class="mcard"><div class="mn">Ритуалы</div><div class="mv">'+onCnt+' / '+RITUALS.length+'</div><div class="mh">работает системно</div></div>'+
+  '<div class="mcard'+(risky.length?" bad":" ok")+'"><div class="mn">В зоне риска</div><div class="mv">'+risky.length+'</div><div class="mh">'+(risky.map(p=>esc(p.name)).join(", ")||"никого")+'</div></div></div>'+
+  '<div class="card"><h3>Выгрузка</h3><div class="row" style="margin-top:8px"><button class="btn primary" onclick="xlsxAll()">📊 Скачать всё в Excel</button><button class="btn dark" onclick="icsExport()">📅 Скачать календарь ритуалов</button></div>'+
+  '<div class="note">Excel — рабочий файл на квартал: с ним идёшь на 1:1, в него вносишь факты. Календарь — чтобы ритуалы начали жить уже на этой неделе.</div></div>'+
+  '<div class="card"><h3>Что сделать в первую неделю</h3><ul class="li">'+
+  '<li>Поставить чек-ин энергии в понедельник и 1:1 с каждым из кор-команды</li>'+
+  '<li>Закрыть крестики в матрице удержания по людям с высоким риском</li>'+
+  '<li>Посчитать пять HR-метрик и сравнить с нормой ниши</li>'+
+  '<li>Если триггеры сработали — открыть вакансию HR-дженералиста по брифу</li></ul>'+
+  '<div class="note b">Материалы модуля: <a href="https://docs.google.com/spreadsheets/d/1onNb3f3mKLqnR9WpeVhAHgycqcucwJoDPmEbwrFt4SQ/edit?usp=sharing" target="_blank">Удержание A-Players и eNPS</a> · <a href="https://docs.google.com/spreadsheets/d/1IBZjtEX1Znfi8vfRzOK4CJ1sjtOj1czelP8gxT1B5H8/edit?usp=sharing" target="_blank">Performance Review, 270°, 9-box</a> · <a href="https://docs.google.com/presentation/d/1xqTRnjVY9iYd9btm1UEorJzgjy6---HWWo8IxOfWll8/edit?usp=sharing" target="_blank">Экологичное увольнение</a> · <a href="https://docs.google.com/spreadsheets/d/1Y-E4k7OdP2w-Kd6LrV4kSDnxW4_SbPWZpsvGgpmbplo/edit?usp=sharing" target="_blank">Дашборд руководителя</a></div></div>'+navBtns();
+}
+/* Excel */
+const XC={EM:"FF143A2D",GOLD:"FFB0822E",CREAM:"FFF4F1EA",WHITE:"FFFFFFFF",ZEBRA:"FFFAF7F0",SEC:"FFEFE9D9"};
+function xBorder(){const s={style:"thin",color:{argb:"FFDCD4C2"}};return{top:s,left:s,bottom:s,right:s};}
+function sheetName(s){return String(s||"Лист").replace(/[\\/?*:\[\]]/g,"").slice(0,31)||"Лист";}
+function wsWidths(ws,w){ws.columns=w.map(x=>({width:x}));}
+function xTitle(ws,text,span){const row=ws.addRow([text]);ws.mergeCells(row.number,1,row.number,span);const c=row.getCell(1);c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.EM}};c.font={name:"Arial",bold:true,size:14,color:{argb:XC.CREAM}};c.alignment={vertical:"middle",indent:1};row.height=28;ws.addRow([]);}
+function xSection(ws,text,span){const row=ws.addRow([text]);if(span>1)ws.mergeCells(row.number,1,row.number,span);const c=row.getCell(1);c.font={bold:true,size:12,color:{argb:XC.EM}};c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.SEC}};c.alignment={vertical:"middle",indent:1};row.height=20;}
+function xHeader(ws,arr){const row=ws.addRow(arr);row.eachCell(c=>{c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.GOLD}};c.font={bold:true,color:{argb:XC.WHITE},size:11};c.alignment={vertical:"middle",wrapText:true,indent:1};c.border=xBorder();});row.height=22;}
+function xData(ws,arr,z){const row=ws.addRow(arr);row.eachCell(c=>{c.alignment={vertical:"top",wrapText:true,indent:1};c.border=xBorder();if(z)c.fill={type:"pattern",pattern:"solid",fgColor:{argb:XC.ZEBRA}};});}
+async function xlsxDownload(wb,fname){const buf=await wb.xlsx.writeBuffer();const blob=new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});const u=URL.createObjectURL(blob);const a=document.createElement("a");a.href=u;a.download=fname;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(u);a.remove();},400);}
+async function xlsxAll(){
+  if(!window.ExcelJS){alert("ExcelJS не загрузился — нужен интернет.");return;}
+  const wb=new ExcelJS.Workbook();wb.creator="A-Players";
+  const v=hrVerdict(),c=calcMetrics();
+  let ws=wb.addWorksheet("HR-пульт");wsWidths(ws,[34,60]);
+  xTitle(ws,"HR-ПУЛЬТ — "+((S.company||"компания").toUpperCase()),2);
+  [["Ниша",S.niche||"—"],["Численность",S.headcount||"—"],["Вердикт по HR",v.role],["Почему",v.why],["Триггеров сработало",v.trig+" из 6"]].forEach((kv,i)=>xData(ws,kv,i%2));
+  ws.addRow([]);xSection(ws,"МЕТРИКИ",2);
+  [["Выручка на сотрудника в год",c.revFte!=null?Math.round(c.revFte):"—"],["ФОТ / выручка, %",c.fotShare!=null?Math.round(c.fotShare*10)/10:"—"],
+   ["Текучесть линейных в месяц, %",c.turnLine!=null?Math.round(c.turnLine*10)/10:"—"],["Текучесть кор-команды в месяц, %",c.turnCore!=null?Math.round(c.turnCore*10)/10:"—"],
+   ["Укомплектованность, %",c.staff!=null?Math.round(c.staff):"—"],["eNPS",c.enps!=null?Math.round(c.enps):"—"]].forEach((kv,i)=>xData(ws,kv,i%2));
+  if(S.results.metrics){ws.addRow([]);xSection(ws,"РАЗБОР МЕТРИК",2);xData(ws,["Вывод",S.results.metrics.verdict||""]);(S.results.metrics.actions||[]).forEach((a,i)=>xData(ws,["Действие "+(i+1),a],i%2));}
+  ws=wb.addWorksheet("Карта ритуалов");wsWidths(ws,[30,46,16,18,12]);
+  xTitle(ws,"КАРТА РИТУАЛОВ КОМАНДЫ",5);xHeader(ws,["Ритуал","Что делаем","Частота","Кто ведёт","Статус"]);
+  RITUALS.forEach((r,i)=>{const st=ritGet(r.id);xData(ws,[r.n,r.d,r.sec,st.who||r.who,st.status||"не отмечено"],i%2);});
+  if(S.results.rituals&&S.results.rituals.agendas){ws.addRow([]);xSection(ws,"ПОВЕСТКИ",5);
+    S.results.rituals.agendas.forEach(a=>{xData(ws,[a.ritual,(a.points||[]).join("\n"),a.when||"","",a.output||""]);});}
+  ws=wb.addWorksheet("Матрица удержания");wsWidths(ws,[22,26,10,10,10,10,14,30]);
+  xTitle(ws,"МАТРИЦА УДЕРЖАНИЯ",8);xHeader(ws,["Сотрудник","Роль","Грейд","₽ доход","✦ навыки","↑ карьера","Риск","Сигналы"]);
+  (S.team||[]).forEach((p,i)=>xData(ws,[p.name,p.role,p.grade,p.money,p.skills,p.career,riskOf(p).t,p.signal||""],i%2));
+  if(S.results.retention&&S.results.retention.people){ws.addRow([]);xSection(ws,"ПЛАНЫ УДЕРЖАНИЯ",8);
+    S.results.retention.people.forEach(p=>{xSection(ws,p.name+" — риск "+(p.risk||""),8);xData(ws,["Где дыра",p.gap||"","","","","","",""]);
+      (p.plan||[]).forEach((x,i)=>xData(ws,["Действие",x.action,"","","","",x.due||"",x.who||""],i%2));
+      if(p.script)xData(ws,["Начало разговора",p.script,"","","","","",""]);});}
+  if(S.results.diag){ws=wb.addWorksheet("Профиль HR");wsWidths(ws,[20,60,30]);
+    xTitle(ws,"ПРОФИЛЬ РОЛИ — "+((S.results.diag.title||"HR").toUpperCase()),3);
+    xHeader(ws,["Период","Что делает","Как проверишь"]);(S.results.diag.first90||[]).forEach((x,i)=>xData(ws,[x.period,x.what,x.check],i%2));
+    ws.addRow([]);xSection(ws,"ТОП-5 НАВЫКОВ",3);(S.results.diag.skills||[]).forEach((x,i)=>xData(ws,[x.name,x.why,""],i%2));
+    ws.addRow([]);xSection(ws,"KPI",3);(S.results.diag.kpi||[]).forEach((x,i)=>xData(ws,[x,"",""],i%2));
+    ws.addRow([]);xData(ws,["Вилка",S.results.diag.salary||"",""]);xData(ws,["Где искать",S.results.diag.where||"",""]);}
+  if(S.trainer&&S.trainer.score){ws=wb.addWorksheet("Тренажёр увольнения");wsWidths(ws,[34,12,50]);
+    xTitle(ws,"РАЗБОР ТРЕНАЖЁРА",3);xData(ws,["Итог",(S.trainer.score.total||"")+" / 100",S.trainer.score.verdict||""]);
+    ws.addRow([]);xHeader(ws,["Критерий","Балл","Комментарий"]);
+    (S.trainer.score.criteria||[]).forEach((x,i)=>xData(ws,[x.name,x.points+"/"+x.max,x.comment],i%2));
+    if((S.trainer.score.mistakes||[]).length){ws.addRow([]);xSection(ws,"ЧТО СОРВАЛОСЬ",3);S.trainer.score.mistakes.forEach((m,i)=>xData(ws,[m,"",""],i%2));}}
+  await xlsxDownload(wb,"HR-система — "+(S.company||"компания")+".xlsx");
+}
+window.xlsxAll=xlsxAll;
+
+/* ================= INIT ================= */
+(function init(){
+  const k=localStorage.getItem(LS.key);if(k)$("#apikey").value=k;
+  const m=localStorage.getItem(LS.model);if(m)$("#model").value=m;
+  $("#apikey").addEventListener("input",e=>localStorage.setItem(LS.key,e.target.value.trim()));
+  $("#model").addEventListener("change",e=>localStorage.setItem(LS.model,e.target.value));
+  renderNav();render();
+})();
+</script>
+</body>
+</html>

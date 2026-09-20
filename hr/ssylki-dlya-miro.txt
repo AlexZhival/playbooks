@@ -1,0 +1,83 @@
+ССЫЛКИ МОДУЛЯ «HR-ФУНКЦИЯ И РИТУАЛЫ КОМАНДЫ» · A-Players · 8 ПОТОК
+
+📊 ШАБЛОНЫ A-PLAYERS
+
+• Удержание A-Players, рост eNPS — треугольник, Risk Map, eNPS
+  https://docs.google.com/spreadsheets/d/1onNb3f3mKLqnR9WpeVhAHgycqcucwJoDPmEbwrFt4SQ/edit?usp=sharing
+• Матрица удержания — справочник бенчмарков
+  https://docs.google.com/spreadsheets/d/18UE8lRkEXSd3lGyKZR8IZIGsnOaCqaMx39RAKSr0B7w/edit?usp=sharing
+• Performance Review, 270°, 9-box
+  https://docs.google.com/spreadsheets/d/1IBZjtEX1Znfi8vfRzOK4CJ1sjtOj1czelP8gxT1B5H8/edit?usp=sharing
+• One-on-One A-Players
+  https://docs.google.com/spreadsheets/d/1V0nhHybWuRUVLMhzTPI3Qv048oOPEDYYk6wcnQznUl0/edit?usp=sharing
+• Дашборд руководителя — рамка, карта встреч
+  https://docs.google.com/spreadsheets/d/1Y-E4k7OdP2w-Kd6LrV4kSDnxW4_SbPWZpsvGgpmbplo/edit?usp=sharing
+• Трекинг наставников и испытательного
+  https://docs.google.com/spreadsheets/d/13bPBhBp6ql5eM9ZHd13bxTcF8nX-KeBh8Pb2jxr2yos/edit?usp=sharing
+
+📘 ПЛЕЙБУКИ И ПОРТРЕТЫ
+
+• Портрет HR-дженералиста
+  https://docs.google.com/spreadsheets/d/1Z0EqByaHSMbL2ZjTrDFEJEJRGPTddTy6zqbNGUQlceA/edit?usp=sharing
+• Портрет HRD
+  https://docs.google.com/spreadsheets/d/1w_tC1lb2NYOHKbo2gZnfUPlcJJUab7cDN1zOiyOUznU/edit?usp=sharing
+• Навыки & Грейды
+  https://docs.google.com/spreadsheets/d/1xNzMGjdsz4Y-nWwFkW3XIIer-QAuhkIJFAkk1IzpjRo/edit?usp=sharing
+• Плейбук PDP управленца
+  https://docs.google.com/document/d/1rbHzHYvTEKYN-mQUT0U4S8yk2liJcRXHxWpJvusAbi8/edit?usp=sharing
+• Видение и миссия компании
+  https://docs.google.com/document/d/1ab4jLNb_o7q1HRFrgFy9ph3MFujl8QKHcDrenJiCnd0/edit?usp=sharing
+• Принципы работы в компании
+  https://docs.google.com/document/d/1PiOKZsvxYKQbaE4XMvB0o1ypGbqyv4B5P7Acsw8ijJM/edit?usp=sharing
+• Экологичное увольнение — методичка
+  https://docs.google.com/presentation/d/1xqTRnjVY9iYd9btm1UEorJzgjy6---HWWo8IxOfWll8/edit?usp=sharing
+• Бриф на новую вакансию
+  https://docs.google.com/spreadsheets/d/1qnKXx0rGL7PHtjF1VluIfCMqLO3GADcpMeDFh3Co_5w/edit?usp=sharing
+
+💰 ВИЛКИ И БЕНЧМАРКИ
+
+• AMT Консалт
+  https://www.amtconsult.ru/
+• Б1 · обзор зарплат
+  https://b1.ru/services/tax-and-law-services/b1-salary-survey-report-2025/
+• ANCOR · обзоры зарплат и льгот
+  https://ancor.ru/services/consulting/issledovaniya-i-oprosy/obzory-zarabotnykh-plat-lgot-i-kompensatsiy/
+• Antal · рынок труда 2026–2027
+  https://antaltalent.ru/blog/issledovanie-rynka-truda-i-obzor-zarabotnyh-plat-2026-2027/
+• hh.ru · вилки и статусы резюме
+  https://hh.ru/
+
+❤️ ENPS, БЕНЕФИТЫ, КУЛЬТУРА
+
+• Happy Job — eNPS
+  https://happy-job.ru/
+• Benefactory — баллы-бенефиты
+  https://benefactory.ru/
+• Ecopsy — корпоративные компетенции
+  https://ecopsy.ru/
+• Miroverse — фидбэк-сессии
+  https://miro.com/miroverse/
+
+⭐ HR-БРЕНД
+
+• Skyeng · лендинг для кандидатов
+  https://job.skyeng.ru/
+• Skyeng · реферальная программа
+  https://referral-programs.skyeng.ru/guest
+• Конструктор воронки найма
+  https://alexzhival.github.io/playbooks/naim/
+• Мастер-промпт вакансии HH
+  https://docs.google.com/document/d/1-LqayF6_jKdlibpzmsujw6xYOEy1d7LzEI7vBX3UNJs/edit?usp=sharing
+
+🤖 AI В HR
+
+• Neuro.net — AI-рекрутер
+  https://neuro.net/ru
+• Tomoru — AI-роботы
+  https://tomoru.ru/
+• n8n — автоматизация
+  https://n8n.io/
+• Huntflow — ATS
+  https://huntflow.ru/
+• t.me/SoftRecruiting
+  https://t.me/SoftRecruiting
