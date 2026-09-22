@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<script src="gate.js"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Здоровое движение &middot; сервер для второго мозга</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#F4F1EA;--bg2:#EFE9D9;--card:#FCFAF4;--ink:#16201B;--muted:#5A6056;--line:#DCD4C2;
+  --em:#143A2D;--em2:#1C4C3B;--dark-ink:#EFE9DA;--gold:#B0822E;--gold2:#C79A45;--gold-h:#977019;
+  --green:#3E8E5E;--red:#B23B2E;--amber:#C77A22;
+  --serif:"Roboto Slab",Georgia,serif;--sans:"Manrope",system-ui,-apple-system,sans-serif;--mono:ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:960px;margin:0 auto;padding:0 26px}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(29px,5vw,50px);line-height:1.05;letter-spacing:-.5px}
+h2{font-family:var(--serif);font-weight:800;font-size:clamp(22px,3.6vw,31px);line-height:1.12;letter-spacing:-.4px}
+h3{font-family:var(--serif);font-weight:700;font-size:19.5px;line-height:1.25}
+p{margin-top:12px}
+a{color:var(--em2)}
+.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-h);font-weight:600;display:inline-flex;align-items:center;gap:9px}
+.kicker::before{content:"\25CF";color:var(--gold);font-size:10px}
+b,strong{font-weight:800}
+.hl{background:linear-gradient(180deg,transparent 56%,rgba(176,130,46,.34) 56%);color:#0F2B20;font-weight:800;padding:0 3px}
+
+/* hero */
+.hero{background:var(--em);color:var(--dark-ink);position:relative;overflow:hidden;padding:58px 0 50px}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 84% 26%,rgba(199,154,69,.2),transparent 46%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1}
+.hero h1{color:#fff;max-width:740px}
+.hero .lead{font-size:clamp(16.5px,2.2vw,19px);color:rgba(239,233,218,.85);max-width:640px;margin-top:16px;font-weight:500}
+.hero .kicker{color:var(--gold2)}
+.badges{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.badge{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:7px 13px;border-radius:30px;border:1.5px solid rgba(199,154,69,.5);color:var(--gold2)}
+.cta{display:inline-flex;align-items:center;gap:11px;background:linear-gradient(180deg,#C79A45,#A87C24);color:#19120A;font-weight:800;font-size:16px;padding:14px 22px;border-radius:12px;text-decoration:none;margin-top:26px;box-shadow:0 14px 30px -12px rgba(176,130,46,.7);transition:transform .15s}
+.cta:hover{transform:translateY(-2px)}
+
+section{padding:46px 0}
+section.alt{background:var(--bg2)}
+.eyebrow{margin-bottom:12px;display:inline-block}
+.lead{font-size:18.5px;color:var(--muted);font-weight:500}
+
+/* оглавление */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:26px}
+.toc a{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px 16px;text-decoration:none;color:var(--ink);display:block;transition:.15s}
+.toc a:hover{border-color:var(--gold);transform:translateY(-2px)}
+.toc .n{font-family:var(--mono);font-size:11.5px;color:var(--gold-h);font-weight:700;letter-spacing:.08em}
+.toc .t{font-weight:700;font-size:15.5px;margin-top:3px;display:block}
+
+/* карточки ролей */
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px}
+@media(max-width:740px){.roles{grid-template-columns:1fr}}
+.rcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px}
+.rcard.r1{border-top:5px solid var(--em)}
+.rcard.r2{border-top:5px solid var(--gold)}
+.rcard .rn{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h);font-weight:700}
+.rcard ul{margin:12px 0 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.rcard li{font-size:15.5px}
+
+/* шаги */
+ol.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
+ol.steps>li>b:first-child{display:block;font-size:17px;margin-bottom:2px}
+ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+
+/* выноски */
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
+.note.warn{border-left-color:var(--red)}
+.note.ok{border-left-color:var(--green)}
+.note>b:first-child{display:block;margin-bottom:4px}
+code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
+
+/* таблица статуса */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--em);color:var(--dark-ink);text-align:left;padding:13px 16px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono)}
+.tbl td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag.live{background:#dfeccb;color:#2F5233}
+.tag.next{background:#f3e3c6;color:#7c5a14}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.foot{background:var(--em);color:rgba(239,233,218,.8);padding:38px 0;font-size:15px}
+.foot b{color:#fff}
+.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
+ol.steps>li>b:first-child{display:block;font-size:17px;margin-bottom:2px}
+ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+
+/* выноски */
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
+.note.warn{border-left-color:var(--red)}
+.note.ok{border-left-color:var(--green)}
+.note>b:first-child{display:block;margin-bottom:4px}
+code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
+
+/* таблица статуса */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--em);color:var(--dark-ink);text-align:left;padding:13px 16px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono)}
+.tbl td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag.live{background:#dfeccb;color:#2F5233}
+.tag.next{background:#f3e3c6;color:#7c5a14}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.foot{background:var(--em);color:rgba(239,233,218,.8);padding:38px 0;font-size:15px}
+.foot b{color:#fff}
+.steps{counter-reset:s;list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:16px}
+ol.steps>li{counter-increment:s;position:relative;padding-left:52px;font-size:16.5px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:-2px;width:34px;height:34px;border-radius:10px;background:var(--em);color:var(--gold2);font-family:var(--serif);font-weight:800;font-size:17px;display:grid;place-items:center}
+ol.steps>li>b:first-child{display:block;font-size:17px;margin-bottom:2px}
+ol.steps ul{margin-top:7px;padding-left:19px;color:var(--muted);font-size:15.5px;display:flex;flex-direction:column;gap:5px}
+
+/* выноски */
+.note{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:0 14px 14px 0;padding:18px 22px;margin-top:22px;font-size:16px}
+.note.warn{border-left-color:var(--red)}
+.note.ok{border-left-color:var(--green)}
+.note>b:first-child{display:block;margin-bottom:4px}
+code{font-family:var(--mono);font-size:.88em;background:#efe9d8;border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-weight:700;word-break:break-word}
+
+/* таблица статуса */
+.tbl{width:100%;border-collapse:collapse;margin-top:22px;font-size:15.5px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tbl th{background:var(--em);color:var(--dark-ink);text-align:left;padding:13px 16px;font-size:12px;letter-spacing:.07em;text-transform:uppercase;font-family:var(--mono)}
+.tbl td{padding:13px 16px;border-top:1px solid var(--line);vertical-align:top}
+.tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.tag.live{background:#dfeccb;color:#2F5233}
+.tag.next{background:#f3e3c6;color:#7c5a14}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+.foot{background:var(--em);color:rgba(239,233,218,.8);padding:38px 0;font-size:15px}
+.foot b{color:#fff}
+
+.steps{counter-reset:st;margin-top:22px;display:flex;flex-direction:column;gap:14px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px 18px 62px;position:relative}
+.step::before{counter-increment:st;content:counter(st);position:absolute;left:20px;top:17px;width:28px;height:28px;
+  border-radius:9px;background:var(--em);color:var(--gold2);font-family:var(--mono);font-weight:800;font-size:14px;
+  display:grid;place-items:center}
+.step b{display:block;font-size:16.5px;margin-bottom:4px}
+.step p{margin-top:4px;font-size:15.5px;color:var(--muted)}
+.prompt{background:#12241C;color:#D8E6DE;border-radius:14px;padding:20px 22px;margin-top:18px;
+  font-family:var(--mono);font-size:13.5px;line-height:1.62;white-space:pre-wrap;overflow-x:auto}
+.prompt .ph{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2);
+  margin-bottom:11px;font-weight:700}
+.tree{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-top:18px;
+  font-family:var(--mono);font-size:13.5px;line-height:1.7;white-space:pre;overflow-x:auto}
+.tbl2{width:100%;border-collapse:collapse;margin-top:18px;font-size:15.5px}
+.tbl2 th,.tbl2 td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl2 th{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-h)}
+.tbl2 tr:last-child td{border-bottom:none}
+.wrapx{overflow-x:auto}
+.who{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;padding:5px 11px;border-radius:30px;background:var(--em);color:var(--gold2);margin-top:14px}
+.who.one{background:var(--gold);color:#19120A}
+.check{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.check li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px 13px 46px;
+  position:relative;font-size:15.5px}
+.check li::before{content:"";position:absolute;left:16px;top:15px;width:18px;height:18px;border-radius:5px;
+  border:2px solid var(--em2)}
+.rcard p{margin-top:10px;font-size:15.5px;color:var(--muted)}
+.cmd{background:#12241C;color:#D8E6DE;border-radius:12px;padding:16px 18px;margin-top:12px;
+  font-family:var(--mono);font-size:13.5px;line-height:1.7;white-space:pre-wrap;overflow-x:auto}
+.cmd .ph{display:block;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold2);
+  margin-bottom:10px;font-weight:700;font-family:var(--sans)}
+.field{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-top:10px}
+.field b{display:block;font-size:13px;color:var(--gold-h);font-family:var(--mono);letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:4px}
+.field span{font-size:15.5px}
+.who{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  font-weight:700;padding:5px 11px;border-radius:30px;background:var(--em);color:var(--gold2);margin-top:14px}
+.who.one{background:var(--gold);color:#19120A}
+.check{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+.check li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 16px 13px 46px;
+  position:relative;font-size:15.5px}
+.check li::before{content:"";position:absolute;left:16px;top:15px;width:18px;height:18px;border-radius:5px;
+  border:2px solid var(--em2)}
+
+</style>
+</head>
+<body>
+
+<div class="hero"><div class="wrap">
+  <span class="badge">Здоровое движение</span>
+  <h1>Сервер для второго мозга</h1>
+  <p class="lead">Пошагово, от пустого экрана до работающего круглосуточно ассистента.
+  Каждый шаг можно копировать как есть. Технических знаний не требуется.</p>
+</div></div>
+
+<div class="wrap">
+
+<section>
+  <span class="kicker">Сначала главное</span>
+  <h2>Что мы переносим, а что не трогаем</h2>
+  <p class="lead">Штаб компании и платформа онбординга уже работают круглосуточно и ни от чьего
+  компьютера не зависят. Их переносить не надо, они останутся на месте.</p>
+  <p>Сервер нужен только второму мозгу, тому самому боту в Telegram. Сейчас он живет на ноутбуке
+  и отвечает, только пока ноутбук включен. После переноса он будет отвечать всегда: ночью,
+  в выходные, когда вы в самолете.</p>
+  <div class="note"><b>Что получится в конце.</b> У каждого фаундера свой бот, который работает
+  круглосуточно. У каждого своя память и своя переписка: на сервере вы разные пользователи,
+  и прочитать чужое нельзя физически, а не по обещанию.</div>
+  <div class="note warn"><b>Первый раз делаем вместе.</b> Инструкция полная, но на первом запуске
+  лучше быть на связи со мной: покажу экран и подстрахую. Дальше повторять для каждого человека
+  вы сможете сами.</div>
+</section>
+
+<section>
+  <span class="kicker">Подготовка</span>
+  <h2>Что нужно иметь под рукой</h2>
+  <ul class="check">
+    <li>Банковская карта, которой можно платить зарубежному сервису. Предоплаченные и виртуальные
+      карты не подойдут, их не принимают. Подойдет и PayPal</li>
+    <li>Корпоративная почта компании, аккаунт заводим на нее</li>
+    <li>Файл ключа brain-founders.json из прошлой инструкции</li>
+    <li>Токен бота каждого фаундера, из @BotFather</li>
+    <li>Ваш номер в Telegram: напишите боту @userinfobot, он пришлет число вида 375241336</li>
+    <li>Активная подписка Claude у каждого</li>
+    <li>Час времени на первый запуск, дальше по пятнадцать минут на человека</li>
+  </ul>
+  <div class="note">Сколько это стоит: сервер на четверых фаундеров и нескольких руководителей
+  обходится в 48 долларов в месяц, это около четырех тысяч рублей. Если станет тесно, размер
+  меняется в два клика без переустановки.</div>
+</section>
+
+<section>
+  <span class="kicker">Шаг первый</span>
+  <h2>Завести аккаунт</h2>
+  <span class="who one">один раз на компанию</span>
+  <div class="steps">
+    <div class="step"><b>Откройте digitalocean.com и нажмите Sign up</b>
+      <p>Регистрируйтесь на корпоративную почту, чтобы владельцем был не человек, а компания.</p></div>
+    <div class="step"><b>Подтвердите почту</b>
+      <p>Придет письмо со ссылкой, перейдите по ней.</p></div>
+    <div class="step"><b>Добавьте способ оплаты</b>
+      <p>Карта или PayPal. Сервис может временно списать около доллара для проверки карты
+      и вернуть его. Это нормально.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Шаг второй</span>
+  <h2>Создать сервер</h2>
+  <span class="who one">один раз на компанию</span>
+  <p class="lead">Сервер у них называется Droplet. Это просто компьютер, который стоит
+  в дата-центре и никогда не выключается.</p>
+  <div class="steps">
+    <div class="step"><b>Нажмите зеленую кнопку Create и выберите Droplets</b></div>
+    <div class="step"><b>Region: выберите Frankfurt</b>
+      <p>Это ближайший к нам дата-центр, ответы будут быстрее.</p></div>
+    <div class="step"><b>Choose an image: Ubuntu, версия 24.04 LTS</b>
+      <p>Обычно она уже выбрана. LTS означает, что версия поддерживается годами.</p></div>
+    <div class="step"><b>Choose Size: Basic, потом Regular, потом вариант за 48 долларов</b>
+      <p>В нем 4 ядра и 8 гигабайт памяти. Этого хватает примерно на десять человек.</p></div>
+    <div class="step"><b>Choose Authentication Method: Password</b>
+      <p>Придумайте длинный пароль и сохраните его в менеджер паролей. Вариант с ключом
+      надежнее, но сложнее, для старта берем пароль.</p></div>
+    <div class="step"><b>Hostname: напишите vtoroy-mozg</b>
+      <p>Это просто имя, чтобы потом не путаться.</p></div>
+    <div class="step"><b>Нажмите Create Droplet и подождите минуту</b>
+      <p>Когда сервер готов, рядом появится его адрес вида 164.92.10.20. Запишите его.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Шаг третий</span>
+  <h2>Зайти на сервер</h2>
+  <span class="who one">один раз на компанию</span>
+  <p class="lead">Ничего устанавливать не нужно: на сервер можно зайти прямо из браузера.</p>
+  <div class="steps">
+    <div class="step"><b>Откройте свой сервер в списке Droplets</b></div>
+    <div class="step"><b>Нажмите кнопку Console в правом верхнем углу</b>
+      <p>Откроется черное окно. Это и есть сервер. Все команды ниже копируются в это окно.</p></div>
+  </div>
+  <div class="note"><b>Как копировать команды.</b> Выделите блок целиком, скопируйте, кликните
+  в черное окно и вставьте. На Mac вставка это Command и V, на Windows Control и V. Потом Enter.
+  Если команда занимает несколько строк, вставляйте целиком, так и задумано.</div>
+</section>
+
+<section>
+  <span class="kicker">Шаг четвертый</span>
+  <h2>Поставить нужные программы</h2>
+  <span class="who one">один раз на компанию</span>
+  <p class="lead">Вставьте блок целиком и подождите. Займет три-пять минут, будет много текста,
+  это нормально.</p>
+  <div class="cmd"><span class="ph">копировать целиком в черное окно</span>apt update && apt upgrade -y
+apt install -y curl git python3-pip unzip tmux
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt install -y nodejs
+npm install -g @anthropic-ai/claude-code
+pip3 install --break-system-packages google-auth requests
+echo "ГОТОВО"</div>
+  <p>Когда внизу появится слово ГОТОВО, шаг закончен. Проверить, что все встало:</p>
+  <div class="cmd"><span class="ph">проверка</span>node -v && claude --version && python3 -c "import google.auth; print('python ок')"</div>
+  <p>Должны появиться три строки с версиями. Если вместо этого ошибка, пришлите мне ее текстом.</p>
+</section>
+
+<section>
+  <span class="kicker">Шаг пятый</span>
+  <h2>Завести по пользователю на каждого человека</h2>
+  <span class="who one">один раз на компанию</span>
+  <p class="lead">Отдельный пользователь это и есть та самая изоляция: своя память, своя переписка,
+  чужое прочитать нельзя.</p>
+  <p>Для каждого выполните команду, подставив имя латиницей. Система спросит пароль,
+  придумайте и сохраните. На вопросы про Full Name и прочее просто жмите Enter.</p>
+  <div class="cmd"><span class="ph">по одной команде на человека</span>adduser marina
+adduser sasha
+adduser veselov</div>
+  <div class="note">Имена только маленькими латинскими буквами, без пробелов. Это технические имена
+  папок, менять их потом неудобно.</div>
+</section>
+
+<section>
+  <span class="kicker">Шаг шестой</span>
+  <h2>Настроить мозг одного человека</h2>
+  <span class="who">повторить для каждого</span>
+  <p class="lead">Дальше все делается от имени конкретного человека. Покажу на примере Марины,
+  для остальных то же самое, только имя другое.</p>
+
+  <div class="steps">
+    <div class="step"><b>Переключитесь на этого пользователя</b>
+      <div class="cmd">su - marina</div>
+      <p>Приглашение слева сменится на имя. Значит, вы работаете от ее имени.</p></div>
+
+    <div class="step"><b>Поставьте Bun</b>
+      <p>Это то, на чем работает связь с Telegram.</p>
+      <div class="cmd">curl -fsSL https://bun.sh/install | bash
+source ~/.bashrc
+bun --version</div></div>
+
+    <div class="step"><b>Войдите в Claude под подпиской этого человека</b>
+      <div class="cmd">claude setup-token</div>
+      <p>Появится ссылка. Откройте ее в обычном браузере на своем компьютере, войдите под
+      аккаунтом Claude этого человека, скопируйте код и вставьте обратно в черное окно.
+      Это делается один раз.</p></div>
+
+    <div class="step"><b>Поставьте связь с Telegram</b>
+      <div class="cmd">claude plugin marketplace add anthropics/claude-plugins-official
+claude plugin install telegram@claude-plugins-official</div></div>
+
+    <div class="step"><b>Создайте папки и настройки</b>
+      <p>Замените два значения в первых двух строках: токен бота этого человека и его номер
+      в Telegram. Остальное копируется как есть.</p>
+      <div class="cmd"><span class="ph">подставьте свои два значения в первых строках</span>TOKEN="сюда_токен_бота"
+TGID="сюда_номер_телеграм"
+
+mkdir -p ~/mozg/рабочая-папка ~/.claude/channels/telegram/approved
+echo "TELEGRAM_BOT_TOKEN=$TOKEN" > ~/.claude/channels/telegram/.env
+chmod 600 ~/.claude/channels/telegram/.env
+echo "{\"dmPolicy\":\"allowlist\",\"allowFrom\":[\"$TGID\"],\"groups\":{},\"pending\":{}}" > ~/.claude/channels/telegram/access.json
+echo "ГОТОВО"</div></div>
+
+    <div class="step"><b>Скачайте инструменты мозга и напишите ему инструкцию</b>
+      <p>Это три маленькие программы: каталог источников, чтение документов и цифры из аналитики.
+      Плюс файл с правилами, по которым мозг работает. Копируйте блок целиком.</p>
+      <div class="cmd"><span class="ph">копировать целиком</span>mkdir -p ~/mozg/instrumenty && cd ~/mozg/instrumenty
+curl -fsSLO https://alexzhival.github.io/playbooks/zd-server/files/catalog.py
+curl -fsSLO https://alexzhival.github.io/playbooks/zd-server/files/document.py
+curl -fsSLO https://alexzhival.github.io/playbooks/zd-server/files/analytics.py
+
+cat > ~/mozg/рабочая-папка/CLAUDE.md <<'КОНЕЦ'
+# Второй мозг компании
+
+Ты ассистент компании. Отвечаешь по-русски, коротко и по делу.
+Стиль: без буквы е-с-точками и без длинного тире, только дефис.
+
+## Что тебе доступно
+
+1. Каталог источников компании: где что лежит, кто ведет, что считается источником правды.
+   python3 ~/mozg/instrumenty/catalog.py
+   python3 ~/mozg/instrumenty/catalog.py найти РНП
+   python3 ~/mozg/instrumenty/catalog.py папка sales
+
+2. Сами документы, читаешь роботом Google, только на чтение.
+   python3 ~/mozg/instrumenty/document.py ССЫЛКА
+   python3 ~/mozg/instrumenty/document.py ССЫЛКА --вкладки
+   python3 ~/mozg/instrumenty/document.py ССЫЛКА --лист "Название"
+
+3. Аналитика: живые цифры из витрин, только чтение.
+   python3 ~/mozg/instrumenty/analytics.py воронка 6
+   python3 ~/mozg/instrumenty/analytics.py телефония 3
+   python3 ~/mozg/instrumenty/analytics.py очередь
+
+## Как работать
+
+Сначала загляни в каталог и найди нужный источник, там же видно связи с соседними документами.
+Если у источника стоит отметка «источник правды», бери его, а не копию.
+Цифры бери из аналитики или из самого документа, не выдумывай их никогда.
+Не смог прочитать - так и скажи, что доступа нет.
+Отвечай выводом, а не пересказом таблицы: сначала ответ, потом откуда взял.
+Статус archive означает, что документ устарел, на него не опираться.
+
+## Запреты
+
+Ничего не писать в базу аналитики, не менять документы, не выдавать доступы.
+Не пересылать содержимое документов за пределы компании.
+Персональные данные клиентов не выгружать списками без явной деловой нужды.
+КОНЕЦ
+echo "ГОТОВО"</div>
+      <p>Проверить, что инструменты работают, можно сразу:</p>
+      <div class="cmd">python3 ~/mozg/instrumenty/catalog.py найти РНП</div>
+      <p>Должно появиться описание отчета и ссылка на него. Если пишет, что нет ключа, значит сначала надо выполнить следующий шаг с ключами и вернуться сюда.</p></div>
+
+    <div class="step"><b>Положите ключи</b>
+      <p>Нужен файл brain-founders.json из прошлой инструкции. Самый простой способ перенести его
+      на сервер: открыть файл в текстовом редакторе у себя, скопировать все содержимое, а на сервере
+      выполнить команду ниже, вставить содержимое и нажать Control и D.</p>
+      <div class="cmd">mkdir -p ~/.aplayers
+cat > ~/.aplayers/robot.json
+(вставьте содержимое файла и нажмите Control и D)
+chmod 600 ~/.aplayers/robot.json</div>
+      <p>Так же кладется ключ мозга из панели штаба, блок «Ключи для второго мозга»:</p>
+      <div class="cmd">echo "сюда_ключ_вида_zdbk_..." > ~/.aplayers/brainkey
+chmod 600 ~/.aplayers/brainkey</div></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Шаг седьмой</span>
+  <h2>Запустить так, чтобы работало всегда</h2>
+  <span class="who">повторить для каждого</span>
+  <p class="lead">Программа должна жить, даже когда вы закрыли окно браузера. Для этого запускаем
+  ее внутри tmux: это как отдельная комната на сервере, которая не закрывается.</p>
+  <div class="cmd"><span class="ph">запуск</span>tmux new -d -s mozg 'cd ~/mozg/рабочая-папка && claude --channels plugin:telegram@claude-plugins-official'
+tmux ls</div>
+  <p>Если видите строку со словом mozg, бот запущен. Теперь окно браузера можно закрывать.</p>
+  <p>Чтобы сервер сам поднимал бота после перезагрузки, выполните один раз:</p>
+  <div class="cmd">(crontab -l 2>/dev/null; echo "@reboot tmux new -d -s mozg 'cd ~/mozg/рабочая-папка && claude --channels plugin:telegram@claude-plugins-official'") | crontab -</div>
+
+  <div class="note"><b>Полезные команды на будущее.</b> Заглянуть в окно бота:
+  <code>tmux attach -t mozg</code>, выйти из него не закрывая: нажать Control и B, отпустить,
+  потом D. Остановить бота: <code>tmux kill-session -t mozg</code>.</div>
+</section>
+
+<section>
+  <span class="kicker">Шаг восьмой</span>
+  <h2>Связать бота с собой и проверить</h2>
+  <span class="who">повторить для каждого</span>
+  <div class="steps">
+    <div class="step"><b>Напишите своему боту в Telegram любое слово</b>
+      <p>Он ответит кодом из шести символов.</p></div>
+    <div class="step"><b>Вернитесь в окно бота на сервере</b>
+      <div class="cmd">tmux attach -t mozg</div>
+      <p>И введите там команду, подставив код:</p>
+      <div class="cmd">/telegram:access pair КОД</div>
+      <p>Потом выйдите из окна: Control и B, отпустить, потом D.</p></div>
+    <div class="step"><b>Проверьте живым вопросом</b>
+      <p>Напишите боту: какие папки тебе доступны. Потом: сколько денег пришло в августе
+      и какой средний чек. Он должен ответить цифрами из ваших данных.</p></div>
+    <div class="step"><b>Главная проверка</b>
+      <p>Закройте браузер, выключите компьютер и через несколько минут напишите боту с телефона.
+      Он должен ответить. Это и значит, что перенос удался.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="kicker">Если что-то пошло не так</span>
+  <h2>Короткая шпаргалка</h2>
+  <div class="roles">
+    <div class="rcard r1"><span class="rn">бот молчит</span>
+      <ul>
+        <li>Зайдите на сервер, выполните <code>su - имя</code> и <code>tmux ls</code></li>
+        <li>Если строки с mozg нет, бот не запущен: повторите команду запуска из шага седьмого</li>
+        <li>Если строка есть, загляните внутрь: <code>tmux attach -t mozg</code> и посмотрите,
+          нет ли там красной ошибки</li>
+        <li>Часто это просроченный вход: введите там <code>/login</code></li>
+      </ul></div>
+    <div class="rcard r2"><span class="rn">общие правила</span>
+      <ul>
+        <li>Пароль от сервера и пароли пользователей храните в менеджере паролей</li>
+        <li>Файлы ключей никому не пересылайте, они уже лежат на сервере</li>
+        <li>Не ставьте на сервер ничего лишнего, это не рабочий компьютер</li>
+        <li>Не получилось на каком-то шаге, пришлите мне текст из черного окна целиком</li>
+      </ul></div>
+  </div>
+</section>
+
+<div class="foot"><div class="wrap">
+  <p>Здоровое движение &middot; сервер для второго мозга. Вопросы на любом шаге - Александру.</p>
+</div></div>
+
+</div>
+
+</body>
+</html>
